@@ -148,6 +148,8 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 		o <- order(do.call(order, as.list(c(datList, list(rand=rand)))))
 		
 		brks <- c(0, cumsum(binSizes)) + (iFrom-1)
+		
+		# TODO in stead of precalculating the brks, we can also give the number of breaks and calculate binSizes from summing the bins.
 		dat$aggIndex <- cut(o, brks, right=TRUE, labels=FALSE)
 	}
 		
@@ -183,13 +185,13 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	tab$nBins <- nBins
 	
 	## tab$row contains info about bins/y-axis
-	tab$rows <- list(heights=binSizes/m)
-	tab$rows$y <- c(0,cumsum(tab$rows$heights)[-nBins])
-	tab$rows$m <- m
-	tab$rows$from <- from
-	tab$rows$to <- to
-	tab$rows$marks <- pretty(c(tab$rows$from, tab$rows$to), 10)
-	
+	tab$rows <- list( heights = binSizes/m 
+	                , y = c(0,cumsum(binSizes/m)[-nBins])
+	                , m = m
+	                , from = from
+	                , to = to
+	                , marks = pretty(c(from, to), 10)
+	                )
 	
 	## create column list
 	tab$columns <- list()
@@ -232,27 +234,28 @@ cat("time after preparation data", proc.time()[3] - beginTime, "\n")
 			
 			## for each numeric column do the following:
 			for (i in which(isNumber)) {
-				tab$columns[[i]]$mean <- datMean[[colNames[i]]]
-				tab$columns[[i]]$compl <- datCompl[[colNames[i]]]
-				tab$columns[[i]]$scale <- scales[i]
+			    numCol <- tab$columns[[i]]
+				numCol$mean <- datMean[[numCol$name]]
+				numCol$compl <- datCompl[[numCol$name]]
+				numCol$scale <- scales[i]
 				
 				## determine whether x-axis is broken, and adjust values in that case
-				minmax <- range(tab$columns[[i]]$mean, na.rm=TRUE)
+				minmax <- range(numCol$mean, na.rm=TRUE)
 				brokenX <- 0
 				if (scales[i]=="log") {
-					values <- sapply(tab$columns[[i]]$mean, FUN = getLog)
+					values <- sapply(numCol$mean, FUN = getLog)
 				} else {
 					if ((minmax[2]) > 0 && minmax[1] > (bias_brokenX * minmax[2])) {
 						## broken x-axis has positive values
 						brokenX <- 1
-						values <- tab$columns[[i]]$mean - minmax[1]
+						values <- numCol$mean - minmax[1]
 					} else if ((minmax[1]) < 0 && minmax[2] < (bias_brokenX * minmax[1])) {
 						## broken x-axis has negative values
 						brokenX <- -1
-						values <- tab$columns[[i]]$mean - minmax[2]
+						values <- numCol$mean - minmax[2]
 					} else {
 						## x-axis not broken
-						values <- tab$columns[[i]]$mean
+						values <- numCol$mean
 					}
 				}
 				
@@ -274,25 +277,31 @@ cat("time after preparation data", proc.time()[3] - beginTime, "\n")
 				}
 				
 				## assign to tab object
-				tab$columns[[i]]$xline <- xline
-				tab$columns[[i]]$brokenX <- brokenX
-				tab$columns[[i]]$widths <- widths
-
+				numCol$xline <- xline
+				numCol$brokenX <- brokenX
+				numCol$widths <- widths
+				
+				tab$columns[[i]] <- numCol
 			}
 		}
 		
 		#### aggregate categorical variables
 		for (i in which(!isNumber)) {
-
+            catCol <- tab$columns[[i]]
 			## determine categories and frequencies
-			tab$columns[[i]]$categories <- levels(dat[[i]])
-			tab$columns[[i]]$widths <- table(dat[,"aggIndex"], dat[[i]], useNA = "ifany")[1:nBins,]
-			if (ncol(tab$columns[[i]]$widths) > length(tab$columns[[i]]$categories)) {
-				tab$columns[[i]]$categories <- c(tab$columns[[i]]$categories, "missing")
+			catCol$categories <- levels(dat[[i]])
+			catCol$widths <- table( dat[,"aggIndex"]
+			                      , dat[[i]]
+								  , useNA = "ifany"
+								  )[1:nBins,]
+								  
+			if (ncol(catCol$widths) > length(catCol$categories)) {
+				catCol$categories <- c(catCol$categories, "missing")
 			}
-			tab$columns[[i]]$widths <- tab$columns[[i]]$widths / rep(binSizes, length(tab$columns[[i]]$categories))
+			catCol$widths <- catCol$widths / rep(binSizes, length(catCol$categories))
 			
-			tab$columns[[i]]$x <- cbind(0,(t(apply(tab$columns[[i]]$widths, 1, cumsum)))[, -length(tab$columns[[i]]$categories)])
+			catCol$x <- cbind(0,(t(apply(catCol$widths, 1, cumsum)))[, -length(catCol$categories)])
+			tab$columns[[i]] <- catCol
 		}
 	}
 

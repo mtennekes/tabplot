@@ -562,7 +562,7 @@ function() {
 			dev.new(width=min(11, 2+2*nrow(tbl2)), height=7, rescale="fixed")
 		}
 		
-		tableplot(get(currentDF, envir=.GlobalEnv)[colNames], sortCol=sortCol, decreasing=decreasing, scales=scales, nBins=nBins, from=from, to=to, check=FALSE)
+		tableplot(get(currentDF, envir=.GlobalEnv)[colNames], sortCol=sortCol, decreasing=decreasing, scales=scales, nBins=nBins, from=from, to=to)
 		svalue(sbr) <- "Ready"
 	})
 

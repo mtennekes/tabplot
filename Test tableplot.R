@@ -42,6 +42,6 @@ scales <- "auto"
 nBins <- 100
 from <- 25
 to <- 50
-check <- TRUE
+
 
 

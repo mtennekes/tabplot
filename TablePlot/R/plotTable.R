@@ -1,4 +1,4 @@
-.plotTable <-
+plotTable <-
 function(tab) {
 	
 	#############################

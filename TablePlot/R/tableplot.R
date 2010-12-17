@@ -347,7 +347,7 @@ cat("time after preparation data", proc.time()[3] - beginTime, "\n")
 cat("time after data aggregation", proc.time()[3] - beginTime, "\n")
 
 	## plot
-	.plotTable(tab)
+	plotTable(tab)
 	
 cat("total time", proc.time()[3] - beginTime, "\n")
 }

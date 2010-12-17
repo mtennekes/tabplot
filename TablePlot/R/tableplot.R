@@ -104,26 +104,32 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	#####################################
 	
 	## Determine viewport, and check if nBins is at least number of items
-	vp <- .tableViewport(nrow(dat), from, to)
+	vp <- tableViewport(nrow(dat), from, to)
 	if (nBins > vp$m) nBins <- vp$m
 
 	## Calculate bin sizes
-	binSizes <-	.getBinSizes(vp$m, nBins)
+	binSizes <-	getBinSizes(vp$m, nBins)
 
 
-	#############################
+	#####################
 	## Determine bin indices (needed for aggregation)
-	#############################
+	#####################
+	
+	# create random vector
 	rand <- sample.int(nrow(dat))
 	
-	datList <- as.list(dat[sortCol])
-	for (i in which(decreasing)) {
-		if (isNumber[sortCol[i]]) {
-			datList[[i]] <- -datList[[i]]
-		} else {
-			datList[[i]] <- -as.integer(datList[[i]])
-		}
-	}
+	# put all columns that are sorted in a list, and if decreasing, then change sign ('order' cannot handle a vectorized decreasing)
+	datList <- mapply(as.list(dat[sortCol]), decreasing, isNumber[sortCol], FUN=function(vec, decr, isNum) {
+			if (decr & isNum) {
+				return(-vec)
+			} else if (decr) {
+				return(-as.integer(vec))
+			} else {
+				return(vec)
+			}
+		}, SIMPLIFY=FALSE)
+	
+	# order all columns that are sorted
 	o <- order(do.call(order, as.list(c(datList, list(rand=rand)))))
 	
 	brks <- c(0, cumsum(binSizes)) + (vp$iFrom-1)
@@ -135,10 +141,10 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	# to make aggregation process faster(?)
 	dat <- dat[!is.na(dat$aggIndex),]
 
+	#####################
 	## Aggregate numeric variables
+	#####################
 	if (sum(isNumber)>0) {
-		## parameter between 0 en 1 that determines when x-axis is broken (see below)
-		bias_brokenX <- 0.8
 		
 		## calculate means
 		datMean <- ddply(dat, .(aggIndex), numcolwise(mean), na.rm=TRUE)
@@ -153,8 +159,42 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 		datMean[datCompl==0] <- 0
 	}
 		
+	#####################
+	## Aggregate categorical variables
+	#####################
+	if (any(!isNumber)) {	
+		datFreq <- lapply(dat[!isNumber], FUN=getFreqTable, dat$aggIndex)
+	}
 	
+	#############################
+	## Create list object that contains all data needed to plot
+	#############################
+
+	tab <- list()
+	tab$n <- n
+	tab$nBins <- nBins
 	
+	## tab$row contains info about bins/y-axis
+	tab$rows <- list( heights = binSizes/vp$m 
+	                , y = c(0,cumsum(binSizes/vp$m)[-nBins])
+	                , m = vp$m
+	                , from = from
+	                , to = to
+	                , marks = pretty(c(from, to), 10)
+	                )
+	
+	## create column list
+	tab$columns <- list()
+	for (i in 1:n) {
+		col <- list(name = colNames[i], isNumeric = isNumber[i])
+		if (isNumber[i]) {
+			col$mean <- datMean[[colNames[i]]]
+			col$compl <- datCompl[[colNames[i]]]
+		} else {
+			col$freq <- datFreq[[colNames[i]]]
+		}
+		tab$columns[[i]] <- col
+	}
 	
 	#####################################
 	#####################################
@@ -164,8 +204,41 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	#####################################
 	#####################################
 
-	catCol <- lapply(
 	
+	
+	if (sum(isNumber)>0) {
+			#############################
+			## Determine scales (in case they are set to "auto")
+			#############################
+
+			
+			quant <- quantile(numCol$mean, na.rm=TRUE)
+			
+			
+			if (scales[i]=="auto") {
+				## Simple test to determine whether scale is lin or log
+				if (scales[i]=="auto") {
+					if (((quant[4] >= 0) && (quant[5] > (quant[4] * 100))) || ((quant[2] < 0) && (quant[1] < (quant[2] * 100)))) {
+						scales[i] <- "log" 
+					} else {
+						scales[i] <- "lin" 
+					}
+				}
+			}
+		
+	}
+	
+	#####################################
+	#####################################
+	## Grammar of Graphics: Coordinates
+	##
+	## Coordinate transformations
+	#####################################
+	#####################################
+
+	## parameter between 0 en 1 that determines when x-axis is broken (see below)
+	bias_brokenX <- 0.8
+
 	for (i in which(!isNumber)) {
 		catCol <- tab$columns[[i]]
 		## determine categories and frequencies
@@ -183,37 +256,8 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 		catCol$x <- cbind(0,(t(apply(catCol$widths, 1, cumsum)))[, -length(catCol$categories)])
 		tab$columns[[i]] <- catCol
 	}
-
-	
-	#####################################
-	#####################################
-	## Grammar of Graphics: Coordinates
-	##
-	## Coordinate transformations
-	#####################################
-	#####################################
-
 	
 	
-	#############################
-	## Create list object that contains all data needed to plot
-	#############################
-
-	tab <- list()
-	tab$n <- n
-	tab$nBins <- nBins
-	
-	## tab$row contains info about bins/y-axis
-	tab$rows <- list( heights = binSizes/m 
-	                , y = c(0,cumsum(binSizes/m)[-nBins])
-	                , m = m
-	                , from = from
-	                , to = to
-	                , marks = pretty(c(from, to), 10)
-	                )
-	
-	## create column list
-	tab$columns <- list()
 
 	## fill with general information
 	for (i in 1:n) {
@@ -244,21 +288,6 @@ cat("time after preparation data", proc.time()[3] - beginTime, "\n")
 			numCol$scale <- scales[i]
 			
 			
-			#############################
-			## Determine scales (in case they are set to "auto")
-			#############################
-		
-			if (scales[i]=="auto") {
-				quant <- quantile(numCol$mean, na.rm=TRUE)
-				## Simple test to determine whether scale is lin or log
-				if (scales[i]=="auto") {
-					if (((quant[4] >= 0) && (quant[5] > (quant[4] * 100))) || ((quant[2] < 0) && (quant[1] < (quant[2] * 100)))) {
-						scales[i] <- "log" 
-					} else {
-						scales[i] <- "lin" 
-					}
-				}
-			}
 
 			## determine whether x-axis is broken, and adjust values in that case
 			minmax <- range(numCol$mean, na.rm=TRUE)

@@ -1,4 +1,4 @@
-.tableViewport <- function(n, from, to) {
+tableViewport <- function(n, from, to) {
 	#############################
 	## Make row selection of the data
 	#############################

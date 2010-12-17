@@ -1,4 +1,4 @@
-.getBinSizes <- function(n, nBins) {
+getBinSizes <- function(n, nBins) {
 	#############################
 	## Calculate bin sizes
 	#############################

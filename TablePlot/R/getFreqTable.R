@@ -1,13 +1,14 @@
-.getFreqTable <- function(aggIndex, fac) {
+getFreqTable <- function(fac, aggIndex) {
 	## determine categories and frequencies
 	categories <- levels(fac)
-	freqTable <- table( aggIndex
+	freqTable <- as.data.frame(table( aggIndex
 					  , fac
 					  , useNA = "ifany"
-					  )[1:nBins,]
+					  )[1:nBins,])
 				  
 	if (ncol(freqTable) > length(categories)) {
 		categories <- c(categories, "missing")
 	}
 	names(freqTable) <- categories
+	return(freqTable)
 }

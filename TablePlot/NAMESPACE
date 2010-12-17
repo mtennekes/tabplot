@@ -1,3 +1,7 @@
-export(tableplot, tableGUI, num2fac)
+export( tableplot
+      , tableGUI
+	  , num2fac
+	  )
 
-import(grid)
+import( grid
+      )

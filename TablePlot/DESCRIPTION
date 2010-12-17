@@ -4,7 +4,7 @@ Title: TablePlot, a visualization of large statistical datasets
 Version: 1.0
 Date: 2010-12-09
 Author: Martijn Tennekes and Edwin de Jonge
-Maintainer: Martijn Tennekes
+Maintainer: Martijn Tennekes <mtennekes@gmail.com>
 Description: A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. The values of cells are depicted as horizontal bars. Missing values are taken into account. A GUI has been implemented which is used to easily customize the tableplot. Also supports large ffdf datasets from the ff package.
 License: GPL version 3
 LazyLoad: yes

@@ -4,7 +4,11 @@ function(tab) {
 	#############################
 	## Function to set viewport to specific grid cell
 	#############################
-	subplot <- function(x, y) viewport(layout.pos.row=x, layout.pos.col=y)
+	subplot <- function(x, y) {
+		name <- paste("(", deparse(substitute(x)),",",deparse(substitute(y)), ")", sep="")
+		
+		viewport( name=name, layout.pos.row=x, layout.pos.col=y)
+	}
 
 	
 	#############################
@@ -62,11 +66,16 @@ function(tab) {
 						, just = c("left", "bottom")
 						, gp=gpar(cex=0.75)
 						)
+	
+	layoutCol <- grid.layout( nrow = 2, ncol = 1
+						    , heights = unit(c(1, 6), c("null", "lines"))
+						    )
+
 	## set grid layout
 	grid.newpage()
-	Layout <- grid.layout( nrow = 2, ncol = tab$n+1
+	
+	Layout <- grid.layout( nrow = 1, ncol = tab$n+1
 	                     , widths = unit(c(3,rep(1,tab$n)), c("lines",rep("null",tab$n)))
-						 , heights = unit(c(1, 6), c("null", "lines"))
 						 )
 
 	pushViewport(viewport(layout = Layout))
@@ -75,6 +84,10 @@ function(tab) {
 	#############################
 	## Configure y-axis
 	#############################
+	
+	pushViewport(subplot(1, 1))
+	
+	pushViewport(viewport(layout=layoutCol))
 	
 	pushViewport(subplot(1, 1))
 	pushViewport(vpGraph)
@@ -95,7 +108,6 @@ function(tab) {
 	
 	popViewport(n=2)
 
-
 	#############################
 	## Draw legend of the bins (bottom left)
 	#############################
@@ -108,8 +120,7 @@ function(tab) {
 	grid.text("objects:", x=0.1, y=unit(3, units="lines"), just="left")
 	grid.text(paste("  ", tab$rows$m), x=0.1, y=unit(2, units="lines"), just="left")
 
-	popViewport(2)
-
+	popViewport(4)
 	
 	#############################
 	## Draw columns from left to right. Per column, check whether it is numeric or categorial.
@@ -120,6 +131,10 @@ function(tab) {
 	for (i in 1:tab$n) {
 		#### Print column header
 		pushViewport(subplot(1, i+1))
+		
+		pushViewport(viewport(layout=layoutCol))
+		
+		pushViewport(subplot(1, 1))
 		pushViewport(vpTitle)
 		
 		tCol <- tab$columns[[i]]
@@ -141,10 +156,10 @@ function(tab) {
 		}
 
 		popViewport()
-
+		
 		if (tCol$isnumeric) {
-			#### variable is numeric
 			pushViewport(vpGraph)
+			#### variable is numeric
 			grid.rect(gp = gpar(col=NA,fill = lgrey))
 			
 			## bins with all missings
@@ -191,8 +206,7 @@ function(tab) {
 					y = c(rep(c(-0.01, 0.01), 2), rep(c(0.99, 1.01), 2)), 
 					id = rep(1:4,each=2), gp=gpar(lwd=1))
 			}
-
-			popViewport(n = 2)
+			popViewport(2)
 					
 		} else {
 			#### variable is categorical
@@ -218,17 +232,19 @@ function(tab) {
 			width = tCol$widths, height = tab$rows$heights, just=c("left","bottom"),
 			gp = gpar(col=cols, fill = colorset, linejoin="mitre"))
 
-			popViewport(n=2)
+			popViewport(2)
+			
 			
 			## draw layout
-			pushViewport(subplot(2, i+1))
+			pushViewport(subplot(2, 1))
 			pushViewport(vpLegend)
 
 			Layout2 <- grid.layout(nrow = length(tCol$categories), ncol = 1)
 		
 			cex <- min(1, 1 / (convertHeight(unit(1,"lines"), "npc", valueOnly=TRUE) * length(tCol$categories)))
 
-			pushViewport(viewport(layout = Layout2, gp=gpar(cex=cex)))
+			pushViewport(viewport(name="legendblocks", layout = Layout2, gp=gpar(cex=cex)))
+			print(current.vpPath())
 			grid.rect(gp=gpar(col=NA, fill="white"))
 			
 			for (j in 1:length(tCol$categories)) {
@@ -241,5 +257,6 @@ function(tab) {
 			popViewport(n = 3)
 			palet <- ifelse(palet==4, 1, palet+1)
 		}
+		popViewport(n=2)
 	}
 }

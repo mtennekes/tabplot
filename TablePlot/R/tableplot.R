@@ -162,7 +162,7 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	## Aggregate categorical variables
 	#####################
 	if (any(!isNumber)) {	
-		datFreq <- lapply(dat[!isNumber], FUN=getFreqTable, dat$aggIndex)
+		datFreq <- lapply(dat[!isNumber], FUN=getFreqTable, dat$aggIndex, nBins)
 	}
 	
 	#############################

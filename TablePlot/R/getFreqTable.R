@@ -1,4 +1,4 @@
-getFreqTable <- function(fac, aggIndex) {
+getFreqTable <- function(fac, aggIndex, nBins) {
 	## determine categories and frequencies
 	categories <- levels(fac)
 	freqTable <- as.matrix(table( aggIndex

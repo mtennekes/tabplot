@@ -1,5 +1,9 @@
 num2fac <-
 function(num, method="pretty", num_scale="auto", n=0, brks=NA) {
+    if (!require(classInt)){
+	   stop("This function needs package classInt")
+	}
+	
 	intervalLabels <- function(brks) {
 		lbs <- formatC(brks,digits=12, width=1, big.mark=",")
 		l <- length(lbs)

@@ -4,4 +4,6 @@ export( tableplot
 	  )
 
 import( grid
+      , RColorBrewer
+	  , plyr
       )

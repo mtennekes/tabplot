@@ -23,13 +23,6 @@ plotCatCal <- function(col){
 plotTable <-
 function(tab) {
 	
-	#############################
-	## Function to set viewport to specific grid cell
-	#############################
-	subplot <- function(x, y) {
-		name <- paste("(", deparse(substitute(x)),",",deparse(substitute(y)), ")", sep="")
-		viewport( name=name, layout.pos.row=x, layout.pos.col=y)
-	}
 		
 	#############################
 	## Determine colors and color scales
@@ -126,10 +119,10 @@ function(tab) {
 		#############################
 
 		cellplot(2,1, vpLegend, {
-			grid.text("row bins:", x=0.1, y=unit(6, units="lines"), just="left")
-			grid.text(paste("  ", tab$nBins), x=0.1, y=unit(5, units="lines"), just="left")
-			grid.text("objects:", x=0.1, y=unit(3, units="lines"), just="left")
-			grid.text(paste("  ", tab$rows$m), x=0.1, y=unit(2, units="lines"), just="left")
+			grid.text("row bins:", x=0.1, y=unit(5, units="lines"), just="left")
+			grid.text(paste("  ", tab$nBins), x=0.1, y=unit(4, units="lines"), just="left")
+			grid.text("objects:", x=0.1, y=unit(2, units="lines"), just="left")
+			grid.text(paste("  ", tab$rows$m), x=0.1, y=unit(1, units="lines"), just="left")
 		})
 	})
 	
@@ -157,7 +150,7 @@ function(tab) {
 				## Place sorting arrow before name
 				if (tCol$sort!="") {
 					arrowX <- min(0.1, 0.45 - 0.5 * nameWidth * cex)
-					grid.lines(x=rep(arrowX, 2), y=c(0.7,0.2), arrow=arrow(angle = 20, length = unit(0.3, "npc"),ends = ifelse(tCol$sort=="decreasing", "last", "first"), type = "open"))
+					grid.lines(x=rep(arrowX, 2), y=c(0.7,0.2), arrow=arrow(angle = 20, length = unit(0.3, "npc"),ends = ifelse(tCol$sort=="decreasing", "first", "last"), type = "open"))
 				}
 			})
 			

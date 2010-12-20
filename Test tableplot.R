@@ -1,39 +1,38 @@
-
-
-rootmap <- "d:/Rvis/"
-scriptmap <- paste(rootmap, "TablePlot/R/", sep="")
-datamap <- paste(rootmap, "data/", sep="")
-
-setwd(scriptmap)
-source("tableplot.R")
-source(".plotTable.R")
-source("num2fac.R") 
-source("tableGUI.R")
+## dependencies
 require(gWidgets)
 require(gWidgetsRGtk2)
-#require(gWidgetstcltk)
 require(plyr)
 require(RColorBrewer)
 require(classInt)
 
-require(ff)
+## load tableplot scripts
+scriptmap <- "./TablePlot/R/"
+setwd(scriptmap)
+sapply(list.files(), source)
 
-library(ggplot2)
+## load test data
+require(ggplot2)
 data(diamonds)
-
+## add some NA's
 diamonds$color[sample.int(50000, 5000)] <- NA
 
 
-setwd(datamap)
-load("ps0607.Rdata")
-load("ps07pop.Rdata")
-
-
-
 tableplot(diamonds)
+tableplot(diamonds
+		, colNames=names(diamonds)
+		, sortCol=c(3,1)
+		, decreasing=c(FALSE, TRUE)
+		, scales="auto"
+		, nBins=100
+		, from=0
+		,to=100)
 
 
-# test manually
+tableGUI()
+
+		
+		
+## test tableplot.R  manually
 dat <- diamonds
 colNames <- names(dat)[c(1,3,4)]
 sortCol <- colNames[c(1,2)]

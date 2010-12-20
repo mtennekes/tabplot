@@ -16,7 +16,6 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	}
 
 	## todo: logging
-	beginTime <- proc.time()[3]
 	
 	#####################################
 	#####################################
@@ -186,12 +185,14 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	## create column list
 	tab$columns <- list()
 	for (i in 1:n) {
-		col <- list(name = colNames[i], isNumeric = isNumber[i])
+		sortc <- ifelse(i %in% sortCol, ifelse(decreasing[which(i==sortCol)], "decreasing", "increasing"), "")
+		col <- list(name = colNames[i], isnumeric = isNumber[i], sort=sortc)
 		if (isNumber[i]) {
 			col$mean <- datMean[[colNames[i]]]
 			col$compl <- datCompl[[colNames[i]]]
 		} else {
-			col$freq <- datFreq[[colNames[i]]]
+			col$freq <- datFreq[[colNames[i]]]$freqTable
+			col$categories <- datFreq[[colNames[i]]]$categories
 		}
 		tab$columns[[i]] <- col
 	}
@@ -203,30 +204,32 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	## Scale operations
 	#####################################
 	#####################################
-
 	
-	
-	if (sum(isNumber)>0) {
-			#############################
-			## Determine scales (in case they are set to "auto")
-			#############################
-
-			
-			quant <- quantile(numCol$mean, na.rm=TRUE)
-			
-			
-			if (scales[i]=="auto") {
-				## Simple test to determine whether scale is lin or log
-				if (scales[i]=="auto") {
-					if (((quant[4] >= 0) && (quant[5] > (quant[4] * 100))) || ((quant[2] < 0) && (quant[1] < (quant[2] * 100)))) {
-						scales[i] <- "log" 
-					} else {
-						scales[i] <- "lin" 
-					}
-				}
-			}
+	## Determine scales of numeric variables in case they are set to "auto". IQR is used.
+	for (i in which(isNumber & scales=="auto")) {
+		quant <- quantile(tab$columns[[i]]$mean, na.rm=TRUE)
+		IQR <- quant[4] - quant[2]
 		
+		## Simple test to determine whether scale is lin or log
+		if ((quant[5] > quant[4]+ 3 * IQR) || 
+			(quant[1] < quant[2] - 3 * IQR)) {
+			scales[i] <- "log" 
+		} else {
+			scales[i] <- "lin" 
+		}
 	}
+	
+	## Assign scale information to list, and apply scale transformation
+	for (i in which(isNumber)) {
+		tab$columns[[i]]$scale <- scales[i]
+		if (scales[i]=="log") {
+			tab$columns[[i]]$mean.scaled <- sapply(tab$columns[[i]]$mean, FUN = getLog)
+		} else {
+			tab$columns[[i]]$mean.scaled <- tab$columns[[i]]$mean
+		}
+	}
+	
+
 	
 	#####################################
 	#####################################
@@ -236,119 +239,68 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	#####################################
 	#####################################
 
-	## parameter between 0 en 1 that determines when x-axis is broken (see below)
-	bias_brokenX <- 0.8
 
+	#############################
+	## Categorical variables
+	#############################
+
+	## determine widths and x positions of the categorical variables
 	for (i in which(!isNumber)) {
-		catCol <- tab$columns[[i]]
-		## determine categories and frequencies
-		catCol$categories <- levels(dat[[i]])
-		catCol$widths <- table( dat[,"aggIndex"]
-							  , dat[[i]]
-							  , useNA = "ifany"
-							  )[1:nBins,]
-							  
-		if (ncol(catCol$widths) > length(catCol$categories)) {
-			catCol$categories <- c(catCol$categories, "missing")
-		}
-		catCol$widths <- catCol$widths / rep(binSizes, length(catCol$categories))
+		freq <- tab$columns[[i]]$freq
+		categories <- tab$columns[[i]]$categories
 		
-		catCol$x <- cbind(0,(t(apply(catCol$widths, 1, cumsum)))[, -length(catCol$categories)])
-		tab$columns[[i]] <- catCol
+		widths <- freq / rep(binSizes, length(categories))
+		
+		x <- cbind(0,(t(apply(widths, 1, cumsum)))[, -length(categories)])
+		tab$columns[[i]]$categories <- categories
+		tab$columns[[i]]$x <- x
+		tab$columns[[i]]$widths <- widths
 	}
-	
 	
 
-	## fill with general information
-	for (i in 1:n) {
-		## sorting method
-		sortc <- ifelse(i %in% sortCol, ifelse(decreasing[which(i==sortCol)], "decreasing", "increasing"), "")
-		tab$columns[[colNames[i]]] <- list(name=colNames[i], isnumeric=isNumber[i], sort=sortc)
-	}
-	
-	
-cat("time after preparation data", proc.time()[3] - beginTime, "\n")
 
 	#############################
-	## Aggregation process
+	## Numeric variables
 	#############################
 
-		
-	#### aggregate numeric variables
-	if (sum(isNumber)>0) {
-		## parameter between 0 en 1 that determines when x-axis is broken (see below)
-		bias_brokenX <- 0.8
-		
-		
-		## for each numeric column do the following:
-		for (i in which(isNumber)) {
-			numCol <- tab$columns[[i]]
-			numCol$mean <- datMean[[numCol$name]]
-			numCol$compl <- datCompl[[numCol$name]]
-			numCol$scale <- scales[i]
-			
-			
-
-			## determine whether x-axis is broken, and adjust values in that case
-			minmax <- range(numCol$mean, na.rm=TRUE)
-			brokenX <- 0
-			if (scales[i]=="log") {
-				values <- sapply(numCol$mean, FUN = getLog)
-			} else {
-				if ((minmax[2]) > 0 && minmax[1] > (bias_brokenX * minmax[2])) {
-					## broken x-axis has positive values
-					brokenX <- 1
-					values <- numCol$mean - minmax[1]
-				} else if ((minmax[1]) < 0 && minmax[2] < (bias_brokenX * minmax[1])) {
-					## broken x-axis has negative values
-					brokenX <- -1
-					values <- numCol$mean - minmax[2]
-				} else {
-					## x-axis not broken
-					values <- numCol$mean
-				}
-			}
-			
-			## scale values to 0-1, and determine 0-1 value of the y-axis
-			minV <- min(values, na.rm=TRUE)
-			maxV <- max(values, na.rm=TRUE)
-			if (minV < 0 && maxV > 0) {
-				xline <- -minV / (maxV - minV)
-				widths <- (values) / (maxV - minV)
-			} else if (brokenX==1) {
-				xline <- 0
-				widths <- 0.3 + (values) * 0.7 / (maxV - minV)
-			} else if (brokenX==-1) {
-				xline <- 1
-				widths <- -0.3 + (values) * 0.7 / (maxV - minV)
-			} else {
-				xline <- ifelse(maxV > 0, 0, 1)
-				widths <- (values) / max(abs(minV), abs(maxV))
-			}
-			
-			## assign to tab object
-			numCol$xline <- xline
-			numCol$brokenX <- brokenX
-			numCol$widths <- widths
-			
-			tab$columns[[i]] <- numCol
-		}
+	#### Broken X-axis
+	temp <- lapply(tab$columns[isNumber], FUN=function(x){brokenX(x$mean.scaled)})
+	j <- 1
+	for (i in which(isNumber)) {
+		tab$columns[[i]]$brokenX <- temp[[j]]$brokenX
+		tab$columns[[i]]$mean.brokenX <- temp[[j]]$values
+		j <- j + 1
 	}
+	## make this code prettier
 	
-	#### aggregate categorical variables
-	
-	##todo
-	catCol$widths <- catCol$widths / rep(binSizes, length(catCol$categories))
-	
-	catCol$x <- cbind(0,(t(apply(catCol$widths, 1, cumsum)))[, -length(catCol$categories)])
-	tab$columns[[i]] <- catCol
+	#### Normalization
+	for (i in which(isNumber)) {
+		brokenX <- tab$columns[[i]]$brokenX
+		values <- tab$columns[[i]]$mean.brokenX
+		## scale values to 0-1, and determine 0-1 value of the y-axis
+		minV <- min(values, na.rm=TRUE)
+		maxV <- max(values, na.rm=TRUE)
+		if (minV < 0 && maxV > 0) {
+			xline <- -minV / (maxV - minV)
+			widths <- (values) / (maxV - minV)
+		} else if (brokenX==1) {
+			xline <- 0
+			widths <- 0.3 + (values) * 0.7 / (maxV - minV)
+		} else if (brokenX==-1) {
+			xline <- 1
+			widths <- -0.3 + (values) * 0.7 / (maxV - minV)
+		} else {
+			xline <- ifelse(maxV > 0, 0, 1)
+			widths <- (values) / max(abs(minV), abs(maxV))
+		}
+		## assign to tab object
+		tab$columns[[i]]$xline <- xline
+		tab$columns[[i]]$widths <- widths
+	}
 
-	
-cat("time after data aggregation", proc.time()[3] - beginTime, "\n")
 
 	## plot
 	plotTable(tab)
 	
-cat("total time", proc.time()[3] - beginTime, "\n")
 }
 

@@ -1,3 +1,25 @@
+# auxillary function
+cellplot <- function(x,y, vp=NULL, e){
+	name <- paste("(", deparse(substitute(x)),",",deparse(substitute(y)), ")", sep="")
+	pushViewport(viewport( name=name, layout.pos.row=x, layout.pos.col=y))
+	n <- 1
+	if (!is.null(vp)){ 
+		pushViewport(vp)
+		n <- n + 1
+	}
+	
+	e
+	
+	popViewport(n=n)
+}
+
+plotNumCol <- function(col){
+}
+
+plotCatCal <- function(col){
+}
+
+
 plotTable <-
 function(tab) {
 	
@@ -6,11 +28,9 @@ function(tab) {
 	#############################
 	subplot <- function(x, y) {
 		name <- paste("(", deparse(substitute(x)),",",deparse(substitute(y)), ")", sep="")
-		
 		viewport( name=name, layout.pos.row=x, layout.pos.col=y)
 	}
-
-	
+		
 	#############################
 	## Determine colors and color scales
 	#############################
@@ -42,35 +62,34 @@ function(tab) {
 	marginL <- 0.05;	marginR <- 0.05
 	marginLT <- 0.0;	marginLB <- 0.02
 	
-	vpTitle <- viewport(name = "title", 
-	  x = unit(marginL, "npc"),
-	  y = unit(1 - marginT, "npc") - unit(1, "lines"),
-	  width = unit(1 - marginL - marginR, "npc"),
-	  height = unit(1, "lines"),
-	  just = c("left", "bottom"),
-	  gp=gpar(cex=0.75))
+	vpColumn <- viewport( name="Column"
+	                   ,  x = unit(marginL, "npc")
+ 					    , width = unit(1 - marginL - marginR, "npc")
+	                    , layout = grid.layout( nrow=2
+						                      , ncol=1
+						                      , heights = unit(c(1, 6), c("null", "lines"))
+						    				  )
+	                   , gp=gpar(cex=0.75)
+					   )
+						
+	vpTitle <- viewport( name = "title"
+					   , y = unit(1 - marginT, "npc") - unit(1, "lines")
+					   , height = unit(1, "lines")
+	                   , just = c("left", "bottom")
+					   )
 	  
-	vpGraph <- viewport(name = "graph", 
-	  x = unit(marginL, "npc"),
-	  y = unit(marginB, "npc"),
-	  width = unit(1 - marginL - marginR, "npc"),
-	  height = unit(1 - marginB - marginT,"npc") - unit(1, "lines"),
-	  just = c("left", "bottom"),
-	  gp=gpar(cex=0.75))
+	vpGraph <- viewport( name = "graph"
+					   , y = unit(marginB, "npc")
+					   , height = unit(1 - marginB - marginT,"npc") - unit(1, "lines")
+					   , just = c("left", "bottom")
+					   )
 	  
 	vpLegend <- viewport( name = "legend"
-	                    , x = unit(marginL, "npc")
 						, y = unit(marginLB, "npc")
-						, width = unit(1 - marginL - marginR, "npc")
 						, height = unit(1 - marginLB - marginLT,"npc")
 						, just = c("left", "bottom")
-						, gp=gpar(cex=0.75)
 						)
 	
-	layoutCol <- grid.layout( nrow = 2, ncol = 1
-						    , heights = unit(c(1, 6), c("null", "lines"))
-						    )
-
 	## set grid layout
 	grid.newpage()
 	
@@ -85,42 +104,34 @@ function(tab) {
 	## Configure y-axis
 	#############################
 	
-	pushViewport(subplot(1, 1))
-	
-	pushViewport(viewport(layout=layoutCol))
-	
-	pushViewport(subplot(1, 1))
-	pushViewport(vpGraph)
-	
-	## y axes and bin ticks
-	grid.polyline(x=c(0.80,0.80,rep(c(0.80,0.83),tab$nBins+1)),y=c(0,1,rep(c(tab$rows$y,1),each=2)),id=rep(1:(tab$nBins+2),each=2))
+	cellplot(1,1,vpColumn, {
+		cellplot(1,1,vpGraph,{
+			## y axes and bin ticks
+			grid.polyline(x=c(0.80,0.80,rep(c(0.80,0.83),tab$nBins+1)),y=c(0,1,rep(c(tab$rows$y,1),each=2)),id=rep(1:(tab$nBins+2),each=2))
 
-	## percentages ticks
-	rests <- formatC(tab$rows$marks - floor(tab$rows$marks))	
-	digits <- max(0,(max(sapply(rests, FUN=nchar))-2))
-	marksChar <- formatC(tab$rows$marks, format="f", digits=digits)
-	
-	ticks <- seq(0, 1, length.out=length(tab$rows$marks))
-	grid.polyline(x=c(0.80,0.80,rep(c(0.75,0.80),length(ticks))),y=c(0,1,rep(ticks,each=2)),id=rep(1:(length(ticks)+1),each=2))
-	
-	## percentages labels
-	grid.text(marksChar,x=0.75, y=ticks, just="right")
-	
-	popViewport(n=2)
+			## percentages ticks
+			rests <- formatC(tab$rows$marks - floor(tab$rows$marks))	
+			digits <- max(0,(max(sapply(rests, FUN=nchar))-2))
+			marksChar <- formatC(tab$rows$marks, format="f", digits=digits)
+			
+			ticks <- seq(0, 1, length.out=length(tab$rows$marks))
+			grid.polyline(x=c(0.80,0.80,rep(c(0.75,0.80),length(ticks))),y=c(0,1,rep(ticks,each=2)),id=rep(1:(length(ticks)+1),each=2))
+			
+			## percentages labels
+			grid.text(marksChar,x=0.75, y=ticks, just="right")
+		
+		})
+		#############################
+		## Draw legend of the bins (bottom left)
+		#############################
 
-	#############################
-	## Draw legend of the bins (bottom left)
-	#############################
-
-	pushViewport(subplot(2, 1))
-	pushViewport(vpLegend)
-
-	grid.text("row bins:", x=0.1, y=unit(6, units="lines"), just="left")
-	grid.text(paste("  ", tab$nBins), x=0.1, y=unit(5, units="lines"), just="left")
-	grid.text("objects:", x=0.1, y=unit(3, units="lines"), just="left")
-	grid.text(paste("  ", tab$rows$m), x=0.1, y=unit(2, units="lines"), just="left")
-
-	popViewport(4)
+		cellplot(2,1, vpLegend, {
+			grid.text("row bins:", x=0.1, y=unit(6, units="lines"), just="left")
+			grid.text(paste("  ", tab$nBins), x=0.1, y=unit(5, units="lines"), just="left")
+			grid.text("objects:", x=0.1, y=unit(3, units="lines"), just="left")
+			grid.text(paste("  ", tab$rows$m), x=0.1, y=unit(2, units="lines"), just="left")
+		})
+	})
 	
 	#############################
 	## Draw columns from left to right. Per column, check whether it is numeric or categorial.
@@ -129,134 +140,133 @@ function(tab) {
 	## count that is used to switch color palets for categorical variables.
 	palet <- 1
 	for (i in 1:tab$n) {
-		#### Print column header
-		pushViewport(subplot(1, i+1))
-		
-		pushViewport(viewport(layout=layoutCol))
-		
-		pushViewport(subplot(1, 1))
-		pushViewport(vpTitle)
-		
-		tCol <- tab$columns[[i]]
-		## Determine column name. Place "log(...)" around name when scale is logarithmic
-		columnName <- ifelse(tCol$isnumeric && tCol$scale=="log", paste("log(",tCol$name, ")", sep=""), tCol$name)
-		nameWidth <- convertWidth(stringWidth(columnName), "npc",valueOnly=TRUE)
-		cex <- max(0.7, min(1, 1/nameWidth))
-		if ((nameWidth * cex) > 1) {
-			columnName <- substr(columnName, 1, floor(nchar(columnName)/(nameWidth * cex)))
-			nameWidth <- convertWidth(stringWidth(columnName), "npc",valueOnly=TRUE)
-		}
-		
-		grid.text(columnName, gp=gpar(cex=cex))
+		cellplot(1,i+1, vpColumn, {		
+			cellplot(1,1, vpTitle, {		
+				tCol <- tab$columns[[i]]
+				## Determine column name. Place "log(...)" around name when scale is logarithmic
+				columnName <- ifelse(tCol$isnumeric && tCol$scale=="log", paste("log(",tCol$name, ")", sep=""), tCol$name)
+				nameWidth <- convertWidth(stringWidth(columnName), "npc",valueOnly=TRUE)
+				cex <- max(0.7, min(1, 1/nameWidth))
+				if ((nameWidth * cex) > 1) {
+					columnName <- substr(columnName, 1, floor(nchar(columnName)/(nameWidth * cex)))
+					nameWidth <- convertWidth(stringWidth(columnName), "npc",valueOnly=TRUE)
+				}
+				
+				grid.text(columnName, gp=gpar(cex=cex))
 
-		## Place sorting arrow before name
-		if (tCol$sort!="") {
-			arrowX <- min(0.1, 0.45 - 0.5 * nameWidth * cex)
-			grid.lines(x=rep(arrowX, 2), y=c(0.7,0.2), arrow=arrow(angle = 20, length = unit(0.3, "npc"),ends = ifelse(tCol$sort=="decreasing", "last", "first"), type = "open"))
-		}
-
-		popViewport()
-		
-		if (tCol$isnumeric) {
-			pushViewport(vpGraph)
-			#### variable is numeric
-			grid.rect(gp = gpar(col=NA,fill = lgrey))
+				## Place sorting arrow before name
+				if (tCol$sort!="") {
+					arrowX <- min(0.1, 0.45 - 0.5 * nameWidth * cex)
+					grid.lines(x=rep(arrowX, 2), y=c(0.7,0.2), arrow=arrow(angle = 20, length = unit(0.3, "npc"),ends = ifelse(tCol$sort=="decreasing", "last", "first"), type = "open"))
+				}
+			})
 			
-			## bins with all missings
-			missings <- which(tCol$compl==0)
-
-			## when cairoDevice is enabled, not only fill the bins with colors, but also color the contours
-			if (isCairo) {
-				cols <- blues[tCol$compl]
-			} else {
-				cols <- NA
-			}
-			
-			## plot bins
-			grid.rect(x = rep(tCol$xline,tab$nBins), y = tab$rows$y,
-			width = tCol$widths, height = tab$rows$heights, just=c("left","bottom"),
-			 gp = gpar(col=cols, fill = blues[tCol$compl], linejoin="mitre"))
-			
-			## plot small lines at the righthand side of the bins
-			grid.rect(x = rep(tCol$xline,tab$nBins)+tCol$widths, y = tab$rows$y,
-			width = unit(0.75, "points"), height = tab$rows$heights, just=c("left","bottom"),
-			 gp = gpar(col=NA, fill = blues[length(blues)]))
-
-			
-			if (isCairo) {
-				cols <- lred
-			} else {
-				cols <- NA
-			}
-			 
-			## plot bins with all missings as light red
-			if (length(missings>0)) {
-				grid.rect(x = rep(0, length(missings)), y = tab$rows$y[missings], width =  rep(1, length(missings)), height = tab$rows$heights[missings], just=c("left","bottom"), gp = gpar(fill = lred,col=cols, linejoin="mitre"))
-			}
-		 
-			## plot broken x-axis
-			if (tCol$brokenX != 0) {
-				blX <- ifelse(tCol$brokenX==1, 0.15, 0.85)
-				blW <- 0.05
-				grid.rect(x=blX, width=blW, gp = gpar(col=NA,fill = lgrey))
-				grid.polyline(x= blX + rep(c(-.5 * blW + c(-0.01, 0.01), .5 * blW + c(-0.01, 0.01)), 2),
-					y = c(rep(c(-0.01, 0.01), 2), rep(c(0.99, 1.01), 2)), 
-					id = rep(1:4,each=2), gp=gpar(col="white", lwd=3))
-				grid.polyline(x= blX + rep(c(-.5 * blW + c(-0.01, 0.01), .5 * blW + c(-0.01, 0.01)), 2),
-					y = c(rep(c(-0.01, 0.01), 2), rep(c(0.99, 1.01), 2)), 
-					id = rep(1:4,each=2), gp=gpar(lwd=1))
-			}
-			popViewport(2)
+			if (tCol$isnumeric) {
+				#### variable is numeric
+				cellplot(1,1,vpGraph, {
+				
+					grid.rect(gp = gpar(col=NA,fill = lgrey))
 					
-		} else {
-			#### variable is categorical
-			pushViewport(vpGraph)
+					## bins with all missings
+					missings <- which(tCol$compl==0)
 
-			## determine color indices for categories
-			colorID <- rep(2:(length(color[[palet]])+1), length.out=length(tCol$categories))
-			if (tail(tCol$categories, 1)=="missing") {
-				colorID[length(colorID)] <- 1
-			}
-			
-			## create large vector of colors (one color for each bin*category
-			colorset <- color[[palet]][rep(colorID, each=tab$nBins)]
-			
-			if (isCairo) {
-				cols <- colorset
+					## when cairoDevice is enabled, not only fill the bins with colors, but also color the contours
+					if (isCairo) {
+						cols <- blues[tCol$compl]
+					} else {
+						cols <- NA
+					}
+					
+					## plot bins
+					grid.rect(x = rep(tCol$xline,tab$nBins), y = tab$rows$y,
+					width = tCol$widths, height = tab$rows$heights, just=c("left","bottom"),
+					 gp = gpar(col=cols, fill = blues[tCol$compl], linejoin="mitre"))
+					
+					## plot small lines at the righthand side of the bins
+					grid.rect(x = rep(tCol$xline,tab$nBins)+tCol$widths, y = tab$rows$y,
+					width = unit(0.75, "points"), height = tab$rows$heights, just=c("left","bottom"),
+					gp = gpar(col=NA, fill = blues[length(blues)]))
+
+					
+					if (isCairo) {
+						cols <- lred
+					} else {
+						cols <- NA
+					}
+					 
+					## plot bins with all missings as light red
+					if (length(missings>0)) {
+						grid.rect(x = rep(0, length(missings)), y = tab$rows$y[missings], width =  rep(1, length(missings)), height = tab$rows$heights[missings], just=c("left","bottom"), gp = gpar(fill = lred,col=cols, linejoin="mitre"))
+					}
+				 
+					## plot broken x-axis
+					if (tCol$brokenX != 0) {
+						blX <- ifelse(tCol$brokenX==1, 0.15, 0.85)
+						blW <- 0.05
+						grid.rect(x=blX, width=blW, gp = gpar(col=NA,fill = lgrey))
+						grid.polyline(x= blX + rep(c(-.5 * blW + c(-0.01, 0.01), .5 * blW + c(-0.01, 0.01)), 2),
+							y = c(rep(c(-0.01, 0.01), 2), rep(c(0.99, 1.01), 2)), 
+							id = rep(1:4,each=2), gp=gpar(col="white", lwd=3))
+						grid.polyline(x= blX + rep(c(-.5 * blW + c(-0.01, 0.01), .5 * blW + c(-0.01, 0.01)), 2),
+							y = c(rep(c(-0.01, 0.01), 2), rep(c(0.99, 1.01), 2)), 
+							id = rep(1:4,each=2), gp=gpar(lwd=1))
+					}
+				})
+						
 			} else {
-				cols <- NA
+				#### variable is categorical
+				cellplot(1,1,vpGraph, {
+
+					## determine color indices for categories
+					colorID <- rep(2:(length(color[[palet]])+1), length.out=length(tCol$categories))
+					if (tail(tCol$categories, 1)=="missing") {
+						colorID[length(colorID)] <- 1
+					}
+					
+					## create large vector of colors (one color for each bin*category
+					colorset <- color[[palet]][rep(colorID, each=tab$nBins)]
+					
+					if (isCairo) {
+						cols <- colorset
+					} else {
+						cols <- NA
+					}
+
+					## draw bins
+					grid.rect( x = tCol$x, y = tab$rows$y
+							 , width = tCol$widths, height = tab$rows$heights
+							 , just=c("left","bottom")
+							 , gp = gpar(col=cols, fill = colorset, linejoin="mitre"))
+				})
+				
+				
+				## draw layout
+				cellplot(2,1, vpLegend, {
+
+					Layout2 <- grid.layout(nrow = length(tCol$categories), ncol = 1)
+				
+					cex <- min(1, 1 / (convertHeight(unit(1,"lines"), "npc", valueOnly=TRUE) * length(tCol$categories)))
+		  
+					pushViewport(viewport(name="legendblocks", layout = Layout2, gp=gpar(cex=cex)))
+					#print(current.vpPath())
+					grid.rect(gp=gpar(col=NA, fill="white"))
+					
+					for (j in 1:length(tCol$categories)) {
+						cellplot(j,1, NULL, {
+							grid.rect( x = 0, y = 0.5, width = 0.2, height = 1
+									 , just=c("left")
+									 , gp = gpar(col=NA, fill = color[[palet]][colorID][j])
+									 )
+							grid.text( tCol$categories[j]
+									 , x = 0.25
+									 , just="left")
+						})
+					}
+					
+					popViewport(n = 1)
+				})
+				palet <- ifelse(palet==4, 1, palet+1)
 			}
-
-			## draw bins
-			grid.rect(x = tCol$x, y = tab$rows$y,
-			width = tCol$widths, height = tab$rows$heights, just=c("left","bottom"),
-			gp = gpar(col=cols, fill = colorset, linejoin="mitre"))
-
-			popViewport(2)
-			
-			
-			## draw layout
-			pushViewport(subplot(2, 1))
-			pushViewport(vpLegend)
-
-			Layout2 <- grid.layout(nrow = length(tCol$categories), ncol = 1)
-		
-			cex <- min(1, 1 / (convertHeight(unit(1,"lines"), "npc", valueOnly=TRUE) * length(tCol$categories)))
-
-			pushViewport(viewport(name="legendblocks", layout = Layout2, gp=gpar(cex=cex)))
-			print(current.vpPath())
-			grid.rect(gp=gpar(col=NA, fill="white"))
-			
-			for (j in 1:length(tCol$categories)) {
-				pushViewport(subplot(j, 1))
-				grid.rect(x = 0, y = 0.5, width = 0.2, height = 1, just=c("left"), gp = gpar(col=NA, fill = color[[palet]][colorID][j]))
-				grid.text(tCol$categories[j], x = 0.25, just="left")
-				popViewport(n = 1)
-			}
-			
-			popViewport(n = 3)
-			palet <- ifelse(palet==4, 1, palet+1)
-		}
-		popViewport(n=2)
+		})
 	}
 }

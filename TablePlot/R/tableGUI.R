@@ -1,5 +1,9 @@
 tableGUI <-
 function() {
+    if (!require(gWidgets)){
+		stop("This function requires gWidgets")
+	}
+	
 	options("guiToolkit"="RGtk2")
 
 	e <- environment()
@@ -63,7 +67,7 @@ function() {
 	lbl3 <- glabel("Data.frame:", cont=grp9)
 	cmb <- gcombobox(datlist, cont=grp9)
 	addSpring(grp9)
-	btn7 <- gbutton("Reload", cont=grp9, expand=FALSE)
+	btnReload <- gbutton("Reload", cont=grp9, expand=FALSE)
 
 	## get selected dataframe and fill table 1
 	currentDF <- svalue(cmb)
@@ -78,7 +82,7 @@ function() {
 	## create transfer button
 	grp8 <- ggroup(horizontal = FALSE, cont = ggg, anchor=c(-1, -1),expand=TRUE)
 	addSpring(grp8)
-	btn1 <- gbutton(">", cont=grp8, expand=TRUE); enabled(btn1) <- FALSE
+	btnTransfer <- gbutton(">", cont=grp8, expand=TRUE); enabled(btnTransfer) <- FALSE
 	addSpace(grp8, 100, horizontal=FALSE)
 
 	## create config frame
@@ -92,9 +96,9 @@ function() {
 	grp7 <- ggroup(horizontal = TRUE, cont = grp6, expand=FALSE) 
 	btn3 <- gbutton("Up", cont=grp7, expand=TRUE); enabled(btn3) <- FALSE
 	btn4 <- gbutton("Down", cont=grp7, expand=TRUE); enabled(btn4) <- FALSE
-	btn8 <- gbutton("Scale", cont=grp7, expand=TRUE); enabled(btn8) <- FALSE
+	btnScale <- gbutton("Scale", cont=grp7, expand=TRUE); enabled(btnScale) <- FALSE
 	btn5 <- gbutton("Sort", cont=grp7, expand=TRUE); enabled(btn5) <- FALSE
-	btn6 <- gbutton("As Categorical", cont=grp7, expand=TRUE); enabled(btn6) <- FALSE
+	btnAsCategory <- gbutton("As Categorical", cont=grp7, expand=TRUE); enabled(btnAsCategory) <- FALSE
 
 	#lbl10 <- glabel("Rows", cont=grp6)
 	
@@ -161,8 +165,8 @@ function() {
 	}
 	enabled(lay2) <- FALSE
 	grp18 <- ggroup(horizontal = TRUE, cont=grp17)
-	btn9 <- gbutton("OK", cont=grp18, expand=TRUE)
-	btn10 <- gbutton("Cancel", cont=grp18, expand=TRUE)
+	btnOK <- gbutton("OK", cont=grp18, expand=TRUE)
+	btnCancel <- gbutton("Cancel", cont=grp18, expand=TRUE)
 	name <- character(0)
 	
 	######################################################
@@ -384,8 +388,8 @@ function() {
 			enabled(btn3) <- FALSE
 			enabled(btn4) <- FALSE
 			enabled(btn5) <- FALSE
-			enabled(btn6) <- FALSE
-			enabled(btn8) <- FALSE
+			enabled(btnAsCategory) <- FALSE
+			enabled(btnScale) <- FALSE
 			
 			# disable zoom line
 			svalue(cbx) <- FALSE
@@ -405,17 +409,17 @@ function() {
 				enabled(btn3) <- all(index > 1)
 				enabled(btn4) <- all(index < nrow(tbl2))
 				enabled(btn5) <- TRUE
-				enabled(btn6) <- (any(substr(tbl2[index, 2],1,3)=="num") && class(get(currentDF,envir=.GlobalEnv))!="ffdf")
-				enabled(btn8) <- TRUE
-				enabled(btn1) <- TRUE
-				svalue(btn1) <- "<"
+				enabled(btnAsCategory) <- (any(substr(tbl2[index, 2],1,3)=="num") && class(get(currentDF,envir=.GlobalEnv))!="ffdf")
+				enabled(btnScale) <- TRUE
+				enabled(btnTransfer) <- TRUE
+				svalue(btnTransfer) <- "<"
 			} else {
 				# disable button row
 				enabled(btn3) <- FALSE
 				enabled(btn4) <- FALSE
 				enabled(btn5) <- FALSE
-				enabled(btn6) <- FALSE
-				enabled(btn8) <- FALSE
+				enabled(btnAsCategory) <- FALSE
+				enabled(btnScale) <- FALSE
 			}
 		}
 	}
@@ -443,7 +447,7 @@ function() {
 			svalue(lbl5) <- nr
 			if (nr<2) {
 				svalue(sbr) <- ifelse(nr==0, "Warning: no objects available.", "Warning: only one object available.")
-				enabled(btn1) <- FALSE
+				enabled(btnTransfer) <- FALSE
 				svalue(spb) <- nr
 				enabled(spb) <- FALSE
 			} else if (nr < 10) {
@@ -460,7 +464,7 @@ function() {
 	})
 
 	## refresh table1
-	addHandlerClicked(btn7, function(h,...) {
+	addHandlerClicked(btnReload, function(h,...) {
 		datlist_new <- lsDF()
 		if (length(datlist_new)==0) stop("No data.frames loaded.")
 		allCols_new <- lsColnames()
@@ -487,19 +491,19 @@ function() {
 	})
 	
 	## transfer variables
-	addHandlerClicked(btn1, function(h,...) {
-		enabled(btn1) <- FALSE
+	addHandlerClicked(btnTransfer, function(h,...) {
+		enabled(btnTransfer) <- FALSE
 		svalue(sbr) <- "Transferring variable(s)..."
-		if (svalue(btn1)==">") {
+		if (svalue(btnTransfer)==">") {
 			indices <- svalue(tbl1, index=TRUE)
 			transLR(indices)
-			svalue(btn1)<-">"
+			svalue(btnTransfer)<-">"
 			enabled(btn2) <- TRUE
-			enabled(btn1) <- FALSE
+			enabled(btnTransfer) <- FALSE
 		} else {
 			indices <- svalue(tbl2, index=TRUE)
 			transRL(indices)
-			svalue(btn1)<-"<"
+			svalue(btnTransfer)<-"<"
 		}
 		svalue(sbr) <- "Ready"
 	})
@@ -592,7 +596,7 @@ function() {
 	  
 	  
 	## change scale
-	addHandlerClicked(btn8, function(h,...) {
+	addHandlerClicked(btnScale, function(h,...) {
 		index <- svalue(tbl2, index=TRUE)
 		oldValues <- tbl2[index, 3]
 		
@@ -625,8 +629,8 @@ function() {
 	})
 
 	## as categorical
-	addHandlerClicked(btn6, function(h,...) {
-		enabled(btn6) <- FALSE
+	addHandlerClicked(btnAsCategory, function(h,...) {
+		enabled(btnAsCategory) <- FALSE
 		nameID <- svalue(tbl2, index=TRUE)
 		nameID <- nameID[which(tbl2[nameID,2]=="numeric")]
 		name <- tbl2[nameID,1]
@@ -682,8 +686,8 @@ function() {
 	  
 	## click on table1
 	addHandlerClicked(tbl1, function(h,...) {
-		enabled(btn1) <- svalue(lbl5)>=2
-		svalue(btn1) <- ">"
+		enabled(btnTransfer) <- svalue(lbl5)>=2
+		svalue(btnTransfer) <- ">"
 	})
 	
 	# click on table2 
@@ -700,7 +704,7 @@ function() {
 	################### handlers asCategoricalDialog
 	
 	## click on OK
-	addHandlerClicked(btn9, function(h,...) {
+	addHandlerClicked(btnOK, function(h,...) {
 		varname <- get("name", envir=e)[1]
 		
 		num_scale <- c("lin", "log", "auto")[svalue(rad, index=TRUE)]
@@ -759,7 +763,7 @@ function() {
 	})
 
 	## click on cancel
-	addHandlerClicked(btn10, function(h,...) {
+	addHandlerClicked(btnCancel, function(h,...) {
 		svalue(sbr) <- "Cancelled"
 		name <- get("name", envir=e)
 		name <- name[-1]

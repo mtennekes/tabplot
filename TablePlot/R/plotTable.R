@@ -7,9 +7,7 @@ cellplot <- function(x,y, vp=NULL, e){
 		pushViewport(vp)
 		n <- n + 1
 	}
-	
 	e
-	
 	popViewport(n=n)
 }
 
@@ -58,22 +56,21 @@ function(tab) {
 	vpColumn <- viewport( name="Column"
 	                   ,  x = unit(marginL, "npc")
  					    , width = unit(1 - marginL - marginR, "npc")
-	                    , layout = grid.layout( nrow=2
+	                    , layout = grid.layout( nrow=3
 						                      , ncol=1
-						                      , heights = unit(c(1, 6), c("null", "lines"))
+						                      , heights = unit(c(1,1, 6), c("lines","null", "lines"))
 						    				  )
 	                   , gp=gpar(cex=0.75)
 					   )
 						
 	vpTitle <- viewport( name = "title"
-					   , y = unit(1 - marginT, "npc") - unit(1, "lines")
-					   , height = unit(1, "lines")
-	                   , just = c("left", "bottom")
+					   #, y = unit(-0.5, "lines")
+					   , just = c("left", "top")
 					   )
 	  
 	vpGraph <- viewport( name = "graph"
 					   , y = unit(marginB, "npc")
-					   , height = unit(1 - marginB - marginT,"npc") - unit(1, "lines")
+					   , height = unit(1 - marginB - marginT,"npc")
 					   , just = c("left", "bottom")
 					   )
 	  
@@ -98,9 +95,12 @@ function(tab) {
 	#############################
 	
 	cellplot(1,1,vpColumn, {
-		cellplot(1,1,vpGraph,{
+		cellplot(2,1,vpGraph,{
 			## y axes and bin ticks
-			grid.polyline(x=c(0.80,0.80,rep(c(0.80,0.83),tab$nBins+1)),y=c(0,1,rep(c(tab$rows$y,1),each=2)),id=rep(1:(tab$nBins+2),each=2))
+			grid.polyline( x=c(0.80,0.80,rep(c(0.80,0.83),tab$nBins+1))
+			             , y=c(0,1,rep(c(tab$rows$y,1),each=2))
+						 , id=rep(1:(tab$nBins+2),each=2)
+						 )
 
 			## percentages ticks
 			rests <- formatC(tab$rows$marks - floor(tab$rows$marks))	
@@ -118,7 +118,7 @@ function(tab) {
 		## Draw legend of the bins (bottom left)
 		#############################
 
-		cellplot(2,1, vpLegend, {
+		cellplot(3,1, vpLegend, {
 			grid.text("row bins:", x=0.1, y=unit(5, units="lines"), just="left")
 			grid.text(paste("  ", tab$nBins), x=0.1, y=unit(4, units="lines"), just="left")
 			grid.text("objects:", x=0.1, y=unit(2, units="lines"), just="left")
@@ -156,7 +156,7 @@ function(tab) {
 			
 			if (tCol$isnumeric) {
 				#### variable is numeric
-				cellplot(1,1,vpGraph, {
+				cellplot(2,1,vpGraph, {
 				
 					grid.rect(gp = gpar(col=NA,fill = lgrey))
 					
@@ -171,14 +171,22 @@ function(tab) {
 					}
 					
 					## plot bins
-					grid.rect(x = rep(tCol$xline,tab$nBins), y = tab$rows$y,
-					width = tCol$widths, height = tab$rows$heights, just=c("left","bottom"),
-					 gp = gpar(col=cols, fill = blues[tCol$compl], linejoin="mitre"))
+					grid.rect( x = rep(tCol$xline,tab$nBins)
+					         , y = tab$rows$y
+							 , width = tCol$widths
+							 , height = tab$rows$heights
+							 , just=c("left","bottom")
+							 , gp = gpar(col=cols, fill = blues[tCol$compl], linejoin="mitre")
+							 )
 					
 					## plot small lines at the righthand side of the bins
-					grid.rect(x = rep(tCol$xline,tab$nBins)+tCol$widths, y = tab$rows$y,
-					width = unit(0.75, "points"), height = tab$rows$heights, just=c("left","bottom"),
-					gp = gpar(col=NA, fill = blues[length(blues)]))
+					grid.rect( x = rep(tCol$xline,tab$nBins)+tCol$widths
+					         , y = tab$rows$y
+							 , width = unit(0.75, "points")
+							 , height = tab$rows$heights
+							 , just=c("left","bottom")
+							 , gp = gpar(col=NA, fill = blues[length(blues)])
+							 )
 
 					
 					if (isCairo) {
@@ -189,7 +197,13 @@ function(tab) {
 					 
 					## plot bins with all missings as light red
 					if (length(missings>0)) {
-						grid.rect(x = rep(0, length(missings)), y = tab$rows$y[missings], width =  rep(1, length(missings)), height = tab$rows$heights[missings], just=c("left","bottom"), gp = gpar(fill = lred,col=cols, linejoin="mitre"))
+						grid.rect( x = rep(0, length(missings))
+						         , y = tab$rows$y[missings]
+								 , width =  rep(1, length(missings))
+								 , height = tab$rows$heights[missings]
+								 , just=c("left","bottom")
+								 , gp = gpar(fill = lred,col=cols, linejoin="mitre")
+								 )
 					}
 				 
 					## plot broken x-axis
@@ -197,9 +211,9 @@ function(tab) {
 						blX <- ifelse(tCol$brokenX==1, 0.15, 0.85)
 						blW <- 0.05
 						grid.rect(x=blX, width=blW, gp = gpar(col=NA,fill = lgrey))
-						grid.polyline(x= blX + rep(c(-.5 * blW + c(-0.01, 0.01), .5 * blW + c(-0.01, 0.01)), 2),
-							y = c(rep(c(-0.01, 0.01), 2), rep(c(0.99, 1.01), 2)), 
-							id = rep(1:4,each=2), gp=gpar(col="white", lwd=3))
+						grid.polyline( x= blX + rep(c(-.5 * blW + c(-0.01, 0.01), .5 * blW + c(-0.01, 0.01)), 2)
+						             , y = c(rep(c(-0.01, 0.01), 2), rep(c(0.99, 1.01), 2))
+									 , id = rep(1:4,each=2), gp=gpar(col="white", lwd=3))
 						grid.polyline(x= blX + rep(c(-.5 * blW + c(-0.01, 0.01), .5 * blW + c(-0.01, 0.01)), 2),
 							y = c(rep(c(-0.01, 0.01), 2), rep(c(0.99, 1.01), 2)), 
 							id = rep(1:4,each=2), gp=gpar(lwd=1))
@@ -208,7 +222,7 @@ function(tab) {
 						
 			} else {
 				#### variable is categorical
-				cellplot(1,1,vpGraph, {
+				cellplot(2,1,vpGraph, {
 
 					## determine color indices for categories
 					colorID <- rep(2:(length(color[[palet]])+1), length.out=length(tCol$categories))
@@ -234,7 +248,7 @@ function(tab) {
 				
 				
 				## draw layout
-				cellplot(2,1, vpLegend, {
+				cellplot(3,1, vpLegend, {
 
 					Layout2 <- grid.layout(nrow = length(tCol$categories), ncol = 1)
 				

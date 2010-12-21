@@ -129,26 +129,57 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	#####################
 	if (sum(isNumber)>0) {
 		
-		## calculate means
-		datMean <- ddply(dat[,], .(aggIndex), numcolwise(mean), na.rm=TRUE)
-		#dattest <- split(dat[,], dat$aggIndex[])
-		#print(dattest)
-		datMean <- datMean[-(nBins+1),-ncol(datMean), drop=FALSE]
+		## calculate means by dividing by binSizes and sum
+		ncwmean <- function(df){
+		   l <- lapply(df[,isNumber], function(x){sum(x/binSizes[df$aggIndex], na.rm=TRUE)})
+		   names(l) <- names(df)[isNumber]
+		   as.data.frame(l)
+		}
 		
-		## calculate completion percentages
-		datCompl <- ddply(dat[,], .(aggIndex), numcolwise(function(x){sum(is.na(x))}))
+		datMean <- datCompl <- NULL
+		for (i in chunk(dat)){
+			cdat <- dat[i,]
+			dmean <- ddply(cdat, .(aggIndex), ncwmean)
+			datMean <- rbind(datMean,dmean)
+			## calculate completion percentages
+			dcompl <- ddply(cdat, .(aggIndex), numcolwise(function(x){sum(is.na(x))}))
+			datCompl <- rbind(datCompl, dcompl)
+		}
+		datMean <- ddply(datMean, .(aggIndex), numcolwise(sum))
+		datCompl <- ddply(datCompl, .(aggIndex), numcolwise(sum))
+		
+		datMean <- datMean[-(nBins+1),-ncol(datMean), drop=FALSE]
 		datCompl <- datCompl[-(nBins+1),-ncol(datCompl), drop=FALSE]
 		datCompl <- as.data.frame(apply(datCompl, 2, function(x,y){100-floor(x/y*100)}, binSizes))
-
 		## set means of bins with all missings to 0
 		datMean[datCompl==0] <- 0
 	}
-		
 	#####################
 	## Aggregate categorical variables
 	#####################
-	if (any(!isNumber)) {	
-		datFreq <- lapply(dat[,][!isNumber], FUN=getFreqTable, dat$aggIndex[], nBins)
+	if (any(!isNumber)) {
+		freq <- list()
+		for (i in chunk(dat)){
+		   cdat <- dat[i,]
+		   for (catCol in (names(cdat)[!isNumber])){
+		      tab <- freq[[catCol]]
+			  if(is.null(tab)) {
+				tab <- as.matrix(table(cdat$aggIndex,cdat[[catCol]], useNA="always"))
+			  }
+			  else {
+				tab <- tab + as.matrix(table(cdat$aggIndex,cdat[[catCol]], useNA=c("no","always")))
+			  }
+		      freq[[catCol]] <- tab
+		   }
+		}
+		datFreq <- lapply( freq
+		                 , function(x){
+						      categories=colnames(x)
+							  categories[ncol(x)] <- "missing"
+							  list(freqTable=x[1:nBins,], categories=categories)      
+		                   })
+		
+		#datFreq <- lapply(dat[,][!isNumber], FUN=getFreqTable, dat$aggIndex[], nBins)
 	}
 	
 	#############################

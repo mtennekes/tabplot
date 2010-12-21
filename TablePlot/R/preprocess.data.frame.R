@@ -3,11 +3,7 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 
 
 	#####################################
-	#####################################
-	## 
-	## Preprocessing: check arguments and cast dat-columns to numeric or factor
-	##
-	#####################################
+	## Check arguments and cast dat-columns to numeric or factor
 	#####################################
 	
 	## Check dat
@@ -76,13 +72,10 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 		dat[,i] <- as.factor(dat[,i])
 	}
 
-	
-	#####################################
 	#####################################
 	## Grammar of Graphics: Stats
 	##
 	## Perform statistical operations
-	#####################################
 	#####################################
 	
 	## Determine viewport, and check if nBins is at least number of items
@@ -149,7 +142,9 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	}
 	
 	#############################
+	##
 	## Create list object that contains all data needed to plot
+	##
 	#############################
 
 	tab <- list()

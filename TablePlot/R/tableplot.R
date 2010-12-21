@@ -25,13 +25,14 @@ tableplot <- function(x, ...) {
 	#####################################
 	
 	## Determine scales of numeric variables in case they are set to "auto". IQR is used.
+	IQR_bias <- 3
 	for (i in which(isNumber & scales=="auto")) {
 		quant <- quantile(tab$columns[[i]]$mean, na.rm=TRUE)
 		IQR <- quant[4] - quant[2]
 		
 		## Simple test to determine whether scale is lin or log
-		if ((quant[5] > quant[4]+ 3 * IQR) || 
-			(quant[1] < quant[2] - 3 * IQR)) {
+		if ((quant[5] > quant[4] + IQR_bias * IQR) || 
+			(quant[1] < quant[2] - IQR_bias * IQR)) {
 			scales[i] <- "log" 
 		} else {
 			scales[i] <- "lin" 
@@ -48,7 +49,6 @@ tableplot <- function(x, ...) {
 		}
 	}
 	
-
 	#####################################
 	#####################################
 	## Grammar of Graphics: Coordinates
@@ -57,17 +57,14 @@ tableplot <- function(x, ...) {
 	#####################################
 	#####################################
 
-
 	#############################
 	## Categorical variables
 	#############################
 
 	## determine widths and x positions of the categorical variables
 	for (i in which(!isNumber)) {
-		freq <- tab$columns[[i]]$freq
 		categories <- tab$columns[[i]]$categories
-		
-		widths <- freq / rep(tab$binSizes, length(categories))
+		widths <- tab$columns[[i]]$freq / rep(tab$binSizes, length(categories))
 		
 		x <- cbind(0,(t(apply(widths, 1, cumsum)))[, -length(categories)])
 		tab$columns[[i]]$categories <- categories

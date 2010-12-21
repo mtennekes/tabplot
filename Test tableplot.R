@@ -42,5 +42,12 @@ nBins <- 100
 from <- 25
 to <- 50
 
-
+tab <- preprocess(diamonds
+		, colNames=names(diamonds)
+		, sortCol=c(3,1)
+		, decreasing=c(FALSE, TRUE)
+		, scales="auto"
+		, nBins=100
+		, from=0
+		,to=100)
 

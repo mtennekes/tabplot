@@ -13,9 +13,7 @@ require(grid)
 ## load tableplot scripts
 sapply(list.files("R", full.names=TRUE), source)
 
-#require(ggplot2)
-
+# demo tests
 source("demo/ffdf.R")
-source("demo/tableplot.R")
-
-#tableGUI()
+#source("demo/tableplot.R")
+#source("demo/tableGUI.R")

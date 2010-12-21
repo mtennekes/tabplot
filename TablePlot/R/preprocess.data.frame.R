@@ -41,7 +41,10 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 
 	## Check nBins
 	if (class(nBins)[1]!="numeric") stop("<nBins> is not numeric")
-	if (nBins >= nrow(dat)) stop("<nBins> greater than number of rows in <dat>")
+	if (nBins > nrow(dat)) { 
+		warning("Setting nBins (",nBins,") to number of rows (", nrow(dat), ")")
+		nBins <- nrow(dat)
+	}
 	
 	## Check from and to
 	if (class(from)[1]!="numeric") stop("<from> is not numeric")

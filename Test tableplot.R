@@ -14,7 +14,7 @@ sapply(list.files(), source)
 require(ggplot2)
 data(diamonds)
 ## add some NA's
-diamonds$color[sample.int(50000, 5000)] <- NA
+is.na(diamonds$price) <- diamonds$cut=="Ideal"
 
 
 tableplot(diamonds)

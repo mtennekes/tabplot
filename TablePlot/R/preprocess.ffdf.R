@@ -107,24 +107,22 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	datList <- dat[sortCol]
 	datList$rand <- rand
 	# order all columns that are sorted
-	print(datList)
+	#print(datList)
 	o <- do.call(fforder,physical(datList))
 	
-	print(o)
+	#print(o)
 	brks <- c(0, cumsum(binSizes)) + (vp$iFrom-1)
 	
 	# TODO in stead of precalculating the brks, we can also give the number of breaks and calculate binSizes from summing the bins.
 	# RE: Tried it, by cut(o, brks=nBins, ...) gives strange results (first and last bin were smaller)
 	
-	f <- ff(length=nrow(dat))
+	dat$aggIndex <- ff(length=nrow(dat), vmode="integer")
 	
-	for (i in chunk(x)){
-	  f <- ffappend( f
-				   , ff(cut(x[i], brks, right=TRUE, labels=FALSE))
-				   )
+	for (i in chunk(o)){
+	  dat$aggIndex[i] <- cut(o[as.which(i)], brks, right=TRUE, labels=FALSE)
     }
-
-	dat$aggIndex <- cut(o, brks, right=TRUE, labels=FALSE)
+	
+	#dat$aggIndex <- cut(o, brks, right=TRUE, labels=FALSE)
 
 	#####################
 	## Aggregate numeric variables
@@ -132,11 +130,13 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	if (sum(isNumber)>0) {
 		
 		## calculate means
-		datMean <- ddply(dat, .(aggIndex), numcolwise(mean), na.rm=TRUE)
+		datMean <- ddply(dat[,], .(aggIndex), numcolwise(mean), na.rm=TRUE)
+		#dattest <- split(dat[,], dat$aggIndex[])
+		#print(dattest)
 		datMean <- datMean[-(nBins+1),-ncol(datMean), drop=FALSE]
 		
 		## calculate completion percentages
-		datCompl <- ddply(dat, .(aggIndex), numcolwise(function(x){sum(is.na(x))}))
+		datCompl <- ddply(dat[,], .(aggIndex), numcolwise(function(x){sum(is.na(x))}))
 		datCompl <- datCompl[-(nBins+1),-ncol(datCompl), drop=FALSE]
 		datCompl <- as.data.frame(apply(datCompl, 2, function(x,y){100-floor(x/y*100)}, binSizes))
 
@@ -148,7 +148,7 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	## Aggregate categorical variables
 	#####################
 	if (any(!isNumber)) {	
-		datFreq <- lapply(dat[!isNumber], FUN=getFreqTable, dat$aggIndex, nBins)
+		datFreq <- lapply(dat[,][!isNumber], FUN=getFreqTable, dat$aggIndex[], nBins)
 	}
 	
 	#############################

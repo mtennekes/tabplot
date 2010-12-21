@@ -97,33 +97,34 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	for (i in chunk(rand)){
 	   rand[i] <- runif(sum(i))
 	}
-	
-	
-	stop("Not implemented")
-	
+
+	if (any(decreasing)){
+	   stop("decreasing ordering is not implemented on ffdf")
+	}
 	
 	# put all columns that are sorted in a list, and if decreasing, then change sign ('order' cannot handle a vectorized decreasing)
-	datList <- mapply(as.list(dat[sortCol]), decreasing, isNumber[sortCol], FUN=function(vec, decr, isNum) {
-			if (decr & isNum) {
-				return(-vec)
-			} else if (decr) {
-				return(-as.integer(vec))
-			} else {
-				return(vec)
-			}
-		}, SIMPLIFY=FALSE)
-	
+	#TODO implement decreasing
+	datList <- dat[sortCol]
+	datList$rand <- rand
 	# order all columns that are sorted
-	o <- fforder(do.call(fforder, as.list(c(datList, list(rand=rand)))))
+	print(datList)
+	o <- do.call(fforder,physical(datList))
 	
+	print(o)
 	brks <- c(0, cumsum(binSizes)) + (vp$iFrom-1)
 	
 	# TODO in stead of precalculating the brks, we can also give the number of breaks and calculate binSizes from summing the bins.
 	# RE: Tried it, by cut(o, brks=nBins, ...) gives strange results (first and last bin were smaller)
-	dat$aggIndex <- cut(o, brks, right=TRUE, labels=FALSE)
+	
+	f <- ff(length=nrow(dat))
+	
+	for (i in chunk(x)){
+	  f <- ffappend( f
+				   , ff(cut(x[i], brks, right=TRUE, labels=FALSE))
+				   )
+    }
 
-	# to make aggregation process faster(?)
-	dat <- dat[!is.na(dat$aggIndex),]
+	dat$aggIndex <- cut(o, brks, right=TRUE, labels=FALSE)
 
 	#####################
 	## Aggregate numeric variables

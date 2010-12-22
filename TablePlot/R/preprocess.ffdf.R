@@ -108,7 +108,7 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	datList$rand <- rand
 	# order all columns that are sorted
 	#print(datList)
-	o <- do.call(fforder,physical(datList))
+	o <- fforder(do.call(fforder,physical(datList)))
 	
 	#print(o)
 	brks <- c(0, cumsum(binSizes)) + (vp$iFrom-1)
@@ -142,10 +142,10 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 		   names(l) <- numcols
 		   as.data.frame(l)
 		}
-		
+
 		ncomplete <- function(df){
-		   size <- binSizes[df$aggIndex]
-		   l <- lapply( df[,numcols]
+		   size <- binSizes[df$aggIndex[1]] #otherwise multiple output...
+		   l <- lapply( (df[numcols])
 		              , function(x){
 					      100*sum(!is.na(x))/size
 						}
@@ -155,7 +155,7 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 		}
 		
 		datMean <- datCompl <- NULL
-		for (i in chunk(dat)){
+		for (i in chunk(dat, by=50)){
 			cdat <- dat[i,]
 			dmean <- ddply(cdat, .(aggIndex), ncwmean)
 			datMean <- rbind(datMean,dmean)
@@ -164,10 +164,8 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 			datCompl <- rbind(datCompl, dcompl)
 		}
 
-		#datMean <- ddply(datMean, .(aggIndex), colwise(sum, numcols))
-		#print(datCompl)
-		#datCompl <- ddply(datCompl, .(aggIndex), colwise(sum, numcols))
-		#print(datCompl)
+		datMean <- ddply(datMean, .(aggIndex), colwise(sum, numcols))
+		datCompl <- ddply(datCompl, .(aggIndex), colwise(sum, numcols))
 		
 		datMean <- datMean[-(nBins+1),-1, drop=FALSE]
 		datCompl <- datCompl[-(nBins+1),-1, drop=FALSE]
@@ -188,16 +186,19 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 				tab <- as.matrix(table(cdat$aggIndex,cdat[[catCol]], useNA="always"))
 			  }
 			  else {
-				tab <- tab + as.matrix(table(cdat$aggIndex,cdat[[catCol]], useNA=c("no","always")))
+				tab <- tab + as.matrix(table(cdat$aggIndex,cdat[[catCol]], useNA=c("always")))
 			  }
 		      freq[[catCol]] <- tab
 		   }
 		}
 		datFreq <- lapply( freq
 		                 , function(x){
-						      categories=colnames(x)
-							  categories[ncol(x)] <- "missing"
-							  list(freqTable=x[1:nBins,], categories=categories)      
+						      naCol <- ncol(x)
+						      colnames(x)[naCol] <- "missing"
+							  if (max(x[,naCol] == 0){ #drop nacol
+							     x <- x[,-naCol)]
+							  }
+							  list(freqTable=x[1:nBins,], categories=colnames(x))      
 		                   })
 		
 		#datFreq <- lapply(dat[,][!isNumber], FUN=getFreqTable, dat$aggIndex[], nBins)

@@ -116,6 +116,10 @@ function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
 		}
 		
 		datMean <- datCompl <- NULL
+
+		## bypass Rcmd warning
+		aggIndex <- NULL; rm(aggIndex)
+
 		for (i in chunk(dat)){
 			cdat <- dat[i,]
 			dmean <- ddply(cdat, .(aggIndex), ncwmean)

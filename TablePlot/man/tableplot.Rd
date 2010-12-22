@@ -7,7 +7,7 @@ Visualization of large statistical datasets.
 A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. The values of cells are depicted as horizontal bars. Missing values are taken into account. Supports ffdf datasets from the ff package. Use \code{\link{tableGUI}} to customize this function with a GUI.
 }
 \usage{
-tableplot(dat, colNames = names(dat), sortCol = colNames[1], decreasing = FALSE, scales = "auto", nBins = 100, from=0,to=100)
+tableplot(dat, colNames = names(dat), sortCol = 1, decreasing = FALSE, scales = "auto", nBins = 100, from=0,to=100)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

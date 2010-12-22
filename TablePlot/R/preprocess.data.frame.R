@@ -73,7 +73,10 @@ function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
 	## Aggregate numeric variables
 	#####################
 	if (sum(isNumber)>0) {
-		
+	
+		## bypass Rcmd warning
+		aggIndex <- NULL; rm(aggIndex)
+
 		## calculate means
 		datMean <- ddply(dat, .(aggIndex), numcolwise(mean), na.rm=TRUE)
 		datMean <- datMean[-(nBins+1),-ncol(datMean), drop=FALSE]

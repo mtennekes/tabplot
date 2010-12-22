@@ -109,6 +109,7 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	# order all columns that are sorted
 	#print(datList)
 	o <- fforder(do.call(fforder,physical(datList)))
+	levels(o) <- NULL
 	
 	#print(o)
 	brks <- c(0, cumsum(binSizes)) + (vp$iFrom-1)
@@ -195,9 +196,9 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 		                 , function(x){
 						      naCol <- ncol(x)
 						      colnames(x)[naCol] <- "missing"
-#							  if (max(x[,naCol] == 0)){ #drop nacol
-#							     x <- x[,-naCol]
-#							  }
+							  if (max(x[,naCol]) == 0){ #drop nacol
+							     x <- x[,-naCol]
+							  }
 							  list(freqTable=x[1:nBins,], categories=colnames(x))      
 		                   })
 		

@@ -15,5 +15,19 @@ sapply(list.files("R", full.names=TRUE), source)
 
 # demo tests
 source("demo/ffdf.R")
-#source("demo/tableplot.R")
-#source("demo/tableGUI.R")
+source("demo/tableplot.R")
+source("demo/tableGUI.R")
+
+
+
+
+# data(iris)
+# irisNA <- iris
+
+# # simulate missing data
+# is.na(irisNA$Sepal.Width) <- sample(1:nrow(iris), 30)
+# is.na(irisNA$Species) <- sample(1:nrow(iris), 15)
+
+# library(ff)
+# irisNA <- as.ffdf(irisNA)
+# tableplot(irisNA, sortCol=5)

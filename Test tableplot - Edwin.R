@@ -1,6 +1,4 @@
-#rootmap <- "d:/Rvis/"
-rootmap <- "D:/R/Tableplot/Tableplot"
-#scriptmap <- paste(rootmap, "TablePlot/R/", sep="")
+rootmap <- "c:/users/edwin/documents/werk/Tableplot/Tableplot"
 datamap <- paste(rootmap, "data/", sep="")
 
 setwd(rootmap)

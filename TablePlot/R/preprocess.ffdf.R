@@ -129,10 +129,28 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 	#####################
 	if (sum(isNumber)>0) {
 		
+		numcols <- names(dat)[as.which(isNumber)] # needed because isNumber is otherwise recycled!!
+		
 		## calculate means by dividing by binSizes and sum
 		ncwmean <- function(df){
-		   l <- lapply(df[,isNumber], function(x){sum(x/binSizes[df$aggIndex], na.rm=TRUE)})
-		   names(l) <- names(df)[isNumber]
+		   size <- binSizes[df$aggIndex]
+		   l <- lapply( df[,numcols]
+		              , function(x){
+					       sum(x/size, na.rm=TRUE)
+						}
+					  )
+		   names(l) <- numcols
+		   as.data.frame(l)
+		}
+		
+		ncomplete <- function(df){
+		   size <- binSizes[df$aggIndex]
+		   l <- lapply( df[,numcols]
+		              , function(x){
+					      100*sum(!is.na(x))/size
+						}
+					  )
+		   names(l) <- numcols
 		   as.data.frame(l)
 		}
 		
@@ -142,17 +160,20 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 			dmean <- ddply(cdat, .(aggIndex), ncwmean)
 			datMean <- rbind(datMean,dmean)
 			## calculate completion percentages
-			dcompl <- ddply(cdat, .(aggIndex), numcolwise(function(x){sum(is.na(x))}))
+			dcompl <- ddply(cdat, .(aggIndex), ncomplete)
 			datCompl <- rbind(datCompl, dcompl)
 		}
-		datMean <- ddply(datMean, .(aggIndex), numcolwise(sum))
-		datCompl <- ddply(datCompl, .(aggIndex), numcolwise(sum))
+
+		#datMean <- ddply(datMean, .(aggIndex), colwise(sum, numcols))
+		#print(datCompl)
+		#datCompl <- ddply(datCompl, .(aggIndex), colwise(sum, numcols))
+		#print(datCompl)
 		
-		datMean <- datMean[-(nBins+1),-ncol(datMean), drop=FALSE]
-		datCompl <- datCompl[-(nBins+1),-ncol(datCompl), drop=FALSE]
-		datCompl <- as.data.frame(apply(datCompl, 2, function(x,y){100-floor(x/y*100)}, binSizes))
+		datMean <- datMean[-(nBins+1),-1, drop=FALSE]
+		datCompl <- datCompl[-(nBins+1),-1, drop=FALSE]
+		#datCompl <- as.data.frame(apply(datCompl, 2, function(x,y){100-floor(x/y*100)}, binSizes))
 		## set means of bins with all missings to 0
-		datMean[datCompl==0] <- 0
+		#datMean[datCompl==0] <- 0
 	}
 	#####################
 	## Aggregate categorical variables

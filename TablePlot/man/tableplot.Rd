@@ -49,8 +49,9 @@ A tableplot is a spreadsheet-like plot of the data. Each column represents a var
 	is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
 	tableplot(diamondsNA)
 
-	data{movies}
-	tableplot(movies, colNames=c("year","length","budget","rating","votes","Action","Animation","Comedy","Drama","Documentary","Romance","Short"), sortCol=year, decreasing=FALSE, scales="lin", nBins=100, check=TRUE)}
+	data(movies)
+	tableplot(movies[,c(3:5,17:24)], sortCol="rating", decreasing=FALSE, scales="lin", nBins=100)
+}
 
 irisNA <- iris
 # simulate missing data

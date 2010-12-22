@@ -1,61 +1,10 @@
 preprocess.ffdf <-
-
-function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", nBins=100, from=0,to=100) {
+function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
    if (!require(ff)){
 		stop("This function needs package ff")
    }   
 
-	#####################################
-	## Check arguments and cast dat-columns to numeric or factor
-	#####################################
-	
-	## Check dat
-	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
-	if (nrow(dat)==1) stop("<dat> has only one row")
-	
-	## Check colNames
-	if (class(colNames)[1]!="character") stop("<colNames> is not a character(vector)")
-	if (!all(colNames %in% names(dat))) stop("<colNames> contains column names that are not found in <dat>")
-
-	## Only select the columns of colNames
-	dat <- dat[colNames]
 	n <- length(colNames)
-
-	## Check sortCol, and (if necessary) cast it to indices
-	if (class(sortCol)[1]=="character") {
-		if (!all(sortCol %in% colNames)) stop("invalid <sortCol>")
-		sortCol <- sapply(sortCol, FUN=function(x) which(x==colNames))
-	} else if (class(sortCol)[1] %in% c("numeric", "integer")) {
-		if (any(sortCol > ncol(dat)) || any(sortCol < 1)) {
-			stop("<sortCol> has an invalid value")
-		}
-	} else {
-		stop("<sortCol> is not a character or numeric value or vector")
-	}
-
-	## Check decreasing vector
-	if (class(decreasing)[1]!="logical") stop("<decreasing> is not a logical")
-	if (length(sortCol) != length(decreasing)) stop("<sortCol> and <decreasing> have different lengths")
-	
-	## Check scales
-	if (length(scales)==1) scales <- rep(scales, n)
-	if (length(scales)!=length(colNames)) stop(paste("<scales> should be of length ", length(colNames)))
-	if (length(setdiff(scales, c("auto", "lin", "log")))>0) stop("<scales> should consist of auto, lin and log")
-
-	## Check nBins
-	if (class(nBins)[1]!="numeric") stop("<nBins> is not numeric")
-	if (nBins > nrow(dat)) { 
-		warning("Setting nBins (",nBins,") to number of rows (", nrow(dat), ")")
-		nBins <- nrow(dat)
-	}
-	
-	## Check from and to
-	if (class(from)[1]!="numeric") stop("<from> is not numeric")
-	if (class(to)[1]!="numeric") stop("<to> is not numeric")
-	if (from < 0 && from > 100) stop("<from> is not a number in [0, 100]")
-	if (to < 0 && to > 100) stop("<to> is not a number in [0, 100]")
-	if (from >= to) stop("<from> is not smaller than <to>")
-
 
 	#############################
 	## Determine column classes

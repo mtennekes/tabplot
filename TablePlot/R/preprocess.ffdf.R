@@ -46,21 +46,32 @@ function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
 	for (i in chunk(rand)){
 	   rand[i] <- runif(sum(i))
 	}
-
-	if (any(decreasing)){
-	   stop("decreasing ordering is not implemented on ffdf")
-	}
 	
 	# put all columns that are sorted in a list, and if decreasing, then change sign ('order' cannot handle a vectorized decreasing)
 	#TODO implement decreasing
-	datList <- dat[sortCol]
+	datList <- mapply( sortCol
+					 , decreasing
+					 , FUN=function(col, decr){
+					    col <- dat[[col]]
+					    if (is.factor(col)){
+							levels(col) <- NULL
+					    }
+						
+						if (decr){
+						   col <- clone(col)
+						   for (i in chunk(col)){
+						      col[i] <- -col[i]
+						   }
+						}
+						col
+					 }
+					 , SIMPLIFY=FALSE
+					 )
 	datList$rand <- rand
 	# order all columns that are sorted
-	#print(datList)
-	o <- fforder(do.call(fforder,physical(datList)))
-	levels(o) <- NULL
+	o <- fforder(do.call(fforder,datList))
+	#levels(o) <- NULL
 	
-	#print(o)
 	brks <- c(0, cumsum(binSizes)) + (vp$iFrom-1)
 	
 	# TODO in stead of precalculating the brks, we can also give the number of breaks and calculate binSizes from summing the bins.

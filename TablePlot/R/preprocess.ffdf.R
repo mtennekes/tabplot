@@ -155,7 +155,7 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 		}
 		
 		datMean <- datCompl <- NULL
-		for (i in chunk(dat, by=50)){
+		for (i in chunk(dat)){
 			cdat <- dat[i,]
 			dmean <- ddply(cdat, .(aggIndex), ncwmean)
 			datMean <- rbind(datMean,dmean)
@@ -195,9 +195,9 @@ function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", 
 		                 , function(x){
 						      naCol <- ncol(x)
 						      colnames(x)[naCol] <- "missing"
-							  if (max(x[,naCol] == 0){ #drop nacol
-							     x <- x[,-naCol)]
-							  }
+#							  if (max(x[,naCol] == 0)){ #drop nacol
+#							     x <- x[,-naCol]
+#							  }
 							  list(freqTable=x[1:nBins,], categories=colnames(x))      
 		                   })
 		

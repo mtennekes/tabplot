@@ -48,29 +48,21 @@ function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
 	}
 	
 	# put all columns that are sorted in a list, and if decreasing, then change sign ('order' cannot handle a vectorized decreasing)
-	#TODO implement decreasing
-	datList <- mapply( sortCol
-					 , decreasing
-					 , FUN=function(col, decr){
+	datList <- lapply( sortCol
+					 , function(col){
 					    col <- dat[[col]]
 					    if (is.factor(col)){
 							levels(col) <- NULL
-					    }
-						
-						if (decr){
-						   col <- clone(col)
-						   for (i in chunk(col)){
-						      col[i] <- -col[i]
-						   }
-						}
+					    }						
 						col
 					 }
-					 , SIMPLIFY=FALSE
 					 )
+	
 	datList$rand <- rand
+	datList$decreasing <- decreasing
+	
 	# order all columns that are sorted
 	o <- fforder(do.call(fforder,datList))
-	#levels(o) <- NULL
 	
 	brks <- c(0, cumsum(binSizes)) + (vp$iFrom-1)
 	
@@ -207,3 +199,4 @@ function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
 	
 	return(tab)
 }
+     

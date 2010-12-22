@@ -94,10 +94,10 @@ function() {
 	tbl2 <- gtable(data.frame(Variable=paste(rep(" ", 25), collapse=" "), Type= paste(rep(" ", 13), collapse=" "), Scale="", Sort="", stringsAsFactors=FALSE), multiple=TRUE, cont=grp6, expand=TRUE)
 
 	grp7 <- ggroup(horizontal = TRUE, cont = grp6, expand=FALSE) 
-	btn3 <- gbutton("Up", cont=grp7, expand=TRUE); enabled(btn3) <- FALSE
-	btn4 <- gbutton("Down", cont=grp7, expand=TRUE); enabled(btn4) <- FALSE
+	btnUp <- gbutton("Up", cont=grp7, expand=TRUE); enabled(btnUp) <- FALSE
+	btnDown <- gbutton("Down", cont=grp7, expand=TRUE); enabled(btnDown) <- FALSE
 	btnScale <- gbutton("Scale", cont=grp7, expand=TRUE); enabled(btnScale) <- FALSE
-	btn5 <- gbutton("Sort", cont=grp7, expand=TRUE); enabled(btn5) <- FALSE
+	btnSort <- gbutton("Sort", cont=grp7, expand=TRUE); enabled(btnSort) <- FALSE
 	btnAsCategory <- gbutton("As Categorical", cont=grp7, expand=TRUE); enabled(btnAsCategory) <- FALSE
 
 	#lbl10 <- glabel("Rows", cont=grp6)
@@ -270,7 +270,7 @@ function() {
 				index <- svalue(tbl2, index=TRUE)
 				tbl2[] <- rbind(tbl2[], rows)
 				svalue(tbl2, index=TRUE) <- index
-				if (length(index) != 0) enabled(btn4) <- TRUE
+				if (length(index) != 0) enabled(btnDown) <- TRUE
 			}
 		}
 	}
@@ -385,9 +385,9 @@ function() {
 			enabled(spb) <- FALSE
 			
 			# disable button row under tbl2
-			enabled(btn3) <- FALSE
-			enabled(btn4) <- FALSE
-			enabled(btn5) <- FALSE
+			enabled(btnUp) <- FALSE
+			enabled(btnDown) <- FALSE
+			enabled(btnSort) <- FALSE
 			enabled(btnAsCategory) <- FALSE
 			enabled(btnScale) <- FALSE
 			
@@ -406,18 +406,18 @@ function() {
 			index <- svalue(tbl2, index=TRUE)
 			if (length(index)!=0) {
 				# enable buttons
-				enabled(btn3) <- all(index > 1)
-				enabled(btn4) <- all(index < nrow(tbl2))
-				enabled(btn5) <- TRUE
+				enabled(btnUp) <- all(index > 1)
+				enabled(btnDown) <- all(index < nrow(tbl2))
+				enabled(btnSort) <- TRUE
 				enabled(btnAsCategory) <- (any(substr(tbl2[index, 2],1,3)=="num") && class(get(currentDF,envir=.GlobalEnv))!="ffdf")
 				enabled(btnScale) <- TRUE
 				enabled(btnTransfer) <- TRUE
 				svalue(btnTransfer) <- "<"
 			} else {
 				# disable button row
-				enabled(btn3) <- FALSE
-				enabled(btn4) <- FALSE
-				enabled(btn5) <- FALSE
+				enabled(btnUp) <- FALSE
+				enabled(btnDown) <- FALSE
+				enabled(btnSort) <- FALSE
 				enabled(btnAsCategory) <- FALSE
 				enabled(btnScale) <- FALSE
 			}
@@ -447,19 +447,17 @@ function() {
 			svalue(lbl5) <- nr
 			if (nr<2) {
 				svalue(sbr) <- ifelse(nr==0, "Warning: no objects available.", "Warning: only one object available.")
-				enabled(btnTransfer) <- FALSE
 				svalue(spb) <- nr
-				enabled(spb) <- FALSE
 			} else if (nr < 10) {
 				svalue(sbr) <- "Warning: only a few objects available. Number of row bins will be ignored."
 				svalue(spb) <- nr
-				enabled(spb) <- FALSE
 			} else {
 				svalue(sbr) <- ""
 				svalue(spb) <- min(nr, 100)
-				enabled(spb) <- TRUE
 			}
-			enabled(btn2) <- FALSE
+			enabled(btnTransfer) <- FALSE
+			#enabled(spb) <- TRUE
+			#enabled(btn2) <- FALSE
 		}
 	})
 
@@ -517,7 +515,7 @@ function() {
 		if (svalue(h$obj) >  mx) {
 			svalue(spb) <- mx
 		}
-		if (svalue(h$obj) <2 && svalue(lbl5)>=2) {
+		if (svalue(h$obj) <2 && as.integer(svalue(lbl5))>=2) {
 			svalue(spb) <- 2
 		}
 	})
@@ -571,7 +569,7 @@ function() {
 	})
 
 	## move up
-	addHandlerClicked(btn3, function(h,...) {
+	addHandlerClicked(btnUp, function(h,...) {
 		index <- svalue(tbl2, index=TRUE)
 		tbl2temp <- tbl2[]
 		for (i in index) {
@@ -583,7 +581,7 @@ function() {
 	})
 
 	## move down
-	addHandlerClicked(btn4, function(h,...) {
+	addHandlerClicked(btnDown, function(h,...) {
 		index <- svalue(tbl2, index=TRUE)
 		tbl2temp <- tbl2[]
 		for (i in index[length(index):1]) {
@@ -609,7 +607,7 @@ function() {
 	})
 	  
 	## sort
-	addHandlerClicked(btn5, function(h,...) {
+	addHandlerClicked(btnSort, function(h,...) {
 		index <- svalue(tbl2, index=TRUE)
 		oldValues <- tbl2[index, 4]
 		
@@ -686,7 +684,7 @@ function() {
 	  
 	## click on table1
 	addHandlerClicked(tbl1, function(h,...) {
-		enabled(btnTransfer) <- svalue(lbl5)>=2
+		enabled(btnTransfer) <- as.integer(svalue(lbl5))>=2
 		svalue(btnTransfer) <- ">"
 	})
 	

@@ -1,7 +1,7 @@
 tableGUI <-
 function() {
-    if (!require(gWidgets)){
-		stop("This function requires gWidgets")
+    if (!require(gWidgetsRGtk2)){
+		stop("This function requires gWidgetsRGtk2")
 	}
 	
 	options("guiToolkit"="RGtk2")

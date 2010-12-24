@@ -54,7 +54,7 @@ function() {
 	######################################################
 	
 	## create window
-	wdw <- gwindow("Tableplot",visible=TRUE)
+	wdw <- gwindow("Tableplot",visible=FALSE)
 	sbr <- gstatusbar("Preparing...", cont=wdw)
 	g <- gpanedgroup(cont=wdw)
 

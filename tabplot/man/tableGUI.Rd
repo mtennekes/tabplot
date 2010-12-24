@@ -11,7 +11,7 @@ tableGUI()
 }
 
 \examples{
-	\dontrun{
-		tableGUI()
-	}
+\dontrun{
+	tableGUI()
+}
 }

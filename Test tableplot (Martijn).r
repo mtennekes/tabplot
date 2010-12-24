@@ -2,7 +2,7 @@
 
 rootmap <- "d:/Rvis/"
 scriptmap <- paste(rootmap, "TablePlot/R/", sep="")
-datamap <- paste(rootmap, "data/", sep="")
+datamap <- paste("k:/cbs/rvis/data/", sep="")
 
 setwd(scriptmap)
 source("tableplot.R")
@@ -24,10 +24,36 @@ data(diamonds)
 diamonds$color[sample.int(50000, 5000)] <- NA
 
 
+### test package #######
+
+install.packages("./tabplot_0.9.zip")
+library(tabplot)
+
+
+irisNA <- iris
+	# simulate missing data
+	is.na(irisNA$Sepal.Width) <- sample(1:nrow(iris), 30)
+	is.na(irisNA$Species) <- sample(1:nrow(iris), 15)
+
+	tableplot(irisNA)
+
+diamondsNA <- diamonds
+# simulate missing data
+is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
+tableplot(diamondsNA)
+
+data(movies)
+tableplot(movies[,c(3:5,17:24)], sortCol="rating", decreasing=FALSE, scales="lin", nBins=100)
+	
+
+########################
+
+
 setwd(datamap)
 load("ps0607.Rdata")
 load("ps07pop.Rdata")
 
+ps07pop_ffdf <- as.ffdf(ps07pop)
 
 
 tableplot(diamonds)

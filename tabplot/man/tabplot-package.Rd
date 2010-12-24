@@ -1,16 +1,15 @@
-\name{TablePlot-package}
-\alias{TablePlot-package}
-\alias{TablePlot}
+\name{tabplot-package}
+\alias{tabplot}
 \docType{package}
 \title{
-Visualization of large statistical datasets.
+Tableplot, a visualization of large statistical datasets
 }
 \description{
-A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. The values of cells are depicted as horizontal bars. Missing values are taken into account. A GUI has been implemented which is used to easily customize the tableplot. Also supports large ffdf datasets from the ff package.
+A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package.
 }
 \details{
 \tabular{ll}{
-Package: \tab TablePlot\cr
+Package: \tab tabplot\cr
 Type: \tab Package\cr
 Version: \tab 0.9\cr
 Date: \tab 2010-12-24\cr

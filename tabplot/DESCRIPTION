@@ -1,6 +1,6 @@
-Package: TablePlot
+Package: tabplot
 Type: Package
-Title: TablePlot, a visualization of large statistical datasets
+Title: Tableplot, a visualization of large statistical datasets
 Version: 0.9
 Date: 2010-12-24
 Author: Martijn Tennekes and Edwin de Jonge

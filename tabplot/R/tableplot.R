@@ -168,11 +168,11 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, sc
 			xline <- ifelse(maxV > 0, 0, 1)
 			widths <- (values) / max(abs(minV), abs(maxV))
 		}
+		widths[is.nan(widths)] <- minV
 		## assign to tab object
 		tab$columns[[i]]$xline <- xline
 		tab$columns[[i]]$widths <- widths
 	}
-
 	## plot
 	plotTable(tab)
 

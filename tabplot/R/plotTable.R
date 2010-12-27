@@ -26,7 +26,7 @@ plotNumCol <- function(tCol, tab, blues, vpTitle, vpGraph, vpLegend){
 
 		## when cairoDevice is enabled, not only fill the bins with colors, but also color the contours
 		if (isCairo) {
-			cols <- blues[tCol$compl]
+			cols <- blues[tCol$compl + 1]
 		} else {
 			cols <- NA
 		}
@@ -37,7 +37,7 @@ plotNumCol <- function(tCol, tab, blues, vpTitle, vpGraph, vpLegend){
 				 , width = tCol$widths
 				 , height = tab$rows$heights
 				 , just=c("left","bottom")
-				 , gp = gpar(col=cols, fill = blues[tCol$compl], linejoin="mitre")
+				 , gp = gpar(col=cols, fill = blues[tCol$compl + 1], linejoin="mitre")
 				 )
 		
 		## plot small lines at the righthand side of the bins
@@ -46,7 +46,7 @@ plotNumCol <- function(tCol, tab, blues, vpTitle, vpGraph, vpLegend){
 				 , width = unit(0.75, "points")
 				 , height = tab$rows$heights
 				 , just=c("left","bottom")
-				 , gp = gpar(col=NA, fill = blues[length(blues)])
+				 , gp = gpar(col=NA, fill = blues[length(blues) + 1])
 				 )
 
 		
@@ -145,14 +145,16 @@ function(tab) {
 	#############################
 	## Determine colors and color scales
 	#############################
-	blues <- colorRampPalette(brewer.pal(9,"Blues")[2:9],space="rgb")(100)
 	
+	blues <- c(NA, colorRampPalette(brewer.pal(9,"Blues")[2:9],space="rgb")(100))
+	# blues[1] is for missing values, blues[2]...blues[101] is for completion percentages of 1...100
+
 	lgrey <- brewer.pal(9,"Greys")[2]
 	lred <- brewer.pal(9,"Reds")[2]
-
+	red <- brewer.pal(9,"Set1")[1]
+	
 	set1 <- brewer.pal(9,"Set1")[2:9]
 	set2 <- brewer.pal(8,"Set2")[c(1:6,8,7)]
-	red <- brewer.pal(9,"Set1")[1]
 	
 	color <- list()
 	color[[1]] <- c(red, set1, set2) 

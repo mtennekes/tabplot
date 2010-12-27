@@ -105,24 +105,24 @@ function() {
 	grp2 <- ggroup(horizontal = TRUE, cont = grp6) 
 	cbx <- gcheckbox(text="Zoom in", checked = FALSE, cont= grp2)
 	lbl7 <- glabel("from", cont=grp2)
-	spb2 <- gspinbutton(0, 100, by = 10, cont=grp2, expand=FALSE)
-	svalue(spb2) <- 0
+	spbBinsFrom <- gspinbutton(0, 100, by = 10, cont=grp2, expand=FALSE)
+	svalue(spbBinsFrom) <- 0
 	
 	lbl8 <- glabel("percent to", cont=grp2)
-	spb3 <- gspinbutton(0, 100, by = 10, cont=grp2, expand=FALSE)
-	svalue(spb3) <- 100
+	spbBinsTo <- gspinbutton(0, 100, by = 10, cont=grp2, expand=FALSE)
+	svalue(spbBinsTo) <- 100
 	lbl9 <- glabel("percent", cont=grp2)
 	enabled(lbl7) <- FALSE
-	enabled(spb2) <- FALSE
+	enabled(spbBinsFrom) <- FALSE
 	enabled(lbl8) <- FALSE
-	enabled(spb3) <- FALSE
+	enabled(spbBinsTo) <- FALSE
 	enabled(lbl9) <- FALSE
 		
 	grp1 <- ggroup(horizontal = TRUE, cont = grp6) 
 	lbl1 <- glabel("Number of Row Bins:", cont=grp1)
-	spb <- gspinbutton(0, 1000, by = 10, cont=grp1, expand=TRUE)
-	svalue(spb) <- 100
-	btn2 <- gbutton("Run", cont=grp1, expand=TRUE); enabled(btn2) <- FALSE
+	spbBins <- gspinbutton(0, 1000, by = 10, cont=grp1, expand=TRUE)
+	svalue(spbBins) <- 100
+	btnRun <- gbutton("Run", cont=grp1, expand=TRUE); enabled(btnRun) <- FALSE
 
 	
 	
@@ -314,6 +314,7 @@ function() {
 		tmpdat <- get(currentDF, envir=.GlobalEnv)
 		if (class(tmpdat[,name])[1] %in% c("numeric", "integer")) {
 			tmpdat$tmptmp <- num2fac(tmpdat[, name], num_scale=num_scale, method=method, n=n, brks=brks)
+			CLmethod <- paste("num2fac(", currentDF, "$", name, ", num_scale=\"", num_scale, "\", method=\"", method, "\", n=", n, ", brks=", brks, ")\n", sep="")
 		} else {
 			tmpdat$tmptmp <- as.factor(tmpdat[, name])
 			lvls <- length(levels(tmpdat$tmptmp))
@@ -329,10 +330,10 @@ function() {
 					return(data.frame(Variable=character(0), Type=character(0), Scale=character(0), Sort=character(0), stringsAsFactors=FALSE))
 				}
 			}
+			CLmethod <- paste("as.factor(", currentDF, "$", name, ")\n", sep="")
 		}
 		
 		newname <- paste(name, length(levels(tmpdat$tmptmp)),sep="")
-		
 		## check whether new name does not exists in data.frame
 		tryCatch(
 			while (newname %in% colnames(tmpdat)) {
@@ -345,6 +346,10 @@ function() {
 					assign(currentDF, tmpdat, envir=.GlobalEnv)
 							
 					newRow <- data.frame(Variable=newname, Type=paste("categorical (", length(levels(tmpdat[[newname]])),")", sep=""), Scale="", Sort="", stringsAsFactors=FALSE)
+					
+					# print command line
+					cat(paste(currentDF, "$", newname, " <- ", CLmethod, sep=""))
+					
 					return(newRow)
 				} else {
 					return(data.frame(Variable=character(0), Type=character(0), Scale=character(0), Sort=character(0), stringsAsFactors=FALSE))
@@ -379,10 +384,10 @@ function() {
 	changeTbl2 <- function() {
 		if (nrow(tbl2)==0) {
 			# disable run button
-			enabled(btn2) <- FALSE
+			enabled(btnRun) <- FALSE
 			# disable number of bins
 			enabled(lbl1) <- FALSE
-			enabled(spb) <- FALSE
+			enabled(spbBins) <- FALSE
 			
 			# disable button row under tbl2
 			enabled(btnUp) <- FALSE
@@ -400,7 +405,7 @@ function() {
 			enabled(cbx) <- TRUE
 			# enable number of bins
 			enabled(lbl1) <- TRUE
-			enabled(spb) <- TRUE
+			enabled(spbBins) <- TRUE
 			
 			# check selected rows
 			index <- svalue(tbl2, index=TRUE)
@@ -447,17 +452,17 @@ function() {
 			svalue(lbl5) <- nr
 			if (nr<2) {
 				svalue(sbr) <- ifelse(nr==0, "Warning: no objects available.", "Warning: only one object available.")
-				svalue(spb) <- nr
+				svalue(spbBins) <- nr
 			} else if (nr < 10) {
 				svalue(sbr) <- "Warning: only a few objects available. Number of row bins will be ignored."
-				svalue(spb) <- nr
+				svalue(spbBins) <- nr
 			} else {
 				svalue(sbr) <- ""
-				svalue(spb) <- min(nr, 100)
+				svalue(spbBins) <- min(nr, 100)
 			}
 			enabled(btnTransfer) <- FALSE
-			#enabled(spb) <- TRUE
-			#enabled(btn2) <- FALSE
+			#enabled(spbBins) <- TRUE
+			#enabled(btnRun) <- FALSE
 		}
 	})
 
@@ -496,7 +501,7 @@ function() {
 			indices <- svalue(tbl1, index=TRUE)
 			transLR(indices)
 			svalue(btnTransfer)<-">"
-			enabled(btn2) <- TRUE
+			enabled(btnRun) <- TRUE
 			enabled(btnTransfer) <- FALSE
 		} else {
 			indices <- svalue(tbl2, index=TRUE)
@@ -507,39 +512,38 @@ function() {
 	})
 
 	## change number of bins
-	addHandlerKeystroke(spb, function(h,...) {
-		enabled(btn2) <- (svalue(spb) > 0 && nrow(tbl2)!=0)
+	addHandlerKeystroke(spbBins, function(h,...) {
+		enabled(btnRun) <- (svalue(spbBins) > 0 && nrow(tbl2)!=0)
 	})
-	addHandlerChanged(spb, function(h,...) {
+	addHandlerChanged(spbBins, function(h,...) {
 		mx <- nrow(get(currentDF,envir=.GlobalEnv))
 		if (svalue(h$obj) >  mx) {
-			svalue(spb) <- mx
+			svalue(spbBins) <- mx
 		}
 		if (svalue(h$obj) <2 && as.integer(svalue(lbl5))>=2) {
-			svalue(spb) <- 2
+			svalue(spbBins) <- 2
 		}
 	})
 
 	## run!
-	addHandlerClicked(btn2, function(h,...) {
-		enabled(btn2) <- FALSE
+	addHandlerClicked(btnRun, function(h,...) {
+		enabled(btnRun) <- FALSE
 		svalue(sbr) <- "Preparing tableplot..."
 		
-		from <- svalue(spb2)
-		to <- svalue(spb3)
-		nBins <- min(svalue(spb), nrow(get(currentDF, envir=.GlobalEnv)))
+		from <- svalue(spbBinsFrom)
+		to <- svalue(spbBinsTo)
+		nBins <- min(svalue(spbBins), nrow(get(currentDF, envir=.GlobalEnv)))
 		
 		colNames <- tbl2[,1]
 		
 		
 		# prepare scales
 		scales <- tbl2[,3]
+		scales[scales==""] <- "auto"
 		if (all(scales==scales[1])) {
 			scales <- scales[1]
-			if (scales=="") scales <- "auto"
 			scalesPrint <- paste("\"", scales, "\"", sep="")
 		} else {
-			scales[scales==""] <- "auto"
 			scalesPrint <- paste("c(\"", paste(scales,collapse="\",\""),"\")", sep="")
 		}
 
@@ -547,7 +551,11 @@ function() {
 		sortID <- which(tbl2[,4]!="")
 		sortColNames <- tbl2[sortID,1]
 		sortCol <- sapply(sortColNames, FUN=function(x, y) which(x==y), colNames)
-		sortColPrint <- paste("c(", paste(sapply(sortColNames, FUN=function(x, y) which(x==y), allCols[[currentDF]]), collapse=","), ")", sep="")
+		if (length(sortCol)==1) {
+			sortColPrint <- as.character(sortCol)
+		} else {
+			sortColPrint <- paste("c(", paste(sortCol, collapse=","), ")", sep="")
+		}
 		
 		decreasing <- tbl2[sortID,4]=="/\\"
 		if (length(decreasing)==1) {
@@ -558,7 +566,7 @@ function() {
 
 		
 		## print commandline to reproduce tableplot
-		cat("tableplot(", currentDF, ", colNames=c(", paste("\"",paste(colNames,collapse="\",\""),"\"", sep=""), "), sortCol=\"", sortColPrint, "\", decreasing=", decreasingPrint, ", scales=", scalesPrint, ", nBins=", nBins, ", from=", from, ", to=", to, ")\n", sep="")
+		cat("tableplot(", currentDF, ", colNames=c(", paste("\"",paste(colNames,collapse="\",\""),"\"", sep=""), "), sortCol=", sortColPrint, ", decreasing=", decreasingPrint, ", scales=", scalesPrint, ", nBins=", nBins, ", from=", from, ", to=", to, ")\n", sep="")
 		
 		if (dev.cur()==1) {
 			dev.new(width=min(11, 2+2*nrow(tbl2)), height=7, rescale="fixed")
@@ -577,7 +585,7 @@ function() {
 		}
 		tbl2[] <- tbl2temp
 		svalue(tbl2,index=TRUE) <- index - 1
-		enabled(btn2) <- TRUE
+		enabled(btnRun) <- TRUE
 	})
 
 	## move down
@@ -589,7 +597,7 @@ function() {
 		}
 		tbl2[] <- tbl2temp
 		svalue(tbl2,index=TRUE) <- index + 1
-		enabled(btn2) <- TRUE
+		enabled(btnRun) <- TRUE
 	})
 	  
 	  
@@ -603,7 +611,7 @@ function() {
 		newValues[oldValues=="lin"] <- "log"
 		newValues[oldValues=="log"] <- ifelse(class(get(currentDF,envir=.GlobalEnv))=="ffdf", "lin", "auto")
 		tbl2[index, 3] <- newValues
-		enabled(btn2) <- TRUE
+		enabled(btnRun) <- TRUE
 	})
 	  
 	## sort
@@ -619,10 +627,10 @@ function() {
 		
 		if (all(tbl2[,4]=="")) {
 			svalue(sbr) <- "Warning: no colums are sorted"
-			enabled(btn2) <- FALSE
+			enabled(btnRun) <- FALSE
 		} else {
 			svalue(sbr) <- "Ready"
-			enabled(btn2) <- TRUE
+			enabled(btnRun) <- TRUE
 		}
 	})
 
@@ -642,41 +650,41 @@ function() {
 	addHandlerChanged(cbx, function(h,...) {
 		if (svalue(h$obj)) {
 			enabled(lbl7) <- TRUE
-			enabled(spb2) <- TRUE
+			enabled(spbBinsFrom) <- TRUE
 			enabled(lbl8) <- TRUE
-			enabled(spb3) <- TRUE
+			enabled(spbBinsTo) <- TRUE
 			enabled(lbl9) <- TRUE
 		} else {
 			enabled(lbl7) <- FALSE
-			enabled(spb2) <- FALSE
+			enabled(spbBinsFrom) <- FALSE
 			enabled(lbl8) <- FALSE
-			enabled(spb3) <- FALSE
+			enabled(spbBinsTo) <- FALSE
 			enabled(lbl9) <- FALSE
-			if (!((svalue(spb2)==0) && (svalue(spb3)==100)))  enabled(btn2) <- TRUE
+			if (!((svalue(spbBinsFrom)==0) && (svalue(spbBinsTo)==100)))  enabled(btnRun) <- TRUE
 
-			svalue(spb2) <- 0
-			svalue(spb3) <- 100
+			svalue(spbBinsFrom) <- 0
+			svalue(spbBinsTo) <- 100
 		}
 	})
 
 	## change <from>	
-	addHandlerKeystroke(spb2, function(h,...) {
-		enabled(btn2) <- TRUE
+	addHandlerKeystroke(spbBinsFrom, function(h,...) {
+		enabled(btnRun) <- TRUE
 	})
-	addHandlerChanged(spb2, function(h,...) {
-		if (svalue(h$obj) >= svalue(spb3)) {
-			svalue(h$obj) <- max(0, (svalue(spb3)-1))
+	addHandlerChanged(spbBinsFrom, function(h,...) {
+		if (svalue(h$obj) >= svalue(spbBinsTo)) {
+			svalue(h$obj) <- max(0, (svalue(spbBinsTo)-1))
 		}
 	})
 	
 	
 	## change <to>	
-	addHandlerKeystroke(spb3, function(h,...) {
-		enabled(btn2) <- TRUE
+	addHandlerKeystroke(spbBinsTo, function(h,...) {
+		enabled(btnRun) <- TRUE
 	})
-	addHandlerChanged(spb3, function(h,...) {
-		if (svalue(h$obj) <= svalue(spb2)) {
-			svalue(h$obj) <- min(100, (svalue(spb2)+1))
+	addHandlerChanged(spbBinsTo, function(h,...) {
+		if (svalue(h$obj) <= svalue(spbBinsFrom)) {
+			svalue(h$obj) <- min(100, (svalue(spbBinsFrom)+1))
 		}
 	})
 	
@@ -742,7 +750,7 @@ function() {
 			name <- get("name", envir=e)
 			name <- name[-1]
 			assign("name", name, envir=e)
-			enabled(btn2) <- TRUE
+			enabled(btnRun) <- TRUE
 			asCategoricalDialog()
 		} else {
 			gmessage("The breaks are not correct", title="Breaks",icon = "warning")

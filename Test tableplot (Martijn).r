@@ -40,12 +40,21 @@ irisNA <- iris
 diamondsNA <- diamonds
 # simulate missing data
 is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
-tableplot(diamondsNA)
+tableplot(diamondsNA, from=40,to=50)
 
 data(movies)
 tableplot(movies[,c(3:5,17:24)], sortCol="rating", decreasing=FALSE, scales="lin", nBins=100)
 	
 
+## FIXED: error: Error in check.length("fill") : gpar element 'fill' must not be length 0
+tableplot(diamondsNA, colNames=c("table","cut","color","depth","price","x","y","clarity","carat"), sortCol=c(5,8), decreasing=c(TRUE,TRUE), scales=c("auto","auto","auto","auto","auto","auto","auto","auto","auto"), nBins=100, from=70, to=80)	
+	
+## also, command line: sortCol="c(7,5)", ...
+
+	
+	
+	
+	
 ########################
 
 

@@ -6,7 +6,7 @@ require(RColorBrewer)
 require(classInt)
 
 ## load tableplot scripts
-scriptmap <- "./TablePlot/R/"
+scriptmap <- "./tabplot/R/"
 setwd(scriptmap)
 sapply(list.files(), source)
 

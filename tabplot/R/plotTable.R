@@ -46,7 +46,7 @@ plotNumCol <- function(tCol, tab, blues, vpTitle, vpGraph, vpLegend){
 				 , width = unit(0.75, "points")
 				 , height = tab$rows$heights
 				 , just=c("left","bottom")
-				 , gp = gpar(col=NA, fill = blues[length(blues) + 1])
+				 , gp = gpar(col=NA, fill = blues[length(blues)])
 				 )
 
 		

@@ -44,7 +44,7 @@ function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
 	#####################
 	
 	# create random vector
-	rand <- sample.int(nrow(dat))
+	rand <- sample.int(nrow(dat), nrow(dat))
 	
 	# put all columns that are sorted in a list, and if decreasing, then change sign ('order' cannot handle a vectorized decreasing)
 	datList <- mapply(as.list(dat[sortCol]), decreasing, isNumber[sortCol], FUN=function(vec, decr, isNum) {

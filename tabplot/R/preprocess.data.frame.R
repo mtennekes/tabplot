@@ -110,8 +110,9 @@ function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
 	tab$scales <- scales
 	tab$isNumber <- isNumber
 	## tab$row contains info about bins/y-axis
-	tab$rows <- list( heights = binSizes/vp$m 
-	                , y = c(0,cumsum(binSizes/vp$m)[-nBins])
+
+	tab$rows <- list( heights = -(binSizes/vp$m)
+	                , y = 1- c(0,cumsum(binSizes/vp$m)[-nBins])
 	                , m = vp$m
 	                , from = from
 	                , to = to

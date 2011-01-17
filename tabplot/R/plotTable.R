@@ -225,7 +225,7 @@ function(tab) {
 			digits <- max(0,(max(sapply(rests, FUN=nchar))-2))
 			marksChar <- paste(formatC(tab$rows$marks, format="f", digits=digits),"%", sep="")
 			
-			ticks <- seq(0, 1, length.out=length(tab$rows$marks))
+			ticks <- seq(1, 0, length.out=length(tab$rows$marks))
 			grid.polyline(x=c(0.80,0.80,rep(c(0.75,0.80),length(ticks))),y=c(0,1,rep(ticks,each=2)),id=rep(1:(length(ticks)+1),each=2))
 			
 			## percentages labels

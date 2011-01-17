@@ -1,5 +1,5 @@
 preprocess.data.frame <-
-function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
+function(dat, colNames, sortCol,  decreasing, scales, palet, nBins, from, to) {
 
 
 	n <- length(colNames)
@@ -121,6 +121,7 @@ function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
 	
 	## create column list
 	tab$columns <- list()
+	paletNr <- 1
 	for (i in 1:n) {
 		sortc <- ifelse(i %in% sortCol, ifelse(decreasing[which(i==sortCol)], "decreasing", "increasing"), "")
 		col <- list(name = colNames[i], isnumeric = isNumber[i], sort=sortc)
@@ -130,6 +131,8 @@ function(dat, colNames, sortCol,  decreasing, scales, nBins, from, to) {
 		} else {
 			col$freq <- datFreq[[colNames[i]]]$freqTable
 			col$categories <- datFreq[[colNames[i]]]$categories
+			col$palet <- palet[paletNr]
+			paletNr <- ifelse(paletNr==length(palet), 1, paletNr + 1)
 		}
 		tab$columns[[i]] <- col
 	}

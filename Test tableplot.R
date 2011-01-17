@@ -15,7 +15,7 @@ require(ggplot2)
 data(diamonds)
 ## add some NA's
 is.na(diamonds$price) <- diamonds$cut=="Ideal"
-
+is.na(diamonds$cut) <- (runif(nrow(diamonds))>0.8)
 
 tableplot(diamonds)
 tableplot(diamonds
@@ -29,7 +29,6 @@ tableplot(diamonds
 
 
 tableGUI()
-
 		
 		
 ## test tableplot.R  manually

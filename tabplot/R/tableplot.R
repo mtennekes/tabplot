@@ -1,4 +1,4 @@
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", nBins=100, from=0,to=100) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", palet=c(1, 9, 3, 10), nBins=100, from=0,to=100) {
 
 
 	#####################################
@@ -40,6 +40,10 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, sc
 	if (length(scales)!=length(colNames)) stop(paste("<scales> should be of length ", length(colNames)))
 	if (length(setdiff(scales, c("auto", "lin", "log")))>0) stop("<scales> should consist of auto, lin and log")
 
+	## Check palet indices
+	if (!(class(palet) %in% c("numeric", "integer"))) stop("<palet> is not an integer vector")
+	if (any(palet<1) || any(palet>16)) stop("<palet> number(s) should be between 1 and 16")
+	
 	## Check nBins
 	if (class(nBins)[1]!="numeric") stop("<nBins> is not numeric")
 	if (nBins > nrow(dat)) { 
@@ -61,7 +65,7 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, sc
 	#### Preprocess
 	##########################
 
-	tab <- preprocess(dat, colNames, sortCol,  decreasing, scales, nBins, from,to)
+	tab <- preprocess(dat, colNames, sortCol,  decreasing, scales, palet, nBins, from,to)
 
 	scales <- tab$scales
 	isNumber <- tab$isNumber

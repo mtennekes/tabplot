@@ -276,7 +276,7 @@ function(tab) {
 				## Place sorting arrow before name
 				if (tCol$sort!="") {
 					arrowX <- min(0.1, 0.45 - 0.5 * nameWidth * cex)
-					grid.lines(x=rep(arrowX, 2), y=c(0.7,0.2), arrow=arrow(angle = 20, length = unit(0.3, "npc"),ends = ifelse(tCol$sort=="decreasing", "first", "last"), type = "open"))
+					grid.lines(x=rep(arrowX, 2), y=c(0.7,0.2), arrow=arrow(angle = 20, length = unit(0.3, "npc"),ends = ifelse(tCol$sort=="decreasing", "last", "first"), type = "open"))
 				}
 			})
 		

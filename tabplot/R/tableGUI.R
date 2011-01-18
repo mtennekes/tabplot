@@ -265,7 +265,7 @@ function() {
 		if (nrow(rows)!=0) {
 			if (nrow(tbl2)==0) {
 				tbl2[] <- rows
-				tbl2[1,4] <- "/\\"
+				tbl2[1,4] <- "\\/"
 			} else {
 				index <- svalue(tbl2, index=TRUE)
 				tbl2[] <- rbind(tbl2[], rows)
@@ -304,7 +304,7 @@ function() {
 		## remove objects from table1
 		tbl2[] <- tbl2[-indices,,drop=FALSE]
 		if ((nrow(tbl2)!=0) && (all(tbl2[,4]==""))) {
-			tbl2[1,4] <- "/\\"
+			tbl2[1,4] <- "\\/"
 		}
 	}
 			
@@ -557,7 +557,7 @@ function() {
 			sortColPrint <- paste("c(", paste(sortCol, collapse=","), ")", sep="")
 		}
 		
-		decreasing <- tbl2[sortID,4]=="/\\"
+		decreasing <- tbl2[sortID,4]=="\\/"
 		if (length(decreasing)==1) {
 			decreasingPrint <- decreasing
 		} else {
@@ -620,9 +620,9 @@ function() {
 		oldValues <- tbl2[index, 4]
 		
 		newValues <- oldValues
-		newValues[oldValues== ""] <- "/\\"
-		newValues[oldValues=="/\\"] <- "\\/"
-		newValues[oldValues=="\\/"] <- ""
+		newValues[oldValues== ""] <- "\\/"
+		newValues[oldValues=="\\/"] <- "/\\"
+		newValues[oldValues=="/\\"] <- ""
 		tbl2[index, 4] <- newValues
 		
 		if (all(tbl2[,4]=="")) {

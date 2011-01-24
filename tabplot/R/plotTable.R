@@ -275,8 +275,14 @@ function(tab) {
 
 				## Place sorting arrow before name
 				if (tCol$sort!="") {
-					arrowX <- min(0.1, 0.45 - 0.5 * nameWidth * cex)
-					grid.lines(x=rep(arrowX, 2), y=c(0.7,0.2), arrow=arrow(angle = 20, length = unit(0.3, "npc"),ends = ifelse(tCol$sort=="decreasing", "last", "first"), type = "open"))
+					grid.polygon( x = c(0.1, 0.4, 0.7)
+					            , y = if (tCol$sort=="decreasing") 
+									     c(0.6, 0.2, 0.6)
+								      else
+						                 c(0.2, 0.6, 0.2)
+							    , gp = gpar(fill="black")
+							    , default.units = "snpc"
+							    )
 				}
 			})
 		

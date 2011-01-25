@@ -1,27 +1,21 @@
-
-
-rootmap <- "d:/Rvis/"
-scriptmap <- paste(rootmap, "TablePlot/R/", sep="")
-datamap <- paste("k:/cbs/rvis/data/", sep="")
-
-setwd(scriptmap)
-source("tableplot.R")
-source(".plotTable.R")
-source("num2fac.R") 
-source("tableGUI.R")
+## dependencies
 require(gWidgets)
 require(gWidgetsRGtk2)
-#require(gWidgetstcltk)
 require(plyr)
 require(RColorBrewer)
 require(classInt)
 
-require(ff)
+## load tableplot scripts
+scriptmap <- "./tabplot/R/"
+setwd(scriptmap)
+sapply(list.files(), source)
+
 
 library(ggplot2)
 data(diamonds)
 
 diamonds$color[sample.int(50000, 5000)] <- NA
+
 
 
 ### test package #######
@@ -46,27 +40,7 @@ data(movies)
 tableplot(movies[,c(3:5,17:24)], sortCol="rating", decreasing=FALSE, scales="lin", nBins=100)
 	
 
-## FIXED: error: Error in check.length("fill") : gpar element 'fill' must not be length 0
-tableplot(diamondsNA, colNames=c("table","cut","color","depth","price","x","y","clarity","carat"), sortCol=c(5,8), decreasing=c(TRUE,TRUE), scales=c("auto","auto","auto","auto","auto","auto","auto","auto","auto"), nBins=100, from=70, to=80)	
-	
-## also, command line: sortCol="c(7,5)", ...
-
-	
-	
-	
-	
-########################
-
-
-setwd(datamap)
-load("ps0607.Rdata")
-load("ps07pop.Rdata")
-
-ps07pop_ffdf <- as.ffdf(ps07pop)
-
-
-tableplot(diamonds)
-
+tableplot(data.frame(palet_1_8 = factor(1:8), palet_9_16 = factor(9:16)))	
 
 # test manually
 dat <- diamonds

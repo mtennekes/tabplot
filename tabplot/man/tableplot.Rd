@@ -7,7 +7,7 @@ Visualization of large statistical datasets.
 A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package. Use \code{\link{tableGUI}} to customize this function with a GUI.
 }
 \usage{
-tableplot(dat, colNames = names(dat), sortCol = 1, decreasing = FALSE, scales = "auto", nBins = 100, from=0, to=100)
+tableplot(dat, colNames = names(dat), sortCol = 1, decreasing = TRUE, scales = "auto", palet = c(1, 9, 3, 10), nBins = 100, from=0, to=100)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +26,9 @@ tableplot(dat, colNames = names(dat), sortCol = 1, decreasing = FALSE, scales = 
   \item{scales}{
 	determines the horizontal axes of the numeric variables, options: "lin", "log", and "auto" for automatic detection. It should be either one value (applied to all numeric variables) or a vector of values of the same length as \code{colNames}.
 }
+  \item{palet}{
+	a vector of indices that determines the startings colors of the selected categorical variables. The indices are taken from a fixed palet (see \code{tableplot(data.frame(palet_1_8 = factor(1:8), palet_9_16 = factor(9:16)))}). If necessary, \code{palet} is cycled to obtain the number of selected categorical variables. This argument is not implemented in \code{\link{tableGUI}} yet.
+}
   \item{nBins}{
 	number of row bins
 }
@@ -36,6 +39,8 @@ tableplot(dat, colNames = names(dat), sortCol = 1, decreasing = FALSE, scales = 
 	percentage to which the data is shown
 }
 }
+
+
 
 \examples{
 \dontrun{

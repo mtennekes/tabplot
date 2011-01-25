@@ -1,4 +1,4 @@
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=FALSE, scales="auto", palet=c(1, 9, 3, 10), nBins=100, from=0,to=100) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", palet=c(1, 9, 3, 10), nBins=100, from=0,to=100) {
 
 
 	#####################################

@@ -11,8 +11,8 @@ A tableplot is a visualisation of a (large) statistical dataset with a dozen of 
 \tabular{ll}{
 Package: \tab tabplot\cr
 Type: \tab Package\cr
-Version: \tab 0.9\cr
-Date: \tab 2010-12-24\cr
+Version: \tab 0.9-1\cr
+Date: \tab 2011-01-25\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }

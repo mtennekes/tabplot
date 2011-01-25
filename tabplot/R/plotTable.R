@@ -88,7 +88,7 @@ plotCatCol <- function(tCol, tab, colorpalet, vpTitle, vpGraph, vpLegend){
 	cellplot(2,1,vpGraph, {
 
 		## determine color indices for categories
-		colorID <- rep(2:(length(colorpalet)+1), length.out=length(tCol$categories))
+		colorID <- rep(2:length(colorpalet), length.out=length(tCol$categories))
 		if (tail(tCol$categories, 1)=="missing") {
 			colorID[length(colorID)] <- 1
 		}

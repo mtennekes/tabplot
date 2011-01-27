@@ -86,7 +86,7 @@ function() {
 	addSpace(grp8, 100, horizontal=FALSE)
 
 	## create config frame
-	frm <- gframe(text="Tableplot Configuration",horizontal = FALSE, cont = ggg) 
+	frm <- gframe(text="Tableplot Configuration",horizontal = FALSE, cont = g) 
 	size(frm) <- c(350,400)
 	grp6 <- ggroup(horizontal = FALSE, cont = frm, expand=TRUE) 
 	#lbl3 <- glabel("Columns", cont=grp6)
@@ -852,4 +852,3 @@ function() {
 	svalue(sbr) <- "Ready"
 	visible(wdw) <- TRUE
 }
-

@@ -168,11 +168,6 @@ function(tab) {
 	lred <- brewer.pal(9,"Reds")[2]
 	red <- brewer.pal(9,"Set1")[1]
 	
-	set1 <- brewer.pal(9,"Set1")[2:9]
-	set2 <- brewer.pal(8,"Set2")[c(1:6,8,7)]
-	
-	color <- c(red, set1, set2)
-	
 	#############################
 	## Set layout
 	#############################
@@ -290,9 +285,7 @@ function(tab) {
 				plotNumCol(tCol, tab, blues, vpTitle, vpGraph, vpLegend)
 			}
 			else {
-				catPalet <- color[c(1, (tCol$palet+1):length(color))]
-				if (tCol$palet > 1) catPalet <- c(catPalet, color[2:(tCol$palet+1)])
-			
+				catPalet <- c(red, tCol$palet)
 				plotCatCol(tCol, tab, catPalet, vpTitle, vpGraph, vpLegend)
 			}
 		})

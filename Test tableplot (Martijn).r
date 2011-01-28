@@ -11,6 +11,12 @@ setwd(scriptmap)
 sapply(list.files(), source)
 
 
+### test package #######
+install.packages("./tabplot_0.9-1.zip")
+library(tabplot)
+
+
+## load data
 library(ggplot2)
 data(diamonds)
 
@@ -18,10 +24,6 @@ diamonds$color[sample.int(50000, 5000)] <- NA
 
 
 
-### test package #######
-
-install.packages("./tabplot_0.9.zip")
-library(tabplot)
 
 
 irisNA <- iris

@@ -1,5 +1,5 @@
 preprocess.data.frame <-
-function(dat, colNames, sortCol,  decreasing, scales, palet, nBins, from, to) {
+function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 
 
 	n <- length(colNames)
@@ -110,7 +110,6 @@ function(dat, colNames, sortCol,  decreasing, scales, palet, nBins, from, to) {
 	tab$scales <- scales
 	tab$isNumber <- isNumber
 	## tab$row contains info about bins/y-axis
-
 	tab$rows <- list( heights = -(binSizes/vp$m)
 	                , y = 1- c(0,cumsum(binSizes/vp$m)[-nBins])
 	                , m = vp$m
@@ -131,8 +130,8 @@ function(dat, colNames, sortCol,  decreasing, scales, palet, nBins, from, to) {
 		} else {
 			col$freq <- datFreq[[colNames[i]]]$freqTable
 			col$categories <- datFreq[[colNames[i]]]$categories
-			col$palet <- palet[paletNr]
-			paletNr <- ifelse(paletNr==length(palet), 1, paletNr + 1)
+			col$palet <- pals[[paletNr]]
+			paletNr <- ifelse(paletNr==length(pals), 1, paletNr + 1)
 		}
 		tab$columns[[i]] <- col
 	}

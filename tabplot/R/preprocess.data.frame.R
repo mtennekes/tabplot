@@ -81,12 +81,27 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		datMean <- ddply(dat, .(aggIndex), numcolwise(mean), na.rm=TRUE)
 		datMean <- datMean[-(nBins+1),-ncol(datMean), drop=FALSE]
 		
-		## calculate completion percentages
-		datCompl <- ddply(dat, .(aggIndex), numcolwise(function(x){sum(is.na(x))}))
+      ## calculate completion percentages
+		datCompl <- ddply(dat, .(aggIndex), numcolwise(function(x){sum(!is.na(x))/length(x)}))
 		datCompl <- datCompl[-(nBins+1),-ncol(datCompl), drop=FALSE]
-		datCompl <- as.data.frame(apply(datCompl, 2, function(x,y){100-floor(x/y*100)}, binSizes))
-
-		## set means of bins with all missings to 0
+		#datCompl <- as.data.frame(apply(datCompl, 2, function(x,y){100-floor(x/y*100)}, binSizes))
+      datMissing <- 1 - datCompl
+      
+      #calculate the min and max value of each column
+      datRange <- numcolwise(range)(dat, na.rm=TRUE)
+      #use it to calculate an lower and upper boundary for each bin
+		datLower <- (datCompl * datMean) + (datMissing * rep(as.integer(datRange[1,]), each=nBins))
+      datUpper <- (datCompl * datMean) + (datMissing * rep(as.integer(datRange[2,]), each=nBins))
+      
+      #print(datLower)
+      #print(datMean)
+      #print(datUpper)
+      #print(datCompl)
+      
+      #this should not be in percentage, correct it later...
+      datCompl <- 100 * datCompl
+		
+      ## set means of bins with all missings to 0
 		datMean[datCompl==0] <- 0
 	}
 		
@@ -127,12 +142,15 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		if (isNumber[i]) {
 			col$mean <- datMean[[colNames[i]]]
 			col$compl <- datCompl[[colNames[i]]]
+			col$lower <- datLower[[colNames[i]]]
+			col$upper <- datUpper[[colNames[i]]]
 		} else {
 			col$freq <- datFreq[[colNames[i]]]$freqTable
 			col$categories <- datFreq[[colNames[i]]]$categories
 			col$palet <- pals[[paletNr]]
 			paletNr <- ifelse(paletNr==length(pals), 1, paletNr + 1)
 		}
+      #print(col)
 		tab$columns[[i]] <- col
 	}
 	

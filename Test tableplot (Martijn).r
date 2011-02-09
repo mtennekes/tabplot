@@ -8,6 +8,7 @@ require(classInt)
 ## load tableplot scripts
 scriptmap <- "./tabplot/R/"
 setwd(scriptmap)
+
 sapply(list.files(), source)
 
 
@@ -23,19 +24,31 @@ data(diamonds)
 diamonds$color[sample.int(50000, 5000)] <- NA
 
 
-
-
-
 irisNA <- iris
-	# simulate missing data
-	is.na(irisNA$Sepal.Width) <- sample(1:nrow(iris), 30)
-	is.na(irisNA$Species) <- sample(1:nrow(iris), 15)
-
-	tableplot(irisNA)
+# simulate missing data
+is.na(irisNA$Sepal.Width) <- sample(1:nrow(iris), 30)
+is.na(irisNA$Species) <- sample(1:nrow(iris), 15)
 
 diamondsNA <- diamonds
 # simulate missing data
 is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
+
+
+## test GUI
+
+tableGUI()
+
+
+
+
+
+
+
+
+
+
+
+
 tableplot(diamondsNA, from=40,to=50)
 
 data(movies)

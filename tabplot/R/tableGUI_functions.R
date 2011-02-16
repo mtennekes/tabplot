@@ -2,8 +2,7 @@
 	## internal GUI functions
 	######################################################
 	
-tableGUIfunctions <- function(e) {
-	eval({
+tableGUIfunctions <- function() {
 		## should newly created variable be kept?
 		saveVars <- function(indices=rep(TRUE, nrow(tbl2)), parent=wdw) {
 
@@ -259,6 +258,4 @@ tableGUIfunctions <- function(e) {
 				}
 			}
 		}
-	}, envir=e)
-	return(e)
 }

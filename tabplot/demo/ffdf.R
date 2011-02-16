@@ -17,7 +17,7 @@ dup <- function(ffx, power){
 	nrow(ffx) <- 2^(power) * len
 	while (2*len <= nrow(ffx)){
 		for (i in chunk(ffx, from=len+1, to=2*len)){
-		   ffx[i,] <- ffx[ri(i[1]-len, i[2]-len),]
+		   ffx[i,] <- ffx[i-len,]
 		}
 		len <- 2*len
 	}

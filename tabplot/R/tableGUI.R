@@ -170,8 +170,11 @@ function() {
 	btnCancel <- gbutton("Cancel", cont=grp18, expand=TRUE)
 	name <- character(0)
 	
-	e <- tableGUIfunctions(e)
-	e <- tableGUIhandlers(e)
+   
+	environment(tableGUIfunctions) <- e
+   tableGUIfunctions()
+	environment(tableGUIhandlers) <- e
+   tableGUIhandlers()
 	
 	######################################################
 	## activate GUI

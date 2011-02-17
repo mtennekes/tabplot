@@ -171,11 +171,10 @@ function() {
 	name <- character(0)
 	
    
-	environment(tableGUIfunctions) <- e
-   tableGUIfunctions()
-	environment(tableGUIhandlers) <- e
-   tableGUIhandlers()
-	
+    tableGUIfunctions(e)
+    tableGUIhandlers(e)
+   
+
 	######################################################
 	## activate GUI
 	######################################################

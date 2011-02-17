@@ -2,8 +2,9 @@
 	## add handlers
 	######################################################
 	
-tableGUIhandlers <- function() {
+tableGUIhandlers <- function(e) {
 #	browser()
+	with(e, {	
 		## select data.frame
 		addHandlerChanged(cmb, handler = function(h,...) {
 			saveVars()
@@ -412,4 +413,5 @@ tableGUIhandlers <- function() {
 			}
 
 		})
+	})
 }

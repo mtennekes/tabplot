@@ -7,172 +7,21 @@ function() {
 	options("guiToolkit"="RGtk2")
 
 	e <- environment()
-	   
-	## Internal function to receive all loaded data.frames
-	lsDF <- function(envir=.GlobalEnv) {
-		varNames <- ls(envir=envir)
-		dfs <- sapply(varNames, function(i) inherits(get(i,envir=envir),c("data.frame", "ffdf"), which=FALSE)[1])
-		if (length(dfs)==0) {
-			return(character(0))
-		} else {
-			return(varNames[dfs])
-		}
-	}
-	
-	## Internal function to receive the column names from all loaded data.frames
-	lsColnames <- function() {
-		sapply(lsDF(),FUN=function(i) names(get(i)), simplify=FALSE)
-	}
-
-	## function to get classes
-	getClasses <- function(vars) {
-		n <- length(vars)
-		if (class(get(currentDF,envir=.GlobalEnv))=="ffdf") {
-			dfTypes <- character(n)
-			tmp <- get(currentDF,envir=.GlobalEnv)
-			ind <- sapply(vars, FUN=function(x,y){which(x==y)}, names(tmp))
-			for (i in 1:n) {
-				tmp <- get(currentDF,envir=.GlobalEnv)[[ind[i]]]
-				dfTypes[i] <- ifelse(is.null(ramclass(tmp)), "numeric", ramclass(tmp)[1])
-			}
-		} else {
-			dfTypes <- sapply(get(currentDF,envir=.GlobalEnv)[vars], FUN=function(x) class(x)[1])
-		}
-		return(dfTypes)
-	}
-
-	
 	
 
-	## receive list of loaded data.frames and its column names
-	datlist <- lsDF()
-	if (length(datlist)==0) stop("No data.frames loaded.")
-	allCols <- lsColnames()
-
-	######################################################
-	## create GUI
-	######################################################
+	# load information about loaded data.frames
+	tableGUI_init_data(e)	
 	
-	## create window
-	wdw <- gwindow("Tableplot",visible=FALSE)
-	sbr <- gstatusbar("Preparing...", cont=wdw)
-	g <- gpanedgroup(cont=wdw)
-
-	## create source frame
-	ggg <- ggroup(horizontal = TRUE, cont = g, expand=TRUE)
-	frm2 <- gframe(text="Source",horizontal = FALSE, cont = ggg) 
-	size(frm2) <- c(250,400)
-	grp4 <- ggroup(horizontal = FALSE, cont = frm2, expand=TRUE)
-	grp9 <- ggroup(horizontal = TRUE, cont = grp4, expand=FALSE)
-	lbl3 <- glabel("Data.frame:", cont=grp9)
-	cmb <- gcombobox(datlist, cont=grp9)
-	addSpring(grp9)
-	btnReload <- gbutton("Reload", cont=grp9, expand=FALSE)
-
-	## get selected dataframe and fill table 1
-	currentDF <- svalue(cmb)
-	dfNames <- names(get(currentDF,envir=.GlobalEnv))
-	dfTypes <- getClasses(dfNames)
-	tbl1 <- gtable(data.frame(Variable=dfNames, Class=dfTypes, stringsAsFactors=FALSE), multiple=TRUE, cont=grp4, expand=TRUE)
-
-	grp10 <- ggroup(horizontal = TRUE, cont = grp4, expand=FALSE)
-	lbl4 <- glabel("Number of Objects:", cont=grp10)
-	lbl5 <- glabel(nrow(get(svalue(cmb), envir=.GlobalEnv)), cont=grp10) 
-
-	## create transfer button
-	grp8 <- ggroup(horizontal = FALSE, cont = ggg, anchor=c(-1, -1),expand=TRUE)
-	addSpring(grp8)
-	btnTransfer <- gbutton(">", cont=grp8, expand=TRUE); enabled(btnTransfer) <- FALSE
-	addSpace(grp8, 100, horizontal=FALSE)
-
-	## create config frame
-	frm <- gframe(text="Tableplot Configuration",horizontal = FALSE, cont = g) 
-	size(frm) <- c(350,400)
-	grp6 <- ggroup(horizontal = FALSE, cont = frm, expand=TRUE) 
-	#lbl3 <- glabel("Columns", cont=grp6)
-
-	tbl2 <- gtable(data.frame(Variable=paste(rep(" ", 25), collapse=" "), Type= paste(rep(" ", 13), collapse=" "), Scale="", Sort="", stringsAsFactors=FALSE), multiple=TRUE, cont=grp6, expand=TRUE)
-
-	grp7 <- ggroup(horizontal = TRUE, cont = grp6, expand=FALSE) 
-	btnUp <- gbutton("Up", cont=grp7, expand=TRUE); enabled(btnUp) <- FALSE
-	btnDown <- gbutton("Down", cont=grp7, expand=TRUE); enabled(btnDown) <- FALSE
-	btnScale <- gbutton("Scale", cont=grp7, expand=TRUE); enabled(btnScale) <- FALSE
-	btnSort <- gbutton("Sort", cont=grp7, expand=TRUE); enabled(btnSort) <- FALSE
-	btnAsCategory <- gbutton("As Categorical", cont=grp7, expand=TRUE); enabled(btnAsCategory) <- FALSE
-
-	#lbl10 <- glabel("Rows", cont=grp6)
+	# create main GUI
+	tableGUI_main_layout(e)
 	
-	grp2 <- ggroup(horizontal = TRUE, cont = grp6) 
-	cbx <- gcheckbox(text="Zoom in", checked = FALSE, cont= grp2)
-	lbl7 <- glabel("from", cont=grp2)
-	spbBinsFrom <- gspinbutton(0, 100, by = 10, cont=grp2, expand=FALSE)
-	svalue(spbBinsFrom) <- 0
+	## create window for num2fac  
+	tableGUI_n2f_layout(e)
 	
-	lbl8 <- glabel("percent to", cont=grp2)
-	spbBinsTo <- gspinbutton(0, 100, by = 10, cont=grp2, expand=FALSE)
-	svalue(spbBinsTo) <- 100
-	lbl9 <- glabel("percent", cont=grp2)
-	enabled(lbl7) <- FALSE
-	enabled(spbBinsFrom) <- FALSE
-	enabled(lbl8) <- FALSE
-	enabled(spbBinsTo) <- FALSE
-	enabled(lbl9) <- FALSE
-		
-	grp1 <- ggroup(horizontal = TRUE, cont = grp6) 
-	lbl1 <- glabel("Number of Row Bins:", cont=grp1)
-	spbBins <- gspinbutton(0, 1000, by = 10, cont=grp1, expand=TRUE)
-	svalue(spbBins) <- 100
-	btnRun <- gbutton("Run", cont=grp1, expand=TRUE); enabled(btnRun) <- FALSE
-
-	
-	
-	## Create window for num2fac  
-	
-	wdw2 <- gwindow("As Categorical", parent=wdw, width=200, height=100, visible=FALSE)
-	g2 <- gpanedgroup(cont=wdw2)
-	
-	grp16 <- ggroup(horizontal = TRUE, cont=g2)
-
-	grp11 <- ggroup(horizontal = FALSE, cont=grp16)
-
-	grp15 <- ggroup(horizontal = TRUE, cont=grp11)
-	lbl4 <- glabel("Variable name:", cont=grp15)
-	lbl6 <- glabel(text="", width=13, cont=grp15)
-	
-	grp12 <- ggroup(horizontal = TRUE, cont=grp11)
-
-	n2f.method <- c("fixed", "pretty", "kmeans", "discrete")
-	frm4 <- gframe(text="Method", cont=grp12)
-	rad2 <- gradio(n2f.method, cont=frm4)
-
-	n2f.scale <- c("lineair", "logarithmic", "automatic")
-	frm3 <- gframe(text="Scale", cont=grp12)
-	rad <- gradio(n2f.scale, cont=frm3)
-
-	grp17 <- ggroup(horizontal = FALSE, cont=grp16)
-
-	grp13 <- ggroup(horizontal = TRUE, cont=grp17)
-	lbl2 <- glabel(text="Number of Categories:", cont=grp13)
-	cmb2 <- gcombobox(c("auto", 2:9), cont=grp13)
-	#edt <- gedit(text="", width=3, cont=grp13)
-
-	grp14 <- ggroup(horizontal = TRUE, cont=grp17)
-	frm6 <- gframe("Breaks", cont=grp14)
-	lay2 <- glayout(container=frm6, spacing=0)
-	for (i in 1:3) {
-		for (j in 1:3) {
-			lay2[j, i] <- gedit(text="", width=7)
-		}
-	}
-	enabled(lay2) <- FALSE
-	grp18 <- ggroup(horizontal = TRUE, cont=grp17)
-	btnOK <- gbutton("OK", cont=grp18, expand=TRUE)
-	btnCancel <- gbutton("Cancel", cont=grp18, expand=TRUE)
-	name <- character(0)
-	
-   
-    tableGUIfunctions(e)
-    tableGUIhandlers(e)
+	# functions and handlers
+    tableGUI_main_functions(e)
+    tableGUI_main_handlers(e)
+    tableGUI_n2f_handlers(e)
    
 
 	######################################################

@@ -38,6 +38,7 @@ is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
 
 tableGUI()
 
+tableplot(diamonds,pals=list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4))
 
 
 

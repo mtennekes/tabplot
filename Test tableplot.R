@@ -5,6 +5,7 @@ require(plyr)
 require(RColorBrewer)
 require(classInt)
 
+
 ## load tableplot scripts
 scriptmap <- "./tabplot/R/"
 setwd(scriptmap)
@@ -18,35 +19,11 @@ is.na(diamonds$price) <- diamonds$cut=="Ideal"
 is.na(diamonds$cut) <- (runif(nrow(diamonds))>0.8)
 
 tableplot(diamonds)
-tableplot(diamonds
-		, colNames=names(diamonds)
-		, sortCol=c(3,1)
-		, decreasing=c(FALSE, TRUE)
-		, scales="auto"
-		, nBins=100
-		, from=0
-		,to=100)
+
+## test user-specified palettes
+tableplot(diamonds,pals=list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4))
 
 
 tableGUI()
 		
 		
-## test tableplot.R  manually
-dat <- diamonds
-colNames <- names(dat)[c(1,3,4)]
-sortCol <- colNames[c(1,2)]
-decreasing <- c(FALSE, TRUE)
-scales <- "auto"
-nBins <- 100
-from <- 25
-to <- 50
-
-tab <- preprocess(diamonds
-		, colNames=names(diamonds)
-		, sortCol=c(3,1)
-		, decreasing=c(FALSE, TRUE)
-		, scales="auto"
-		, nBins=100
-		, from=0
-		,to=100)
-

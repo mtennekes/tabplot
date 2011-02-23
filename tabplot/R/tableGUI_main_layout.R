@@ -5,7 +5,6 @@ tableGUI_main_layout <- function(e) {
 		######################################################
 		## create GUI
 		######################################################
-		
 		## create window
 		wdw <- gwindow("Tableplot",visible=FALSE)
 		sbr <- gstatusbar("Preparing...", cont=wdw)
@@ -23,7 +22,8 @@ tableGUI_main_layout <- function(e) {
 		btnReload <- gbutton("Reload", cont=grp9, expand=FALSE)
 
 		## fill table 1
-		tbl1 <- gtable(table1, multiple=TRUE, cont=grp4, expand=TRUE)
+		
+		tbl1 <- gtable(tableGUI_getTbl1(e=environment()), multiple=TRUE, cont=grp4, expand=TRUE)
 
 		grp10 <- ggroup(horizontal = TRUE, cont = grp4, expand=FALSE)
 		lbl4 <- glabel("Number of Objects:", cont=grp10)
@@ -41,7 +41,7 @@ tableGUI_main_layout <- function(e) {
 		grp6 <- ggroup(horizontal = FALSE, cont = frm, expand=TRUE) 
 		#lbl3 <- glabel("Columns", cont=grp6)
 
-		tbl2 <- gtable(table2, multiple=TRUE, cont=grp6, expand=TRUE)
+		tbl2 <- gtable(tableGUI_getTbl2(e=environment()), multiple=TRUE, cont=grp6, expand=TRUE)
 
 		grp7 <- ggroup(horizontal = TRUE, cont = grp6, expand=FALSE) 
 		btnUp <- gbutton("Up", cont=grp7, expand=TRUE); enabled(btnUp) <- FALSE

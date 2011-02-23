@@ -1,4 +1,4 @@
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0,to=100) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100) {
 
 
 	#####################################
@@ -18,47 +18,16 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	n <- length(colNames)
 
 	## Check sortCol, and (if necessary) cast it to indices
-	if (class(sortCol)[1]=="character") {
-		if (!all(sortCol %in% colNames)) stop("invalid <sortCol>")
-		sortCol <- sapply(sortCol, FUN=function(x) which(x==colNames))
-	} else if (class(sortCol)[1] %in% c("numeric", "integer")) {
-		if (any(sortCol > ncol(dat)) || any(sortCol < 1)) {
-			stop("<sortCol> has an invalid value")
-		}
-	} else {
-		stop("<sortCol> is not a character or numeric value or vector")
-	}
+	sortCol <- tableplot_checkSortCol(sortCol, colNames)
 
 	## Check decreasing vector
-	if (class(decreasing)[1]!="logical") stop("<decreasing> is not a logical")
-	if (length(decreasing)==1) {
-		decreasing <- rep(decreasing, length(sortCol))
-	} else if (length(decreasing) != length(sortCol)) stop("<sortCol> and <decreasing> have different lengths")
-	
+	decreasing <- tableplot_checkDecreasing(decreasing, sortCol)
+
 	## Check scales
-	if (length(scales)==1) scales <- rep(scales, n)
-	if (length(scales)!=length(colNames)) stop(paste("<scales> should be of length ", length(colNames)))
-	if (length(setdiff(scales, c("auto", "lin", "log")))>0) stop("<scales> should consist of auto, lin and log")
-
-
-
-	defaultPal <- c(brewer.pal(9,"Set1")[2:9], brewer.pal(8,"Set2"))
+	scales <- tableplot_checkScales(scales, n)
 
 	## Check palet indices
-	if (class(pals)!="list") stop("<pals> is not a list")
-	pals <- lapply(pals, FUN=function(x, defaultPal){
-		if (class(x) %in% c("numeric", "integer")) {
-			if (x<1 || x>16) stop("<pals> number(s) should be between 1 and 16")
-			pal <- defaultPal[x:length(defaultPal)]
-			if (x!=1) pal <- c(pal, defaultPal[1:(x-1)])
-			return(pal)
-		} else {
-			if (class(try(col2rgb(x), silent=TRUE))=="try-error") {
-				stop("<pals> color palette(s) are not correct")
-			}
-			return(x)
-		}
-	}, defaultPal)
+	pals <- tableplot_checkPals(pals, convertDefault=TRUE)
 	
 	## Check nBins
 	if (class(nBins)[1]!="numeric") stop("<nBins> is not numeric")

@@ -7,76 +7,72 @@ tableGUI_main_handlers <- function(e) {
 	with(e, {	
 		## select data.frame
 		addHandlerChanged(cmb, handler = function(h,...) {
-			saveVars()
-
 			if (is.null(svalue(h$obj))) {
-				svalue(h$obj) <- currentDF
-			} else {
-				dfName <- svalue(h$obj)
-				assign("currentDF", dfName, envir=e)
-				dfNames <- names(get(currentDF, envir=.GlobalEnv))
-				dfTypes <- getClasses(dfNames)
-				
-				tbl1[] <- data.frame(Variable=dfNames, Class=dfTypes, stringsAsFactors=FALSE)
-				tbl2[] <- data.frame(Variable=character(0), Type=character(0), Scale=character(0), Sort=character(0), stringsAsFactors=FALSE)
-				nr <- nrow(get(dfName,envir=.GlobalEnv))
-				svalue(lbl5) <- nr
-				if (nr<2) {
-					svalue(sbr) <- ifelse(nr==0, "Warning: no objects available.", "Warning: only one object available.")
-					svalue(spbBins) <- nr
-				} else if (nr < 10) {
-					svalue(sbr) <- "Warning: only a few objects available. Number of row bins will be ignored."
-					svalue(spbBins) <- nr
-				} else {
-					svalue(sbr) <- ""
-					svalue(spbBins) <- min(nr, 100)
-				}
-				enabled(btnTransfer) <- FALSE
-				#enabled(spbBins) <- TRUE
-				#enabled(btnRun) <- FALSE
+				svalue(h$obj) <- tableGUI_getCurrentDFname(e)
 			}
+			
+			tableGUI_refreshDF(newDF=svalue(h$obj), wdw, e)
+			
+			tbl1[] <- tableGUI_getTbl1(e=e)
+			tbl2[] <- tableGUI_getTbl2(e=e)
+			
+			nr <- tableGUI_getCurrentDFnrow(e)
+			
+			svalue(lbl5) <- nr
+
+			if (nr<2) {
+				svalue(sbr) <- ifelse(nr==0, "Warning: no objects available.", "Warning: only one object available.")
+				svalue(spbBins) <- nr
+			} else if (nr < 10) {
+				svalue(sbr) <- "Warning: only a few objects available. Number of row bins will be ignored."
+				svalue(spbBins) <- nr
+			} else {
+				svalue(sbr) <- ""
+				svalue(spbBins) <- min(nr, 100)
+			}
+			enabled(btnTransfer) <- FALSE
+			#enabled(spbBins) <- TRUE
+			#enabled(btnRun) <- FALSE
+			
 		})
 
 		## refresh table1
 		addHandlerClicked(btnReload, function(h,...) {
-			datlist_new <- lsDF()
-			if (length(datlist_new)==0) stop("No data.frames loaded.")
-			allCols_new <- lsColnames()
-			
-			blockHandler(cmb)
-			cmb[] <- datlist_new
-			unblockHandler(cmb)
-			
-			if (!(currentDF %in% datlist_new)) {
-				assign("currentDF", datlist_new[1], envir=e)
-			}			
-			
-			#  bypass saveVars
-			if (nrow(tbl2)!=0) {
-				allCols[[currentDF]] <- tbl2[,1]
-				assign("allCols", allCols, envir=e)
-			}
-				
-			svalue(cmb) <- currentDF
-			
-			assign("datlist", datlist_new, envir=e)
-			assign("allCols", allCols_new, envir=e)
-			#changeTbl2()
+			tableGUI_init_data(e=e)
+			tbl1[] <- tableGUI_getTbl1(e=e)
+			tbl2[] <- tableGUI_getTbl2(e=e)
+			svalue(cmb) <- tableGUI_getCurrentDFname(e)
 		})
 		
 		## transfer variables
 		addHandlerClicked(btnTransfer, function(h,...) {
+		#browser()
 			enabled(btnTransfer) <- FALSE
 			svalue(sbr) <- "Transferring variable(s)..."
 			if (svalue(btnTransfer)==">") {
 				indices <- svalue(tbl1, index=TRUE)
-				transLR(indices)
+				vars2 <- tableGUI_selectVars(tbl1[indices, 1], e=e, parent=wdw)
+				if(nrow(tbl2)!=0) vars2 <- c(tbl2[,1], vars2)
+				tbl2[] <- tableGUI_getTbl2(vars=vars2, e=e)
+
+				vars1 <- setdiff(tbl1[,1], vars2)
+				tbl1[] <- tableGUI_getTbl1(vars=vars1, e=e)
 				svalue(btnTransfer)<-">"
 				enabled(btnRun) <- TRUE
 				enabled(btnTransfer) <- FALSE
 			} else {
 				indices <- svalue(tbl2, index=TRUE)
-				transRL(indices)
+				vars <- tableGUI_unselectVars(tbl2[indices, 1], e=e)
+				
+				if (nrow(tbl1)!=0) {
+					vars1 <- c(tbl1[,1], vars)
+				} else {
+					vars1 <- vars
+				}
+				tbl1[] <- tableGUI_getTbl1(vars=vars1, e=e)
+				
+				vars2 <- setdiff(tbl2[,1], vars)
+				tbl2[] <- tableGUI_getTbl2(vars=vars2, e=e)
 				svalue(btnTransfer)<-"<"
 			}
 			svalue(sbr) <- "Ready"
@@ -87,7 +83,7 @@ tableGUI_main_handlers <- function(e) {
 			enabled(btnRun) <- (svalue(spbBins) > 0 && nrow(tbl2)!=0)
 		})
 		addHandlerChanged(spbBins, function(h,...) {
-			mx <- nrow(get(currentDF,envir=.GlobalEnv))
+			mx <- tableGUI_getCurrentDFnrow(e)
 			if (svalue(h$obj) >  mx) {
 				svalue(spbBins) <- mx
 			}
@@ -101,49 +97,12 @@ tableGUI_main_handlers <- function(e) {
 			enabled(btnRun) <- FALSE
 			svalue(sbr) <- "Preparing tableplot..."
 			
-			from <- svalue(spbBinsFrom)
-			to <- svalue(spbBinsTo)
-			nBins <- min(svalue(spbBins), nrow(get(currentDF, envir=.GlobalEnv)))
+			gui_from <- svalue(spbBinsFrom)
+			gui_to <- svalue(spbBinsTo)
+			gui_nBins <- svalue(spbBins)
 			
-			colNames <- tbl2[,1]
+			tableGUI_run(tbl2[,1], gui_from, gui_to, gui_nBins, e) 
 			
-			
-			# prepare scales
-			scales <- tbl2[,3]
-			scales[scales==""] <- "auto"
-			if (all(scales==scales[1])) {
-				scales <- scales[1]
-				scalesPrint <- paste("\"", scales, "\"", sep="")
-			} else {
-				scalesPrint <- paste("c(\"", paste(scales,collapse="\",\""),"\")", sep="")
-			}
-
-			# prepare sortCol and decreasing
-			sortID <- which(tbl2[,4]!="")
-			sortColNames <- tbl2[sortID,1]
-			sortCol <- sapply(sortColNames, FUN=function(x, y) which(x==y), colNames)
-			if (length(sortCol)==1) {
-				sortColPrint <- as.character(sortCol)
-			} else {
-				sortColPrint <- paste("c(", paste(sortCol, collapse=","), ")", sep="")
-			}
-			
-			decreasing <- tbl2[sortID,4]=="\\/"
-			if (length(decreasing)==1) {
-				decreasingPrint <- decreasing
-			} else {
-				decreasingPrint <- paste("c(", paste(decreasing,collapse=","),")", sep="")
-			}
-
-			
-			## print commandline to reproduce tableplot
-			cat("tableplot(", currentDF, ", colNames=c(", paste("\"",paste(colNames,collapse="\",\""),"\"", sep=""), "), sortCol=", sortColPrint, ", decreasing=", decreasingPrint, ", scales=", scalesPrint, ", nBins=", nBins, ", from=", from, ", to=", to, ")\n", sep="")
-			
-			if (dev.cur()==1) {
-				dev.new(width=min(11, 2+2*nrow(tbl2)), height=7, rescale="fixed")
-			}
-			
-			tableplot(get(currentDF, envir=.GlobalEnv)[colNames], sortCol=sortCol, decreasing=decreasing, scales=scales, nBins=nBins, from=from, to=to)
 			svalue(sbr) <- "Ready"
 		})
 
@@ -180,8 +139,11 @@ tableGUI_main_handlers <- function(e) {
 			newValues <- oldValues
 			newValues[oldValues=="auto"] <- "lin"
 			newValues[oldValues=="lin"] <- "log"
-			newValues[oldValues=="log"] <- ifelse(class(get(currentDF,envir=.GlobalEnv))=="ffdf", "lin", "auto")
+			newValues[oldValues=="log"] <- ifelse(tableGUI_getCurrentDFclass(e)=="ffdf", "lin", "auto")
 			tbl2[index, 3] <- newValues
+			
+			tableGUI_setVarTbl(vars=tbl2[index, 1], cols="Scale", value=newValues, e=e)
+			
 			enabled(btnRun) <- TRUE
 		})
 		  
@@ -195,6 +157,8 @@ tableGUI_main_handlers <- function(e) {
 			newValues[oldValues=="\\/"] <- "/\\"
 			newValues[oldValues=="/\\"] <- ""
 			tbl2[index, 4] <- newValues
+			
+			tableGUI_setVarTbl(vars=tbl2[index, 1], cols="Sort", value=newValues, e=e)
 			
 			if (all(tbl2[,4]=="")) {
 				svalue(sbr) <- "Warning: no colums are sorted"
@@ -272,10 +236,86 @@ tableGUI_main_handlers <- function(e) {
 			changeTbl2()
 		})
 		
+		
+		
+		
 		## quit GUI window
 		addHandlerDestroy(wdw, function(h,...) {
 			#dispose(wdw2)
-			saveVars(parent=NULL)
+			newvars <- tableGUI_saveVars(parent=NULL, e=e)
 		})
+		
+		asCategoricalDialog <- function() {
+			name <- get("name", envir=e)
+			if (length(name)!=0) {
+				varname <- name[1]
+				svalue(sbr) <- paste("Transforming", varname, "to a categorical variable...")
+				varID <- which(tbl2[,1]==varname)
+				svalue(rad) <- ifelse(tbl2[varID,3]=="auto", "automatic", ifelse(tbl2[varID,3]=="log", "logarithmic", "lineair"))
+				svalue(rad2) <- "pretty"
+				svalue(lbl6) <- varname
+				svalue(cmb2) <- 5
+				
+				visible(wdw2) <- TRUE
+				enabled(wdw) <- FALSE
+			} else {
+				# check if GUI is not destroyed
+				if (class(wdw@widget@widget)[1]!="<invalid>") {
+					svalue(sbr) <- "Ready"	
+					enabled(wdw) <- TRUE
+					visible(wdw2) <- FALSE
+				}
+			}
+		}
+		
+		
+		
+		changeTbl2 <- function() {
+			if (nrow(tbl2)==0) {
+				# disable run button
+				enabled(btnRun) <- FALSE
+				# disable number of bins
+				enabled(lbl1) <- FALSE
+				enabled(spbBins) <- FALSE
+				
+				# disable button row under tbl2
+				enabled(btnUp) <- FALSE
+				enabled(btnDown) <- FALSE
+				enabled(btnSort) <- FALSE
+				enabled(btnAsCategory) <- FALSE
+				enabled(btnScale) <- FALSE
+				
+				# disable zoom line
+				svalue(cbx) <- FALSE
+				enabled(cbx) <- FALSE
+
+			} else {
+				# enable zoom
+				enabled(cbx) <- TRUE
+				# enable number of bins
+				enabled(lbl1) <- TRUE
+				enabled(spbBins) <- TRUE
+				
+				# check selected rows
+				index <- svalue(tbl2, index=TRUE)
+				if (length(index)!=0) {
+					# enable buttons
+					enabled(btnUp) <- all(index > 1)
+					enabled(btnDown) <- all(index < nrow(tbl2))
+					enabled(btnSort) <- TRUE
+					enabled(btnAsCategory) <- (any(substr(tbl2[index, 2],1,3)=="num") && tableGUI_getCurrentDFclass(e)!="ffdf")
+					enabled(btnScale) <- TRUE
+					enabled(btnTransfer) <- TRUE
+					svalue(btnTransfer) <- "<"
+				} else {
+					# disable button row
+					enabled(btnUp) <- FALSE
+					enabled(btnDown) <- FALSE
+					enabled(btnSort) <- FALSE
+					enabled(btnAsCategory) <- FALSE
+					enabled(btnScale) <- FALSE
+				}
+			}
+		}
 	})
 }

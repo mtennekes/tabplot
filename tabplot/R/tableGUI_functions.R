@@ -1,64 +1,60 @@
-tableGUI_emptyVarTbl <- data.frame(Variable=character(0), Class=character(0), Levels=numeric(0), Type=character(0), 
-	Scale=character(0), Sort=character(0), Pal=character(0), PalInitNr=numeric(0), Palette=character(0), Selected=logical(0), New=logical(0), stringsAsFactors=FALSE)
-
-tableGUI_fillVarTbl <- function(DF, vars, sorts, scales, palettes) {
-#browser()
+## create the data.frame varTbl, containing the administration of the current dataframe
+tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames) {
 	dfNames <- names(get(DF, envir=.GlobalEnv))
-	dfClasses <- getClasses(dfNames, currentDF)
+	dfClasses <- getClasses(dfNames, DF)
 	dfLevels <- sapply(dfNames, FUN=function(x){nlevels(get(DF,envir=.GlobalEnv)[[x]])})
+	dfLevels[dfClasses=="logical"] <- 2
 	
 	dfTypes <- mapply(dfClasses, dfLevels, FUN=function(x,y) {
-			ifelse(x=="factor", paste("categorical (", y, ")", sep=""),
+			ifelse(x%in%c("factor", "logical"), paste("categorical (", y, ")", sep=""),
 				ifelse(x=="logical", "categorical (2)",
 					ifelse(x %in% c("numeric", "integer"), "numeric", "unknown")))
 		})
 	
+	dfSort <- rep("", length(dfNames))
 	dfScale <- sapply(dfClasses, FUN=function(x) {
 			ifelse(x %in% c("numeric", "integer"), "auto", "")
 		})
-	
-	dfPalette <- rep("default", length(dfNames))
-
-	dfSort <- rep("", length(dfNames))
-	
-	if(length(vars)!=0) {
-		
+	dfPalette <- rep("", length(dfNames))
+	dfSelected <- rep(FALSE, length(dfNames))
+	if (length(vars)!=0) {
 		indices <- sapply(vars, FUN=function(x,y){which(x==y)}, dfNames)
 		
-		dfScales[indices] <- scales
 		dfSort[indices] <- sorts
-		dfPalette <- palettes
+		
+		dfScales <- rep("", length(dfNames))
+		dfScales[indices] <- scales
+		dfPalette[indices] <- palNames
+		dfSelected[indices] <- TRUE
 	}
 	
-	varTbl <- data.frame(Variable=dfNames, Class=dfClasses, Levels=dfLevels, Type=dfTypes, Scale=dfScale, Sort=dfSort, Pal="Default", PalInitNr = 1, Palette = dfPalette, Selected = FALSE, Position=0, New = FALSE, stringsAsFactors=FALSE)
+	varTbl <- data.frame(Variable=dfNames, Class=dfClasses, Levels=dfLevels, Type=dfTypes, Scale=dfScale, Sort=dfSort, Palette = dfPalette, Selected = dfSelected, New = FALSE, stringsAsFactors=FALSE)
 	return(varTbl)
 }
 
 	
-tableGUI_init_data <- function(DF=character(0), vars=character(0), sorts=character(0), scales=character(0), palettes=character(0), e=e) {
-	## receive list of loaded data.frames and its column names
-	#browser()
-	
+## initiate data for GUI: all loaded data.frames, and select a current data.frame and its variables
+tableGUI_init_data <- function(DF=character(0), vars=character(0), sorts=character(0), scales=character(0), palettes=list(), palNames=character(0), e=e) {
 	datlist <- lsDF()
 	if (length(datlist)==0) stop("No data.frames loaded.")
 	
 	if(length(DF)==0) DF <- datlist[1]
 	
-	#allCols <- lsColnames()
 
 	## setup GUI administration
 	currentDF <- list(name=DF,
 		nrow=nrow(get(DF, envir=.GlobalEnv)),
 		class=class(get(DF, envir=.GlobalEnv)))
-	varTbl <- tableGUI_fillVarTbl(DF, vars, sorts, scales, palettes)
+	varTbl <- tableGUI_createVarTbl(DF, vars, sorts, scales, palNames)
 	
+	assign("palettes", palettes, envir=e)
 	assign("datlist", datlist, envir=e)
 	assign("currentDF", currentDF, envir=e)
 	assign("varTbl", varTbl, envir=e)
 	
 }
 
-
+## get 
 tableGUI_getTbl1 <- function(vars=e$varTbl$Variable, cols=c("Variable", "Class"), e) {
 	varTbl <- e$varTbl
 	if (length(vars)==0) return(varTbl[NULL, cols])
@@ -95,11 +91,9 @@ tableGUI_setVarTbl <- function(vars, cols, value, e) {
 	assign("varTbl", varTbl, envir=e)
 }
 
-
-
 tableGUI_refreshDF <- function(newDF, parent, e) {
 	newvars <- tableGUI_saveVars(parent=parent, e=e)
-	tableGUI_init_data(newDF, e)
+	tableGUI_init_data(newDF, e=e)
 }
 
 
@@ -143,13 +137,13 @@ tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, paren
 		if (lvls > 30) {
 			gmessage(paste("There are too many (", lvls, ") categories.", sep=""), title = "Error", icon = "error", parent=parent)
 			tmpdat$tmptmp <- NULL
-			return(tableGUI_emptyVarTbl)
+			return()
 		}
 		if (lvls > 15) {
 			cont <- gconfirm(paste("There are", lvls, "categories. Do you want to continue?"), icon="question")
 			if (!cont) {
 				tmpdat$tmptmp <- NULL
-				return(tableGUI_emptyVarTbl)
+				return()
 			}
 		}
 		CLmethod <- paste("as.factor(", currentDF, "$", name, ")\n", sep="")
@@ -167,64 +161,83 @@ tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, paren
 				colnames(tmpdat)[ncol(tmpdat)] <- newname
 				assign(currentDF, tmpdat, envir=.GlobalEnv)
 						
-				newRow <- data.frame(Variable=newname, Class="factor", Levels=nlevels(tmpdat[[newname]]), Type=paste("categorical (", nlevels(tmpdat[[newname]]),")", sep=""), Scale="", Sort="", Pal="Default", PalInitNr=1, Palette="default (1)", Selected=TRUE, Position=0, New=TRUE, stringsAsFactors=FALSE)
+				newRow <- data.frame(Variable=newname, Class="factor", Levels=nlevels(tmpdat[[newname]]), Type=paste("categorical (", nlevels(tmpdat[[newname]]),")", sep=""), Scale="", Sort="", Palette="default (1)", Selected=TRUE, Position=0, New=TRUE, stringsAsFactors=FALSE)
 				
 				# print command line
 				cat(paste(currentDF, "$", newname, " <- ", CLmethod, sep=""))
 				
-				return(newRow)
+				# update varTbl
+				varTbl <- e$varTbl
+				varTbl <- rbind(varTbl, newRow)
+				assign("varTbl", varTbl, envir=e)
+				
+				return(newname)
 			} else {
-				return(tableGUI_emptyVarTbl)
+				return()
 			}
 		})
 }
 
 ## function to transfer variables from table1 to table2
 tableGUI_selectVars <- function(vars, e, parent) {
+
 	varTbl <- e$varTbl
 	
+	## determine incides of selected variables
 	varId <- sapply(vars, FUN=function(x,y){which(x==y)}, varTbl$Variable)
 	
+	## exclude variables of unknown classes
 	unknownId <- varId[which(varTbl$Type[varId]=="unknown")]
+	varId <- setdiff(varId, unknownId)
+
+	## count number of categorical variables
+	numOfCat <- sum(varTbl$Selected & substr(varTbl$Type, 1, 3)=="cat")
 	
-	## select variables of unknown classes, and ask to convert them (put them in newRows)
-	newRows <- tableGUI_emptyVarTbl
+	## set new variables to selected
+	varTbl[varId, "Selected"] <- TRUE
 	
+	
+	## select variables of unknown classes, and ask to convert them
+	newVars <- character(0)
 	if (e$currentDF$class=="ffdf") {
 		if (length(unknownId!=0)) gmessage(paste("The variable(s) ", varTbl$Variable[unknownId], " are not recognized as numeric or categorical.", sep=""), icon = "error", parent=parent)
 	} else {
 		for (i in varTbl$Variable[unknownId]) {
 			cast <- gconfirm(paste("The variable ", i, " is not recognized as numeric or categorical. Do you want to cast it to a categorical?", sep=""), icon="question", parent=parent)
 			if (cast) {
-				newRows <- rbind(newRows, tableGUI_castToCat(i, e=e))
+				newVars <- c(newVars, tableGUI_castToCat(i, e=e))
 			}
 		}
 	}
 	
-	if (length(unknownId)!=0) {
-		varId <- setdiff(varId, unknownId)
-	}
-	posMax <- sum(varTbl$Selected)
-	varTbl[varId, "Position"] <- seq(posMax+1, posMax + length(varId))
-	varTbl[varId, "Selected"] <- TRUE
+	if (length(newVars)!=0) varId <- c(varId, sapply(newVars, 
+		FUN=function(x,y){which(x==y)}, varTbl$Variable))
 	
-	if (nrow(newRows)!=0) {
-		newRows$Position <- seq(nrow(varTbl) + 1, nrow(varTbl) + nrow(newRows))
-		varTbl <- rbind(varTbl, newRows)
-	}
-	cat("posMax", posMax, "\n")
-	cat("n(varId)", length(varId), "\n")
-	
-	
-	if ((length(varId)!=0) && posMax==0) {
+	## set sorting variable (if necessary)
+	numSelected <- sum(varTbl$Selected)
+	if ((length(varId)!=0) && numSelected==0) {
 		varTbl[varId[1], "Sort"] <- "\\/"
 	}
+
+	## determine palette
+	varIdCat <- varId[which(substr(varTbl[varId, "Type"],1 ,3)=="cat")]
+	numOfNewCat <- length(varIdCat)
+	if (numOfNewCat!=0) {
+		palNrs <- rep(c(1, 9, 3, 11), length.out=numOfCat+numOfNewCat)
+		if (numOfCat!=0) palNrs <- palNrs[-(1:numOfCat)]
+		varTbl[varIdCat, "Palette"] <- sapply(palNrs, FUN=function(x){paste("default(", x, ")", sep="")})
+		
+		palettes <- e$palettes
+		for (i in 1:numOfNewCat) {
+			palettes[varIdCat[i]] <- palNrs[i]
+		}	
+		assign("palettes", palettes, envir=e)
+	}
+
 	
 	assign("varTbl", varTbl, envir=e)
 	
-	newVars <- c(varTbl[varId, "Variable"], newRows[, "Variable"])
-	print(newVars)
-	return(newVars)
+	return(varTbl[varId, "Variable"])
 }
 
 ## function to transfer variables from table2 back to table1
@@ -257,8 +270,6 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 	currentDFname <- tableGUI_getCurrentDFname(e)
 	
 	nBins <- min(gui_nBins, tableGUI_getCurrentDFnrow(e))
-	
-	
 	
 	# prepare scales
 	scales <- tableGUI_getTbl2(vars=vars, cols="Scale", e=e)

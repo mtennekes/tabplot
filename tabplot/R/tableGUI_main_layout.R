@@ -13,14 +13,24 @@ tableGUI_main_layout <- function(e) {
 		## create source frame
 		ggg <- ggroup(horizontal = TRUE, cont = g, expand=TRUE)
 		frm2 <- gframe(text="Source",horizontal = FALSE, cont = ggg) 
-		size(frm2) <- c(250,400)
+		size(frm2) <- c(350,400)
 		grp4 <- ggroup(horizontal = FALSE, cont = frm2, expand=TRUE)
 		grp9 <- ggroup(horizontal = TRUE, cont = grp4, expand=FALSE)
 		lbl3 <- glabel("Data.frame:", cont=grp9)
 		cmb <- gcombobox(datlist, cont=grp9)
-		addSpring(grp9)
+		
+		#addSpring(grp9)
 		btnReload <- gbutton("Reload", cont=grp9, expand=FALSE)
 
+		######## temp
+		btnTemp <- gbutton("varTbl", cont=grp9, expand=FALSE)
+
+		addHandlerClicked(btnTemp, function(h,...) {
+			print(e$varTbl)
+		})
+		########
+		
+		
 		## fill table 1
 		
 		tbl1 <- gtable(tableGUI_getTbl1(e=environment()), multiple=TRUE, cont=grp4, expand=TRUE)
@@ -73,6 +83,6 @@ tableGUI_main_layout <- function(e) {
 		lbl1 <- glabel("Number of Row Bins:", cont=grp1)
 		spbBins <- gspinbutton(0, 1000, by = 10, cont=grp1, expand=TRUE)
 		svalue(spbBins) <- 100
-		btnRun <- gbutton("Run", cont=grp1, expand=TRUE); enabled(btnRun) <- FALSE
+		btnRun <- gbutton("Run", cont=grp1, expand=TRUE); enabled(btnRun) <- nrow(tbl2[,]!=0)
 	})
 }

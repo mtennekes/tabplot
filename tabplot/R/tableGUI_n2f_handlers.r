@@ -40,8 +40,9 @@ tableGUI_n2f_handlers <- function(e) {
 				}
 			}
 			if (!exit) {
-				newRow <- castToCat(varname, num_scale=num_scale, method=method, n=n, brks=brks)
-				tbl2[] <- rbind(tbl2[], newRow)
+				newVars <- tableGUI_castToCat(varname, num_scale=num_scale, method=method, n=n, brks=brks, e=e)
+
+				tbl2[] <- tableGUI_getTbl2(vars=c(tbl2[,1], newVars), e=e)
 
 				name <- get("name", envir=e)
 				name <- name[-1]

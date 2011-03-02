@@ -1,5 +1,7 @@
 ## create the data.frame varTbl, containing the administration of the current dataframe
 tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames) {
+
+	## create default settings for all variables
 	dfNames <- names(get(DF, envir=.GlobalEnv))
 	dfClasses <- getClasses(dfNames, DF)
 	dfLevels <- sapply(dfNames, FUN=function(x){nlevels(get(DF,envir=.GlobalEnv)[[x]])})
@@ -17,6 +19,9 @@ tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames) {
 		})
 	dfPalette <- rep("", length(dfNames))
 	dfSelected <- rep(FALSE, length(dfNames))
+	
+	
+	## modify settings for the variables in <vars>
 	if (length(vars)!=0) {
 		indices <- sapply(vars, FUN=function(x,y){which(x==y)}, dfNames)
 		
@@ -28,6 +33,7 @@ tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames) {
 		dfSelected[indices] <- TRUE
 	}
 	
+	## create data.frame and return it
 	varTbl <- data.frame(Variable=dfNames, Class=dfClasses, Levels=dfLevels, Type=dfTypes, Scale=dfScale, Sort=dfSort, Palette = dfPalette, Selected = dfSelected, New = FALSE, stringsAsFactors=FALSE)
 	return(varTbl)
 }
@@ -35,13 +41,18 @@ tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames) {
 	
 ## initiate data for GUI: all loaded data.frames, and select a current data.frame and its variables
 tableGUI_init_data <- function(DF=character(0), vars=character(0), sorts=character(0), scales=character(0), palettes=list(), palNames=character(0), e=e) {
+
+	## create list of data.frames and, if necessary select the first one
 	datlist <- lsDF()
 	if (length(datlist)==0) stop("No data.frames loaded.")
-	
 	if(length(DF)==0) DF <- datlist[1]
 	
-
-	## setup GUI administration
+	## initiate GUI administration
+	##
+	## datlist: vector of loaded data.frames
+	## currentDF: name of the current data.frame
+	## varTbl: data.frame containing the settings of all variables
+	## palettes: list of palettes (id's correspond with varTbl)
 	currentDF <- list(name=DF,
 		nrow=nrow(get(DF, envir=.GlobalEnv)),
 		class=class(get(DF, envir=.GlobalEnv)))
@@ -54,7 +65,7 @@ tableGUI_init_data <- function(DF=character(0), vars=character(0), sorts=charact
 	
 }
 
-## get 
+## get selection of varTbl for first GUI table
 tableGUI_getTbl1 <- function(vars=e$varTbl$Variable, cols=c("Variable", "Class"), e) {
 	varTbl <- e$varTbl
 	if (length(vars)==0) return(varTbl[NULL, cols])
@@ -62,6 +73,7 @@ tableGUI_getTbl1 <- function(vars=e$varTbl$Variable, cols=c("Variable", "Class")
 	return(varTbl[!varTbl$Selected, cols])
 }
 
+## get selection of varTbl for second GUI table
 tableGUI_getTbl2 <- function(vars=e$varTbl$Variable, cols=c("Variable", "Type", "Scale", "Sort", "Palette"), e) {
 	varTbl <- e$varTbl
 	if (length(vars)==0) return(varTbl[NULL, cols])
@@ -69,29 +81,35 @@ tableGUI_getTbl2 <- function(vars=e$varTbl$Variable, cols=c("Variable", "Type", 
 	return(varTbl[varTbl$Selected, cols])
 }
 
+## get current data.frame name
 tableGUI_getCurrentDFname <- function(e) {
 	return(e$currentDF$name)
 }
 
+## get nrow of current data.frame
 tableGUI_getCurrentDFnrow <- function(e) {
 	return(e$currentDF$nrow)
 }
 
+## get class of current data.frame
 tableGUI_getCurrentDFclass <- function(e) {
 	return(e$currentDF$class)
 }
 
+## get number of selected variables
 tableGUI_getNumSel <- function(e) {
 	return(sum(e$varTbl$Selected))
 }
 
+## set settings to varTbl
 tableGUI_setVarTbl <- function(vars, cols, value, e) {
 	varTbl <- e$varTbl
 	varTbl[sapply(vars, FUN=function(x,y){which(x==y)}, varTbl$Variable), cols] <- value
 	assign("varTbl", varTbl, envir=e)
 }
 
-tableGUI_refreshDF <- function(newDF, parent, e) {
+## new data.frame is selected, or data is refreshed
+tableGUI_refreshDF <- function(newDF=character(0), parent, e) {
 	newvars <- tableGUI_saveVars(parent=parent, e=e)
 	tableGUI_init_data(newDF, e=e)
 }
@@ -99,8 +117,7 @@ tableGUI_refreshDF <- function(newDF, parent, e) {
 
 ## should newly created variable be kept?
 tableGUI_saveVars <- function(vars=e$varTbl$Variable, parent=NULL, e) {
-	
-	newvars <- intersect(vars, e$varTbl$New)
+	newvars <- intersect(vars, e$varTbl$Variable[e$varTbl$New])
 
 	savevar <- TRUE
 	if (length(newvars) != 0) {
@@ -122,9 +139,8 @@ tableGUI_saveVars <- function(vars=e$varTbl$Variable, parent=NULL, e) {
 }
 
 
-
 ## cast selected variable to a categorical variable
-tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, parent=wdw, e) {
+tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, parent, e) {
 	## add temporary column to data.frame
 	currentDF <- tableGUI_getCurrentDFname(e)
 	tmpdat <- get(currentDF, envir=.GlobalEnv)
@@ -140,14 +156,16 @@ tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, paren
 			return()
 		}
 		if (lvls > 15) {
-			cont <- gconfirm(paste("There are", lvls, "categories. Do you want to continue?"), icon="question")
-			if (!cont) {
+			continue <- gconfirm(paste("There are", lvls, "categories. Do you want to continue?"), icon="question")
+			if (!continue) {
 				tmpdat$tmptmp <- NULL
 				return()
 			}
 		}
 		CLmethod <- paste("as.factor(", currentDF, "$", name, ")\n", sep="")
 	}
+
+
 	
 	newname <- paste(name, length(levels(tmpdat$tmptmp)),sep="")
 	## check whether new name does not exists in data.frame
@@ -161,7 +179,7 @@ tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, paren
 				colnames(tmpdat)[ncol(tmpdat)] <- newname
 				assign(currentDF, tmpdat, envir=.GlobalEnv)
 						
-				newRow <- data.frame(Variable=newname, Class="factor", Levels=nlevels(tmpdat[[newname]]), Type=paste("categorical (", nlevels(tmpdat[[newname]]),")", sep=""), Scale="", Sort="", Palette="default (1)", Selected=TRUE, Position=0, New=TRUE, stringsAsFactors=FALSE)
+				newRow <- data.frame(Variable=newname, Class="factor", Levels=nlevels(tmpdat[[newname]]), Type=paste("categorical (", nlevels(tmpdat[[newname]]),")", sep=""), Scale="", Sort="", Palette="default (1)", Selected=TRUE, New=TRUE, stringsAsFactors=FALSE)
 				
 				# print command line
 				cat(paste(currentDF, "$", newname, " <- ", CLmethod, sep=""))
@@ -179,7 +197,7 @@ tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, paren
 }
 
 ## function to transfer variables from table1 to table2
-tableGUI_selectVars <- function(vars, e, parent) {
+tableGUI_selectVars <- function(vars, parent, e) {
 
 	varTbl <- e$varTbl
 	
@@ -193,8 +211,10 @@ tableGUI_selectVars <- function(vars, e, parent) {
 	## count number of categorical variables
 	numOfCat <- sum(varTbl$Selected & substr(varTbl$Type, 1, 3)=="cat")
 	
-	## set new variables to selected
-	varTbl[varId, "Selected"] <- TRUE
+  ## count number of selected variables
+  numSelected <- sum(varTbl$Selected)
+
+
 	
 	
 	## select variables of unknown classes, and ask to convert them
@@ -205,16 +225,21 @@ tableGUI_selectVars <- function(vars, e, parent) {
 		for (i in varTbl$Variable[unknownId]) {
 			cast <- gconfirm(paste("The variable ", i, " is not recognized as numeric or categorical. Do you want to cast it to a categorical?", sep=""), icon="question", parent=parent)
 			if (cast) {
-				newVars <- c(newVars, tableGUI_castToCat(i, e=e))
+				newVars <- c(newVars, tableGUI_castToCat(i, parent=parent, e=e))
 			}
 		}
+		# refresh varTbl
+		varTbl <- e$varTbl
 	}
-	
+
+    ## set selected variables to selected
+	varTbl[varId, "Selected"] <- TRUE
+
+
 	if (length(newVars)!=0) varId <- c(varId, sapply(newVars, 
 		FUN=function(x,y){which(x==y)}, varTbl$Variable))
 	
 	## set sorting variable (if necessary)
-	numSelected <- sum(varTbl$Selected)
 	if ((length(varId)!=0) && numSelected==0) {
 		varTbl[varId[1], "Sort"] <- "\\/"
 	}
@@ -241,7 +266,8 @@ tableGUI_selectVars <- function(vars, e, parent) {
 }
 
 ## function to transfer variables from table2 back to table1
-tableGUI_unselectVars <- function(vars, e) {
+tableGUI_unselectVars <- function(vars, parent, e) {
+	
 	varTbl <- e$varTbl
 	
 	varId <- sapply(vars, FUN=function(x,y){which(x==y)}, varTbl$Variable)
@@ -252,20 +278,10 @@ tableGUI_unselectVars <- function(vars, e) {
 	
 	assign("varTbl", varTbl, envir=e)
 	
-
-
-	## ask whether new variables should be kept
-	## not yet implemented for ffdf
-	if (class(get(tableGUI_getCurrentDFname(e),envir=.GlobalEnv))!="ffdf") {
-		newvars <- c(vars, tableGUI_saveVars(vars, e=e))
-	} else {
-		newvars <- vars
-	}
-	
-	return(newvars)
+	return(vars)
 }
 
-
+## applied when clicked on run button 
 tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 	currentDFname <- tableGUI_getCurrentDFname(e)
 	

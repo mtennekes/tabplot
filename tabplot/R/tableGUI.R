@@ -1,5 +1,5 @@
 tableGUI <-
-function(datName=character(0), colNames=character(0), sortCol=numeric(0),  decreasing=logical(0), scales=character(0), pals=list(), nBins=numeric(0), from=numeric(0), to=numeric(0)) {
+function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100) {
     if (!require(gWidgetsRGtk2)){
 		stop("This function requires gWidgetsRGtk2")
 	}
@@ -7,23 +7,20 @@ function(datName=character(0), colNames=character(0), sortCol=numeric(0),  decre
 	options("guiToolkit"="RGtk2")
 
 	e <- environment()
-
-	
+#browser()
 	#####################################
 	## Check arguments
 	#####################################
 	## check datName
-	if (length(datName)==1) {
+	if (!is.null(dat)) {
+		datName <- deparse(substitute(dat))
 		if (!exists(datName)) stop(paste(datName, "not loaded"))
 		if(!(class(get(datName, envir=.GlobalEnv))%in% c("data.frame", "ffdf"))) stop(paste(datName, "not a data.frame or an ffdf object"))
-		if (length(colNames)==0) colNames <- names(get(datName, envir=.GlobalEnv))
-	}
-	
-	if (length(colNames)!=0) {
+
 		## Check colNames
 		if (class(colNames)[1]!="character") stop("<colNames> is not a character(vector)")
 		if (!all(colNames %in% names(get(datName, envir=.GlobalEnv)))) stop("<colNames> contains column names that are not found in <datName>")
-	
+		
 		## get classes
 		classes <- getClasses(colNames, datName)	
 		whichCat <- which(classes %in% c("factor", "logical"))
@@ -56,6 +53,7 @@ function(datName=character(0), colNames=character(0), sortCol=numeric(0),  decre
 		palNames <- rep("", length(colNames))
 		palNames[whichCat] <- pals_names
 	} else {
+		datName <- character(0)
 		sortColFull <- character(0)
 		palNames <- character(0)
 	}

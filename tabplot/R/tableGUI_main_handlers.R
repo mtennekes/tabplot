@@ -38,7 +38,8 @@ tableGUI_main_handlers <- function(e) {
 
 		## refresh table1
 		addHandlerClicked(btnReload, function(h,...) {
-			tableGUI_init_data(e=e)
+			tableGUI_refreshDF(parent=wdw, e=e)
+			
 			tbl1[] <- tableGUI_getTbl1(e=e)
 			tbl2[] <- tableGUI_getTbl2(e=e)
 			svalue(cmb) <- tableGUI_getCurrentDFname(e)
@@ -51,7 +52,7 @@ tableGUI_main_handlers <- function(e) {
 			svalue(sbr) <- "Transferring variable(s)..."
 			if (svalue(btnTransfer)==">") {
 				indices <- svalue(tbl1, index=TRUE)
-				vars2 <- tableGUI_selectVars(tbl1[indices, 1], e=e, parent=wdw)
+				vars2 <- tableGUI_selectVars(tbl1[indices, 1], parent=wdw, e=e)
 				if(nrow(tbl2)!=0) vars2 <- c(tbl2[,1], vars2)
 				tbl2[] <- tableGUI_getTbl2(vars=vars2, e=e)
 
@@ -62,7 +63,7 @@ tableGUI_main_handlers <- function(e) {
 				enabled(btnTransfer) <- FALSE
 			} else {
 				indices <- svalue(tbl2, index=TRUE)
-				vars <- tableGUI_unselectVars(tbl2[indices, 1], e=e)
+				vars <- tableGUI_unselectVars(tbl2[indices, 1], parent=wdw, e=e)
 				
 				if (nrow(tbl1)!=0) {
 					vars1 <- c(tbl1[,1], vars)

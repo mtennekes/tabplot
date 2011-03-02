@@ -23,29 +23,30 @@ data(iris)
 
 
 
-
-# temp
-diamonds$expensive <- diamonds$price > 5000
-
-sapply(list.files(), source)
-tableGUI()
-
-
-
-
-
+## test tableplot
 tableplot(diamonds)
+
+tableplot(diamonds, colNames=c("depth","table","price","x","y"), sortCol=1, decreasing=TRUE, scales="auto", nBins=100, from=0, to=100)
+
+
 
 ## test user-specified palettes
 tableplot(diamonds,pals=list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4))
 
 
-tableGUI("diamonds",pals=list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4))
 
-
-tableplot(diamonds, colNames=c("depth","table","price","x","y"), sortCol=1, decreasing=TRUE, scales="auto", nBins=100, from=0, to=100)
-
-
+## temp
+diamonds$expensive <- diamonds$price > 5000
+diamonds$date <- as.POSIXct(diamonds$table, origin="1970-01-01")
+sapply(list.files(), source)
 tableGUI()
-	
-		
+
+
+
+## test GUI
+tableGUI()
+
+tableGUI(diamonds, colNames=c("table","price","x","y","z","expensive"), sortCol=1, decreasing=TRUE, scales="auto", nBins=100, from=0, to=100)
+tableGUI(diamonds, pals=list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4))
+
+tableGUI(diamonds)

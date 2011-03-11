@@ -39,9 +39,12 @@ tableGUI_main_handlers <- function(e) {
 		## refresh table1
 		addHandlerClicked(btnReload, function(h,...) {
 			tableGUI_refreshDF(parent=wdw, e=e)
+
+			cmb[] <- e$datlist
 			
 			tbl1[] <- tableGUI_getTbl1(e=e)
 			tbl2[] <- tableGUI_getTbl2(e=e)
+
 			svalue(cmb) <- tableGUI_getCurrentDFname(e)
 		})
 		
@@ -93,6 +96,8 @@ tableGUI_main_handlers <- function(e) {
 			}
 		})
 
+
+				
 		## run!
 		addHandlerClicked(btnRun, function(h,...) {
 			enabled(btnRun) <- FALSE
@@ -181,6 +186,19 @@ tableGUI_main_handlers <- function(e) {
 			assign("name", name, envir=e)
 			asCategoricalDialog()
 		})
+		
+
+		## colour palette
+		addHandlerClicked(btnPal, function(h,...) {
+			enabled(btnPal) <- FALSE
+			svalue(sbr) <- "Configurating color palettes..."
+			
+			tableGUI_initPal(e) 
+				
+			
+		})
+		
+		
 		
 		## zoom in
 		addHandlerChanged(cbx, function(h,...) {
@@ -284,6 +302,7 @@ tableGUI_main_handlers <- function(e) {
 				enabled(btnDown) <- FALSE
 				enabled(btnSort) <- FALSE
 				enabled(btnAsCategory) <- FALSE
+				enabled(btnPal) <- FALSE
 				enabled(btnScale) <- FALSE
 				
 				# disable zoom line
@@ -304,7 +323,10 @@ tableGUI_main_handlers <- function(e) {
 					enabled(btnUp) <- all(index > 1)
 					enabled(btnDown) <- all(index < nrow(tbl2))
 					enabled(btnSort) <- TRUE
+					
 					enabled(btnAsCategory) <- (any(substr(tbl2[index, 2],1,3)=="num") && tableGUI_getCurrentDFclass(e)!="ffdf")
+					enabled(btnPal) <- (any(substr(tbl2[1:nrow(tbl2), 2],1,3)=="cat"))
+
 					enabled(btnScale) <- TRUE
 					enabled(btnTransfer) <- TRUE
 					svalue(btnTransfer) <- "<"
@@ -314,6 +336,7 @@ tableGUI_main_handlers <- function(e) {
 					enabled(btnDown) <- FALSE
 					enabled(btnSort) <- FALSE
 					enabled(btnAsCategory) <- FALSE
+					enabled(btnPal) <- FALSE
 					enabled(btnScale) <- FALSE
 				}
 			}

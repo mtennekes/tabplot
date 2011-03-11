@@ -1,18 +1,18 @@
 tableGUI_pal_layout <- function(e) {
 	with(e, {
-		
 		#### load color palettes
 		brewer_pals_info <- brewer.pal.info[brewer.pal.info$category=="qual",]
 		
 		pals <- mapply(FUN=function(x,y){brewer.pal(y, x)}, row.names(brewer_pals_info), brewer_pals_info$maxcolors)
+		names(pals) <- tolower(names(pals))
 		
 		# remove color red (needed for NA's)
-		pals$Set1 <- brewer_pals$Set1[-1]
+		pals$Set1 <- pals$set1[-1]
 		
 		# create list with palettes: first the default one (Brewer_Set1+Brewer_Set2), then the brewer palettes
-		pals <- c(list(Default=c(pals$Set1, pals$Set2)), pals)
-
-		wdw_pal <- gwindow("Color palette", parent=wdw, width=200, height=100)
+		pals <- c(list(default=c(pals$set1, pals$set2)), pals)
+		
+		wdw_pal <- gwindow("Color palette", width=100, height=100, parent=wdw, visible=TRUE)
 		#wdw_pal <- gwindow("Color palette", width=200, height=100)
 		gpan_pal <- gpanedgroup(cont=wdw_pal)
 		
@@ -20,65 +20,44 @@ tableGUI_pal_layout <- function(e) {
 		frm_pal1 <- gframe(text="Categorical Variable", horizontal = FALSE, cont = grp_pal1) 
 
 
-		grp_pal3 <- ggroup(horizontal = TRUE, cont = grp_pal2, expand=TRUE)
-		
-		lbl_pal <- glabel("Categorical variable:", cont=grp_pal3)
-		
-		selectCatVars <- substr(tbl2[,"Type"],1,3)=="cat"
-		
-		# retrieve categorical variables
-		catlist <- tbl2[selectCatVars, "Variable"]
-		nLevels <- as.integer(substr(tbl2[selectCatVars, "Type"],14,14))
-		
-		cmb_pal1 <- gcombobox(catlist, cont=grp_pal3)
+		#lbl_pal <- glabel("Categorical variable:", cont=grp_pal3)
+		cmb_pal1 <- gcombobox(NULL, cont=frm_pal1)
 
 		frm_pal2 <- gframe(text="Color palette", horizontal = FALSE, cont = grp_pal1) 
-
-		grp_pal4 <- ggroup(horizontal = TRUE, cont = frm_pal2, expand=TRUE)
-		lbl_pal <- glabel("Palette:", cont=grp_pal4)
-		cmb_pal1 <- gcombobox(names(brewer_pals), cont=grp_pal4)
 		
-		frm_pal2 <- gframe(text="Color mapping", horizontal = FALSE, cont = grp_pal1) 
+		grp_pal3 <- ggroup(horizontal = TRUE, cont = frm_pal2, expand=TRUE)
+
+
+		grp_pal5 <- ggroup(horizontal = FALSE, cont = grp_pal3, expand=TRUE)
+		tbl_pal <- glayout(container=grp_pal5, spacing = 2)
 	
-		tbl_pal <- glayout(container =frm_pal2)
-		tbl_pal[1,1] <- "levels"
-		tbl_pal[1,2] <- "colours"
-		
-		
-		testbutton <- gbutton("####", container=g3)
-		
-		
-		
-		
-		
-		font(testbutton) <- c(color="red", style="bold")
-		
-		if (require(cairoDevice)) {
-			ggraphics(ps=8, container=g3)
+		# make 8,2 layout for palette
+		for (i in 1:8) {
+			tbl_pal[i,1] <- glabel(text = "", container =tbl_pal)
 		}
-		
-		
-		
-		k <- length(brewer_pals)
-		ncols <- max(brewer_pals_info$maxcolors)
-		pushViewport(viewport(layout=grid.layout(k+1, ncols+1)))
 
-		for (i in 1:ncols) {
-			pushViewport(viewport(layout.pos.col=i+1, layout.pos.row=1))		
-			grid.text(i)
-			popViewport()
-		}
-		for (j in 1:k) {
-			pushViewport(viewport(layout.pos.col=1, layout.pos.row=j+1))		
-			grid.text(names(brewer_pals)[j])
-			popViewport()
-
-			for (i in 1:ncols) {
-				pushViewport(viewport(layout.pos.col=i+1, layout.pos.row=j+1))		
-				grid.rect(height=0.5, gp=gpar(col=NA,fill=brewer_pals[[j]][i]))
-				popViewport()
+		cairoLoaded <- require(cairoDevice)
+		if (cairoLoaded) {
+			tbl_pal[1:8,2] <- ggraphics(width = 75 * 0.5, height = 75 * 3, dpi = 75, ps=8, container=tbl_pal)
+		} else {
+			for (i in 1:8) {
+				tbl_pal[i,2] <- ""
 			}
 		}
+
+		grp_pal4 <- ggroup(horizontal = FALSE, cont = grp_pal3, expand=FALSE)
+		cmb_pal2 <- gcombobox(names(pals), cont=grp_pal4)
+
+		grp_pal6 <- ggroup(horizontal = TRUE, cont = grp_pal4, expand=FALSE)
+		lbl_pal <- glabel("start color:", cont=grp_pal6)
+		spb_col <- gspinbutton(1, 16, by = 1, cont=grp_pal6, expand=FALSE)
+		svalue(spb_col) <- 1
+
+		addSpring(grp_pal4)
+		
+		btn_ok <- gbutton("OK", container = grp_pal4)
+		
+		
 		
 	})
 }

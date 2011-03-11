@@ -62,19 +62,24 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 	# load information about loaded data.frames
 	tableGUI_init_data(DF=datName, vars=colNames, sorts=sortColFull, scales=scales, palettes=pals, palNames=palNames, e=e)
 	
-	
+
 	# create main GUI
 	tableGUI_main_layout(e)
 		
 	## create window for num2fac  
 	tableGUI_n2f_layout(e)
+
+	## create window for color palettes 
+	tableGUI_pal_layout(e)
+
 	
 	# functions and handlers
     tableGUI_main_handlers(e)
 	
 	tableGUI_n2f_handlers(e)
    
-
+	tableGUI_pal_handlers(e)
+	
 	######################################################
 	## activate GUI
 	######################################################

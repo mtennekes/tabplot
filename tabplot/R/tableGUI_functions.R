@@ -265,6 +265,7 @@ tableGUI_selectVars <- function(vars, parent, e) {
 	return(varTbl[varId, "Variable"])
 }
 
+
 ## function to transfer variables from table2 back to table1
 tableGUI_unselectVars <- function(vars, parent, e) {
 	

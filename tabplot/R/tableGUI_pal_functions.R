@@ -6,7 +6,7 @@ tableGUI_initPal <- function(e) {
 		selectVars <- tbl2[, "Variable"]
 		if (is.na(selectVars)[1]) selectVars <- character(0)
 
-		varData <- tableGUI_getTbl2(vars=selectVars, cols=c("Variable", "Type", "Levels", "Palette"), e=e)
+		varData <- tableGUI_getTbl2(vars=selectVars, cols=c("Variable", "Type", "Levels", "Palette", "PaletteName", "PaletteStartCol"), e=e)
 
 		varData <- varData[varData$Levels!=0,]
 
@@ -28,6 +28,7 @@ tableGUI_initPal <- function(e) {
  }
  
 tableGUI_updatePal <- function(e) {
+#browser()
 	with(e, {
 		varName <- svalue(cmb_pal1)
 		if (is.null(varName)) {
@@ -50,28 +51,36 @@ tableGUI_updatePal <- function(e) {
 			emptySlots <- is.na(printLev)
 			printLev[emptySlots] <- ""
 			
-			printCol <- paste("**** colour", 1:8, "****")
-			printCol[emptySlots] <- ""
 			
-			drawFill <- rep(pals[[svalue(cmb_pal2)]], length.out=8)
+			startColor <- svalue(spb_col) 
+			
+			colPal <- pals[[svalue(cmb_pal2)]]
+			
+			colInd <- startColor:length(colPal)
+			if (startColor!=1) colInd <- c(colInd, 1:(startColor-1))
+			
+			drawFill <- rep(colPal[colInd], length.out=8)
 			drawFill[emptySlots] <- NA
 			
 			drawCol <- ifelse(emptySlots, "white", "black")
+
+			printCol <- paste("****color", rep(colInd, length.out=8), "****", sep="")
+			printCol[emptySlots] <- ""
 			
-			if (cairoLoaded) {
-				#tbl_pal[1,2] <- ggraphics(width = 75 * 0.5, height = 75 * 3, dpi = 75, ps=8, container=tbl_pal)
+			# if (cairoLoaded) {
+				##tbl_pal[1,2] <- ggraphics(width = 75 * 0.5, height = 75 * 3, dpi = 75, ps=8, container=tbl_pal)
 				
-				visible(tbl_pal[1:8,2]) <- TRUE
-				grid.rect(gp=gpar(col=NA, fill="grey95"))
-				grid.rect(y=seq(15/16,1/16,length.out=8), height=1/12, width=0.9, gp=gpar(col=NA, fill=drawFill))
+				# visible(tbl_pal[1:8,2]) <- TRUE
+				# grid.rect(gp=gpar(col=NA, fill="grey95"))
+				# grid.rect(y=seq(15/16,1/16,length.out=8), height=1/12, width=0.9, gp=gpar(col=NA, fill=drawFill))
 				
-			} else {
+			# } else {
 				for (i in 1:8) {
 					svalue(tbl_pal[i,2]) <- printCol[i]
-					font(tbl_pal[i,2])  <- c(color=pals[[svalue(cmb_pal2)]][i], style="bold")
+					font(tbl_pal[i,2])  <- c(color=drawFill[i], style="bold")
 					
 				}
-			}
+			#}
 
 			for (i in 1:8) {
 				svalue(tbl_pal[i,1]) <- printLev[i]

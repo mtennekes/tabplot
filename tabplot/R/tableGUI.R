@@ -41,26 +41,30 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 		## Check palet indices
 		pals <- tableplot_checkPals(pals, convertDefault=FALSE)
 		pals <- rep(pals, length.out=length(whichCat))
-
-		pals_names <- sapply(pals, FUN=function(x){
+browser()
+		pals_result <- sapply(pals, FUN=function(x){
 			if (class(x) %in% c("numeric", "integer")) {
-				return(paste("default(", x, ")", sep=""))
+				return(list(name="default", ind=x))
 			} else {
-				return("custom")
+				return(list(name="custom", ind=1))
 			}})
-		pals_names <- rep(pals_names, length.out=length(whichCat))
+		pals_names <- unlist(pals_result[1,])
+		pals_startcols <- unlist(pals_result[2,])
 
 		palNames <- rep("", length(colNames))
 		palNames[whichCat] <- pals_names
+		palStartCol <- rep(0, length(colNames))
+		palStartCol[whichCat] <- pals_startcols
 	} else {
 		datName <- character(0)
 		sortColFull <- character(0)
 		palNames <- character(0)
+		palStartCol <- numeric(0)
 	}
 
 	
 	# load information about loaded data.frames
-	tableGUI_init_data(DF=datName, vars=colNames, sorts=sortColFull, scales=scales, palettes=pals, palNames=palNames, e=e)
+	tableGUI_init_data(DF=datName, vars=colNames, sorts=sortColFull, scales=scales, palettes=pals, palNames=palNames, palStartCol=palStartCol, e=e)
 	
 
 	# create main GUI

@@ -1,5 +1,20 @@
+tableGUI_getPalInfo <- function(palFullName) {
+	posLeftB <- regexpr("(", palFullName, fixed=TRUE)
+	palInfo <- list(
+		palName=ifelse(posLeftB==-1, palFullName, substr(palFullName, 1, posLeftB-1)),
+		palStartCol=ifelse(posLeftB==-1, 1, as.integer(substr(palFullName, posLeftB+1, nchar(palFullName)-1)))
+	)
+	return(palInfo)
+}
+
+tableGUI_setPalInfo <- function(palName, startCol=1) {
+	ifelse(palName=="custom", 
+		"custom", 
+		paste(palName, "(", startCol, ")", sep=""))
+}
+
 ## create the data.frame varTbl, containing the administration of the current dataframe
-tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames, palStartCol) {
+tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames) {
 
 	## create default settings for all variables
 	dfNames <- names(get(DF, envir=.GlobalEnv))
@@ -17,8 +32,6 @@ tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames, palStartCol
 	dfScale <- sapply(dfClasses, FUN=function(x) {
 			ifelse(x %in% c("numeric", "integer"), "auto", "")
 		})
-	dfPaletteName <- rep("", length(dfNames))
-	dfStartCol <- rep(0, length(dfNames))
 	dfPalette <- rep("", length(dfNames))
 	dfSelected <- rep(FALSE, length(dfNames))
 	
@@ -31,20 +44,18 @@ tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames, palStartCol
 		
 		dfScales <- rep("", length(dfNames))
 		dfScales[indices] <- scales
-		dfPaletteName[indices] <- palNames
-		dfStartCol[indices] <- palStartCol
-		dfPalette[indices] <- mapply(palNames, palStartCol, FUN=function(x,y){ifelse(x=="custom",x, paste(x, "(", y, ")", sep=""))})
+		dfPalette[indices] <- palNames
 		dfSelected[indices] <- TRUE
 	}
 	
 	## create data.frame and return it
-	varTbl <- data.frame(Variable=dfNames, Class=dfClasses, Levels=dfLevels, Type=dfTypes, Scale=dfScale, Sort=dfSort, PaletteName = dfPaletteName, PaletteStartCol = dfStartCol, Palette=dfPalette, Selected = dfSelected, New = FALSE, stringsAsFactors=FALSE)
+	varTbl <- data.frame(Variable=dfNames, Class=dfClasses, Levels=dfLevels, Type=dfTypes, Scale=dfScale, Sort=dfSort, Palette=dfPalette, Selected = dfSelected, New = FALSE, stringsAsFactors=FALSE)
 	return(varTbl)
 }
 
 	
 ## initiate data for GUI: all loaded data.frames, and select a current data.frame and its variables
-tableGUI_init_data <- function(DF=character(0), vars=character(0), sorts=character(0), scales=character(0), palettes=list(), palNames=character(0), palStartCol=numeric(0), e=e) {
+tableGUI_init_data <- function(DF=character(0), vars=character(0), sorts=character(0), scales=character(0), palNames=character(0), customPals=list(), e=e) {
 
 	## create list of data.frames and, if necessary select the first one
 	datlist <- lsDF()
@@ -60,9 +71,9 @@ tableGUI_init_data <- function(DF=character(0), vars=character(0), sorts=charact
 	currentDF <- list(name=DF,
 		nrow=nrow(get(DF, envir=.GlobalEnv)),
 		class=class(get(DF, envir=.GlobalEnv)))
-	varTbl <- tableGUI_createVarTbl(DF, vars, sorts, scales, palNames, palStartCol)
+	varTbl <- tableGUI_createVarTbl(DF, vars, sorts, scales, palNames)
 	
-	assign("palettes", palettes, envir=e)
+	assign("customPals", customPals, envir=e)
 	assign("datlist", datlist, envir=e)
 	assign("currentDF", currentDF, envir=e)
 	assign("varTbl", varTbl, envir=e)

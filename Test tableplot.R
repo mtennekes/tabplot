@@ -11,6 +11,9 @@ scriptmap <- "./tabplot/R/"
 setwd(scriptmap)
 sapply(list.files(), source)
 
+setwd("../data/")
+load("tabplotPalettes.Rdata")
+
 ## load test data
 require(ggplot2)
 data(diamonds)
@@ -36,6 +39,9 @@ tableplot(diamonds, colNames=c("depth","table","price","x","y"), sortCol=1, decr
 ## test user-specified palettes
 tableplot(diamonds,pals=list(1, gray(seq(0,1,length.out=10)), rainbow(8), brewer.pal(n=8,"Set2")))
 
+## test checkPals
+pals<-list(1, gray(seq(0,1,length.out=10)), rainbow(8), brewer.pal(n=8,"Set2"), "Set2", "default(9)")
+
 
 
 ## temp
@@ -53,5 +59,6 @@ tableGUI()
 
 tableGUI(diamonds, colNames=c("table","price","x","y","z","expensive"), sortCol=2, decreasing=FALSE, scales="auto", nBins=100, from=0, to=100)
 tableGUI(diamonds, pals=list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4))
+tableplot(diamonds, pals=list("hcl12(4)", gray(seq(0,1,length.out=10)), rainbow(8), 4))
 
 tableGUI(diamonds)

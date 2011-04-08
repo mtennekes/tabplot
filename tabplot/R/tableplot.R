@@ -27,7 +27,7 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	scales <- tableplot_checkScales(scales, n)
 
 	## Check palet indices
-	pals <- tableplot_checkPals(pals, convertDefault=TRUE)
+	pals <- tableplot_checkPals(pals)$palette
 	
 	## Check nBins
 	if (class(nBins)[1]!="numeric") stop("<nBins> is not numeric")

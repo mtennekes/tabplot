@@ -1,16 +1,7 @@
 tableGUI_pal_layout <- function(e) {
 	with(e, {
 		#### load color palettes
-		brewer_pals_info <- brewer.pal.info[brewer.pal.info$category=="qual",]
-		
-		pals <- mapply(FUN=function(x,y){brewer.pal(y, x)}, row.names(brewer_pals_info), brewer_pals_info$maxcolors)
-		names(pals) <- tolower(names(pals))
-		
-		# remove color red (needed for NA's)
-		pals$set1 <- pals$set1[-1]
-		
-		# create list with palettes: first the default one (Brewer_Set1+Brewer_Set2), then the brewer palettes
-		pals <- c(list(default=c(pals$set1, pals$set2)), pals, list(custom=c(pals$set1, pals$set2)))
+		tabplotPalettes <- get("tabplotPalettes", .GlobalEnv)
 		
 		wdw_pal <- gwindow("Color palette", width=150, height=100, parent=wdw, visible=TRUE)
 		#wdw_pal <- gwindow("Color palette", width=200, height=100)
@@ -46,7 +37,7 @@ tableGUI_pal_layout <- function(e) {
 		# }
 
 		grp_pal4 <- ggroup(horizontal = FALSE, cont = grp_pal3, expand=FALSE)
-		cmb_pal2 <- gcombobox(names(pals), cont=grp_pal4)
+		cmb_pal2 <- gcombobox(names(tabplotPalettes), cont=grp_pal4)
 
 		grp_pal6 <- ggroup(horizontal = TRUE, cont = grp_pal4, expand=FALSE)
 		lbl_pal <- glabel("start color:", cont=grp_pal6)

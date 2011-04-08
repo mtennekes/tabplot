@@ -2,11 +2,11 @@ tableGUI_initPal <- function(e) {
 	with(e, {
 		visible(wdw_pal) <- TRUE
 		enabled(wdw) <- FALSE
-
+browser()
 		selectVars <- tbl2[, "Variable"]
 		if (is.na(selectVars)[1]) selectVars <- character(0)
 
-		varData <- tableGUI_getTbl2(vars=selectVars, cols=c("Variable", "Type", "Levels", "Palette", "PaletteName", "PaletteStartCol"), e=e)
+		varData <- tableGUI_getTbl2(vars=selectVars, cols=c("Variable", "Type", "Levels", "Palette"), e=e)
 
 		varData <- varData[varData$Levels!=0,]
 
@@ -21,14 +21,16 @@ tableGUI_initPal <- function(e) {
 		
 		assign("varData", varData, e)
 		
+		blockHandler(cmb_pal1)
 		cmb_pal1[] <- varData$Variable
+		unblockHandler(cmb_pal1)
+		
 		svalue(cmb_pal1) <- varData$Variable[1]
 		
 	})
  }
  
 tableGUI_updatePal <- function(e) {
-#browser()
 	with(e, {
 		varName <- svalue(cmb_pal1)
 		if (is.null(varName)) {
@@ -47,14 +49,25 @@ tableGUI_updatePal <- function(e) {
 			}
 
 		} else {
-			printLev <- varData$levelNames[[which(varData$Variable==varName)]][1:8]
+			varIndex <- which(varData$Variable==varName)
+			printLev <- varData$levelNames[[varIndex]][1:8]
 			emptySlots <- is.na(printLev)
 			printLev[emptySlots] <- ""
 			
+			palName <- svalue(cmb_pal2)
+			startColor <- svalue(spb_col)
 			
-			startColor <- svalue(spb_col) 
 			
-			colPal <- pals[[svalue(cmb_pal2)]]
+			if (palName=="custom") {
+				colPal <- customPals[[varName]]
+				colPal <- ifelse(nchar(colPal)==9, substr(colPal, 1, 7), colPal)
+				svalue(spb_col) <- 1
+				enabled(spb_col) <- FALSE
+			} else {
+				colPal <- tabplotPalettes[[palName]]
+				enabled(spb_col) <- TRUE
+				spb_col[] <- seq(1, length(colPal), by=1)
+			}
 			
 			colInd <- startColor:length(colPal)
 			if (startColor!=1) colInd <- c(colInd, 1:(startColor-1))
@@ -85,20 +98,27 @@ tableGUI_updatePal <- function(e) {
 			for (i in 1:8) {
 				svalue(tbl_pal[i,1]) <- printLev[i]
 			}
+			
+			##save pal info
+			varData$Palette[[varIndex]] <- tableGUI_setPalInfo(palName, startColor)
 		}
 	})
 }
  
-tableGUI_showAll <- function(e) {
-	if (require(cairoDevice)) {
-		ggraphics(width = 75 * 6, height = 75 * 4, dpi = 75, ps=8, container=g3)
-	} else {
-		dev.new(width=6, height=4, rescale="fixed")
-	}
+tableGUI_savePalette <- function(e) {
+	with(e, {
+		tableGUI_setVarTbl(varData$Variable, "Palette", varData$Palette, e)
+	})
+}
+
+ 
+tableGUI_showAllPals <- function() {
+	dev.new(width=6, height=4, rescale="fixed")
+
 	
 	
-	k <- length(pals)
-	ncols <- max(sapply(pals,FUN=length))
+	k <- length(tabplotPalettes)
+	ncols <- max(sapply(tabplotPalettes,FUN=length))
 
 	pushViewport(viewport(layout=grid.layout(k+1, ncols+1)))
 	for (i in 1:ncols) {
@@ -108,12 +128,12 @@ tableGUI_showAll <- function(e) {
 	}
 	for (j in 1:k) {
 		pushViewport(viewport(layout.pos.col=1, layout.pos.row=j+1))		
-		grid.text(names(pals)[j])
+		grid.text(names(tabplotPalettes)[j])
 		popViewport()
 
 		for (i in 1:ncols) {
 			pushViewport(viewport(layout.pos.col=i+1, layout.pos.row=j+1))		
-			grid.rect(height=0.66, gp=gpar(col=NA,fill=pals[[j]][i]))
+			grid.rect(height=0.66, gp=gpar(col=NA,fill=tabplotPalettes[[j]][i]))
 			popViewport()
 		}
 	}

@@ -3,7 +3,7 @@
 	######################################################
 	
 tableGUI_n2f_handlers <- function(e) {
-#	browser()
+
 	with(e, {	
 		## click on OK
 		addHandlerClicked(btnOK, function(h,...) {
@@ -55,15 +55,17 @@ tableGUI_n2f_handlers <- function(e) {
 		})
 		
 
-
 		## close window
-		addHandlerDestroy(wdw, function(h,...) {
+		addHandlerUnrealize(wdw2, handler = function(h,...) {
 			svalue(sbr) <- "Cancelled"
 			name <- get("name", envir=e)
 			name <- name[-1]
 			assign("name", name, envir=e)
 			asCategoricalDialog()
+
+			return(TRUE)
 		})
+
 
 		## click on cancel
 		addHandlerClicked(btnCancel, function(h,...) {

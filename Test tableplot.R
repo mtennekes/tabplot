@@ -13,6 +13,7 @@ sapply(list.files(), source)
 
 setwd("../data/")
 load("tabplotPalettes.Rdata")
+setwd("../R/")
 
 ## load test data
 require(ggplot2)
@@ -27,6 +28,7 @@ diamonds$expensive <- diamonds$price >= 10000
 
 data(iris)
 
+tableGUI_showAllPals()
 
 
 ## test tableplot

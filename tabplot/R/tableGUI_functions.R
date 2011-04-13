@@ -303,44 +303,62 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 	
 	nBins <- min(gui_nBins, tableGUI_getCurrentDFnrow(e))
 	
-	# prepare scales
-	scales <- tableGUI_getTbl2(vars=vars, cols="Scale", e=e)
-	scales[scales==""] <- "auto"
-	if (all(scales==scales[1])) {
-		scales <- scales[1]
-		scalesPrint <- paste("\"", scales, "\"", sep="")
-	} else {
-		scalesPrint <- paste("c(\"", paste(scales, collapse="\",\""),"\")", sep="")
-	}
+	varTable <- tableGUI_getTbl2(vars=vars, cols=c("Variable", "Scale", "Sort", "Palette"), e=e)
 
+
+	createVector <- function(x, quotes=FALSE) {
+		if (length(x)==1) {
+			return(as.character(ifelse(quotes, paste("\"", x, "\"", sep=""), x)))
+		} else if (quotes) {
+			return(paste("c(\"", paste(x,collapse="\",\""),"\")", sep=""))
+		} else {
+			return(paste("c(", paste(x,collapse=","),")", sep=""))
+		}
+	}
+	
+	# prepare scales
+	scales <- varTable$Scale
+	scales[scales==""] <- "auto"
+	if (all(scales==scales[1])) scales <- scales[1]
+
+	scalesPrint <- createVector(scales, quotes=TRUE)
+
+	
 	# prepare sortCol and decreasing
-	sorts <- tableGUI_getTbl2(vars=vars, cols="Sort", e=e)
+	sorts <- varTable$Sort
 	sortID <- sorts!=""
 	sortColNames <- vars[sortID]
 	
 	sortCol <- sapply(sortColNames, FUN=function(x, y) which(x==y), vars)
-	if (length(sortCol)==1) {
-		sortColPrint <- as.character(sortCol)
-	} else {
-		sortColPrint <- paste("c(", paste(sortCol, collapse=","), ")", sep="")
-	}
 	
-	decreasing <- sorts[sortID]=="\\/"
-	if (length(decreasing)==1) {
-		decreasingPrint <- decreasing
-	} else {
-		decreasingPrint <- paste("c(", paste(decreasing,collapse=","),")", sep="")
-	}
+	sortColPrint <- createVector(sortCol)
 
 	
+	decreasing <- sorts[sortID]=="\\/"
+	decreasingPrint <- createVector(decreasing)
+
+	
+	isCat <- varTable$Palette!=""
+	palettes <- as.list(varTable$Palette[isCat])
+	names(palettes) <- varTable$Variable[isCat]
+	customNames <- names(palettes)[varTable$Palette[isCat]=="custom"]
+	
+	
+	for (i in customNames) {
+		palettes[[i]] <- e$customPals[[i]]
+	}
+	
+	palPrint <- paste("list(", paste(sapply(palettes, createVector, quotes=TRUE), collapse=","), ")", sep="")
+		
+	
 	## print commandline to reproduce tableplot
-	cat("tableplot(", currentDFname, ", colNames=c(", paste("\"",paste(vars,collapse="\",\""),"\"", sep=""), "), sortCol=", sortColPrint, ", decreasing=", decreasingPrint, ", scales=", scalesPrint, ", nBins=", nBins, ", from=", gui_from, ", to=", gui_to, ")\n", sep="")
+	cat("tableplot(", currentDFname, ", colNames=c(", paste("\"",paste(vars,collapse="\",\""),"\"", sep=""), "), sortCol=", sortColPrint, ", decreasing=", decreasingPrint, ", scales=", scalesPrint, ", pals=", palPrint, ", nBins=", nBins, ", from=", gui_from, ", to=", gui_to, ")\n", sep="")
 	
 	if (dev.cur()==1) {
 		dev.new(width=min(11, 2+2*tableGUI_getNumSel(e)), height=7, rescale="fixed")
 	}
 	
-	tableplot(get(currentDFname, envir=.GlobalEnv)[vars], sortCol=sortCol, decreasing=decreasing, scales=scales, nBins=nBins, from=gui_from, to=gui_to)
+	tableplot(get(currentDFname, envir=.GlobalEnv)[vars], sortCol=sortCol, decreasing=decreasing, scales=scales, pals=palettes, nBins=nBins, from=gui_from, to=gui_to)
 }
 
 

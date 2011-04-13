@@ -7,7 +7,7 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 	options("guiToolkit"="RGtk2")
 
 	e <- environment()
-#browser()
+
 	#####################################
 	## Check arguments
 	#####################################

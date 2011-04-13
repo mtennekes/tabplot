@@ -1,5 +1,4 @@
 tableGUI_pal_handlers <- function(e) {
-#	browser()
 	with(e, {	
 		addHandlerChanged(cmb_pal1, handler = function(h,...) {
 			# obtain variable name and palette (name)
@@ -49,7 +48,7 @@ tableGUI_pal_handlers <- function(e) {
 
 		addHandlerClicked(btn_ok, handler = function(h,...) {
 			tableGUI_savePalette(e=e)
-			tbl2[] <- tableGUI_getTbl2(e=e)
+			tbl2[] <- tableGUI_getTbl2(vars=tbl2[,1], e=e)
 
 			visible(wdw_pal) <- FALSE
 			enabled(wdw) <- TRUE
@@ -60,10 +59,14 @@ tableGUI_pal_handlers <- function(e) {
 			enabled(wdw) <- TRUE
 		})
 		
-		addHandlerDestroy(wdw_pal, function(h,...) {
-			svalue(sbr) <- "Cancelled"
+		## close window
+		addHandlerUnrealize(wdw_pal, handler = function(h,...) {
+			visible(wdw_pal) <- FALSE
 			enabled(wdw) <- TRUE
+
+			return(TRUE)
 		})
+
 		
 	})
 }

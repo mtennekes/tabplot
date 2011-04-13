@@ -1,8 +1,9 @@
 tableGUI_initPal <- function(e) {
 	with(e, {
+
 		visible(wdw_pal) <- TRUE
 		enabled(wdw) <- FALSE
-browser()
+
 		selectVars <- tbl2[, "Variable"]
 		if (is.na(selectVars)[1]) selectVars <- character(0)
 
@@ -25,7 +26,7 @@ browser()
 		cmb_pal1[] <- varData$Variable
 		unblockHandler(cmb_pal1)
 		
-		svalue(cmb_pal1) <- varData$Variable[1]
+		svalue(cmb_pal1) <- palVarName
 		
 	})
  }
@@ -81,7 +82,7 @@ tableGUI_updatePal <- function(e) {
 			printCol[emptySlots] <- ""
 			
 			# if (cairoLoaded) {
-				##tbl_pal[1,2] <- ggraphics(width = 75 * 0.5, height = 75 * 3, dpi = 75, ps=8, container=tbl_pal)
+				#tbl_pal[1,2] <- ggraphics(width = 75 * 0.5, height = 75 * 3, dpi = 75, ps=8, container=tbl_pal)
 				
 				# visible(tbl_pal[1:8,2]) <- TRUE
 				# grid.rect(gp=gpar(col=NA, fill="grey95"))
@@ -93,7 +94,7 @@ tableGUI_updatePal <- function(e) {
 					font(tbl_pal[i,2])  <- c(color=drawFill[i], style="bold")
 					
 				}
-			#}
+			# }
 
 			for (i in 1:8) {
 				svalue(tbl_pal[i,1]) <- printLev[i]

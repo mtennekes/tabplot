@@ -3,7 +3,7 @@
 	######################################################
 	
 tableGUI_main_handlers <- function(e) {
-#	browser()
+
 	with(e, {	
 		## select data.frame
 		addHandlerChanged(cmb, handler = function(h,...) {
@@ -50,7 +50,7 @@ tableGUI_main_handlers <- function(e) {
 		
 		## transfer variables
 		addHandlerClicked(btnTransfer, function(h,...) {
-		#browser()
+
 			enabled(btnTransfer) <- FALSE
 			svalue(sbr) <- "Transferring variable(s)..."
 			if (svalue(btnTransfer)==">") {
@@ -192,10 +192,19 @@ tableGUI_main_handlers <- function(e) {
 		addHandlerClicked(btnPal, function(h,...) {
 			enabled(btnPal) <- FALSE
 			svalue(sbr) <- "Configurating color palettes..."
+
+			nameID <- svalue(tbl2, index=TRUE)
+			nameID <- nameID[which(tbl2[nameID,2]!="numeric")]
+
+					
+			if (length(nameID)==0) nameID <- which(tbl2[,2]!="numeric")
+			
+			palVarName <- tbl2[nameID[1], 1]
+			assign("palVarName", palVarName, envir=e)
 			
 			tableGUI_initPal(e) 
-				
-			
+			enabled(btnRun) <- TRUE
+	
 		})
 		
 		

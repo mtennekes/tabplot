@@ -33,13 +33,29 @@ axis.text.y = theme_blank(),
 axis.ticks = theme_blank(),
 title="Default colours")
 
-hcl5 <- rainbow_hcl(5, start = 60, end = 300)
+# hcl5 <- rainbow_hcl(5, start = 60, end = 300)
+# p %+% df + scale_fill_manual (values=hcl5) + opts(title="dynamic")
+
+# hcl8 <- rainbow_hcl(8, start = 45, end = 300)
+# p %+% df + scale_fill_manual (values=hcl8) + opts(title="dynamic")
+
+
+hclCircle <- function(n, start=0, step=10) {
+	rainbow_hcl(n, start = start, end = start+step*(n-1), c=80, l=70)
+}
+
+
+hcl5 <- hclCircle(5, start = 60, step = 144)
 p %+% df + scale_fill_manual (values=hcl5) + opts(title="dynamic")
 
-hcl8 <- rainbow_hcl(8, start = 45, end = 300)
+
+
+hcl8 <- hclCircle(8, start=60, step= 135)
+#c(rainbow_hcl(8, start = 0, end = (360/8)*3*7))
 p %+% df + scale_fill_manual (values=hcl8) + opts(title="dynamic")
 
-hcl12 <- rainbow_hcl(12, start = 45, end = 300)
+
+hcl12 <- hclCircle(12, start = 45, step = 150)
 p %+% df + scale_fill_manual (values=hcl12) + opts(title="dynamic")
 
 hclPals <- list(hcl5=hcl5, hcl8=hcl8, hcl12=hcl12)

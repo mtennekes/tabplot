@@ -12,7 +12,9 @@ tableGUI_pal_layout <- function(e) {
 
 
 		#lbl_pal <- glabel("Categorical variable:", cont=grp_pal3)
-		cmb_pal1 <- gcombobox(NULL, cont=frm_pal1)
+		blockHandler_cmb_pal1 <- FALSE
+		blockHandler_pal <- FALSE
+		cmb_pal1 <- gcombobox("temp", cont=frm_pal1)
 
 		frm_pal2 <- gframe(text="Color palette", horizontal = FALSE, cont = grp_pal1) 
 		

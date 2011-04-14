@@ -1,6 +1,5 @@
 tableGUI_initPal <- function(e) {
 	with(e, {
-
 		visible(wdw_pal) <- TRUE
 		enabled(wdw) <- FALSE
 
@@ -22,9 +21,11 @@ tableGUI_initPal <- function(e) {
 		
 		assign("varData", varData, e)
 		
-		blockHandler(cmb_pal1)
+		#not working: blockHandler(cmb_pal1)
+		blockHandler_cmb_pal1 <- TRUE
 		cmb_pal1[] <- varData$Variable
-		unblockHandler(cmb_pal1)
+		#not working: unblockHandler(cmb_pal1)
+		blockHandler_cmb_pal1 <- FALSE
 		
 		svalue(cmb_pal1) <- palVarName
 		
@@ -33,6 +34,8 @@ tableGUI_initPal <- function(e) {
  
 tableGUI_updatePal <- function(e) {
 	with(e, {
+		if (blockHandler_pal) return()
+	
 		varName <- svalue(cmb_pal1)
 		if (is.null(varName)) {
 			if (cairoLoaded) {
@@ -121,19 +124,19 @@ tableGUI_showAllPals <- function() {
 	k <- length(tabplotPalettes)
 	ncols <- max(sapply(tabplotPalettes,FUN=length))
 
-	pushViewport(viewport(layout=grid.layout(k+1, ncols+1)))
+	pushViewport(viewport(layout=grid.layout(k+1, ncols+6)))
 	for (i in 1:ncols) {
-		pushViewport(viewport(layout.pos.col=i+1, layout.pos.row=1))		
+		pushViewport(viewport(layout.pos.col=i+6, layout.pos.row=1))		
 		grid.text(i)
 		popViewport()
 	}
 	for (j in 1:k) {
 		pushViewport(viewport(layout.pos.col=1, layout.pos.row=j+1))		
-		grid.text(names(tabplotPalettes)[j])
+		grid.text(names(tabplotPalettes)[j], just="left")
 		popViewport()
 
 		for (i in 1:ncols) {
-			pushViewport(viewport(layout.pos.col=i+1, layout.pos.row=j+1))		
+			pushViewport(viewport(layout.pos.col=i+6, layout.pos.row=j+1))		
 			grid.rect(height=0.66, gp=gpar(col=NA,fill=tabplotPalettes[[j]][i]))
 			popViewport()
 		}

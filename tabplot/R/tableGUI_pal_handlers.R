@@ -1,6 +1,8 @@
 tableGUI_pal_handlers <- function(e) {
 	with(e, {	
 		addHandlerChanged(cmb_pal1, handler = function(h,...) {
+			if (blockHandler_cmb_pal1) return()
+
 			# obtain variable name and palette (name)
 			varName <- svalue(h$obj)
 			varIndex <- which(varData$Variable==varName)
@@ -10,10 +12,8 @@ tableGUI_pal_handlers <- function(e) {
 			colPalStartCol <- colPalInfo$palStartCol
 
 		
-			# 
-			blockHandler(cmb_pal2)
-			blockHandler(spb_col)
-
+			assign("blockHandler_pal", TRUE, envir=e)
+			
 			if (varName %in% names(customPals)) {
 				cmb_pal2[] <- c(names(tabplotPalettes), "custom")
 			} else {
@@ -27,18 +27,17 @@ tableGUI_pal_handlers <- function(e) {
 				spb_col[] <- seq(1, length(tabplotPalettes[[colPalName]]), by=1)
 			}
 			
-			changed <- (svalue(cmb_pal2)==colPalName)
-			if (length(changed)==0) changed <- TRUE
+			
 			svalue(cmb_pal2) <- colPalName
 			svalue(spb_col) <- colPalStartCol
-			unblockHandler(cmb_pal2)
-			unblockHandler(spb_col)
-			if (changed) tableGUI_updatePal(e=e)
+
+			assign("blockHandler_pal", FALSE, envir=e)
+
+			tableGUI_updatePal(e=e)
 
 		})
 		
 		addHandlerChanged(cmb_pal2, handler = function(h,...) {
-			varName <- svalue(cmb_pal1)
 			tableGUI_updatePal(e=e)
 		})
 

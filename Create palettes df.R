@@ -44,6 +44,10 @@ hclCircle <- function(n, start=0, step=10) {
 	rainbow_hcl(n, start = start, end = start+step*(n-1), c=80, l=70)
 }
 
+#from http://jfly.iam.u-tokyo.ac.jp/color/ and  http://wiki.stdout.org/rcookbook/Graphs/Colors%20%28ggplot2%29
+col_blind_friendly = c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+p %+% df + scale_fill_manual (values=col_blind_friendly) + opts(title="dynamic")
+
 
 hcl5 <- hclCircle(5, start = 60, step = 144)
 p %+% df + scale_fill_manual (values=hcl5) + opts(title="dynamic")
@@ -58,13 +62,13 @@ p %+% df + scale_fill_manual (values=hcl8) + opts(title="dynamic")
 hcl12 <- hclCircle(12, start = 45, step = 150)
 p %+% df + scale_fill_manual (values=hcl12) + opts(title="dynamic")
 
-hclPals <- list(hcl5=hcl5, hcl8=hcl8, hcl12=hcl12)
+otherPals <- list(hcl5=hcl5, hcl8=hcl8, hcl12=hcl12, col_blind_friendly=col_blind_friendly)
 
 ######################################################
 ####### combine palettes
 ######################################################
 
-tabplotPalettes <- c(brewer, hclPals)
+tabplotPalettes <- c(brewer, otherPals)
 save("tabplotPalettes", file="tabplotPalettes.Rdata")
 
 

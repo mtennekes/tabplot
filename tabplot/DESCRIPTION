@@ -1,13 +1,30 @@
 Package: tabplot
-Type: Package
-Title: Tableplot, a visualization of large statistical datasets
-Version: 0.9-1
-Date: 2011-01-25
-Author: Martijn Tennekes and Edwin de Jonge
 Maintainer: Martijn Tennekes <mtennekes@gmail.com>
-Description: A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. Numeric variables are visualized as bar charts, and categorical variables as stacked bar charts. Missing values are taken into account. A GUI has been implemented which is used to easily customize the tableplot. Also supports large ffdf datasets from the ff package.
 License: GPL version 3
+Title: Tableplot, a visualization of large statistical datasets
+Type: Package
 LazyLoad: yes
+Author: Martijn Tennekes and Edwin de Jonge
+Description: A tableplot is a visualisation of a (large) statistical
+    dataset with a dozen of variables, both both numeric and
+    categorical. Each column represents a variable and each row bin is
+    an aggregate of a certain number of records. Numeric variables are
+    visualized as bar charts, and categorical variables as stacked bar
+    charts. Missing values are taken into account. A GUI has been
+    implemented which is used to easily customize the tableplot. Also
+    supports large ffdf datasets from the ff package.
+Version: 0.9-1
+URL: http://code.google.com/p/tableplot/
+Date: 2011-01-25
 Depends: grid, RColorBrewer, plyr
 Suggests: ff (>= 2.2-0), gWidgets, gWidgetsRGtk2, classInt
-URL: http://code.google.com/p/tableplot/
+Collate: 'brokenX.R' 'columnsPlot.R' 'generalFunctions.R'
+    'getBinSizes.R' 'getFreqTable.R' 'num2fac.R' 'plotColumns.R'
+    'plotTable.R' 'preprocess.data.frame.R' 'preprocess.ffdf.R'
+    'preprocess.R' 'tableGUI.R' 'tableGUI_functions.R'
+    'tableGUI_main_handlers.R' 'tableGUI_main_layout.R'
+    'tableGUI_n2f_handlers.r' 'tableGUI_n2f_layout.R'
+    'tableGUI_pal_functions.R' 'tableGUI_pal_handlers.R'
+    'tableGUI_pal_layout.r' 'tableplot.R' 'tableplot_checkDecreasing.R'
+    'tableplot_checkPals.R' 'tableplot_checkScales.R'
+    'tableplot_checkSortCol.R' 'tableViewport.R'

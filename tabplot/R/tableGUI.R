@@ -1,3 +1,22 @@
+#' A graphical user interface for customizing a tableplot visualization.
+#'
+#' A GUI by which the user can specify tableplots. First, the user selects a data.frame (of ffdf object). Second, the user selects columns from this data.frame that are visualized. Thirds, the user customizes the tableplot by changing the number of row bins, determine which column should be sorted. Further, the user is able to create a factor vector out of a numerical vector (by means of the function \code{\link{num2fac}}).
+#'
+#' @aliases tableGUI
+#' @param dat see \code{link{tableplot}}
+#' @param colNames see \code{link{tableplot}}
+#' @param sortCol see \code{link{tableplot}}
+#' @param decreasing see \code{link{tableplot}}
+#' @param scales see \code{link{tableplot}}
+#' @param pals see \code{link{tableplot}}
+#' @param nBins see \code{link{tableplot}}
+#' @param from see \code{link{tableplot}}
+#' @param to see \code{link{tableplot}}
+#' @export
+#' @examples
+#' \dontrun{
+	#' tableGUI()
+#' }
 tableGUI <-
 function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100) {
     if (!require(gWidgetsRGtk2)){
@@ -56,11 +75,11 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 	}
 
 	
-	# load information about loaded data.frames
+	#' load information about loaded data.frames
 	tableGUI_init_data(DF=datName, vars=colNames, sorts=sortColFull, scales=scales, palNames=palNames, customPals=customPals, e=e)
 	
 
-	# create main GUI
+	#' create main GUI
 	tableGUI_main_layout(e)
 		
 	## create window for num2fac  
@@ -70,7 +89,7 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 	tableGUI_pal_layout(e)
 
 	
-	# functions and handlers
+	#' functions and handlers
     tableGUI_main_handlers(e)
 	
 	tableGUI_n2f_handlers(e)
@@ -80,7 +99,7 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 	######################################################
 	## activate GUI
 	######################################################
-	#tbl2[] <- data.frame(Variable=character(0), Type=character(0), Scale=character(0), Sort=character(0), stringsAsFactors=FALSE)
+	#'tbl2[] <- data.frame(Variable=character(0), Type=character(0), Scale=character(0), Sort=character(0), stringsAsFactors=FALSE)
 	svalue(sbr) <- "Ready"
 	visible(wdw) <- TRUE
 }

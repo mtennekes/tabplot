@@ -69,6 +69,6 @@ otherPals <- list(hcl5=hcl5, hcl8=hcl8, hcl12=hcl12, col_blind_friendly=col_blin
 ######################################################
 
 tabplotPalettes <- c(brewer, otherPals)
-save("tabplotPalettes", file="tabplotPalettes.Rdata")
+save("tabplotPalettes", file="/tabplot/data/tabplotPalettes.Rdata")
 
 

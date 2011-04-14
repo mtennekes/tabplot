@@ -119,7 +119,7 @@ tableGUI_savePalette <- function(e) {
 tableGUI_showAllPals <- function() {
 	dev.new(width=6, height=4, rescale="fixed")
 
-	
+	data(tabplotPalettes)
 	
 	k <- length(tabplotPalettes)
 	ncols <- max(sapply(tabplotPalettes,FUN=length))

@@ -1,3 +1,38 @@
+#' Visualization of large statistical datasets.
+#'
+#' A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package. Use \code{\link{tableGUI}} to customize this function with a GUI.
+#'
+#' @aliases tableplot
+#' @param dat a data.frame or an ffdf object (required)
+#' @param colNames character vector containing the names of the columns of \code{dat} that are visualized in the tablelplot. If omitted, all columns are visualized. All selected columns should be of class: numeric, integer, factor, or logical.
+#' @param sortCol columns that are sorted. \code{sortCol} is either a vector of column names of a vector of indices of \code{colNames}
+#' @param decreasing determines whether the columns are sorted decreasingly (TRUE) of increasingly (FALSE). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.
+#' @param scales determines the horizontal axes of the numeric variables, options: "lin", "log", and "auto" for automatic detection. It should be either one value (applied to all numeric variables) or a vector of values of the same length as \code{colNames}.
+#' @param pals TODO a vector of indices that determines the startings colors of the selected categorical variables. The indices are taken from a fixed palet (see \code{tableplot(data.frame(palet_1_8 = factor(1:8), palet_9_16 = factor(9:16)))}). If necessary, \code{palet} is cycled to obtain the number of selected categorical variables. This argument is not implemented in \code{\link{tableGUI}} yet.
+#' @param nBins number of row bins
+#' @param from percentage from which the data is shown
+#' @param to percentage to which the data is shown
+#' @export
+#' @examples
+#' \dontrun{
+	#' require(ggplot2)
+	
+	#' diamondsNA <- diamonds
+	#' # simulate missing data
+	#' is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
+	#' tableplot(diamondsNA)
+
+	#' data(movies)
+	#' tableplot(movies[,c(3:5,17:24)], sortCol="rating", decreasing=FALSE, scales="lin", nBins=100)
+#' }
+#' irisNA <- iris
+#' # simulate missing data
+#' is.na(irisNA$Sepal.Width) <- sample(1:nrow(iris), 30)
+#' is.na(irisNA$Species) <- sample(1:nrow(iris), 15)
+#'
+#' tableplot(irisNA)
+#' @keywords visualization
+
 tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100) {
 
 

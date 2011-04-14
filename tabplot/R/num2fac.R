@@ -1,3 +1,25 @@
+#' Function that creates a factor vector out of a numerical vector.
+#'
+#' Creates a factor vector out of a numerical vector. The levels can be determined by several methods. This function can be called via \code{\link{tableGUI}}.
+#'
+#' @aliases num2fac
+#' @param num numeric vector
+#' @param method \itemize{
+#' \item \code{"pretty"} intervals are determined by the base function \code{\link{pretty}}
+#' \item \code{"kmeans"} the method intervals are determined by the method kmeans where \code{n} clusters (i.e. intervals) are found
+#' \item \code{"fixed"} determines the intervals by the argument \code{brks}
+#' \item \code{"discrete"} the unique values in \code{num} are mapped one to one to the levels of the new factor vector)
+#' }
+#' @param num_scale \itemize{
+#' \item \code{"auto"} used scale is determined automatically
+#' \item \code{"lin"} \code{num} is directly fed to the method pretty or kmeans
+#' \item \code{"log"} a logarithmic transformation of \code{num} is fed to the method pretty or kmeans
+#' }
+#' @param n the (desired) number of levels. \code{n=0} means automatic
+#' @param brks breaks that determine the levels (only required when \code{method="fixed"})
+#' @return A factor vector
+#' @export
+#' @note \code{ff} vectors are not implemented yet
 num2fac <-
 function(num, method="pretty", num_scale="auto", n=0, brks=NA) {
     if (!require(classInt)){

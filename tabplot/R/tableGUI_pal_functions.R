@@ -38,15 +38,15 @@ tableGUI_updatePal <- function(e) {
 	
 		varName <- svalue(cmb_pal1)
 		if (is.null(varName)) {
-			if (cairoLoaded) {
-				visible(tbl_pal[1:8,2]) <- TRUE
-				grid.rect(gp=gpar(col=NA, fill="grey95"))
+			# if (cairoLoaded) {
+				# visible(tbl_pal[1:8,2]) <- TRUE
+				# grid.rect(gp=gpar(col=NA, fill="grey95"))
 
-			} else {
+			# } else {
 				for (i in 1:8) {
 					svalue(tbl_pal[i,2]) <- ""
 				}
-			}
+			# }
 
 			for (i in 1:8) {
 				svalue(tbl_pal[i,1]) <- ""
@@ -113,32 +113,4 @@ tableGUI_savePalette <- function(e) {
 	with(e, {
 		tableGUI_setVarTbl(varData$Variable, "Palette", varData$Palette, e)
 	})
-}
-
- 
-tableGUI_showAllPals <- function() {
-	dev.new(width=6, height=4, rescale="fixed")
-
-	data(tabplotPalettes)
-	
-	k <- length(tabplotPalettes)
-	ncols <- max(sapply(tabplotPalettes,FUN=length))
-
-	pushViewport(viewport(layout=grid.layout(k+1, ncols+6)))
-	for (i in 1:ncols) {
-		pushViewport(viewport(layout.pos.col=i+6, layout.pos.row=1))		
-		grid.text(i)
-		popViewport()
-	}
-	for (j in 1:k) {
-		pushViewport(viewport(layout.pos.col=1, layout.pos.row=j+1))		
-		grid.text(names(tabplotPalettes)[j], just="left")
-		popViewport()
-
-		for (i in 1:ncols) {
-			pushViewport(viewport(layout.pos.col=i+6, layout.pos.row=j+1))		
-			grid.rect(height=0.66, gp=gpar(col=NA,fill=tabplotPalettes[[j]][i]))
-			popViewport()
-		}
-	}
 }

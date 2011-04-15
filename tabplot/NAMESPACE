@@ -1,9 +1,4 @@
-export( tableplot
-      , tableGUI
-	  , num2fac
-	  )
-
-import( grid
-      , RColorBrewer
-	  , plyr
-      )
+export(num2fac)
+export(tableGUI)
+export(tableGUI_showAllPals)
+export(tableplot)

@@ -29,7 +29,7 @@ tableGUI_pal_layout <- function(e) {
 			tbl_pal[i,1] <- glabel(text = "", container =tbl_pal)
 		}
 
-		cairoLoaded <- require(cairoDevice)
+		# cairoLoaded <- require(cairoDevice)
 		# if (cairoLoaded) {
 			# tbl_pal[1:8,2] <- ggraphics(width = 75 * 0.5, height = 75 * 3, dpi = 75, ps=8, container=tbl_pal)
 		# } else {

@@ -3,15 +3,15 @@
 #' A GUI by which the user can specify tableplots. First, the user selects a data.frame (of ffdf object). Second, the user selects columns from this data.frame that are visualized. Thirds, the user customizes the tableplot by changing the number of row bins, determine which column should be sorted. Further, the user is able to create a factor vector out of a numerical vector (by means of the function \code{\link{num2fac}}).
 #'
 #' @aliases tableGUI
-#' @param dat see \code{link{tableplot}}
-#' @param colNames see \code{link{tableplot}}
-#' @param sortCol see \code{link{tableplot}}
-#' @param decreasing see \code{link{tableplot}}
-#' @param scales see \code{link{tableplot}}
-#' @param pals see \code{link{tableplot}}
-#' @param nBins see \code{link{tableplot}}
-#' @param from see \code{link{tableplot}}
-#' @param to see \code{link{tableplot}}
+#' @param dat see \code{\link{tableplot}}
+#' @param colNames see \code{\link{tableplot}}
+#' @param sortCol see \code{\link{tableplot}}
+#' @param decreasing see \code{\link{tableplot}}
+#' @param scales see \code{\link{tableplot}}
+#' @param pals see \code{\link{tableplot}}
+#' @param nBins see \code{\link{tableplot}}
+#' @param from see \code{\link{tableplot}}
+#' @param to see \code{\link{tableplot}}
 #' @export
 #' @examples
 #' \dontrun{

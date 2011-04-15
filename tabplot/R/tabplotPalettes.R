@@ -1,6 +1,6 @@
 #' Qualitative palettes used for tableplot
 #'
-#' Color brewer palettes
+#' Color brewer palettes:
 #' \itemize{
 #' \item default 
 #' \item Accent
@@ -13,22 +13,24 @@
 #' \item Set3
 #' }
 #'
-#' hcl palettes
+#' HCL palettes:
 #' \itemize{
 #' \item hcl5
 #' \item hcl8
 #' \item hcl12
 #' }
 #'
-#' color blind friendly palette
+#' Color blind friendly palette:
 #' \itemize{
 #' \item col_blind_friendly
 #' }
 #'
+#' @name tabplotPalettes
 #' @aliases tabplotPalettes
 #' @docType data
-#' @source 
+#' @references 
 #' \url{http://colorbrewer2.org/}
 #' \url{http://jfly.iam.u-tokyo.ac.jp/color/}
 #'
 #'
+{}

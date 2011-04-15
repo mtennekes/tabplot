@@ -3,8 +3,8 @@
 #' \tabular{ll}{
 #' Package: \tab tabplot\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.9-1\cr
-#' Date: \tab 2011-01-25\cr
+#' Version: \tab 0.9-2\cr
+#' Date: \tab 2011-04-15\cr
 #' License: \tab GPL-3\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -13,6 +13,7 @@
 #'
 #' The function \code{\link{tableplot}} is used to create a tableplot. With the GUI \code{\link{tableGUI}} users are able to easily design the tableplot.
 #'
+#' @name tabplot-package
 #' @aliases tabplot
 #' @docType package
 #' @author Martijn Tennekes \email{mtennekes@@gmail.com} and Edwin de Jonge
@@ -23,4 +24,4 @@
 #' is.na(irisNA$Sepal.Width) <- sample(1:nrow(iris), 30)
 #' is.na(irisNA$Species) <- sample(1:nrow(iris), 15)
 #' tableplot(irisNA)
-roxygen()
+{}

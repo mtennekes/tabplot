@@ -1,68 +1,43 @@
 \name{tableplot}
 \alias{tableplot}
-\title{
-Visualization of large statistical datasets.
+\title{Visualization of large statistical datasets.}
+\usage{tableplot(dat, colNames=names(dat), sortCol=1, decreasing=TRUE, scales="auto",
+    pals=list(1, 9, 3, 10), nBins=100, from=0, to=100)
 }
-\description{
-A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package. Use \code{\link{tableGUI}} to customize this function with a GUI.
+\description{Visualization of large statistical datasets.}
+\details{A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package. Use \code{\link{tableGUI}} to customize this function with a GUI.}
+\alias{tableplot}
+\keyword{visualization}
+\arguments{\item{dat}{a data.frame or an ffdf object (required)}
+\item{colNames}{character vector containing the names of the columns of \code{dat} that are visualized in the tablelplot. If omitted, all columns are visualized. All selected columns should be of class: numeric, integer, factor, or logical.}
+\item{sortCol}{columns that are sorted. \code{sortCol} is either a vector of column names of a vector of indices of \code{colNames}}
+\item{decreasing}{determines whether the columns are sorted decreasingly (TRUE) of increasingly (FALSE). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.}
+\item{scales}{determines the horizontal axes of the numeric variables, options: "lin", "log", and "auto" for automatic detection. It should be either one value (applied to all numeric variables) or a vector of values of the same length as \code{colNames}.}
+\item{pals}{list of color palettes. Each list item is on of the following:
+\itemize{
+\item a index number between 1 and 16. In this case, the default palette is used with the index number being the first color that is used.
+\item a palette name in \code{\link{tabplotPalettes}}, optionally with the starting color between brackets.
+\item a palette vector
+}}
+\item{nBins}{number of row bins}
+\item{from}{percentage from which the data is shown}
+\item{to}{percentage to which the data is shown}
 }
-\usage{
-tableplot(dat, colNames = names(dat), sortCol = 1, decreasing = TRUE, scales = "auto", palet = c(1, 9, 3, 10), nBins = 100, from=0, to=100)
-}
-%- maybe also 'usage' for other objects documented here.
-\arguments{
-  \item{dat}{
-	a data.frame or an ffdf object (required)
-}
-  \item{colNames}{
-	character vector containing the names of the columns of \code{dat} that are visualized in the tablelplot. If omitted, all columns are visualized. All selected columns should be of class: numeric, integer, factor, or logical.
-}
-  \item{sortCol}{
-	columns that are sorted. \code{sortCol} is either a vector of column names of a vector of indices of \code{colNames}
-}
-  \item{decreasing}{
-	determines whether the columns are sorted decreasingly (TRUE) of increasingly (FALSE). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.
-}
-  \item{scales}{
-	determines the horizontal axes of the numeric variables, options: "lin", "log", and "auto" for automatic detection. It should be either one value (applied to all numeric variables) or a vector of values of the same length as \code{colNames}.
-}
-  \item{palet}{
-	a vector of indices that determines the startings colors of the selected categorical variables. The indices are taken from a fixed palet (see \code{tableplot(data.frame(palet_1_8 = factor(1:8), palet_9_16 = factor(9:16)))}). If necessary, \code{palet} is cycled to obtain the number of selected categorical variables. This argument is not implemented in \code{\link{tableGUI}} yet.
-}
-  \item{nBins}{
-	number of row bins
-}
-  \item{from}{
-	percentage from which the data is shown
-}
-  \item{to}{
-	percentage to which the data is shown
-}
-}
+\examples{\dontrun{
+require(ggplot2)
 
+diamondsNA <- diamonds
+# simulate missing data
+is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
 
-
-\examples{
-\dontrun{
-	require(ggplot2)
-	
-	diamondsNA <- diamonds
-	# simulate missing data
-	is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
-	tableplot(diamondsNA)
-
-	data(movies)
-	tableplot(movies[,c(3:5,17:24)], sortCol="rating", decreasing=FALSE, scales="lin", nBins=100)
+tableplot(diamondsNA)
+data(movies)
+tableplot(movies[,c(3:5,17:24)], sortCol="rating", decreasing=FALSE, scales="lin", nBins=100)
 }
-
 irisNA <- iris
 # simulate missing data
 is.na(irisNA$Sepal.Width) <- sample(1:nrow(iris), 30)
 is.na(irisNA$Species) <- sample(1:nrow(iris), 15)
 
-tableplot(irisNA)
-	
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{visualization}
+tableplot(irisNA)}
+

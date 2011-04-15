@@ -8,7 +8,12 @@
 #' @param sortCol columns that are sorted. \code{sortCol} is either a vector of column names of a vector of indices of \code{colNames}
 #' @param decreasing determines whether the columns are sorted decreasingly (TRUE) of increasingly (FALSE). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.
 #' @param scales determines the horizontal axes of the numeric variables, options: "lin", "log", and "auto" for automatic detection. It should be either one value (applied to all numeric variables) or a vector of values of the same length as \code{colNames}.
-#' @param pals TODO a vector of indices that determines the startings colors of the selected categorical variables. The indices are taken from a fixed palet (see \code{tableplot(data.frame(palet_1_8 = factor(1:8), palet_9_16 = factor(9:16)))}). If necessary, \code{palet} is cycled to obtain the number of selected categorical variables. This argument is not implemented in \code{\link{tableGUI}} yet.
+#' @param pals list of color palettes. Each list item is on of the following:
+#' \itemize{
+#' \item a index number between 1 and 16. In this case, the default palette is used with the index number being the first color that is used.
+#' \item a palette name in \code{\link{tabplotPalettes}}, optionally with the starting color between brackets.
+#' \item a palette vector
+#' }
 #' @param nBins number of row bins
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
@@ -16,12 +21,12 @@
 #' @examples
 #' \dontrun{
 	#' require(ggplot2)
-	
+	#'
 	#' diamondsNA <- diamonds
 	#' # simulate missing data
 	#' is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
+	#'
 	#' tableplot(diamondsNA)
-
 	#' data(movies)
 	#' tableplot(movies[,c(3:5,17:24)], sortCol="rating", decreasing=FALSE, scales="lin", nBins=100)
 #' }

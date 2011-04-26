@@ -8,8 +8,9 @@
 tableGUI_showAllPals <- function() {
 	dev.new(width=6, height=4, rescale="fixed")
 
-	data("tabplotPalettes")
-	tabplotPalettes <- get("tabplotPalettes", pos=globalenv())
+	## for package building, uncomment these rules
+	#data("tabplotPalettes")
+	#tabplotPalettes <- get("tabplotPalettes", pos=globalenv())
 	
 	k <- length(tabplotPalettes)
 	ncols <- max(sapply(tabplotPalettes,FUN=length))

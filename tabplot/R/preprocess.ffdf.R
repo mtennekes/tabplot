@@ -194,7 +194,7 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		} else {
 			col$freq <- datFreq[[colNames[i]]]$freqTable
 			col$categories <- datFreq[[colNames[i]]]$categories
-			col$palet <- pals[paletNr]
+			col$palet <- pals[[paletNr]]
 			paletNr <- ifelse(paletNr==length(pals), 1, paletNr + 1)
 		}
 		tab$columns[[i]] <- col

@@ -56,7 +56,6 @@ tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames) {
 	
 ## initiate data for GUI: all loaded data.frames, and select a current data.frame and its variables
 tableGUI_init_data <- function(DF=character(0), vars=character(0), sorts=character(0), scales=character(0), palNames=character(0), customPals=list(), e=e) {
-
 	## create list of data.frames and, if necessary select the first one
 	datlist <- lsDF()
 	if (length(datlist)==0) stop("No data.frames loaded.")

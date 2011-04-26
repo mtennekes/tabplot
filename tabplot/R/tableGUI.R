@@ -72,8 +72,13 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 		datName <- character(0)
 		sortColFull <- character(0)
 		palNames <- character(0)
+		customPals <- list()
 	}
 
+	## for package building, uncomment these rules
+	#data("tabplotPalettes")
+	#tabplotPalettes <- get("tabplotPalettes", pos=globalenv())
+	
 	
 	#' load information about loaded data.frames
 	tableGUI_init_data(DF=datName, vars=colNames, sorts=sortColFull, scales=scales, palNames=palNames, customPals=customPals, e=e)

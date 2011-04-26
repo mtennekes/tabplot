@@ -1,6 +1,8 @@
 tableGUI_main_layout <- function(e) {
 #	browser()
-	with(e, {		
+	with(e, {
+
+	
 		######################################################
 		## create GUI
 		######################################################
@@ -50,7 +52,7 @@ tableGUI_main_layout <- function(e) {
 		grp6 <- ggroup(horizontal = FALSE, cont = frm, expand=TRUE) 
 		#lbl3 <- glabel("Columns", cont=grp6)
 
-		tbl2 <- gtable(tableGUI_getTbl2(e=environment()), multiple=TRUE, cont=grp6, expand=TRUE)
+		tbl2 <- gtable(tableGUI_getTbl2(e=e), multiple=TRUE, cont=grp6, expand=TRUE)
 
 		grp7 <- ggroup(horizontal = TRUE, cont = grp6, expand=FALSE) 
 		btnUp <- gbutton("Up", cont=grp7, expand=TRUE); enabled(btnUp) <- FALSE
@@ -82,6 +84,6 @@ tableGUI_main_layout <- function(e) {
 		lbl1 <- glabel("Number of Row Bins:", cont=grp1)
 		spbBins <- gspinbutton(0, 1000, by = 10, cont=grp1, expand=TRUE)
 		svalue(spbBins) <- 100
-		btnRun <- gbutton("Run", cont=grp1, expand=TRUE); enabled(btnRun) <- nrow(tbl2[,]!=0)
+		btnRun <- gbutton("Run", cont=grp1, expand=TRUE); enabled(btnRun) <- nrow(tbl2[,])!=0
 	})
 }

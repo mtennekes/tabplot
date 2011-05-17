@@ -86,8 +86,8 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		
 		## calculate means by dividing by binSizes and sum
 		ncwmean <- function(df){
-		   size <- binSizes[df$aggIndex]
-		   l <- lapply( df[,numcols]
+		   size <- binSizes[df$aggIndex[1]] #otherwise multiple output...
+		   l <- lapply( df[numcols]
 		              , function(x){
 					       sum(x/size, na.rm=TRUE)
 						}
@@ -98,7 +98,7 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 
 		ncomplete <- function(df){
 		   size <- binSizes[df$aggIndex[1]] #otherwise multiple output...
-		   l <- lapply( (df[numcols])
+		   l <- lapply( df[numcols]
 		              , function(x){
 					      100*sum(!is.na(x))/size
 						}

@@ -27,6 +27,7 @@
 #'
 #' @name tabplotPalettes
 #' @aliases tabplotPalettes
+#' @export
 #' @docType data
 #' @references 
 #' \url{http://colorbrewer2.org/}

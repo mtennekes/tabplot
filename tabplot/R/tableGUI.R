@@ -45,7 +45,7 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 		whichCat <- which(classes %in% c("factor", "logical"))
 		
 		## Check sortCol, and (if necessary) cast it to indices
-		sortCol <- tableplot_checkSortCol(sortCol, colNames, asIndex=TRUE)
+		sortCol <- tableplot_checkCols(sortCol, colNames, asIndex=TRUE)
 
 		## Check decreasing vector
 		decreasing <- tableplot_checkDecreasing(decreasing, sortCol)

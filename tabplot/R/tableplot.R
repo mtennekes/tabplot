@@ -60,7 +60,7 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	n <- length(colNames)
 
 	## Check sortCol, and (if necessary) cast it to indices
-	sortCol <- tableplot_checkSortCol(sortCol, colNames)
+	sortCol <- tableplot_checkCols(sortCol, colNames)
 
 	## Check decreasing vector
 	decreasing <- tableplot_checkDecreasing(decreasing, sortCol)
@@ -85,8 +85,10 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	if (to < 0 && to > 100) stop("<to> is not a number in [0, 100]")
 	if (from >= to) stop("<from> is not smaller than <to>")
 
+	## Check filter variables
+	if (!is.null(filter)) filter <- tableplot_checkCols(filter, colNames)
 
-
+	######## TO DO: implement filter variable(s)
 
 	##########################
 	#### Preprocess

@@ -17,6 +17,8 @@
 #' @param nBins number of row bins
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
+#' @param plot boolean, tableplot is plot (TRUE) or it a tabplot object is returned
+#' @param filter variable name(s) on which the tableplot is filtered (TO DO)
 #' @export
 #' @examples
 #' \dontrun{
@@ -38,7 +40,7 @@
 #' tableplot(irisNA)
 #' @keywords visualization
 
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, plot=TRUE, filter=NULL) {
 
 
 	#####################################
@@ -202,7 +204,8 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 		tab$columns[[i]]$xline <- xline
 		tab$columns[[i]]$widths <- widths
 	}
+	
 	## plot
-	plotTable(tab)
-
+	class(tab) <- "tabplot"
+	if (plot) plot(tab) else return(tab)
 }

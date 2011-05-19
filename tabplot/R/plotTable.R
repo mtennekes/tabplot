@@ -153,7 +153,7 @@ plotCatCol <- function(tCol, tab, colorpalet, vpTitle, vpGraph, vpLegend){
 }
 
 
-plotTable <-
+plot.tabplot <-
 function(tab) {
 	
 		

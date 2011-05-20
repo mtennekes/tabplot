@@ -46,6 +46,7 @@ tableGUI_showAllPals()
 
 
 ## tableplot
+dev.new(width=15, height=11)
 tableplot(diamonds)
 
 ## with generic plot function

@@ -4,9 +4,11 @@
 #'
 #' @aliases plot.tabplot
 #' @param tab tabplot object
+#' @param fontsize the (maximum) fontsize
+#' @param legend.lines the number of lines preserved for the legend
 #' @export
 plot.tabplot <-
-function(tab) {
+function(tab, fontsize = 8, legend.lines = 8) {
 	
 		
 	#############################
@@ -34,9 +36,9 @@ function(tab) {
  					    , width = unit(1 - marginL - marginR, "npc")
 	                    , layout = grid.layout( nrow=3
 						                      , ncol=1
-						                      , heights = unit(c(1,1, 6), c("lines","null", "lines"))
+						                      , heights = unit(c(1,1, legend.lines), c("lines","null", "lines"))
 						    				  )
-	                   , gp=gpar(cex=0.75)
+	                   , gp=gpar(fontsize=fontsize)
 					   )
 						
 	vpTitle <- viewport( name = "title"

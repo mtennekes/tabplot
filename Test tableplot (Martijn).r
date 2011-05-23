@@ -1,72 +1,69 @@
+######################################
 ## dependencies
+######################################
 require(gWidgets)
 require(gWidgetsRGtk2)
 require(plyr)
 require(RColorBrewer)
 require(classInt)
 
+require(data.table)
+
+######################################
 ## load tableplot scripts
+######################################
 scriptmap <- "./tabplot/R/"
 setwd(scriptmap)
-
 sapply(list.files(), source)
 
-
-### test package #######
-install.packages("./tabplot_0.9-1.zip")
-library(tabplot)
-
+setwd("../data/")
+load("tabplotPalettes.Rda")
+setwd("../R/")
 
 ## load data
 library(ggplot2)
 data(diamonds)
+## add some NA's
+is.na(diamonds$price) <- diamonds$cut=="Ideal"
+is.na(diamonds$cut) <- (runif(nrow(diamonds))>0.8)
+## create logical variable
+diamonds$expensive <- diamonds$price >= 10000
 
-diamonds$color[sample.int(50000, 5000)] <- NA
+## duplicate diamonds 5 times: 1726080 records
+for(i in 1:5){
+	diamonds <- rbind(diamonds, diamonds)
+}
 
-
-irisNA <- iris
-# simulate missing data
-is.na(irisNA$Sepal.Width) <- sample(1:nrow(iris), 30)
-is.na(irisNA$Species) <- sample(1:nrow(iris), 15)
-
-diamondsNA <- diamonds
-# simulate missing data
-is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
-
-
-## test GUI
-
-tableGUI()
-
-tableplot(diamonds,pals=list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4))
+dDT <- data.table(diamonds)
 
 
+## test data.table
 
+system.time({
+	dev.new(width=13)
+	tableplot(diamonds, useDT=FALSE)
+})
 
-
-
-
-
+system.time({
+	dev.new(width=13)
+	tableplot(dDT, useDT=TRUE)
+})
 
 
 
-tableplot(diamondsNA, from=40,to=50)
 
-data(movies)
-tableplot(movies[,c(3:5,17:24)], sortCol="rating", decreasing=FALSE, scales="lin", nBins=100)
-	
-
-tableplot(data.frame(palet_1_8 = factor(1:8), palet_9_16 = factor(9:16)))	
-
-# test manually
-dat <- diamonds
-colNames <- names(dat)[c(1,3,4)]
-sortCol <- colNames[c(1,2)]
-decreasing <- c(FALSE, TRUE)
-scales <- "auto"
-nBins <- 100
-from <- 25
-to <- 50
+dat<-diamonds
+colNames<-names(dat)
+sortCol<-c(1, 3)
+decreasing<-TRUE
+scales<-"auto"
+pals<-list(1, 9, 3, 10)
+nBins<-100
+from<-5
+to<-100
+plot<-TRUE
+filter<-NULL
+useDT<-TRUE
 
 
 

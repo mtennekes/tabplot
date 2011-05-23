@@ -47,7 +47,7 @@ tableGUI_showAllPals()
 
 ## tableplot
 dev.new(width=15, height=11)
-tableplot(diamonds)
+tableplot(diamonds, fontsize=12, legend.lines=5)
 
 ## with generic plot function
 tab <- tableplot(diamonds, plot=FALSE)

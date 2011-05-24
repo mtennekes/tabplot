@@ -41,7 +41,7 @@
 #' tableplot(irisNA)
 #' @keywords visualization
 
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, plot=TRUE, filter=NULL, useDT=TRUE, ...) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, plot=TRUE, filter=NULL, useDT=require(data.table), ...) {
 
 	if (useDT) dat <- data.table(dat)
 

@@ -76,16 +76,16 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		aggIndex <- NULL; rm(aggIndex)
 
 		## calculate means
-		datMean <- subset(dat, select=c(colNames[isNumber], "aggIndex"))[,lapply(.SD, function(x)mean(x, na.rm=TRUE)),by=aggIndex]
+		datMean <- dat[, c(colNames[isNumber], "aggIndex"), with=FALSE][,lapply(.SD, function(x)mean(x, na.rm=TRUE)),by=aggIndex]
 		
 		datMean <- subset(datMean, !is.na(datMean$aggIndex), select=names(datMean)[-1])
 		
 		
 
 		## calculate completion percentages
-		datCompl <- subset(dat, select=c(colNames[isNumber], "aggIndex"))[,lapply(.SD, function(x){sum(!is.na(x))/length(x)}),by=aggIndex]
+		datCompl <- dat[, c(colNames[isNumber], "aggIndex"), with=FALSE][,lapply(.SD, function(x){sum(!is.na(x))/length(x)}),by=aggIndex]
 
-		datCompl <- subset(datCompl, !is.na(datCompl$aggIndex), select=names(datCompl)[-1])
+		datCompl <- datCompl[!is.na(datCompl$aggIndex), names(datCompl)[-1], with=FALSE]
 
 		datMissing <- 1 - datCompl
       
@@ -112,9 +112,11 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 	#####################
 	## Aggregate categorical variables
 	#####################
+	system.time(
 	if (any(!isNumber)) {	
-		datFreq <- lapply(subset(dat, select=colNames[!isNumber]), FUN=getFreqTable, dat$aggIndex, nBins)
-	}
+		datFreq <- lapply(dat[, colNames[!isNumber], with=FALSE], FUN=getFreqTable_DT, dat$aggIndex, nBins)
+	})
+	
 	
 	#############################
 	##

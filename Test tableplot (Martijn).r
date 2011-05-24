@@ -46,10 +46,11 @@ system.time({
 
 system.time({
 	dev.new(width=13)
-	tableplot(dDT, useDT=TRUE)
+	tableplot(diamonds, useDT=TRUE)
 })
 
 
+tableplot(diamonds, useDT=FALSE)
 
 
 dat<-diamonds

@@ -1,0 +1,82 @@
+%\VignetteIndexEntry{tabplot}
+\documentclass[11pt, fleqn, a4paper]{article}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{natbib}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage{threeparttable}
+
+% stimulate latex to put multiple floats on a page.
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{3}
+\setcounter{dbltopnumber}{2}
+\renewcommand{\topfraction}{.9}
+\renewcommand{\textfraction}{.1}
+\renewcommand{\bottomfraction}{.75}
+\renewcommand{\floatpagefraction}{.9}
+\renewcommand{\dblfloatpagefraction}{.9}
+\renewcommand{\dbltopfraction}{.9}
+\hyphenation{time-stamp}
+
+\title{Visualizing large multivariate datasets with the {\tt tabplot} package}
+\author{Martijn Tennekes and Edwin de Jonge}
+\usepackage{Sweave}
+\begin{document}
+\maketitle
+\begin{abstract}
+
+The tableplot is a powerful visualization method to explore and analyse large multivariate datasets. In this vignette, the implementation of tableplots in R is described. 
+
+
+\end{abstract}
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+\listofalgorithms
+\newpage
+\section{Introduction}
+We will use the {\tt diamonds} dataset that is provided in the {\tt ggplot2} package. This dataset contains information about 53,940 diamonds. There are 7 continuous variables and 3 categorical. In order to illustrate the visualization of missing values, we add several NA's. Further, we add a logical variable.
+
+\begin{Schunk}
+\begin{Sinput}
+> require(ggplot2)
+> data(diamonds)
+> is.na(diamonds$price) <- diamonds$cut == "Ideal"
+> is.na(diamonds$cut) <- (runif(nrow(diamonds)) > 0.8)
+> diamonds$expensive <- diamonds$price >= 10000
+\end{Sinput}
+\end{Schunk}
+
+A tableplot is simply created by the function {\tt tableplot}.
+\begin{Schunk}
+\begin{Sinput}
+> tableplot(diamonds)
+\end{Sinput}
+\end{Schunk}
+
+By the optional arguments we can customize the tableplot. The argument {\tt colNames} 
+
+
+\section{Final remarks}
+Conclusions
+
+
+%\bibliographystyle{chicago}
+%\bibliography{deducorrect}
+
+\newpage
+\appendix
+\section{First appendix on the {\tt tabplot} package}
+\section{Second appendix}
+
+
+
+
+\end{document}

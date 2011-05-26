@@ -1,7 +1,7 @@
 ##  function to receive all loaded data.frames
 lsDF <- function(envir=.GlobalEnv) {
 	varNames <- ls(envir=envir)
-	dfs <- sapply(varNames, function(i) inherits(get(i,envir=envir),c("data.frame", "ffdf"), which=FALSE)[1])
+	dfs <- sapply(varNames, function(i) inherits(get(i,envir=envir),c("data.table", "data.frame", "ffdf"), which=FALSE)[1])
 	if (length(dfs)==0) {
 		return(character(0))
 	} else {
@@ -17,7 +17,8 @@ lsColnames <- function() {
 ## function to get classes
 getClasses <- function(vars, DF) {
 	n <- length(vars)
-	if (class(get(DF,envir=.GlobalEnv))=="ffdf") {
+	classDF <- class(get(DF,envir=.GlobalEnv))[1]
+	if (classDF=="ffdf") {
 		dfTypes <- character(n)
 		tmp <- get(DF,envir=.GlobalEnv)
 		ind <- sapply(vars, FUN=function(x,y){which(x==y)}, names(tmp))
@@ -25,6 +26,8 @@ getClasses <- function(vars, DF) {
 			tmp <- get(DF,envir=.GlobalEnv)[[ind[i]]]
 			dfTypes[i] <- ifelse(is.null(ramclass(tmp)), "numeric", ramclass(tmp)[1])
 		}
+	} else if (classDF=="data.table") {
+		dfTypes <- sapply(get(DF,envir=.GlobalEnv)[, vars, with=FALSE], FUN=function(x) class(x)[1])
 	} else {
 		dfTypes <- sapply(get(DF,envir=.GlobalEnv)[vars], FUN=function(x) class(x)[1])
 	}

@@ -16,7 +16,7 @@ Description: A tableplot is a visualisation of a (large) statistical
 Version: 0.9-1
 URL: http://code.google.com/p/tableplot/
 Date: 2011-01-25
-Depends: grid, RColorBrewer, plyr
+Depends: grid, RColorBrewer, data.table
 Suggests: ff (>= 2.2-0), gWidgets, gWidgetsRGtk2, classInt
 Collate: 'brokenX.R' 'columnsPlot.R' 'generalFunctions.R'
     'getBinSizes.R' 'getFreqTable.R' 'num2fac.R' 'plotColumns.R'

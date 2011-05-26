@@ -41,10 +41,10 @@
 #' tableplot(irisNA)
 #' @keywords visualization
 
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, plot=TRUE, filter=NULL, useDT=require(data.table), ...) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, plot=TRUE, filter=NULL, ...) {
 
-	if (useDT) dat <- data.table(dat)
-
+	if (class(dat)[1]=="data.frame") dat <- data.table(dat)
+	
 	#####################################
 	## Check arguments and cast dat-columns to numeric or factor
 	#####################################
@@ -58,7 +58,12 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	if (!all(colNames %in% names(dat))) stop("<colNames> contains column names that are not found in <dat>")
 
 	## Only select the columns of colNames
-	dat <- subset(dat, select=colNames)
+	if (class(dat)[1]=="data.table") {
+		dat <- dat[, colNames, with=FALSE] 
+	} else {
+		dat <- dat[colNames]
+	}
+	
 	n <- length(colNames)
 
 	## Check sortCol, and (if necessary) cast it to indices

@@ -19,6 +19,7 @@ tableGUI_main_layout <- function(e) {
 		grp9 <- ggroup(horizontal = TRUE, cont = grp4, expand=FALSE)
 		lbl3 <- glabel("Data.frame:", cont=grp9)
 		cmb <- gcombobox(datlist, cont=grp9)
+		blockCmbHandler <- FALSE
 		
 		#addSpring(grp9)
 		btnReload <- gbutton("Reload", cont=grp9, expand=FALSE)

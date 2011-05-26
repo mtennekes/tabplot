@@ -112,10 +112,9 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 	#####################
 	## Aggregate categorical variables
 	#####################
-	system.time(
 	if (any(!isNumber)) {	
 		datFreq <- lapply(dat[, colNames[!isNumber], with=FALSE], FUN=getFreqTable_DT, dat$aggIndex, nBins)
-	})
+	}
 	
 	
 	#############################

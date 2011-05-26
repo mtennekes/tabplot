@@ -1,5 +1,5 @@
-getFreqTable_DT <- function(fac, aggIndex, nBins) {
-	
+getFreqTable_DT <- function(fac, aggIndex, nBins, useNA="ifany") {
+
 	DT <- data.table(fac=fac, aggIndex=aggIndex)
 	setkey(DT, aggIndex)
 	
@@ -10,7 +10,7 @@ getFreqTable_DT <- function(fac, aggIndex, nBins) {
 	DT_miss <- DT[, sum(is.na(fac)), by=aggIndex]
 	missings <- DT_miss[!is.na(aggIndex), "V1", with=FALSE]$V1
 	
-	if (any(missings!=0)) {
+	if (any(missings!=0) | useNA=="always") {
 		freqTable <- cbind(freqTable, missings)
 		categories <- c(levels(fac), "missing")
 	} else {

@@ -3,9 +3,10 @@
 ######################################
 require(gWidgets)
 require(gWidgetsRGtk2)
-require(plyr)
+# require(plyr)
 require(RColorBrewer)
 require(classInt)
+require(ff)
 
 require(data.table)
 
@@ -34,6 +35,8 @@ for(i in 1:5){
 	diamonds <- rbind(diamonds, diamonds)
 }
 
+diamondsFF <- as.ffdf(diamonds)
+
 dDT <- data.table(diamonds)
 
 
@@ -53,7 +56,7 @@ system.time({
 tableplot(diamonds, useDT=FALSE)
 
 
-dat<-diamonds
+dat<-diamondsFF
 colNames<-names(dat)
 sortCol<-c(1, 3)
 decreasing<-TRUE

@@ -5,47 +5,47 @@
 tableGUI_main_handlers <- function(e) {
 
 	with(e, {	
-		## select data.frame
+		# select data.frame
 		addHandlerChanged(cmb, handler = function(h,...) {
-			if (is.null(svalue(h$obj))) {
-				svalue(h$obj) <- tableGUI_getCurrentDFname(e)
-			}
-			
-			tableGUI_refreshDF(newDF=svalue(h$obj), wdw, e)
-			
-			tbl1[] <- tableGUI_getTbl1(e=e)
-			tbl2[] <- tableGUI_getTbl2(e=e)
-			
-			nr <- tableGUI_getCurrentDFnrow(e)
-			
-			svalue(lbl5) <- nr
+			if (!blockCmbHandler) {
+				if (is.null(svalue(h$obj))) {
+					svalue(h$obj) <- tableGUI_getCurrentDFname(e)
+				}
+				
+				tableGUI_refreshDF(newDF=svalue(h$obj), wdw, e)
+				
+				tbl1[] <- tableGUI_getTbl1(e=e)
+				tbl2[] <- tableGUI_getTbl2(e=e)
+				
+				nr <- tableGUI_getCurrentDFnrow(e)
+				
+				svalue(lbl5) <- nr
 
-			if (nr<2) {
-				svalue(sbr) <- ifelse(nr==0, "Warning: no objects available.", "Warning: only one object available.")
-				svalue(spbBins) <- nr
-			} else if (nr < 10) {
-				svalue(sbr) <- "Warning: only a few objects available. Number of row bins will be ignored."
-				svalue(spbBins) <- nr
-			} else {
-				svalue(sbr) <- ""
-				svalue(spbBins) <- min(nr, 100)
+				if (nr<2) {
+					svalue(sbr) <- ifelse(nr==0, "Warning: no objects available.", "Warning: only one object available.")
+					svalue(spbBins) <- nr
+				} else if (nr < 10) {
+					svalue(sbr) <- "Warning: only a few objects available. Number of row bins will be ignored."
+					svalue(spbBins) <- nr
+				} else {
+					svalue(sbr) <- ""
+					svalue(spbBins) <- min(nr, 100)
+				}
+				enabled(btnTransfer) <- FALSE
 			}
-			enabled(btnTransfer) <- FALSE
-			#enabled(spbBins) <- TRUE
-			#enabled(btnRun) <- FALSE
-			
 		})
 
 		## refresh table1
 		addHandlerClicked(btnReload, function(h,...) {
-			tableGUI_refreshDF(parent=wdw, e=e)
-
+			#disactivate cmb handler (blockHandler does not work)
+			e$blockCmbHandler <- TRUE
 			cmb[] <- e$datlist
-			
-			tbl1[] <- tableGUI_getTbl1(e=e)
-			tbl2[] <- tableGUI_getTbl2(e=e)
-
+			e$blockCmbHandler <- FALSE
+		
+			#activate cmb handler
+			svalue(cmb) <- ""
 			svalue(cmb) <- tableGUI_getCurrentDFname(e)
+			
 		})
 		
 		## transfer variables

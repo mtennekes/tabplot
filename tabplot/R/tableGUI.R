@@ -34,7 +34,7 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 	if (!is.null(dat)) {
 		datName <- deparse(substitute(dat))
 		if (!exists(datName)) stop(paste(datName, "not loaded"))
-		if(!(class(get(datName, envir=.GlobalEnv))%in% c("data.frame", "ffdf"))) stop(paste(datName, "not a data.frame or an ffdf object"))
+		if(!(class(get(datName, envir=.GlobalEnv))%in% c("data.table", "data.frame", "ffdf"))) stop(paste(datName, "not a data.frame or an ffdf object"))
 
 		## Check colNames
 		if (class(colNames)[1]!="character") stop("<colNames> is not a character(vector)")

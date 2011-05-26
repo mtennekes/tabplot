@@ -9,15 +9,15 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 	#############################
 	## Determine column classes
 	#############################
-	
-	for (i in which(vmode(dat) == "logical")) {
+	isLogical <- vmode(dat) == "logical"
+	for (i in which(isLogical)) {
 		levels(dat[,i]) <- c("TRUE", "FALSE")
 	}
 	
 	isFactor <- sapply(physical(dat), is.factor)	
 	
 	## find numerical variables
-	isNumber <- !isFactor
+	isNumber <- !isFactor & !isLogical
 	
 	## cast logical columns to factors
 	#TODO
@@ -84,82 +84,80 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		
 		numcols <- names(dat)[as.which(isNumber)] # needed because isNumber is otherwise recycled!!
 		
-		## calculate means by dividing by binSizes and sum
-		ncwmean <- function(df){
-		   size <- binSizes[df$aggIndex[1]] #otherwise multiple output...
-		   l <- lapply( df[numcols]
-		              , function(x){
-					       sum(x/size, na.rm=TRUE)
-						}
-					  )
-		   names(l) <- numcols
-		   as.data.frame(l)
-		}
-
-		ncomplete <- function(df){
-		   size <- binSizes[df$aggIndex[1]] #otherwise multiple output...
-		   l <- lapply( df[numcols]
-		              , function(x){
-					      100*sum(!is.na(x))/size
-						}
-					  )
-		   names(l) <- numcols
-		   as.data.frame(l)
-		}
-		
-		datMean <- datCompl <- NULL
+		datSum <- datCompl <- NULL
 
 		## bypass Rcmd warning
 		aggIndex <- NULL; rm(aggIndex)
 
 		for (i in chunk(dat)){
-			cdat <- dat[i,]
-			dmean <- ddply(cdat, .(aggIndex), ncwmean)
-			datMean <- rbind(datMean,dmean)
+			cdat <- data.table(dat[i,])[, c(numcols, "aggIndex"), with=FALSE]
+			setkey(cdat, aggIndex)
+			dsum <- cdat[, lapply(.SD, function(x)sum(x, na.rm=TRUE)), by=aggIndex]
+
+			datSum <- rbind(datSum, dsum)
 			## calculate completion percentages
-			dcompl <- ddply(cdat, .(aggIndex), ncomplete)
+			dcompl <- cdat[, lapply(.SD, function(x)sum(!is.na(x))), by=aggIndex]
+
 			datCompl <- rbind(datCompl, dcompl)
 		}
 
-		datMean <- ddply(datMean, .(aggIndex), colwise(sum, numcols))
-		datCompl <- ddply(datCompl, .(aggIndex), colwise(sum, numcols))
+		datSum <- datSum[, lapply(.SD, sum), by=aggIndex][!is.na(aggIndex),]
+		datSum$binSizes <- binSizes[datSum$aggIndex]
 		
-		datMean <- datMean[-(nBins+1),-1, drop=FALSE]
-		datCompl <- datCompl[-(nBins+1),-1, drop=FALSE]
-		#datCompl <- as.data.frame(apply(datCompl, 2, function(x,y){100-floor(x/y*100)}, binSizes))
-		## set means of bins with all missings to 0
-		#datMean[datCompl==0] <- 0
+		datCompl <- datCompl[, lapply(.SD, sum), by=aggIndex][!is.na(aggIndex),]
+		datCompl$binSizes <- binSizes[datSum$aggIndex]
+		datCompl <- data.table(lapply(datCompl[, numcols, with=FALSE], FUN="/", datCompl$binSizes))
+
+		datMean <- datSum[, numcols, with=FALSE] / datCompl[, numcols, with=FALSE]
+		datMean <- data.table(lapply(datMean, FUN="/", datSum$binSizes))
+	
+		datCompl <- 100 * datCompl
+
 	}
 	#####################
 	## Aggregate categorical variables
 	#####################
 	if (any(!isNumber)) {
-		freq <- list()
-		for (i in chunk(dat)){
-		   cdat <- dat[i,]
-		   for (catCol in (names(cdat)[!isNumber])){
-		      tab <- freq[[catCol]]
-			  if(is.null(tab)) {
-				tab <- as.matrix(table(cdat$aggIndex,cdat[[catCol]], useNA="always"))
-			  }
-			  else {
-				tab <- tab + as.matrix(table(cdat$aggIndex,cdat[[catCol]], useNA=c("always")))
-			  }
-		      freq[[catCol]] <- tab
-		   }
-		}
-		datFreq <- lapply( freq
-		                 , function(x){
-						      naCol <- ncol(x)
-						      colnames(x)[naCol] <- "missing"
-							  if (max(x[,naCol]) == 0){ #drop nacol
-							     x <- x[,-naCol]
-							  }
-							  list(freqTable=x[1:nBins,], categories=colnames(x))      
-		                   })
+		catcols <- names(dat)[as.which(!isNumber)] # needed because isNumber is otherwise recycled!!
+
+
+		datFreq <- list()
+		maxlevels <- max(sapply(dat[1,], nlevels))
 		
-		#datFreq <- lapply(dat[,][!isNumber], FUN=getFreqTable, dat$aggIndex[], nBins)
-	}
+		chunks <- chunk(dat)
+		
+		
+		cdat <- dat[chunks[[1]], c(catcols, "aggIndex")]
+		# cast logicals to factors
+		for (i in colNames[isLogical]) {
+			cdat[[i]] <- factor(cdat[[i]], levels=c("TRUE", "FALSE"))
+		}
+
+		datFreq <- lapply(cdat[, catcols], FUN=getFreqTable_DT, cdat$aggIndex, nBins, useNA="always")
+	
+		for (i in chunks[-1]){
+			cdat <- dat[i, c(catcols, "aggIndex")]
+			# cast logicals to factors
+			for (i in colNames[isLogical]) {
+				cdat[[i]] <- factor(cdat[[i]], levels=c("TRUE", "FALSE"))
+			}
+
+			datFreq2 <- lapply(cdat[, catcols], FUN=getFreqTable_DT, cdat$aggIndex, nBins, useNA="always")
+
+			datFreq <- mapply(datFreq, datFreq2, FUN=function(df1, df2){
+					return(list(freqTable=df1$freqTable + df2$freqTable, categories=df1$categories))
+				}, SIMPLIFY=FALSE)
+		}
+
+		datFreq <- mapply(datFreq, FUN=function(df) {
+				if (all(df$freqTable[,"missing"]==0)) {
+					ncols <- ncol(df$freqTable)
+					df$freqTable <- df$freqTable[,-ncols]
+					df$categories <- df$categories[-ncols]
+				}
+				return(df)
+			}, SIMPLIFY=FALSE)
+	}	
 	
 	#############################
 	##
@@ -199,7 +197,7 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		}
 		tab$columns[[i]] <- col
 	}
-	
+	class(tab) <- "tabplot"
 	return(tab)
 }
      

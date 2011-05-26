@@ -10,6 +10,14 @@
 summary.tabplot <- 
 function(tab, digits = max(3, getOption("digits") - 
     3)) {
+
+    ncw <- function(x) {
+        z <- nchar(x, type = "w")
+        if (any(na <- is.na(z))) {
+            z[na] <- nchar(encodeString(z[na]), "b")
+        }
+        z
+    }
 	
 	general <- list(
 					variables=tab$n,

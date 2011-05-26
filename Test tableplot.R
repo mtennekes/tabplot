@@ -54,7 +54,7 @@ tab <- tableplot(diamonds, plot=FALSE)
 plot(tab)
 
 pals <- list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4)
-tab2 <- changePalettes(tab, pals)
+tab2 <- changeTabplot(tab, colNames=rev(names(diamonds)), flip=TRUE, pals=pals)
 
 plot(tab2)
 

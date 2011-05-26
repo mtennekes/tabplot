@@ -69,7 +69,7 @@ tableGUI_init_data <- function(DF=character(0), vars=character(0), sorts=charact
 	## palettes: list of palettes (id's correspond with varTbl)
 	currentDF <- list(name=DF,
 		nrow=nrow(get(DF, envir=.GlobalEnv)),
-		class=class(get(DF, envir=.GlobalEnv)))
+		class=class(get(DF, envir=.GlobalEnv))[1])
 	varTbl <- tableGUI_createVarTbl(DF, vars, sorts, scales, palNames)
 	
 	assign("customPals", customPals, envir=e)
@@ -126,6 +126,7 @@ tableGUI_setVarTbl <- function(vars, cols, value, e) {
 tableGUI_refreshDF <- function(newDF=character(0), parent, e) {
 	newvars <- tableGUI_saveVars(parent=parent, e=e)
 	tableGUI_init_data(newDF, e=e)
+	e$tab <- NULL
 }
 
 
@@ -349,15 +350,36 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 	
 	palPrint <- paste("list(", paste(sapply(palettes, createVector, quotes=TRUE), collapse=","), ")", sep="")
 		
-	
 	## print commandline to reproduce tableplot
 	cat("tableplot(", currentDFname, ", colNames=c(", paste("\"",paste(vars,collapse="\",\""),"\"", sep=""), "), sortCol=", sortColPrint, ", decreasing=", decreasingPrint, ", scales=", scalesPrint, ", pals=", palPrint, ", nBins=", nBins, ", from=", gui_from, ", to=", gui_to, ")\n", sep="")
+	
 	
 	if (dev.cur()==1) {
 		dev.new(width=min(11, 2+2*tableGUI_getNumSel(e)), height=7, rescale="fixed")
 	}
+	if (!is.null(e$tab)) {
+		## check whether existing tabplot object is usable
+		tab <- e$tab
+		isUsable <- isTabplotUsable(tab, vars, sortCol, decreasing, scales, nBins, gui_from, gui_to)
+	} else {
+		isUsable <- FALSE
+	}
 	
-	tableplot(get(currentDFname, envir=.GlobalEnv)[vars], sortCol=sortCol, decreasing=decreasing, scales=scales, pals=palettes, nBins=nBins, from=gui_from, to=gui_to)
+	if (isUsable) {
+		firstSortColID <- match(vars[sortCol[1]], sapply(tab$columns, function(col)col$name))
+		flip <- (tab$columns[[firstSortColID]]$sort=="decreasing") != decreasing[1]
+		tab <- changeTabplot(tab, colNames=vars, flip=flip, pals=palettes)
+	} else {
+		if (tableGUI_getCurrentDFclass(e)=="data.table") {
+			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[, vars, with=FALSE], sortCol=sortCol, decreasing=decreasing, scales=scales, pals=palettes, nBins=nBins, from=gui_from, to=gui_to, plot=FALSE)
+		} else 
+		{
+			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[vars], sortCol=sortCol, decreasing=decreasing, scales=scales, pals=palettes, nBins=nBins, from=gui_from, to=gui_to, plot=FALSE)
+		}
+	}
+	
+	assign("tab", tab, envir=e)	
+	plot(tab)
 }
 
 

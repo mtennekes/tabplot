@@ -18,30 +18,18 @@
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
 #' @param plot boolean, tableplot is plot (TRUE) or it a tabplot object is returned
-#' @param filter variable name(s) on which the tableplot is filtered (TO DO)
-#' @param ... variabled passed to \code{\link{plot.tabplot}}
+#' @param ... arguments passed to \code{\link{plot.tabplot}}
+#' @return if \code{plot=FALSE} then a tabplot object is returned
 #' @export
-#' @examples
-#' \dontrun{
-	#' require(ggplot2)
-	#'
-	#' diamondsNA <- diamonds
-	#' # simulate missing data
-	#' is.na(diamondsNA$price) <- diamondsNA$cut == "Ideal"
-	#'
-	#' tableplot(diamondsNA)
-	#' data(movies)
-	#' tableplot(movies[,c(3:5,17:24)], sortCol="rating", decreasing=FALSE, scales="lin", nBins=100)
-#' }
-#' irisNA <- iris
-#' # simulate missing data
-#' is.na(irisNA$Sepal.Width) <- sample(1:nrow(iris), 30)
-#' is.na(irisNA$Species) <- sample(1:nrow(iris), 15)
-#'
-#' tableplot(irisNA)
 #' @keywords visualization
+#' @example examples/tableplot.R
 
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, plot=TRUE, filter=NULL, ...) {
+
+# TO DO:
+# @param filter variable name(s) on which the tableplot is filtered
+
+
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, plot=TRUE, ...) {
 
 	if (class(dat)[1]=="data.frame") dat <- data.table(dat)
 	
@@ -93,7 +81,7 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	if (from >= to) stop("<from> is not smaller than <to>")
 
 	## Check filter variables
-	if (!is.null(filter)) filter <- tableplot_checkCols(filter, colNames)
+	# if (!is.null(filter)) filter <- tableplot_checkCols(filter, colNames)
 
 	######## TO DO: implement filter variable(s)
 
@@ -127,7 +115,7 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	#####################################
 	
 	## Determine scales of numeric variables in case they are set to "auto". IQR is used.
-	IQR_bias <- 3
+	IQR_bias <- 5
 	for (i in which(isNumber & scales=="auto")) {
 		quant <- quantile(tab$columns[[i]]$mean, na.rm=TRUE)
 		IQR <- quant[4] - quant[2]

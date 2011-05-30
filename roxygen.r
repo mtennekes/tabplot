@@ -1,11 +1,14 @@
 library(roxygen)
 
-unlink('tabplot/man', TRUE)
+unlink('pkg/man', TRUE)
 
-roxygenize( 'tabplot'
-          , roxygen.dir='tabplot'
+roxygenize( 'pkg'
+          , roxygen.dir='pkg'
           , copy.package=FALSE
           , unlink.target=TRUE
           , use.Rd2 = TRUE
 		    )
 
+if (length(list.files('pkg/inst/doc')) == 0){
+   unlink( 'pkg/inst/doc', TRUE)   
+}

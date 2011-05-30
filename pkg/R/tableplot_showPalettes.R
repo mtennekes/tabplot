@@ -2,15 +2,15 @@
 #'
 #' All palettes in \code{\link{tabplotPalettes}} are shown in a new device.
 #'
-#' @aliases tableGUI_showAllPals
+#' @aliases tableplot_showPalettes
 #' @export
 #' @keywords color palettes
-tableGUI_showAllPals <- function() {
+tableplot_showPalettes <- function() {
 	dev.new(width=6, height=4, rescale="fixed")
 
 	## for package building, uncomment these rules
-	# data("tabplotPalettes")
-	# tabplotPalettes <- get("tabplotPalettes", pos=globalenv())
+	data("tabplotPalettes")
+	tabplotPalettes <- get("tabplotPalettes", pos=globalenv())
 	
 	k <- length(tabplotPalettes)
 	ncols <- max(sapply(tabplotPalettes,FUN=length))

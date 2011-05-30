@@ -30,6 +30,7 @@
 #' @docType data
 #' @references 
 #' \url{http://colorbrewer2.org/}
+#'
 #' \url{http://jfly.iam.u-tokyo.ac.jp/color/}
 #'
 #'

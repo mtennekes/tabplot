@@ -3,12 +3,13 @@
 #' Plots a tabplot object that is created with \code{\link{tableplot}(..., plot=FALSE)}.
 #'
 #' @aliases plot.tabplot
-#' @param tab tabplot object
+#' @param x tabplot object
 #' @param fontsize the (maximum) fontsize
 #' @param legend.lines the number of lines preserved for the legend
+#' @param ... arguments passed to other methods
 #' @export
 plot.tabplot <-
-function(tab, fontsize = 8, legend.lines = 8) {
+function(x, fontsize = 8, legend.lines = 8, ...) {
 	
 		
 	#############################
@@ -60,8 +61,8 @@ function(tab, fontsize = 8, legend.lines = 8) {
 	## set grid layout
 	grid.newpage()
 	
-	Layout <- grid.layout( nrow = 1, ncol = tab$n+1
-	                     , widths = unit(c(3,rep(1,tab$n)), c("lines",rep("null",tab$n)))
+	Layout <- grid.layout( nrow = 1, ncol = x$n+1
+	                     , widths = unit(c(3,rep(1,x$n)), c("lines",rep("null",x$n)))
 						 )
 
 	pushViewport(viewport(layout = Layout))
@@ -74,17 +75,17 @@ function(tab, fontsize = 8, legend.lines = 8) {
 	cellplot(1,1,vpColumn, {
 		cellplot(2,1,vpGraph,{
 			## y axes and bin ticks
-			grid.polyline( x=c(0.80,0.80,rep(c(0.80,0.83),tab$nBins+1))
-			             , y=c(0,1,rep(c(tab$rows$y,1),each=2))
-						 , id=rep(1:(tab$nBins+2),each=2)
+			grid.polyline( x=c(0.80,0.80,rep(c(0.80,0.83),x$nBins+1))
+			             , y=c(0,1,rep(c(x$rows$y,1),each=2))
+						 , id=rep(1:(x$nBins+2),each=2)
 						 )
 
 			## percentages ticks
-			rests <- formatC(tab$rows$marks - floor(tab$rows$marks))	
+			rests <- formatC(x$rows$marks - floor(x$rows$marks))	
 			digits <- max(0,(max(sapply(rests, FUN=nchar))-2))
-			marksChar <- paste(formatC(tab$rows$marks, format="f", digits=digits),"%", sep="")
+			marksChar <- paste(formatC(x$rows$marks, format="f", digits=digits),"%", sep="")
 			
-			ticks <- seq(1, 0, length.out=length(tab$rows$marks))
+			ticks <- seq(1, 0, length.out=length(x$rows$marks))
 			grid.polyline(x=c(0.80,0.80,rep(c(0.75,0.80),length(ticks))),y=c(0,1,rep(ticks,each=2)),id=rep(1:(length(ticks)+1),each=2))
 			
 			## percentages labels
@@ -97,9 +98,9 @@ function(tab, fontsize = 8, legend.lines = 8) {
 
 		cellplot(3,1, vpLegend, {
 			grid.text("row bins:", x=0.1, y=unit(5, units="lines"), just="left")
-			grid.text(paste("  ", tab$nBins), x=0.1, y=unit(4, units="lines"), just="left")
+			grid.text(paste("  ", x$nBins), x=0.1, y=unit(4, units="lines"), just="left")
 			grid.text("objects:", x=0.1, y=unit(2, units="lines"), just="left")
-			grid.text(paste("  ", tab$rows$m), x=0.1, y=unit(1, units="lines"), just="left")
+			grid.text(paste("  ", x$rows$m), x=0.1, y=unit(1, units="lines"), just="left")
 		})
 	})
 	
@@ -107,9 +108,9 @@ function(tab, fontsize = 8, legend.lines = 8) {
 	## Draw columns from left to right. Per column, check whether it is numeric or categorial.
 	#############################
 
-	for (i in 1:tab$n) {
+	for (i in 1:x$n) {
 		cellplot(1,i+1, vpColumn, {
-			tCol <- tab$columns[[i]]
+			tCol <- x$columns[[i]]
 			cellplot(1,1, vpTitle, {
 				## Determine column name. Place "log(...)" around name when scale is logarithmic
 				columnName <- ifelse(tCol$isnumeric && tCol$scale=="log", paste("log(",tCol$name, ")", sep=""), tCol$name)
@@ -136,11 +137,11 @@ function(tab, fontsize = 8, legend.lines = 8) {
 			})
 		
 			if (tCol$isnumeric){
-				plotNumCol(tCol, tab, blues, vpTitle, vpGraph, vpLegend)
+				plotNumCol(tCol, x, blues, vpTitle, vpGraph, vpLegend)
 			}
 			else {
 				catPalet <- c(red, tCol$palet)
-				plotCatCol(tCol, tab, catPalet, vpTitle, vpGraph, vpLegend)
+				plotCatCol(tCol, x, catPalet, vpTitle, vpGraph, vpLegend)
 			}
 		})
 	}

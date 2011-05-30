@@ -22,7 +22,7 @@
 \renewcommand{\dbltopfraction}{.9}
 \hyphenation{time-stamp}
 
-\title{Visualizing large multivariate datasets with the {\tt tabplot} package}
+\title{Correction of rounding, typing, and sign errors with the {\tt tabplot} package}
 \author{Martijn Tennekes and Edwin de Jonge}
 \usepackage{Sweave}
 \begin{document}
@@ -42,7 +42,7 @@ The tableplot is a powerful visualization method to explore and analyse large mu
 \listofalgorithms
 \newpage
 \section{Introduction}
-We will use the {\tt diamonds} dataset that is provided in the {\tt ggplot2} package. This dataset contains information about 53,940 diamonds. There are 7 continuous variables and 3 categorical. In order to illustrate the visualization of missing values, we add several NA's. Further, we add a logical variable.
+We will use the diamonds dataset that is provided in the {\tt ggplot2} package. This dataset contains information about 53,940 diamonds. There are 7 continuous variables and 3 categorical. In order to illustrate the visualization of missing values, we add several NA's.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -61,7 +61,14 @@ A tableplot is simply created by the function {\tt tableplot}.
 \end{Sinput}
 \end{Schunk}
 
-By the optional arguments we can customize the tableplot. The argument {\tt colNames} 
+By the other arguments we can customize the tableplot. The most important arguments to start with are: {\tt colNames}, a vector of the column names that are plotted and {\tt sortCol}, a vector of column names or indices on which the data is ordered.
+\begin{Schunk}
+\begin{Sinput}
+> tableplot(diamonds, colNames = c("carat", "price", "cut", "color", 
++     "clarity"), sortCol = "price")
+\end{Sinput}
+\end{Schunk}
+
 
 
 \section{Final remarks}

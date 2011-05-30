@@ -3,7 +3,6 @@
 ######################################
 require(gWidgets)
 require(gWidgetsRGtk2)
-# require(plyr)
 require(RColorBrewer)
 require(classInt)
 require(ff)
@@ -13,7 +12,7 @@ require(data.table)
 ######################################
 ## load tableplot scripts
 ######################################
-scriptmap <- "./tabplot/R/"
+scriptmap <- "../pkg/R/"
 setwd(scriptmap)
 sapply(list.files(), source)
 
@@ -44,16 +43,16 @@ dDT <- data.table(diamonds)
 
 system.time({
 	dev.new(width=13)
-	tableplot(diamonds, useDT=FALSE)
+	tableplot(diamonds)
 })
 
 system.time({
 	dev.new(width=13)
-	tableplot(diamonds, useDT=TRUE)
+	tableplot(diamonds)
 })
 
 
-tableplot(diamonds, useDT=FALSE)
+tableplot(diamonds)
 
 
 dat<-diamondsFF

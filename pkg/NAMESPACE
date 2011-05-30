@@ -1,0 +1,7 @@
+export(changeTabplot)
+export(num2fac)
+export(plot.tabplot)
+export(summary.tabplot)
+export(tableGUI)
+export(tableplot)
+export(tableplot_showPalettes)

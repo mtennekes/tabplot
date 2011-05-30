@@ -13,19 +13,21 @@ Description: A tableplot is a visualisation of a (large) statistical
     charts. Missing values are taken into account. A GUI has been
     implemented which is used to easily customize the tableplot. Also
     supports large ffdf datasets from the ff package.
-Version: 0.9-1
+Version: 0.10
 URL: http://code.google.com/p/tableplot/
-Date: 2011-01-25
+Date: 2011-05-30
 Depends: grid, RColorBrewer, data.table
 Suggests: ff (>= 2.2-0), gWidgets, gWidgetsRGtk2, classInt
-Collate: 'brokenX.R' 'columnsPlot.R' 'generalFunctions.R'
-    'getBinSizes.R' 'getFreqTable.R' 'num2fac.R' 'plotColumns.R'
-    'plotTable.R' 'preprocess.data.frame.R' 'preprocess.ffdf.R'
-    'preprocess.R' 'tableGUI.R' 'tableGUI_functions.R'
+Collate: 'brokenX.R' 'cellplot.R' 'changeTabplot.R' 'columnsPlot.R'
+    'generalFunctions.R' 'getBinSizes.R' 'getFreqTable.R'
+    'getFreqTable_DT.R' 'isTabplotUsable.R' 'num2fac.R' 'pkg.R'
+    'plot_tabplot.r' 'plotCatCol.R' 'plotColumns.R' 'plotNumCol.R'
+    'preprocess.data.table.R' 'preprocess.ffdf.R' 'preprocess.R'
+    'summary_tabplot.R' 'tableGUI.R' 'tableGUI_functions.R'
     'tableGUI_main_handlers.R' 'tableGUI_main_layout.R'
     'tableGUI_n2f_handlers.r' 'tableGUI_n2f_layout.R'
     'tableGUI_pal_functions.R' 'tableGUI_pal_handlers.R'
-    'tableGUI_pal_layout.r' 'tableGUI_showAllPals.R' 'tableplot.R'
-    'tableplot_checkDecreasing.R' 'tableplot_checkPals.R'
-    'tableplot_checkScales.R' 'tableplot_checkSortCol.R'
-    'tableViewport.R' 'tabplot-package.R' 'tabplotPalettes.R'
+    'tableGUI_pal_layout.r' 'tableplot.R' 'tableplot_checkDecreasing.R'
+    'tableplot_checkPals.R' 'tableplot_checkScales.R'
+    'tableplot_checktCols.R' 'tableplot_showPalettes.R'
+    'tableViewport.R' 'tabplotPalettes.R'

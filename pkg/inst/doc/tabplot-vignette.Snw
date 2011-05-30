@@ -44,7 +44,7 @@ library(tabplot)
 \listofalgorithms
 \newpage
 \section{Introduction}
-We will use the diamonds dataset that is provided in the {\tt ggplot2} package. This dataset contains information about 53,940 diamonds. There are 7 continuous variables and 3 categorical. In order to illustrate the visualization of missing values, we add several NA's. Further, we add a logical variable.
+We will use the diamonds dataset that is provided in the {\tt ggplot2} package. This dataset contains information about 53,940 diamonds. There are 7 continuous variables and 3 categorical. In order to illustrate the visualization of missing values, we add several NA's.
 
 <<>>=
 require(ggplot2)
@@ -61,6 +61,10 @@ A tableplot is simply created by the function {\tt tableplot}.
 tableplot(diamonds)
 @
 
+By the other arguments we can customize the tableplot. The most important arguments to start with are: {\tt colNames}, a vector of the column names that are plotted and {\tt sortCol}, a vector of column names or indices on which the data is ordered.
+<<>>=
+tableplot(diamonds, colNames=c("carat", "price", "cut", "color", "clarity"), sortCol="price")
+@
 
 
 

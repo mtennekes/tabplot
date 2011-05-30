@@ -3,13 +3,13 @@
 #' Summary of a tabplot object that is created with \code{\link{tableplot}(..., plot=FALSE)}.
 #'
 #' @aliases summary.tabplot
-#' @param tab tabplot object
+#' @param object tabplot object
 #' @param digits integer, used for number formatting with \code{\link{format}()}
-#'
+#' @param ... arguments passed to other methods
 #' @export
 summary.tabplot <- 
-function(tab, digits = max(3, getOption("digits") - 
-    3)) {
+function(object, digits = max(3, getOption("digits") - 
+    3), ...) {
 
     ncw <- function(x) {
         z <- nchar(x, type = "w")
@@ -20,11 +20,11 @@ function(tab, digits = max(3, getOption("digits") -
     }
 	
 	general <- list(
-					variables=tab$n,
-					objects=tab$rows$m,
-					bins=tab$nBins,
-					from=paste(tab$rows$from, "%", sep=""),
-					to=paste(tab$rows$to, "%", sep=""))
+					variables=object$n,
+					objects=object$rows$m,
+					bins=object$nBins,
+					from=paste(object$rows$from, "%", sep=""),
+					to=paste(object$rows$to, "%", sep=""))
 	class(general) <- c("summaryDefault", "table")
 	
 	summary_cat <- function(col){
@@ -39,14 +39,14 @@ function(tab, digits = max(3, getOption("digits") -
 		L
 	}
 	
-	z <- c(list(general=general), lapply(tab$columns, FUN=function(col) {
+	z <- c(list(general=general), lapply(object$columns, FUN=function(col) {
 			if (col$isnumeric)
 				return(summary_num(col))
 			else
 				return(summary_cat(col))
 		}))
 		
-	names(z)[-1] <- paste("variable", 1:tab$n, sep="")
+	names(z)[-1] <- paste("variable", 1:object$n, sep="")
 	
 	## code below is borrowed from summary.data.frame
     nv <- length(z)

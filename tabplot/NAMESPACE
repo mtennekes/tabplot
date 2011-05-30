@@ -1,4 +1,0 @@
-export(num2fac)
-export(tableGUI)
-export(tableGUI_showAllPals)
-export(tableplot)

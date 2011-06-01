@@ -27,7 +27,6 @@ changeTabplot <- function(tab, colNames=sapply(tab$columns, function(col)col$nam
 	tab2 <- list(n=length(colNames),
 			nBins=tab$nBins,
 			binSizes=tab$binSizes,
-			scales=tab$scales[colID],
 			isNumber=tab$isNumber[colID],
 			rows=tab$rows,
 			columns=lapply(colID, function(id) tab$column[[id]])
@@ -76,6 +75,13 @@ changeTabplot <- function(tab, colNames=sapply(tab$columns, function(col)col$nam
 			paletNr <- ifelse(paletNr==length(pals), 1, paletNr + 1)
 		}
 	}
+	
+	## set initial scales to final scales
+	#for (i in which(tab2$isNumber)) {
+	#	tab2$columns[[i]]$scale_init <- tab2$columns[[i]]$scale_final
+	#}
+	
+	
 	class(tab2) <- "tabplot"
 	return(tab2)
 }

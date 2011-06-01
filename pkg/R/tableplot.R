@@ -3,20 +3,22 @@
 #' A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package. Use \code{\link{tableGUI}} to customize this function with a GUI.
 #'
 #' @aliases tableplot
-#' @param dat a data.frame or an ffdf object (required)
+#' @param dat a data.frame, data.table, or an ffdf object (required)
 #' @param colNames character vector containing the names of the columns of \code{dat} that are visualized in the tablelplot. If omitted, all columns are visualized. All selected columns should be of class: numeric, integer, factor, or logical.
 #' @param sortCol columns that are sorted. \code{sortCol} is either a vector of column names of a vector of indices of \code{colNames}
 #' @param decreasing determines whether the columns are sorted decreasingly (TRUE) of increasingly (FALSE). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.
-#' @param scales determines the horizontal axes of the numeric variables, options: "lin", "log", and "auto" for automatic detection. It should be either one value (applied to all numeric variables) or a vector of values of the same length as \code{colNames}.
+#' @param scales determines the horizontal axes of the numeric variables in \code{colNames}, options: "lin", "log", and "auto" for automatic detection. If necessary, \code{scales} is recycled.
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
 #' \item a index number between 1 and 16. In this case, the default palette is used with the index number being the first color that is used.
 #' \item a palette name in \code{\link{tabplotPalettes}}, optionally with the starting color between brackets.
 #' \item a palette vector
 #' }
+#' The items of \code{pals} are applied to the categorical variables of \code{colNames}. If necessary, \code{pals} is recycled.
 #' @param nBins number of row bins
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
+#' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param plot boolean, tableplot is plot (TRUE) or it a tabplot object is returned
 #' @param ... arguments passed to \code{\link{plot.tabplot}}
 #' @return if \code{plot=FALSE} then a tabplot object is returned
@@ -29,7 +31,7 @@
 # @param filter variable name(s) on which the tableplot is filtered
 
 
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, plot=TRUE, ...) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, bias_brokenX=0.8, plot=TRUE, ...) {
 
 	if (class(dat)[1]=="data.frame") dat <- data.table(dat)
 	
@@ -61,7 +63,7 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	decreasing <- tableplot_checkDecreasing(decreasing, sortCol)
 
 	## Check scales
-	scales <- tableplot_checkScales(scales, n)
+	scales <- tableplot_checkScales(scales)
 
 	## Check palet indices
 	pals <- tableplot_checkPals(pals)$palette
@@ -92,7 +94,6 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	tab <- preprocess(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from,to)
 
 	
-	scales <- tab$scales
 	isNumber <- tab$isNumber
 	
 	###########################
@@ -116,23 +117,27 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	
 	## Determine scales of numeric variables in case they are set to "auto". IQR is used.
 	IQR_bias <- 5
-	for (i in which(isNumber & scales=="auto")) {
-		quant <- quantile(tab$columns[[i]]$mean, na.rm=TRUE)
-		IQR <- quant[4] - quant[2]
-		
-		## Simple test to determine whether scale is lin or log
-		if ((quant[5] > quant[4] + IQR_bias * IQR) || 
-			(quant[1] < quant[2] - IQR_bias * IQR)) {
-			scales[i] <- "log" 
+	for (i in which(isNumber)) {
+		if (tab$columns[[i]]$scale_init=="auto") {
+			quant <- quantile(tab$columns[[i]]$mean, na.rm=TRUE)
+			IQR <- quant[4] - quant[2]
+			
+			## Simple test to determine whether scale is lin or log
+			if ((quant[5] > quant[4] + IQR_bias * IQR) || 
+				(quant[1] < quant[2] - IQR_bias * IQR)) {
+				tab$columns[[i]]$scale_final <- "log" 
+			} else {
+				tab$columns[[i]]$scale_final <- "lin" 
+			}
 		} else {
-			scales[i] <- "lin" 
+			tab$columns[[i]]$scale_final <- tab$columns[[i]]$scale_init
+			
 		}
 	}
 	
-	## Assign scale information to list, and apply scale transformation
+	## Apply scale transformation
 	for (i in which(isNumber)) {
-		tab$columns[[i]]$scale <- scales[i]
-		if (scales[i]=="log") {
+		if (tab$columns[[i]]$scale_final=="log") {
 			tab$columns[[i]]$mean.scaled <- getLog(tab$columns[[i]]$mean)
 		} else {
 			tab$columns[[i]]$mean.scaled <- tab$columns[[i]]$mean
@@ -168,7 +173,7 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	#############################
 
 	#### Broken X-axis
-	temp <- lapply(tab$columns[isNumber], FUN=function(x){brokenX(x$mean.scaled)})
+	temp <- lapply(tab$columns[isNumber], FUN=function(x){brokenX(x$mean.scaled, bias_brokenX)})
 	j <- 1
 	for (i in which(isNumber)) {
 		tab$columns[[i]]$brokenX <- temp[[j]]$brokenX
@@ -205,5 +210,6 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	
 	## plot
 	class(tab) <- "tabplot"
-	if (plot) plot(tab, ...) else return(tab)
+	if (plot) plot(tab, ...)
+	invisible(tab)
 }

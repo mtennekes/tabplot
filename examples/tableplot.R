@@ -14,3 +14,4 @@
 }
 
 tableplot(iris)
+tableplot(iris, sortCol="Species")

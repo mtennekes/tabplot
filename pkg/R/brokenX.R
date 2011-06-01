@@ -1,4 +1,4 @@
-brokenX <- function(num, bias_brokenX=0.8) {
+brokenX <- function(num, bias_brokenX) {
 ## bias_brokenX: parameter between 0 en 1 that determines when x-axis is broken
 ##               if minimum value is at least <bias_brokenX> times the maximum value, then X axis is broken
 

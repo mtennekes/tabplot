@@ -17,7 +17,7 @@ Version: 0.10
 URL: http://code.google.com/p/tableplot/
 Date: 2011-05-30
 Depends: grid, RColorBrewer, data.table
-Suggests: ff (>= 2.2-0), gWidgets, gWidgetsRGtk2, classInt
+Suggests: ff (>= 2.2-0), gWidgets, gWidgetsRGtk2, classInt, ggplot2
 Collate: 'brokenX.R' 'cellplot.R' 'changeTabplot.R' 'columnsPlot.R'
     'generalFunctions.R' 'getBinSizes.R' 'getFreqTable.R'
     'getFreqTable_DT.R' 'isTabplotUsable.R' 'num2fac.R' 'pkg.R'

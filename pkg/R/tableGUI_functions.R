@@ -315,14 +315,11 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 			return(paste("c(", paste(x,collapse=","),")", sep=""))
 		}
 	}
+
 	
 	# prepare scales
-	scales <- varTable$Scale
-	scales[scales==""] <- "auto"
-	if (all(scales==scales[1])) scales <- scales[1]
-
-	scalesPrint <- createVector(scales, quotes=TRUE)
-
+	isCat <- varTable$Palette!=""
+	scales <- varTable$Scale[!isCat]
 	
 	# prepare sortCol and decreasing
 	sorts <- varTable$Sort
@@ -350,8 +347,6 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 	
 	palPrint <- paste("list(", paste(sapply(palettes, createVector, quotes=TRUE), collapse=","), ")", sep="")
 		
-	## print commandline to reproduce tableplot
-	cat("tableplot(", currentDFname, ", colNames=c(", paste("\"",paste(vars,collapse="\",\""),"\"", sep=""), "), sortCol=", sortColPrint, ", decreasing=", decreasingPrint, ", scales=", scalesPrint, ", pals=", palPrint, ", nBins=", nBins, ", from=", gui_from, ", to=", gui_to, ")\n", sep="")
 	
 	
 	if (dev.cur()==1) {
@@ -364,6 +359,11 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 	} else {
 		isUsable <- FALSE
 	}
+
+	## simplify scales vector
+	if (all(scales==scales[1])) scales <- scales[1]
+	scalesPrint <- createVector(scales, quotes=TRUE)
+
 	
 	if (isUsable) {
 		firstSortColID <- match(vars[sortCol[1]], sapply(tab$columns, function(col)col$name))
@@ -377,6 +377,11 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[vars], sortCol=sortCol, decreasing=decreasing, scales=scales, pals=palettes, nBins=nBins, from=gui_from, to=gui_to, plot=FALSE)
 		}
 	}
+
+	
+	## print commandline to reproduce tableplot
+	cat("tableplot(", currentDFname, ", colNames=c(", paste("\"",paste(vars,collapse="\",\""),"\"", sep=""), "), sortCol=", sortColPrint, ", decreasing=", decreasingPrint, ", scales=", scalesPrint, ", pals=", palPrint, ", nBins=", nBins, ", from=", gui_from, ", to=", gui_to, ")\n", sep="")
+
 	
 	assign("tab", tab, envir=e)	
 	plot(tab)

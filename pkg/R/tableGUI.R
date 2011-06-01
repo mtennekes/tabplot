@@ -51,8 +51,7 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 		sortColFull[sortCol] <- ifelse(decreasing, "\\/", "/\\")
 		
 		## Check scales
-		scales <- tableplot_checkScales(scales, length(colNames))
-		scales[classes %in% c("factor", "logical")] <- ""
+		scales <- tableplot_checkScales(scales)
 		
 		## Check palet indices
 		palList <- tableplot_checkPals(pals)

@@ -78,6 +78,7 @@ tableGUI_main_handlers <- function(e) {
 				vars2 <- setdiff(tbl2[,1], vars)
 				tbl2[] <- tableGUI_getTbl2(vars=vars2, e=e)
 				svalue(btnTransfer)<-"<"
+				enabled(btnRun) <- nrow(tbl2)!=0
 			}
 			svalue(sbr) <- "Ready"
 		})

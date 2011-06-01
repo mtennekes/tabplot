@@ -165,15 +165,15 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 	##
 	#############################
 
+	
 	tab <- list()
 	tab$n <- n
 	tab$nBins <- nBins
 	tab$binSizes <- binSizes
-	tab$scales <- scales
 	tab$isNumber <- isNumber
 	## tab$row contains info about bins/y-axis
 	tab$rows <- list( heights = -(binSizes/vp$m)
-	                , y = 1 - c(0,cumsum(binSizes/vp$m)[-nBins])
+	                , y = 1- c(0,cumsum(binSizes/vp$m)[-nBins])
 	                , m = vp$m
 	                , from = from
 	                , to = to
@@ -183,21 +183,26 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 	## create column list
 	tab$columns <- list()
 	paletNr <- 1
+	scales <- rep(scales, length.out=sum(isNumber))
+	scalesNr <- 1
 	for (i in 1:n) {
 		sortc <- ifelse(i %in% sortCol, ifelse(decreasing[which(i==sortCol)], "decreasing", "increasing"), "")
 		col <- list(name = colNames[i], isnumeric = isNumber[i], sort=sortc)
 		if (isNumber[i]) {
 			col$mean <- datMean[[colNames[i]]]
 			col$compl <- datCompl[[colNames[i]]]
+			col$lower <- datLower[[colNames[i]]]
+			col$upper <- datUpper[[colNames[i]]]
+			col$scale_init <- scales[scalesNr]
+			scalesNr <- scalesNr + 1
 		} else {
 			col$freq <- datFreq[[colNames[i]]]$freqTable
 			col$categories <- datFreq[[colNames[i]]]$categories
 			col$palet <- pals[[paletNr]]
 			paletNr <- ifelse(paletNr==length(pals), 1, paletNr + 1)
 		}
-		tab$columns[[i]] <- col
+ 		tab$columns[[i]] <- col
 	}
-	class(tab) <- "tabplot"
+	
 	return(tab)
 }
-     

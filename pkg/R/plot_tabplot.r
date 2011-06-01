@@ -113,7 +113,7 @@ function(x, fontsize = 8, legend.lines = 8, ...) {
 			tCol <- x$columns[[i]]
 			cellplot(1,1, vpTitle, {
 				## Determine column name. Place "log(...)" around name when scale is logarithmic
-				columnName <- ifelse(tCol$isnumeric && tCol$scale=="log", paste("log(",tCol$name, ")", sep=""), tCol$name)
+				columnName <- ifelse(tCol$isnumeric && tCol$scale_final=="log", paste("log(",tCol$name, ")", sep=""), tCol$name)
 				nameWidth <- convertWidth(stringWidth(columnName), "npc",valueOnly=TRUE)
 				cex <- max(0.7, min(1, 1/nameWidth))
 				if ((nameWidth * cex) > 1) {

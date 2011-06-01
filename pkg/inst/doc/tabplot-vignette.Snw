@@ -22,7 +22,7 @@
 \renewcommand{\dbltopfraction}{.9}
 \hyphenation{time-stamp}
 
-\title{Correction of rounding, typing, and sign errors with the {\tt tabplot} package}
+\title{Visualization of large multivariate datasets with the {\tt tabplot} package}
 \author{Martijn Tennekes and Edwin de Jonge}
 \begin{document}
 \maketitle
@@ -38,13 +38,59 @@ library(tabplot)
 @
 \maketitle
 
-\newpage
+%\newpage
 
-\tableofcontents
-\listofalgorithms
-\newpage
+%\tableofcontents
+%\listofalgorithms
+%\newpage
 \section{Introduction}
-We will use the diamonds dataset that is provided in the {\tt ggplot2} package. This dataset contains information about 53,940 diamonds. There are 7 continuous variables and 3 categorical. In order to illustrate the visualization of missing values, we add several NA's.
+The tableplot is a visualization method that is used to explore and analyse large datasets. By using tableplots, data analysts are able to observe the relationships between the variables, discover strange data patterns, and check the occurrence and selectivity of missing values. 
+
+An example of a tableplot applied to the diamonds dataset of the ggplot2 package is illustrated in Figure~\ref{fig1}. Each column represents a variable. The whole data set is ordered according to one or more columns (in this case, carat), and then grouped into row bins. Algorithm~\ref{alg} describes the creation of a tableplot into detail.
+
+\begin{algorithm}[t]
+\caption{Create tableplot}\label{alg}
+\begin{algorithmic}[1]
+\Require Tabular dataset $t$, column $i_{s}$ of which the distribution is of interest.
+\State $t'\leftarrow$ sort $t$ according to the values of column $i_s$.
+\State Divide $t'$ into $n$ row bins according to the order of $t'$.
+\For {each column $i$}
+\If{$i$ is numeric}
+\State $m_{ib}\leftarrow$ mean value per bin $b$
+\State $c_{ib}\leftarrow$ fraction of missing values per bin $b$
+\EndIf
+\If{$i$ is categorical}
+\State $\begin{aligned}[t]
+		&\mbox{$f_{ijb}\leftarrow$ frequency of each category $j$ (including missing values)}\\[-3pt]
+		&\mbox{per bin $b$}
+	\end{aligned}$
+\EndIf
+\EndFor
+\For {each column $i$}
+\If{$i$ is numeric}
+\State $\begin{aligned}[t]
+		&\mbox{Plot a bar chart of the mean values $\{m_{i1}, m_{i2},\ldots, m_{in}\}$. A loga-}\\[-3pt]
+		&\mbox{rithmic scale can be used. The fraction of missing values $\{c_{i1},$}\\[-3pt]
+		&\mbox{$c_{i2},\ldots, c_{in}\}$ determines the lightness of the bar colour. The light-}\\[-3pt]
+		&\mbox{er the colour, the more missing values occur in bin $b$. If all values}\\[-3pt]
+		&\mbox{are missing, a light red bar of full length is drawn.}
+	\end{aligned}$
+\EndIf
+\If{$i$ is categorical}
+\State $\begin{aligned}[t]
+		&\mbox{Plot a stacked bar chart according to the frequencies $\{f_{i1b}, f_{i2b},$}\\[-3pt]
+		&\mbox{$\ldots\}$ for each bin $b$. Each category is shown is a distinct colour.}\\[-3pt]
+		&\mbox{If there are missing values, they are depicted by a red colour.}
+	\end{aligned}$
+\EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{The {\tt tableplot} function}
+
+To illustrate the {\tt tabplot} package, we will use the diamonds dataset that is provided in the {\tt ggplot2} package. This dataset contains information about 53,940 diamonds. There are 7 continuous variables and 3 categorical. In order to illustrate the visualization of missing values, we add several NA's.
 
 <<>>=
 require(ggplot2)
@@ -52,19 +98,52 @@ data(diamonds)
 ## add some NA's
 is.na(diamonds$price) <- diamonds$cut=="Ideal"
 is.na(diamonds$cut) <- (runif(nrow(diamonds))>0.8)
-## create logical variable
-diamonds$expensive <- diamonds$price >= 10000
 @
 
-A tableplot is simply created by the function {\tt tableplot}.
+
+A tableplot is simply created by the function {\tt tableplot}:
 <<>>=
 tableplot(diamonds)
 @
 
-By the other arguments we can customize the tableplot. The most important arguments to start with are: {\tt colNames}, a vector of the column names that are plotted and {\tt sortCol}, a vector of column names or indices on which the data is ordered.
+The result is depicted in Figure~\ref{fig1}. By default, all variables of the dataset are depicted. With the argument {\tt colNames}, we can specify which variables are plotted. 
+
+Further, the dataset is by default ordered according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variables the data is ordered.
+
 <<>>=
 tableplot(diamonds, colNames=c("carat", "price", "cut", "color", "clarity"), sortCol="price")
 @
+
+Setting an appropriate number of row bins (argument {\tt nbins}) is important, like in a histogram. A good number of row bins is a trade of between good polished but meaningless data, and detaild, but noisy data. In practice, we found out that the default number of 100 usually is a good starting point.
+
+
+\subsection{Continuous variables}
+
+For each bin of a continuous variable, the mean value is calculated (see Algorithm~\ref{alg}).
+When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation (see \cite{ten11}). The argument {\tt scales} is default set to the auto-detection mode {\tt "auto"}, and can also set to linear mode {\tt "lin"} or logarithmic mode {\tt "log"}.
+
+Observe that the x-axes of the variables depth and table in Figure~\ref{fig1} are broken. The x-axis of a variable $i$ is broken if
+either
+\begin{align*}
+& 0 < \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
+& \mbox{{\tt bias\_brokenX}} \cdot \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}) < \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) 
+\end{align*}
+\textsc{or}
+\begin{align*}
+& 0 > \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
+& \mbox{{\tt bias\_brokenX}} \cdot \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) > \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}),
+\end{align*}
+where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 and 1. If {\tt bias\_brokenX=1} then the above conditions are always false, which implies that the x-axes are never broken. On the other hand, if {\tt bias\_brokenX=0} then the x-axes are always broken. By default, {\tt bias\_brokenX=0.8}, which mean that an x-axis is broken if (in case of a variable with positive values) the minimum value is at least 0.8 times the maximum value. In the diamonds dataset, this applies to the variables depth and table.
+
+
+
+\subsection{Categorical variables}
+
+
+
+
+\section{Graphical User Interface {\tt tableGUI}}
+
 
 
 

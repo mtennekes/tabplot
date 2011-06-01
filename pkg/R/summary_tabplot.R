@@ -34,7 +34,7 @@ function(object, digits = max(3, getOption("digits") -
 	}
 	
 	summary_num <- function(col) {
-		L <- list(name=col$name, type="numeric", sort=ifelse(col$sort=="", "NA", col$sort), scale=col$scale)
+		L <- list(name=col$name, type="numeric", sort=ifelse(col$sort=="", "NA", col$sort), scale_init=col$scale_init, scale_final=col$scale_final)
 		class(L) <- c("summaryDefault", "table")
 		L
 	}

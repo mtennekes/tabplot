@@ -86,7 +86,7 @@ An example of a tableplot applied to the diamonds dataset of the ggplot2 package
 \end{algorithm}
 
 
-\section{The {\tt tableplot} function}
+\section{Getting started with the {\tt tableplot} function}
 
 To illustrate the {\tt tabplot} package, we will use the diamonds dataset that is provided in the {\tt ggplot2} package. This dataset contains information about 53,940 diamonds. There are 7 continuous variables and 3 categorical. In order to illustrate the visualization of missing values, we add several NA's.
 
@@ -109,7 +109,7 @@ A tableplot is simply created by the function {\tt tableplot}:
 
 The result is depicted in Figure~\ref{fig1}. By default, all variables of the dataset are depicted. With the argument {\tt colNames}, we can specify which variables are plotted. 
 
-Further, the dataset is by default ordered according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variables the data is ordered.
+Further, the dataset is by default sorted according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variables the data is sorted.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -118,7 +118,27 @@ Further, the dataset is by default ordered according to the values of the first 
 \end{Sinput}
 \end{Schunk}
 
+The result is illustrated in Figure~\ref{fig2}. 
+
 Setting an appropriate number of row bins (argument {\tt nbins}) is important, like in a histogram. A good number of row bins is a trade of between good polished but meaningless data, and detaild, but noisy data. In practice, we found out that the default number of 100 usually is a good starting point.
+
+The percentages near the vertical axis indicate which subset of the data in terms of units (row) is depicted. The range from 0\% to 100\% in Figure~\ref{fig2} means that all units of the data are plotted. 
+
+Suppose we want to focus our attention to the 5\% most expensive diamonds. This is possible by setting the {\tt from} argument to 0, and the {\tt to} argument to 5:
+
+\begin{Schunk}
+\begin{Sinput}
+> tableplot(diamonds, colNames = c("carat", "price", "cut", "color", 
++     "clarity"), sortCol = "price", from = 0, to = 5)
+\end{Sinput}
+\end{Schunk}
+
+Observe that in the obtained tableplot in Figure~\ref{fig3}, the number of row bins is still 100, so that the number of units per row bin is now 27 instead of 540. Therefore, much more detail can be observed in this tableplot.
+
+The vertical axis contains two sets of tick marks. The set of small tick marks correspond with the row bins. The set of large tick marks correspond with the percentages. The number of tick marks between {\tt from} and {\tt to} is determined by R's function {\tt pretty}.
+
+
+\section{Customizing the tableplot}
 
 
 \subsection{Continuous variables}
@@ -126,7 +146,7 @@ Setting an appropriate number of row bins (argument {\tt nbins}) is important, l
 For each bin of a continuous variable, the mean value is calculated (see Algorithm~\ref{alg}).
 When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation (see \cite{ten11}). The argument {\tt scales} is default set to the auto-detection mode {\tt "auto"}, and can also set to linear mode {\tt "lin"} or logarithmic mode {\tt "log"}.
 
-In Figure~\ref{fig1}, the x-ases of the variables depth and table are broken. The x-axis of a variable $i$ is broken if
+Observe that the x-axes of the variables depth and table in Figure~\ref{fig1} are broken. The x-axis of a variable $i$ is broken if
 either
 \begin{align*}
 & 0 < \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
@@ -137,16 +157,97 @@ either
 & 0 > \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
 & \mbox{{\tt bias\_brokenX}} \cdot \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) > \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}),
 \end{align*}
-where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 and 1. If {\tt bias\_brokenX=1} then the above conditions are always false, which implies that the x-axes are never broken. On the other hand, if {\tt bias\_brokenX=0} then the x-axes are always broken. By default, {\tt bias\_brokenX=0.}, which mean that an x-axis is broken if (in case of a variable with positive values) the minimum value is at least 0.8 times the maximum value. In the diamonds dataset, this applies to the variables depth and table.
-
+where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 and 1. If {\tt bias\_brokenX=1} then the above conditions are always false, which implies that the x-axes are never broken. On the other hand, if {\tt bias\_brokenX=0} then the x-axes are always broken. By default, {\tt bias\_brokenX} {\tt=0.8}, which mean that an x-axis is broken if (in case of a variable with positive values) the minimum value is at least 0.8 times the maximum value. In the diamonds dataset, this applies to the variables depth and table.
 
 
 \subsection{Categorical variables}
+The color palettes of categorical variables can be customized with the argument {\tt pals}. Several qualitative palettes from literature (\cite{brewer}, \cite{??}) are implemented. They are stored in the list {\tt tabplotPalettes} and can be shown by
 
+\begin{Schunk}
+\begin{Sinput}
+> tableplot_showPalettes()
+\end{Sinput}
+\end{Schunk}
+
+The default palette is a combination of Set1 and Set2. It has the advantage each category has a unique color for varibles with up to 16 categories.
+
+Suppose we want a to use the default palette for the variable {\tt cut}, but starting with the seventh color, pink. Further we want the color blind friendly palette for the variable {\tt color}, but without the first color (black), and a custom palette, say a rainbow palette, for the variable {\tt clarity}:
+
+\begin{Schunk}
+\begin{Sinput}
+> tableplot(diamonds, pals = list(7, "col_blind_friendly(2)", rainbow(8)))
+\end{Sinput}
+\end{Schunk}
+
+
+\subsection{The {\tt tabplot} object}
+
+The function {\tt tableplot} returns a {\tt tabplot} object, that can be used to make minor changes to the tableplot, for instance the order of columns or the color palettes. Of course, these changes can also be made by generating a new tableplot, such as in the examples above. However, if it takes considerable time to generate a tableplot, then it is practical to make minor changes immediately.
+
+The output of the {\tt tableplot} function can be assigned to a variable. The graphical output can be omitted by setting the argument {\tt plot} to FALSE.
+
+\begin{Schunk}
+\begin{Sinput}
+> tab <- tableplot(diamonds, plot = FALSE)
+\end{Sinput}
+\end{Schunk}
+
+The {\tt tabplot} object is a list that contains all information to depict a tableplot. The generic functions {\tt summary} and {\tt plot} can be applied to the {\tt tabplot} object.
+
+\begin{Schunk}
+\begin{Sinput}
+> summary(tab)
+\end{Sinput}
+\begin{Soutput}
+      general            variable1               variable2          
+ variables:10      name       :carat        name      :cut          
+ objects  :53940   type       :numeric      type      :categorical  
+ bins     :100     sort       :decreasing   sort      :NA           
+ from     :0%      scale_init :auto         categories:6            
+ to       :100%    scale_final:lin                                  
+      variable3                variable4                 variable5      
+ name      :color         name      :clarity       name       :depth    
+ type      :categorical   type      :categorical   type       :numeric  
+ sort      :NA            sort      :NA            sort       :NA       
+ categories:7             categories:8             scale_init :auto     
+                                                   scale_final:lin      
+       variable6             variable7             variable8      
+ name       :table     name       :price     name       :x        
+ type       :numeric   type       :numeric   type       :numeric  
+ sort       :NA        sort       :NA        sort       :NA       
+ scale_init :auto      scale_init :auto      scale_init :auto     
+ scale_final:lin       scale_final:lin       scale_final:lin      
+       variable9             variable10     
+ name       :y         name       :z        
+ type       :numeric   type       :numeric  
+ sort       :NA        sort       :NA       
+ scale_init :auto      scale_init :auto     
+ scale_final:lin       scale_final:lin      
+\end{Soutput}
+\begin{Sinput}
+> plot(tab)
+\end{Sinput}
+\end{Schunk}
+
+The function {\tt changeTabplot} is used to make minor changes to a {\tt tabplot} object. Suppose we want the columns in the order of \ref{fig2}, and we want to change all color palettes to default starting with the first color.
+
+\begin{Schunk}
+\begin{Sinput}
+> tab2 <- changeTabplot(tab, colNames = c("carat", "price", "cut", 
++     "color", "clarity"), pals = list(1))
+> plot(tab2)
+\end{Sinput}
+\end{Schunk}
 
 
 
 \section{Graphical User Interface {\tt tableGUI}}
+The function {\tt tableGUI} starts a Graphical User Interface (GUI).
+\begin{Schunk}
+\begin{Sinput}
+> tableGUI()
+\end{Sinput}
+\end{Schunk}
 
 
 

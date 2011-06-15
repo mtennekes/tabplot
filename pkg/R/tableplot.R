@@ -19,6 +19,7 @@
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
+#' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
 #' @param plot boolean, tableplot is plot (TRUE) or it a tabplot object is returned
 #' @param ... arguments passed to \code{\link{plot.tabplot}}
 #' @return if \code{plot=FALSE} then a tabplot object is returned
@@ -31,7 +32,7 @@
 # @param filter variable name(s) on which the tableplot is filtered
 
 
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, bias_brokenX=0.8, plot=TRUE, ...) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, bias_brokenX=0.8, IQR_bias=5, plot=TRUE, ...) {
 
 	if (class(dat)[1]=="data.frame") dat <- data.table(dat)
 	
@@ -116,7 +117,6 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	#####################################
 	
 	## Determine scales of numeric variables in case they are set to "auto". IQR is used.
-	IQR_bias <- 5
 	for (i in which(isNumber)) {
 		if (tab$columns[[i]]$scale_init=="auto") {
 			quant <- quantile(tab$columns[[i]]$mean, na.rm=TRUE)

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=pdflatex 2011.5.26)  1 JUN 2011 10:07
+This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=pdflatex 2011.5.26)  15 JUN 2011 12:48
 entering extended mode
 **tabplot-vignette.tex
 (D:\Rvis\tableplot\pkg\inst\doc\tabplot-vignette.tex
@@ -350,6 +350,9 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 LaTeX Warning: Reference `fig1' on page 1 undefined on input line 47.
 
 
+LaTeX Warning: Reference `alg' on page 1 undefined on input line 47.
+
+
 Overfull \hbox (7.3437pt too wide) in paragraph at lines 69--76
 [] $[] []$ 
  []
@@ -361,36 +364,62 @@ LaTeX Warning: Reference `fig1' on page 1 undefined on input line 110.
 
 {C:/Users/MTES.TMO/AppData/Local/MiKTeX/2.8/pdftex/config/pdftex.map}]
 
-Package natbib Warning: Citation `ten11' on page 2 undefined on input line 127.
-
+LaTeX Warning: Reference `fig2' on page 2 undefined on input line 121.
 
 [2]
 
-LaTeX Warning: Reference `fig1' on page 3 undefined on input line 129.
+LaTeX Warning: Reference `fig2' on page 3 undefined on input line 125.
 
 
-Overfull \hbox (30.8146pt too wide) in paragraph at lines 139--141
+LaTeX Warning: Reference `fig3' on page 3 undefined on input line 136.
+
+
+LaTeX Warning: Reference `alg' on page 3 undefined on input line 146.
+
+
+Package natbib Warning: Citation `ten11' on page 3 undefined on input line 147.
+
+
+
+LaTeX Warning: Reference `fig1' on page 3 undefined on input line 149.
+
+
+Overfull \hbox (10.56824pt too wide) in paragraph at lines 159--161
 \T1/aett/m/n/10.95 bias_brokenX=0 \T1/aer/m/n/10.95 then the x-axes are al-ways
- bro-ken. By de-fault, \T1/aett/m/n/10.95 bias_brokenX=0.\T1/aer/m/n/10.95 ,
+ bro-ken. By de-fault, \T1/aett/m/n/10.95 bias_brokenX
  []
 
-[3]
+
+Package natbib Warning: Citation `brewer' on page 3 undefined on input line 164
+.
+
+
+Package natbib Warning: Citation `??' on page 3 undefined on input line 164.
+
+[3] [4]
+
+LaTeX Warning: Reference `fig2' on page 5 undefined on input line 232.
+
+[5]
 
 Package natbib Warning: There were undefined citations.
 
-[4] (D:\Rvis\tableplot\pkg\inst\doc\tabplot-vignette.aux)
+[6] (D:\Rvis\tableplot\pkg\inst\doc\tabplot-vignette.aux)
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
- 4307 strings out of 495219
- 55672 string characters out of 3179054
- 112101 words of memory out of 3000000
- 7403 multiletter control sequences out of 15000+200000
- 54533 words of font info for 107 fonts, out of 3000000 for 9000
+ 4314 strings out of 495219
+ 55722 string characters out of 3179054
+ 112093 words of memory out of 3000000
+ 7408 multiletter control sequences out of 15000+200000
+ 55191 words of font info for 110 fonts, out of 3000000 for 9000
  55 hyphenation exceptions out of 8191
- 35i,11n,24p,574b,324s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 35i,11n,24p,581b,330s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
 ogram Files/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Fi
 les/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Program Files/MiK
@@ -406,9 +435,9 @@ KTeX 2.8/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.8/
 fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2.8/fonts/ty
 pe1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files/MiKTeX 2.8/fonts/type1/publ
 ic/amsfonts/cm/cmtt12.pfb>
-Output written on tabplot-vignette.pdf (4 pages, 183389 bytes).
+Output written on tabplot-vignette.pdf (6 pages, 197253 bytes).
 PDF statistics:
- 79 PDF objects out of 1000 (max. 8388607)
+ 85 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

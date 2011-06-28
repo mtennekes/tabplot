@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=pdflatex 2011.5.26)  15 JUN 2011 12:48
+This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=pdflatex 2011.5.26)  28 JUN 2011 12:03
 entering extended mode
 **tabplot-vignette.tex
 (D:\Rvis\tableplot\pkg\inst\doc\tabplot-vignette.tex
@@ -350,73 +350,62 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 LaTeX Warning: Reference `fig1' on page 1 undefined on input line 47.
 
 
-LaTeX Warning: Reference `alg' on page 1 undefined on input line 47.
-
-
 Overfull \hbox (7.3437pt too wide) in paragraph at lines 69--76
 [] $[] []$ 
  []
 
+<tabplot-vignette-fig1.pdf, id=1, 722.7pt x 505.89pt>
+File: tabplot-vignette-fig1.pdf Graphic file (type pdf)
 
-LaTeX Warning: Reference `fig1' on page 1 undefined on input line 110.
-
-[1
+<use tabplot-vignette-fig1.pdf> [1
 
 {C:/Users/MTES.TMO/AppData/Local/MiKTeX/2.8/pdftex/config/pdftex.map}]
+<tabplot-vignette-fig2.pdf, id=14, 433.62pt x 433.62pt>
+File: tabplot-vignette-fig2.pdf Graphic file (type pdf)
 
-LaTeX Warning: Reference `fig2' on page 2 undefined on input line 121.
+<use tabplot-vignette-fig2.pdf> [2] [3 <D:/Rvis/tableplot/pkg/inst/doc/tabplot-
+vignette-fig1.pdf> <D:/Rvis/tableplot/pkg/inst/doc/tabplot-vignette-fig2.pdf>]
 
-[2]
-
-LaTeX Warning: Reference `fig2' on page 3 undefined on input line 125.
-
-
-LaTeX Warning: Reference `fig3' on page 3 undefined on input line 136.
+LaTeX Warning: Reference `fig3' on page 4 undefined on input line 152.
 
 
-LaTeX Warning: Reference `alg' on page 3 undefined on input line 146.
-
-
-Package natbib Warning: Citation `ten11' on page 3 undefined on input line 147.
+Package natbib Warning: Citation `ten11' on page 4 undefined on input line 163.
 
 
 
-LaTeX Warning: Reference `fig1' on page 3 undefined on input line 149.
+LaTeX Warning: Reference `fig1' on page 4 undefined on input line 165.
 
 
-Overfull \hbox (10.56824pt too wide) in paragraph at lines 159--161
+Overfull \hbox (10.56824pt too wide) in paragraph at lines 175--177
 \T1/aett/m/n/10.95 bias_brokenX=0 \T1/aer/m/n/10.95 then the x-axes are al-ways
  bro-ken. By de-fault, \T1/aett/m/n/10.95 bias_brokenX
  []
 
 
-Package natbib Warning: Citation `brewer' on page 3 undefined on input line 164
+Package natbib Warning: Citation `brewer' on page 4 undefined on input line 180
 .
 
 
-Package natbib Warning: Citation `??' on page 3 undefined on input line 164.
+Package natbib Warning: Citation `??' on page 4 undefined on input line 180.
 
-[3] [4]
+[4] [5]
 
-LaTeX Warning: Reference `fig2' on page 5 undefined on input line 232.
+LaTeX Warning: Reference `fig2' on page 6 undefined on input line 248.
 
-[5]
+[6]
 
 Package natbib Warning: There were undefined citations.
 
-[6] (D:\Rvis\tableplot\pkg\inst\doc\tabplot-vignette.aux)
+[7] (D:\Rvis\tableplot\pkg\inst\doc\tabplot-vignette.aux)
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 4314 strings out of 495219
- 55722 string characters out of 3179054
- 112093 words of memory out of 3000000
- 7408 multiletter control sequences out of 15000+200000
+ 4328 strings out of 495219
+ 56047 string characters out of 3179054
+ 112117 words of memory out of 3000000
+ 7419 multiletter control sequences out of 15000+200000
  55191 words of font info for 110 fonts, out of 3000000 for 9000
  55 hyphenation exceptions out of 8191
  35i,11n,24p,581b,330s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -435,9 +424,9 @@ KTeX 2.8/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.8/
 fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2.8/fonts/ty
 pe1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files/MiKTeX 2.8/fonts/type1/publ
 ic/amsfonts/cm/cmtt12.pfb>
-Output written on tabplot-vignette.pdf (6 pages, 197253 bytes).
+Output written on tabplot-vignette.pdf (7 pages, 458673 bytes).
 PDF statistics:
- 85 PDF objects out of 1000 (max. 8388607)
+ 102 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 

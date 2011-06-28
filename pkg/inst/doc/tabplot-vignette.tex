@@ -42,7 +42,7 @@ The tableplot is a powerful visualization method to explore and analyse large mu
 %\listofalgorithms
 %\newpage
 \section{Introduction}
-The tableplot is a visualization method that is used to explore and analyse large datasets. By using tableplots, data analysts are able to observe the relationships between the variables, discover strange data patterns, and check the occurrence and selectivity of missing values. 
+The tableplot is a visualization method that is used to explore and analyse large datasets. With tableplots, one can explore the relationships between the variables, discover strange data patterns, and check the occurrence and selectivity of missing values. 
 
 An example of a tableplot applied to the diamonds dataset of the ggplot2 package is illustrated in Figure~\ref{fig1}. Each column represents a variable. The whole data set is ordered according to one or more columns (in this case, carat), and then grouped into row bins. Algorithm~\ref{alg} describes the creation of a tableplot into detail.
 
@@ -107,7 +107,15 @@ A tableplot is simply created by the function {\tt tableplot}:
 \end{Sinput}
 \end{Schunk}
 
-The result is depicted in Figure~\ref{fig1}. By default, all variables of the dataset are depicted. With the argument {\tt colNames}, we can specify which variables are plotted. 
+\begin{figure}
+\begin{center}
+\includegraphics{tabplot-vignette-fig1}
+\end{center}
+\caption{Tableplot of the diamonds dataset}
+\label{fig:tp1}
+\end{figure}
+
+The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt colNames}, we can specify which variables are plotted. 
 
 Further, the dataset is by default sorted according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variables the data is sorted.
 
@@ -118,11 +126,19 @@ Further, the dataset is by default sorted according to the values of the first v
 \end{Sinput}
 \end{Schunk}
 
-The result is illustrated in Figure~\ref{fig2}. 
+\begin{figure}
+\begin{center}
+\includegraphics{tabplot-vignette-fig2}
+\end{center}
+\caption{Tableplot of the diamonds dataset (2)}
+\label{fig:tp2}
+\end{figure}
+
+The result is illustrated in Figure~\ref{fig:tp2}. 
 
 Setting an appropriate number of row bins (argument {\tt nbins}) is important, like in a histogram. A good number of row bins is a trade of between good polished but meaningless data, and detaild, but noisy data. In practice, we found out that the default number of 100 usually is a good starting point.
 
-The percentages near the vertical axis indicate which subset of the data in terms of units (row) is depicted. The range from 0\% to 100\% in Figure~\ref{fig2} means that all units of the data are plotted. 
+The percentages near the vertical axis indicate which subset of the data in terms of units (row) is depicted. The range from 0\% to 100\% in Figure~\ref{fig:tp2} means that all units of the data are plotted. 
 
 Suppose we want to focus our attention to the 5\% most expensive diamonds. This is possible by setting the {\tt from} argument to 0, and the {\tt to} argument to 5:
 

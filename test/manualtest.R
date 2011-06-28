@@ -20,6 +20,12 @@ setwd("../")  # in order to let it find data(tabplotPalettes)
 
 ## before compiling (build.bat), uncomment two lines in tableplot_checkPals and tableGUI_showAllPals
 
+
+wd1 <- getwd()
+setwd("inst/doc/")
+wd2 <- getwd()
+Sweave("tabplot-vignette.Snw")
+
 ######################################
 ## load test data
 ######################################

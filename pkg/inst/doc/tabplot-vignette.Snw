@@ -22,9 +22,12 @@
 \renewcommand{\dbltopfraction}{.9}
 \hyphenation{time-stamp}
 
+
 \title{Visualization of large multivariate datasets with the {\tt tabplot} package}
 \author{Martijn Tennekes and Edwin de Jonge}
 \begin{document}
+\setkeys{Gin}{width=1\textwidth}
+
 \maketitle
 \begin{abstract}
 
@@ -100,7 +103,6 @@ is.na(diamonds$price) <- diamonds$cut=="Ideal"
 is.na(diamonds$cut) <- (runif(nrow(diamonds))>0.8)
 @
 
-
 A tableplot is simply created by the function {\tt tableplot}:
 <<label=tp1, include=FALSE>>=
 tableplot(diamonds)
@@ -126,8 +128,8 @@ tableplot(diamonds, colNames=c("carat", "price", "cut", "color", "clarity"), sor
 
 \begin{figure}
 \begin{center}
-<<label=fig2, fig=TRUE, echo=FALSE>>=
-<<tp1>>
+<<label=fig2, fig=TRUE, height=7,width=10, echo=FALSE>>=
+<<tp2>>
 @
 \end{center}
 \caption{Tableplot of the diamonds dataset (2)}
@@ -142,9 +144,20 @@ The percentages near the vertical axis indicate which subset of the data in term
 
 Suppose we want to focus our attention to the 5\% most expensive diamonds. This is possible by setting the {\tt from} argument to 0, and the {\tt to} argument to 5:
 
-<<>>=
+<<label=tp3, include=FALSE>>=
 tableplot(diamonds, colNames=c("carat", "price", "cut", "color", "clarity"), sortCol="price", from=0, to=5)
 @
+
+\begin{figure}
+\begin{center}
+<<label=fig3, fig=TRUE, height=7,width=10, echo=FALSE>>=
+<<tp3>>
+@
+\end{center}
+\caption{Tableplot of the diamonds dataset (3)}
+\label{fig:tp3}
+\end{figure}
+
 
 Observe that in the obtained tableplot in Figure~\ref{fig3}, the number of row bins is still 100, so that the number of units per row bin is now 27 instead of 540. Therefore, much more detail can be observed in this tableplot.
 
@@ -176,18 +189,42 @@ where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 
 \subsection{Categorical variables}
 The color palettes of categorical variables can be customized with the argument {\tt pals}. Several qualitative palettes from literature (\cite{brewer}, \cite{??}) are implemented. They are stored in the list {\tt tabplotPalettes} and can be shown by
 
-<<>>=
+
+
+
+<<label=pls, include=FALSE>>=
 tableplot_showPalettes()
 @
+
+\begin{figure}
+\begin{center}
+<<label=pals, fig=TRUE, height=7,width=10, echo=FALSE>>=
+<<pls>>
+@
+\end{center}
+\caption{Color palettes}
+\label{fig:pals}
+\end{figure}
+
+
 
 The default palette is a combination of Set1 and Set2. It has the advantage each category has a unique color for varibles with up to 16 categories.
 
 Suppose we want a to use the default palette for the variable {\tt cut}, but starting with the seventh color, pink. Further we want the color blind friendly palette for the variable {\tt color}, but without the first color (black), and a custom palette, say a rainbow palette, for the variable {\tt clarity}:
 
-<<>>=
+<<label=tp4, include=FALSE>>=
 tableplot(diamonds, pals=list(7, "col_blind_friendly(2)", rainbow(8)))
 @
 
+\begin{figure}
+\begin{center}
+<<label=fig4, fig=TRUE, height=7,width=10, echo=FALSE>>=
+<<tp4>>
+@
+\end{center}
+\caption{Tableplot of the diamonds dataset (4)}
+\label{fig:tp4}
+\end{figure}
 
 \subsection{The {\tt tabplot} object}
 

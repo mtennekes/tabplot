@@ -6,7 +6,7 @@
 #' @export
 #' @keywords color palettes
 tableplot_showPalettes <- function() {
-	dev.new(width=6, height=4, rescale="fixed")
+	#dev.new(width=6, height=4, rescale="fixed")
 
 	## for package building, uncomment these rules
 	data("tabplotPalettes")

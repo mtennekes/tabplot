@@ -22,10 +22,13 @@
 \renewcommand{\dbltopfraction}{.9}
 \hyphenation{time-stamp}
 
+
 \title{Visualization of large multivariate datasets with the {\tt tabplot} package}
 \author{Martijn Tennekes and Edwin de Jonge}
 \usepackage{Sweave}
 \begin{document}
+\setkeys{Gin}{width=1\textwidth}
+
 \maketitle
 \begin{abstract}
 
@@ -99,7 +102,6 @@ To illustrate the {\tt tabplot} package, we will use the diamonds dataset that i
 \end{Sinput}
 \end{Schunk}
 
-
 A tableplot is simply created by the function {\tt tableplot}:
 \begin{Schunk}
 \begin{Sinput}
@@ -149,6 +151,15 @@ Suppose we want to focus our attention to the 5\% most expensive diamonds. This 
 \end{Sinput}
 \end{Schunk}
 
+\begin{figure}
+\begin{center}
+\includegraphics{tabplot-vignette-fig3}
+\end{center}
+\caption{Tableplot of the diamonds dataset (3)}
+\label{fig:tp3}
+\end{figure}
+
+
 Observe that in the obtained tableplot in Figure~\ref{fig3}, the number of row bins is still 100, so that the number of units per row bin is now 27 instead of 540. Therefore, much more detail can be observed in this tableplot.
 
 The vertical axis contains two sets of tick marks. The set of small tick marks correspond with the row bins. The set of large tick marks correspond with the percentages. The number of tick marks between {\tt from} and {\tt to} is determined by R's function {\tt pretty}.
@@ -179,11 +190,24 @@ where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 
 \subsection{Categorical variables}
 The color palettes of categorical variables can be customized with the argument {\tt pals}. Several qualitative palettes from literature (\cite{brewer}, \cite{??}) are implemented. They are stored in the list {\tt tabplotPalettes} and can be shown by
 
+
+
+
 \begin{Schunk}
 \begin{Sinput}
 > tableplot_showPalettes()
 \end{Sinput}
 \end{Schunk}
+
+\begin{figure}
+\begin{center}
+\includegraphics{tabplot-vignette-pals}
+\end{center}
+\caption{Color palettes}
+\label{fig:pals}
+\end{figure}
+
+
 
 The default palette is a combination of Set1 and Set2. It has the advantage each category has a unique color for varibles with up to 16 categories.
 
@@ -195,6 +219,13 @@ Suppose we want a to use the default palette for the variable {\tt cut}, but sta
 \end{Sinput}
 \end{Schunk}
 
+\begin{figure}
+\begin{center}
+\includegraphics{tabplot-vignette-fig4}
+\end{center}
+\caption{Tableplot of the diamonds dataset (4)}
+\label{fig:tp4}
+\end{figure}
 
 \subsection{The {\tt tabplot} object}
 

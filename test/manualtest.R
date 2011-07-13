@@ -17,15 +17,23 @@ setwd(scriptmap)
 sapply(list.files(), source)
 
 setwd("../")  # in order to let it find data(tabplotPalettes)
-
-## before compiling (build.bat), uncomment two lines in tableplot_checkPals and tableGUI_showAllPals
-
-## Sweave
 data(tabplotPalettes)
 wd1 <- getwd()
 setwd("inst/doc/")
 wd2 <- getwd()
+
+## before compiling (build.bat), uncomment two lines in tableplot_checkPals and tableGUI_showAllPals
+
+
+## Sweave
+setwd(wd2)
 Sweave("tabplot-vignette.Snw")
+
+## compile
+setwd(wd1)
+setwd("R/")
+setwd(scriptmap)
+sapply(list.files(), source)
 
 ######################################
 ## load test data

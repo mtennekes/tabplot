@@ -45,53 +45,13 @@ The tableplot is a powerful visualization method to explore and analyse large mu
 %\listofalgorithms
 %\newpage
 \section{Introduction}
-The tableplot is a visualization method that is used to explore and analyse large datasets. With tableplots, one can explore the relationships between the variables, discover strange data patterns, and check the occurrence and selectivity of missing values. 
+The tableplot is a visualization method that is used to explore and analyse large datasets. Tableplots are used to explore the relationships between the variables, to discover strange data patterns, and to check the occurrence and selectivity of missing values. 
 
-An example of a tableplot applied to the diamonds dataset of the ggplot2 package is illustrated in Figure~\ref{fig1}. Each column represents a variable. The whole data set is ordered according to one or more columns (in this case, carat), and then grouped into row bins. Algorithm~\ref{alg} describes the creation of a tableplot into detail.
-
-\begin{algorithm}[t]
-\caption{Create tableplot}\label{alg}
-\begin{algorithmic}[1]
-\Require Tabular dataset $t$, column $i_{s}$ of which the distribution is of interest.
-\State $t'\leftarrow$ sort $t$ according to the values of column $i_s$.
-\State Divide $t'$ into $n$ row bins according to the order of $t'$.
-\For {each column $i$}
-\If{$i$ is numeric}
-\State $m_{ib}\leftarrow$ mean value per bin $b$
-\State $c_{ib}\leftarrow$ fraction of missing values per bin $b$
-\EndIf
-\If{$i$ is categorical}
-\State $\begin{aligned}[t]
-		&\mbox{$f_{ijb}\leftarrow$ frequency of each category $j$ (including missing values)}\\[-3pt]
-		&\mbox{per bin $b$}
-	\end{aligned}$
-\EndIf
-\EndFor
-\For {each column $i$}
-\If{$i$ is numeric}
-\State $\begin{aligned}[t]
-		&\mbox{Plot a bar chart of the mean values $\{m_{i1}, m_{i2},\ldots, m_{in}\}$. A loga-}\\[-3pt]
-		&\mbox{rithmic scale can be used. The fraction of missing values $\{c_{i1},$}\\[-3pt]
-		&\mbox{$c_{i2},\ldots, c_{in}\}$ determines the lightness of the bar colour. The light-}\\[-3pt]
-		&\mbox{er the colour, the more missing values occur in bin $b$. If all values}\\[-3pt]
-		&\mbox{are missing, a light red bar of full length is drawn.}
-	\end{aligned}$
-\EndIf
-\If{$i$ is categorical}
-\State $\begin{aligned}[t]
-		&\mbox{Plot a stacked bar chart according to the frequencies $\{f_{i1b}, f_{i2b},$}\\[-3pt]
-		&\mbox{$\ldots\}$ for each bin $b$. Each category is shown is a distinct colour.}\\[-3pt]
-		&\mbox{If there are missing values, they are depicted by a red colour.}
-	\end{aligned}$
-\EndIf
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-
+A tableplot applied to the diamonds dataset of the {\tt ggplot2} package (where some missing values were added) is illustrated in Figure~\ref{fig:tp1}. Each column represents a variable. The whole data set is sorted according to one column (in this case, carat), and then grouped into row bins. Algorithm~\ref{alg} in Appendix~\ref{secalg} describes the creation of a tableplot into detail.
 
 \section{Getting started with the {\tt tableplot} function}
 
-To illustrate the {\tt tabplot} package, we will use the diamonds dataset that is provided in the {\tt ggplot2} package. This dataset contains information about 53,940 diamonds. There are 7 continuous variables and 3 categorical. In order to illustrate the visualization of missing values, we add several NA's.
+The diamonds dataset is very suitable to demonstrate the {\tt tabplot} package. To illustrate the visualization of missing values, we add several {\tt NA}'s.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -109,7 +69,7 @@ A tableplot is simply created by the function {\tt tableplot}:
 \end{Sinput}
 \end{Schunk}
 
-\begin{figure}
+\begin{figure}[htp]
 \begin{center}
 \includegraphics{tabplot-vignette-fig1}
 \end{center}
@@ -117,9 +77,7 @@ A tableplot is simply created by the function {\tt tableplot}:
 \label{fig:tp1}
 \end{figure}
 
-The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt colNames}, we can specify which variables are plotted. 
-
-Further, the dataset is by default sorted according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variables the data is sorted.
+The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt colNames}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variable(s) the data is sorted.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -128,7 +86,7 @@ Further, the dataset is by default sorted according to the values of the first v
 \end{Sinput}
 \end{Schunk}
 
-\begin{figure}
+\begin{figure}[htp]
 \begin{center}
 \includegraphics{tabplot-vignette-fig2}
 \end{center}
@@ -138,11 +96,19 @@ Further, the dataset is by default sorted according to the values of the first v
 
 The result is illustrated in Figure~\ref{fig:tp2}. 
 
-Setting an appropriate number of row bins (argument {\tt nbins}) is important, like in a histogram. A good number of row bins is a trade of between good polished but meaningless data, and detaild, but noisy data. In practice, we found out that the default number of 100 usually is a good starting point.
+Setting an appropriate number of row bins (by the argument {\tt nbins}) is important, like in a histogram. A good number of row bins is a trade of between good polished but meaningless data, and detailed, but noisy data. In practice, we found that the default number of 100 usually is a good starting point.
 
-The percentages near the vertical axis indicate which subset of the data in terms of units (row) is depicted. The range from 0\% to 100\% in Figure~\ref{fig:tp2} means that all units of the data are plotted. 
+The percentages near the vertical axis indicate which subset of the data in terms of units (rows) is depicted. The range from 0\% to 100\% in Figure~\ref{fig:tp2} means that all units of the data are plotted. 
 
-Suppose we want to focus our attention to the 5\% most expensive diamonds. This is possible by setting the {\tt from} argument to 0, and the {\tt to} argument to 5:
+\begin{figure}[htp]
+\begin{center}
+\includegraphics{tabplot-vignette-fig3}
+\end{center}
+\caption{Tableplot of the diamonds dataset (3)}
+\label{fig:tp3}
+\end{figure}
+
+We can focus our attention to the 5\% most expensive diamonds by setting the {\tt from} argument to 0 and the {\tt to} argument to 5:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -151,18 +117,9 @@ Suppose we want to focus our attention to the 5\% most expensive diamonds. This 
 \end{Sinput}
 \end{Schunk}
 
-\begin{figure}
-\begin{center}
-\includegraphics{tabplot-vignette-fig3}
-\end{center}
-\caption{Tableplot of the diamonds dataset (3)}
-\label{fig:tp3}
-\end{figure}
+Observe that in the obtained tableplot in Figure~\ref{fig:tp3}, the number of row bins is still 100, so that the number of units per row bin is now 27 instead of 540. Therefore, much more detail can be observed in this tableplot.
 
-
-Observe that in the obtained tableplot in Figure~\ref{fig3}, the number of row bins is still 100, so that the number of units per row bin is now 27 instead of 540. Therefore, much more detail can be observed in this tableplot.
-
-The vertical axis contains two sets of tick marks. The set of small tick marks correspond with the row bins. The set of large tick marks correspond with the percentages. The number of tick marks between {\tt from} and {\tt to} is determined by R's function {\tt pretty}.
+The vertical axis contains two sets of tick marks. The small tick marks correspond with the row bins and the large tick marks correspond with the percentages between {\tt from} and {\tt to}. The latter are determined by R's base function {\tt pretty}.
 
 
 \section{Customizing the tableplot}
@@ -171,7 +128,7 @@ The vertical axis contains two sets of tick marks. The set of small tick marks c
 \subsection{Continuous variables}
 
 For each bin of a continuous variable, the mean value is calculated (see Algorithm~\ref{alg}).
-When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation (see \cite{ten11}). The argument {\tt scales} is default set to the auto-detection mode {\tt "auto"}, and can also set to linear mode {\tt "lin"} or logarithmic mode {\tt "log"}.
+When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation (see \cite{ten11}). The argument {\tt scales} can be set to linear mode {\tt "lin"}, logarithmic mode {\tt "log"}, or the default value {\tt "auto"}, which automatically determines which of the former two modes is used.
 
 Observe that the x-axes of the variables depth and table in Figure~\ref{fig1} are broken. The x-axis of a variable $i$ is broken if
 either
@@ -190,16 +147,13 @@ where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 
 \subsection{Categorical variables}
 The color palettes of categorical variables can be customized with the argument {\tt pals}. Several qualitative palettes from literature (\cite{brewer}, \cite{??}) are implemented. They are stored in the list {\tt tabplotPalettes} and can be shown by
 
-
-
-
 \begin{Schunk}
 \begin{Sinput}
 > tableplot_showPalettes()
 \end{Sinput}
 \end{Schunk}
 
-\begin{figure}
+\begin{figure}[htp]
 \begin{center}
 \includegraphics{tabplot-vignette-pals}
 \end{center}
@@ -207,9 +161,7 @@ The color palettes of categorical variables can be customized with the argument 
 \label{fig:pals}
 \end{figure}
 
-
-
-The default palette is a combination of Set1 and Set2. It has the advantage each category has a unique color for varibles with up to 16 categories.
+The default palette is a combination of Set1 and Set2. It has the advantage that each category has a unique color for variables with up to 16 categories.
 
 Suppose we want a to use the default palette for the variable {\tt cut}, but starting with the seventh color, pink. Further we want the color blind friendly palette for the variable {\tt color}, but without the first color (black), and a custom palette, say a rainbow palette, for the variable {\tt clarity}:
 
@@ -219,7 +171,7 @@ Suppose we want a to use the default palette for the variable {\tt cut}, but sta
 \end{Sinput}
 \end{Schunk}
 
-\begin{figure}
+\begin{figure}[htp]
 \begin{center}
 \includegraphics{tabplot-vignette-fig4}
 \end{center}
@@ -306,9 +258,52 @@ Conclusions
 %\bibliographystyle{chicago}
 %\bibliography{deducorrect}
 
-\newpage
 \appendix
-\section{First appendix on the {\tt tabplot} package}
+\newpage
+\section{Tableplot creation algorithm}\label{secalg}
+A tabplot is basically created by Algorithm~\ref{alg}.
+
+\begin{algorithm}[h]
+\caption{Create tableplot}\label{alg}
+\begin{minipage}{0.8\textwidth}
+\begin{algorithmic}[1]
+\Require Tabular dataset $t$, column $i_s$ of which the distribution is of interest.\footnote{The dataset $t$ can also be sorted according to multiple columns.}
+\State $t'\leftarrow$ sort $t$ according to the values of column $i_s$.
+\State Divide $t'$ into $n$ row bins according to the order of $t'$.
+\For {each column $i$}
+\If{$i$ is numeric}
+\State $m_{ib}\leftarrow$ mean value per bin $b$
+\State $c_{ib}\leftarrow$ fraction of missing values per bin $b$
+\EndIf
+\If{$i$ is categorical}
+\State $\begin{aligned}[t]
+		&\mbox{$f_{ijb}\leftarrow$ frequency of each category $j$ (including missing values)}\\[-3pt]
+		&\mbox{per bin $b$}
+	\end{aligned}$
+\EndIf
+\EndFor
+\For {each column $i$}
+\If{$i$ is numeric}
+\State $\begin{aligned}[t]
+		&\mbox{Plot a bar chart of the mean values $\{m_{i1}, m_{i2},\ldots, m_{in}\}$, option-}\\[-3pt]
+		&\mbox{ally with a logarithmic scale. The fraction of missing values $\{c_{i1},$}\\[-3pt]
+		&\mbox{$c_{i2},\ldots, c_{in}\}$ determines the lightness of the bar colour. The light-}\\[-3pt]
+		&\mbox{er the colour, the more missing values occur in bin $b$. If all values}\\[-3pt]
+		&\mbox{are missing, a light red bar of full length is drawn.}
+	\end{aligned}$
+\EndIf
+\If{$i$ is categorical}
+\State $\begin{aligned}[t]
+		&\mbox{Plot a stacked bar chart according to the frequencies $\{f_{i1b}, f_{i2b},$}\\[-3pt]
+		&\mbox{$\ldots\}$ for each bin $b$. Each category is shown is a distinct colour.}\\[-3pt]
+		&\mbox{If there are missing values, they are depicted by a red colour.}
+	\end{aligned}$
+\EndIf
+\EndFor
+\end{algorithmic}
+\end{minipage}
+\end{algorithm}
+
 \section{Second appendix}
 
 

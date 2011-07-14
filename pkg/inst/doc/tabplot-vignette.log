@@ -1,18 +1,17 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=pdflatex 2011.5.26)  11 JUL 2011 15:31
+This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=pdflatex 2011.6.28)  14 JUL 2011 10:49
 entering extended mode
 **tabplot-vignette.tex
-(D:\Rvis\tableplot\pkg\inst\doc\tabplot-vignette.tex
+(D:\Tijn\CBS\rvis\tableplot\pkg\inst\doc\tabplot-vignette.tex
 LaTeX2e <2009/09/24>
 Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
-rman, ngerman, german-x-2009-06-19, ngerman-x-2009-06-19, french, dutch, loaded
-.
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\article.cls"
+rman, ngerman, german-x-2009-06-19, ngerman-x-2009-06-19, french, loaded.
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\article.cls"
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\fleqn.clo"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\fleqn.clo"
 File: fleqn.clo 1998/08/17 v1.1c Standard LaTeX option (flush left equations)
 \mathindent=\dimen102
 )
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\size11.clo"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\size11.clo"
 File: size11.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -27,19 +26,19 @@ File: size11.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen103
 )
-("C:\Program Files\MiKTeX 2.8\tex\generic\babel\babel.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\generic\babel\babel.sty"
 Package: babel 2008/07/06 v3.8l The Babel package
 
 *************************************
 * Local config file bblopts.cfg used
 *
-("C:\Program Files\MiKTeX 2.8\tex\latex\00miktex\bblopts.cfg"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\00miktex\bblopts.cfg"
 File: bblopts.cfg 2006/07/31 v1.0 MiKTeX 'babel' configuration
 )
-("C:\Program Files\MiKTeX 2.8\tex\generic\babel\english.ldf"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\generic\babel\english.ldf"
 Language: english 2005/03/30 v3.3o English support from the babel system
 
-("C:\Program Files\MiKTeX 2.8\tex\generic\babel\babel.def"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\generic\babel\babel.def"
 File: babel.def 2008/07/06 v3.8l Babel common definitions
 \babel@savecnt=\count87
 \U@D=\dimen104
@@ -48,24 +47,24 @@ File: babel.def 2008/07/06 v3.8l Babel common definitions
 \l@australian = a dialect from \language\l@british 
 \l@newzealand = a dialect from \language\l@british 
 ))
-("C:\Program Files\MiKTeX 2.8\tex\latex\ams\math\amsmath.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\ams\math\amsmath.sty"
 Package: amsmath 2000/07/18 v2.13 AMS math features
 \@mathmargin=\skip43
 
 For additional information on amsmath, use the `?' option.
-("C:\Program Files\MiKTeX 2.8\tex\latex\ams\math\amstext.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\ams\math\amstext.sty"
 Package: amstext 2000/06/29 v2.01
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\ams\math\amsgen.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\ams\math\amsgen.sty"
 File: amsgen.sty 1999/11/30 v2.0
 \@emptytoks=\toks14
 \ex@=\dimen105
 ))
-("C:\Program Files\MiKTeX 2.8\tex\latex\ams\math\amsbsy.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\ams\math\amsbsy.sty"
 Package: amsbsy 1999/11/29 v1.2d
 \pmbraise@=\dimen106
 )
-("C:\Program Files\MiKTeX 2.8\tex\latex\ams\math\amsopn.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\ams\math\amsopn.sty"
 Package: amsopn 1999/12/14 v2.01 operator names
 )
 \inf@bad=\count88
@@ -106,30 +105,30 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
 LaTeX Info: Redefining \[ on input line 2666.
 LaTeX Info: Redefining \] on input line 2667.
 )
-("C:\Program Files\MiKTeX 2.8\tex\latex\amsfonts\amssymb.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\amsfonts\amssymb.sty"
 Package: amssymb 2009/06/22 v3.00
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\amsfonts\amsfonts.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\amsfonts\amsfonts.sty"
 Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
 ))
-(C:\Users\MTES.TMO\AppData\Roaming\MiKTeX\2.8\tex\latex\natbib\natbib.sty
+(C:\Users\Vontijn\AppData\Roaming\MiKTeX\2.8\tex\latex\natbib\natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip46
 \bibsep=\skip47
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count100
 )
-(D:\Rvis\tableplot\pkg\inst\doc\algpseudocode.sty
+(D:\Tijn\CBS\rvis\tableplot\pkg\inst\doc\algpseudocode.sty
 Package: algpseudocode 
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\ifthen.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\ifthen.sty"
 Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
 )
-(D:\Rvis\tableplot\pkg\inst\doc\algorithmicx.sty
+(D:\Tijn\CBS\rvis\tableplot\pkg\inst\doc\algorithmicx.sty
 Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
 
 Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
@@ -146,11 +145,10 @@ Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
 )
-(C:\Users\MTES.TMO\AppData\Roaming\MiKTeX\2.8\tex\latex\algorithms\algorithm.st
-y
+(C:\Users\Vontijn\AppData\Roaming\MiKTeX\2.8\tex\latex\algorithms\algorithm.sty
 Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
 nment
- ("C:\Program Files\MiKTeX 2.8\tex\latex\float\float.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\float\float.sty"
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \c@float@type=\count108
 \float@exts=\toks19
@@ -161,39 +159,39 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@float@every@algorithm=\toks21
 \c@algorithm=\count109
 )
-(D:\Rvis\tableplot\pkg\inst\doc\threeparttable.sty
+(D:\Tijn\CBS\rvis\tableplot\pkg\inst\doc\threeparttable.sty
 Package: threeparttable 2003/06/13  v 3.0
 \@tempboxb=\box30
 )
-(D:\Rvis\tableplot\pkg\inst\doc\Sweave.sty
+(D:\Tijn\CBS\rvis\tableplot\pkg\inst\doc\Sweave.sty
 Package: Sweave 
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\graphics\graphicx.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\graphics\graphicx.sty"
 Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\graphics\keyval.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\graphics\keyval.sty"
 Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks22
 )
-("C:\Program Files\MiKTeX 2.8\tex\latex\graphics\graphics.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\graphics\graphics.sty"
 Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\graphics\trig.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\graphics\trig.sty"
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-("C:\Program Files\MiKTeX 2.8\tex\latex\00miktex\graphics.cfg"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\00miktex\graphics.cfg"
 File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
 Package graphics Info: Driver file: pdftex.def on input line 91.
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\pdftex-def\pdftex.def"
-File: pdftex.def 2010/02/14 v0.04n Graphics/color for pdfTeX
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2011/01/28 v0.05d Graphics/color for pdfTeX
 \Gread@gobject=\count110
 ))
 \Gin@req@height=\dimen114
 \Gin@req@width=\dimen115
 )
-(C:\Users\MTES.TMO\AppData\Roaming\MiKTeX\2.8\tex\latex\fancyvrb\fancyvrb.sty
+(C:\Users\Vontijn\AppData\Roaming\MiKTeX\2.8\tex\latex\fancyvrb\fancyvrb.sty
 Package: fancyvrb 2008/02/07
 
 Style option: `fancyvrb' v2.7a, with DG/SPQR fixes, and firstline=lastline fix 
@@ -205,11 +203,11 @@ Style option: `fancyvrb' v2.7a, with DG/SPQR fixes, and firstline=lastline fix
 \FV@StepNumber=\count113
 \FV@OutFile=\write3
 )
-(C:\Users\MTES.TMO\AppData\Roaming\MiKTeX\2.8\tex\latex\upquote\upquote.sty
+(C:\Users\Vontijn\AppData\Roaming\MiKTeX\2.8\tex\latex\upquote\upquote.sty
 Package: upquote 2003/08/11 v1.1 Covington's upright-quote modification to verb
 atim and verb
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\textcomp.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\textcomp.sty"
 Package: textcomp 2005/09/27 v1.99g Standard LaTeX package
 Package textcomp Info: Sub-encoding information:
 (textcomp)               5 = only ISO-Adobe without \textcurrency
@@ -224,7 +222,7 @@ Package textcomp Info: Sub-encoding information:
 (textcomp)             See the documentation for details.
 Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 71.
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\ts1enc.def"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\ts1enc.def"
 File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
 )
 LaTeX Info: Redefining \oldstylenums on input line 266.
@@ -276,29 +274,29 @@ Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 324.
 Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 325.
 Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 326.
 ))
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\fontenc.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\fontenc.sty"
 Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\t1enc.def"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\t1enc.def"
 File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
 LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
 ))
-("C:\Program Files\MiKTeX 2.8\tex\latex\ae\ae.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\ae\ae.sty"
 Package: ae 2001/02/12 1.3 Almost European Computer Modern
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\fontenc.sty"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\fontenc.sty"
 Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\t1enc.def"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\t1enc.def"
 File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
 LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
 )
 LaTeX Font Info:    Try loading font information for T1+aer on input line 100.
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\ae\t1aer.fd"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\ae\t1aer.fd"
 File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
 ))))
-(D:\Rvis\tableplot\pkg\inst\doc\tabplot-vignette.aux)
+(D:\Tijn\CBS\rvis\tableplot\pkg\inst\doc\tabplot-vignette.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 29.
@@ -314,12 +312,12 @@ LaTeX Font Info:    ... okay on input line 29.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 29.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 29.
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\base\ts1cmr.fd"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 29.
 
-("C:\Program Files\MiKTeX 2.8\tex\context\base\supp-pdf.tex"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\context\base\supp-pdf.tex"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count114
 \scratchdimen=\dimen116
@@ -333,113 +331,29 @@ LaTeX Font Info:    ... okay on input line 29.
 \everyMPtoPDFconversion=\toks24
 )
 LaTeX Font Info:    Try loading font information for T1+aett on input line 32.
- ("C:\Program Files\MiKTeX 2.8\tex\latex\ae\t1aett.fd"
+ ("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\ae\t1aett.fd"
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
 LaTeX Font Info:    Try loading font information for U+msa on input line 32.
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\amsfonts\umsa.fd"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
 LaTeX Font Info:    Try loading font information for U+msb on input line 32.
 
-("C:\Program Files\MiKTeX 2.8\tex\latex\amsfonts\umsb.fd"
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-
-LaTeX Warning: Reference `fig1' on page 1 undefined on input line 50.
-
-
-Overfull \hbox (7.3437pt too wide) in paragraph at lines 72--79
-[] $[] []$ 
- []
-
 <tabplot-vignette-fig1.pdf, id=1, 722.7pt x 505.89pt>
 File: tabplot-vignette-fig1.pdf Graphic file (type pdf)
 
 <use tabplot-vignette-fig1.pdf> [1
 
-{C:/Users/MTES.TMO/AppData/Local/MiKTeX/2.8/pdftex/config/pdftex.map}]
+{C:/Users/Vontijn/AppData/Local/MiKTeX/2.8/pdftex/config/pdftex.map}]
 <tabplot-vignette-fig2.pdf, id=14, 722.7pt x 505.89pt>
 File: tabplot-vignette-fig2.pdf Graphic file (type pdf)
 
-<use tabplot-vignette-fig2.pdf> [2] [3 <D:/Rvis/tableplot/pkg/inst/doc/tabplot-
-vignette-fig1.pdf> <D:/Rvis/tableplot/pkg/inst/doc/tabplot-vignette-fig2.pdf>]
-<tabplot-vignette-fig3.pdf, id=37, 722.7pt x 505.89pt>
-File: tabplot-vignette-fig3.pdf Graphic file (type pdf)
-
-<use tabplot-vignette-fig3.pdf>
-
-LaTeX Warning: Reference `fig3' on page 4 undefined on input line 163.
-
-
-Package natbib Warning: Citation `ten11' on page 4 undefined on input line 174.
-
-
-[4 <D:/Rvis/tableplot/pkg/inst/doc/tabplot-vignette-fig3.pdf>]
-
-LaTeX Warning: Reference `fig1' on page 5 undefined on input line 176.
-
-
-Overfull \hbox (10.56824pt too wide) in paragraph at lines 186--188
-\T1/aett/m/n/10.95 bias_brokenX=0 \T1/aer/m/n/10.95 then the x-axes are al-ways
- bro-ken. By de-fault, \T1/aett/m/n/10.95 bias_brokenX
- []
-
-
-Package natbib Warning: Citation `brewer' on page 5 undefined on input line 191
-.
-
-
-Package natbib Warning: Citation `??' on page 5 undefined on input line 191.
-
-<tabplot-vignette-pals.pdf, id=46, 722.7pt x 216.81pt>
-File: tabplot-vignette-pals.pdf Graphic file (type pdf)
-
-<use tabplot-vignette-pals.pdf>
-<tabplot-vignette-fig4.pdf, id=47, 722.7pt x 505.89pt>
-File: tabplot-vignette-fig4.pdf Graphic file (type pdf)
-
-<use tabplot-vignette-fig4.pdf> [5] [6 <D:/Rvis/tableplot/pkg/inst/doc/tabplot-
-vignette-pals.pdf> <D:/Rvis/tableplot/pkg/inst/doc/tabplot-vignette-fig4.pdf>]
-
-LaTeX Warning: Reference `fig2' on page 7 undefined on input line 279.
-
-[7] [8]
-
-Package natbib Warning: There were undefined citations.
-
-[9] (D:\Rvis\tableplot\pkg\inst\doc\tabplot-vignette.aux)
-
-LaTeX Warning: There were undefined references.
-
- ) 
-Here is how much of TeX's memory you used:
- 4346 strings out of 495219
- 56507 string characters out of 3179054
- 112141 words of memory out of 3000000
- 7434 multiletter control sequences out of 15000+200000
- 55191 words of font info for 110 fonts, out of 3000000 for 9000
- 55 hyphenation exceptions out of 8191
- 35i,11n,24p,581b,324s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
-ogram Files/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Fi
-les/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Program Files/MiK
-TeX 2.8/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.8/
-fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.8/fonts/typ
-e1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.8/fonts/type1/public
-/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.8/fonts/type1/public/amsfonts
-/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmr8.
-pfb><C:/Program Files/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Pr
-ogram Files/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmsltt10.pfb><C:/Program 
-Files/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/Mi
-KTeX 2.8/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.8/
-fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2.8/fonts/ty
-pe1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files/MiKTeX 2.8/fonts/type1/publ
-ic/amsfonts/cm/cmtt12.pfb>
-Output written on tabplot-vignette.pdf (9 pages, 675984 bytes).
-PDF statistics:
- 126 PDF objects out of 1000 (max. 8388607)
- 0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+<use tabplot-vignette-fig2.pdf>
+!pdfTeX error: pdflatex (file D:/Tijn/CBS/rvis/tableplot/pkg/inst/doc/tabplot-v
+ignette-fig3.pdf): PDF inclusion: required page does not exist <0>
+ ==> Fatal error occurred, no output PDF file produced!

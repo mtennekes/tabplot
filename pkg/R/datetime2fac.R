@@ -1,0 +1,60 @@
+## test
+# dat <- data.frame(x = rnorm(10000,mean=10, sd=2), y=factor(round(runif(10000)*6)))
+# dat$df <- ISOdate(2011, 7, 14) + 10000*86400*runif(100)
+# dat$df2 <- ISOdate(2011, 7, 14) + 10000*3600*runif(100)
+# dat$df3 <- ISOdate(2011, 7, 14) + 20*runif(100)
+# dat$df4 <- rep(sample(seq(Sys.Date(), length.out=100, by="1 week")), length.out=10000)
+# dat$df5 <- rep(Sys.Date(), length.out=10000)
+# dat$temp <- datetime2fac(dat$df4)
+
+
+datetime2fac <- function(p) {
+
+	rng <- range(p)
+
+
+	cutSteps <- c(
+		paste(c(50, 20, 10, 5, 4, 2, 1), "year"),
+		"quarter",
+		"month",
+		"week",
+		"day",
+		paste(c(6, 3, 1), "hour"),
+		paste(c(15, 5, 1), "min"),
+		paste(c(10, 5, 1), "sec"))
+	
+	if ("Date" %in% class(p)) {
+		cutSteps <- cutSteps[1:11]
+	}
+	
+	lvls <- rep(100, length(cutSteps))
+	i <- 1
+	for (stp in cutSteps) {
+		lvls[i] <- nlevels(cut(rng, breaks=stp))
+		if (lvls[i] > 15) break;
+		i <- i + 1
+	}
+
+	## get last element for which the minimum is closest to 6.4
+	idealStpIndex <- length(cutSteps) - which.min(rev(abs(6.4 - lvls))) + 1
+	
+	if (idealStpIndex %in% c(12,13)) # in case x hours
+		startDT <- trunc(rng[1], "days") else
+	if (idealStpIndex %in% c(15,16)) # in case x mins
+		startDT <- trunc(rng[1], "hours") else
+	if (idealStpIndex %in% c(18,19)) # in case x secs
+		startDT <- trunc(rng[1], "secs") else startDT <- rng[1]
+	p[length(p)+1] <- startDT
+	
+	p2 <- cut(p, breaks=cutSteps[idealStpIndex])
+	p2 <- p2[1:(length(p2)-1)]
+	if (idealStpIndex <= 9) levels(p2) <- substr(levels(p2), 1, 7) # shown only years and months
+	if (idealStpIndex <= 7) {
+		# shown year intervals
+		levels(p2) <- substr(levels(p2), 1, 4)
+		interval <- (as.numeric(levels(p2)[2]) - as.numeric(levels(p2)[1])) - 1
+		levels(p2) <- paste(levels(p2), "-", as.numeric(levels(p2)) + interval, sep = "")
+	}
+
+	return(p2)
+}

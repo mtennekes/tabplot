@@ -8,17 +8,23 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 	#############################
 	datClasses <- sapply(dat,FUN=function(x)class(x)[1])
 
-	## find numerical variables
-	isNumber <- (datClasses %in% c("numeric","integer"))
-
+	
 	## cast logical columns to factors
-	for (i in which(datClasses == "logical")) {
+	isLogical <- datClasses == "logical"
+	for (i in which(isLogical)) {
 		dat[[i]] <- factor(dat[[i]], levels=c("TRUE", "FALSE"))
 	}
 	
+	## cast date/time columns to factors
+	isDateTime <- (datClasses %in% c("POSIXct", "POSIXlt", "Date"))
+	for (i in which(isDateTime)) {
+		dat[[i]] <- datetime2fac(dat[[i]])
+	}
+	
 	## cast non-factor columns that are non-numeric either to factor
+	isNumber <- (datClasses %in% c("numeric","integer"))
 	isFactor <- (datClasses == "factor")
-	castToFactor <- !isFactor & !isNumber
+	castToFactor <- !isFactor & !isNumber & !isLogical & !isDateTime
 	
 	for (i in colNames[castToFactor]) {
 		dat[[i]] <- as.factor(dat[[i]])

@@ -102,6 +102,13 @@ Setting an appropriate number of row bins (by the argument {\tt nbins}) is impor
 
 The percentages near the vertical axis indicate which subset of the data in terms of units (rows) is depicted. The range from 0\% to 100\% in Figure~\ref{fig:tp2} means that all units of the data are plotted. 
 
+
+We can focus our attention to the 5\% most expensive diamonds by setting the {\tt from} argument to 0 and the {\tt to} argument to 5:
+
+<<label=tp3, include=FALSE>>=
+tableplot(diamonds, colNames=c("carat", "price", "cut", "color", "clarity"), sortCol="price", from=0, to=5)
+@
+
 \begin{figure}[htp]
 \begin{center}
 <<label=fig3, fig=TRUE, height=7,width=10, echo=FALSE>>=
@@ -112,11 +119,6 @@ The percentages near the vertical axis indicate which subset of the data in term
 \label{fig:tp3}
 \end{figure}
 
-We can focus our attention to the 5\% most expensive diamonds by setting the {\tt from} argument to 0 and the {\tt to} argument to 5:
-
-<<label=tp3, include=FALSE>>=
-tableplot(diamonds, colNames=c("carat", "price", "cut", "color", "clarity"), sortCol="price", from=0, to=5)
-@
 
 Observe that in the obtained tableplot in Figure~\ref{fig:tp3}, the number of row bins is still 100, so that the number of units per row bin is now 27 instead of 540. Therefore, much more detail can be observed in this tableplot.
 

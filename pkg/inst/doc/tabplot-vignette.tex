@@ -49,6 +49,8 @@ The tableplot is a visualization method that is used to explore and analyse larg
 
 A tableplot applied to the diamonds dataset of the {\tt ggplot2} package (where some missing values were added) is illustrated in Figure~\ref{fig:tp1}. Each column represents a variable. The whole data set is sorted according to one column (in this case, carat), and then grouped into row bins. Algorithm~\ref{alg} in Appendix~\ref{secalg} describes the creation of a tableplot into detail.
 
+Tableplots are aimed to visualize multivariate datasets with several variabels (up tot a dozen) and a large number of records, say at least one thousand. Tableplots can also be generated for datasets with less records, but they may be less useful. The maximum size of datasets that can be visualized with the {\tt tabplot} package depends on the R's memory, or, when using the {\tt ff} package, on the limitations of that package.
+
 \section{Getting started with the {\tt tableplot} function}
 
 The diamonds dataset is very suitable to demonstrate the {\tt tabplot} package. To illustrate the visualization of missing values, we add several {\tt NA}'s.
@@ -100,13 +102,6 @@ Setting an appropriate number of row bins (by the argument {\tt nbins}) is impor
 
 The percentages near the vertical axis indicate which subset of the data in terms of units (rows) is depicted. The range from 0\% to 100\% in Figure~\ref{fig:tp2} means that all units of the data are plotted. 
 
-\begin{figure}[htp]
-\begin{center}
-\includegraphics{tabplot-vignette-fig3}
-\end{center}
-\caption{Tableplot of the diamonds dataset (3)}
-\label{fig:tp3}
-\end{figure}
 
 We can focus our attention to the 5\% most expensive diamonds by setting the {\tt from} argument to 0 and the {\tt to} argument to 5:
 
@@ -116,6 +111,15 @@ We can focus our attention to the 5\% most expensive diamonds by setting the {\t
 +     "clarity"), sortCol = "price", from = 0, to = 5)
 \end{Sinput}
 \end{Schunk}
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics{tabplot-vignette-fig3}
+\end{center}
+\caption{Tableplot of the diamonds dataset (3)}
+\label{fig:tp3}
+\end{figure}
+
 
 Observe that in the obtained tableplot in Figure~\ref{fig:tp3}, the number of row bins is still 100, so that the number of units per row bin is now 27 instead of 540. Therefore, much more detail can be observed in this tableplot.
 
@@ -255,8 +259,8 @@ The function {\tt tableGUI} starts a Graphical User Interface (GUI).
 Conclusions
 
 
-%\bibliographystyle{chicago}
-%\bibliography{deducorrect}
+\bibliographystyle{chicago}
+\bibliography{tabplot}
 
 \appendix
 \newpage

@@ -1,9 +1,0 @@
-\select@language {english}
-\contentsline {section}{\numberline {1}Introduction}{3}
-\contentsline {section}{\numberline {2}The {\tt tableplot} function}{3}
-\contentsline {subsection}{\numberline {2.1}Scales for continuous variables}{3}
-\contentsline {subsection}{\numberline {2.2}Color palettes}{3}
-\contentsline {section}{\numberline {3}Graphical User Interface {\tt tableGUI}}{3}
-\contentsline {section}{\numberline {4}Final remarks}{3}
-\contentsline {section}{\numberline {A}First appendix on the {\tt tabplot} package}{4}
-\contentsline {section}{\numberline {B}Second appendix}{4}

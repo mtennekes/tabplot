@@ -2,12 +2,13 @@
 \documentclass[11pt, fleqn, a4paper]{article}
 \usepackage[english]{babel}
 \usepackage{amsmath, amssymb}
-\usepackage{natbib}
 \usepackage{algpseudocode}
 \usepackage{algorithm}
+\usepackage{hyperref}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \usepackage{threeparttable}
+\usepackage{enumitem}
 
 % stimulate latex to put multiple floats on a page.
 \setcounter{topnumber}{2}
@@ -21,10 +22,12 @@
 \renewcommand{\dblfloatpagefraction}{.9}
 \renewcommand{\dbltopfraction}{.9}
 \hyphenation{time-stamp}
-
+\hypersetup{colorlinks, urlcolor=blue, linkcolor=blue}
 
 \title{Visualization of large multivariate datasets with the {\tt tabplot} package}
 \author{Martijn Tennekes and Edwin de Jonge}
+\date{\today\\ (A later version may be available on \href{http://cran.r-project.org/package=tabplot}{CRAN})}
+
 \begin{document}
 \setkeys{Gin}{width=1\textwidth}
 
@@ -131,9 +134,9 @@ The vertical axis contains two sets of tick marks. The small tick marks correspo
 \subsection{Continuous variables}
 
 For each bin of a continuous variable, the mean value is calculated (see Algorithm~\ref{alg}).
-When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation (see \cite{ten11}). The argument {\tt scales} can be set to linear mode {\tt "lin"}, logarithmic mode {\tt "log"}, or the default value {\tt "auto"}, which automatically determines which of the former two modes is used.
+When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation. The argument {\tt scales} can be set to linear mode {\tt "lin"}, logarithmic mode {\tt "log"}, or the default value {\tt "auto"}, which automatically determines which of the former two modes is used.
 
-Observe that the x-axes of the variables depth and table in Figure~\ref{fig1} are broken. The x-axis of a variable $i$ is broken if
+Observe that the x-axes of the variables depth and table in Figure~\ref{fig:tp1} are broken. The x-axis of a variable $i$ is broken if
 either
 \begin{align*}
 & 0 < \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
@@ -148,7 +151,7 @@ where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 
 
 
 \subsection{Categorical variables}
-The color palettes of categorical variables can be customized with the argument {\tt pals}. Several qualitative palettes from literature (\cite{brewer}, \cite{??}) are implemented. They are stored in the list {\tt tabplotPalettes} and can be shown by
+The color palettes of categorical variables can be customized with the argument {\tt pals}. Several qualitative palettes are implemented. They are stored in the list {\tt tabplotPalettes} and can be shown by
 
 <<label=pls, include=FALSE>>=
 tableplot_showPalettes()
@@ -199,7 +202,7 @@ summary(tab)
 plot(tab)
 @
 
-The function {\tt changeTabplot} is used to make minor changes to a {\tt tabplot} object. Suppose we want the columns in the order of \ref{fig2}, and we want to change all color palettes to default starting with the first color.
+The function {\tt changeTabplot} is used to make minor changes to a {\tt tabplot} object. Suppose we want the columns in the order of \ref{fig:tp2}, and we want to change all color palettes to default starting with the first color.
 
 <<>>=
 tab2 <- changeTabplot(tab, colNames=c("carat", "price", "cut", "color", "clarity"), pals=list(1))
@@ -213,16 +216,42 @@ The function {\tt tableGUI} starts a Graphical User Interface (GUI).
 <<>>=
 tableGUI()
 @
+A pratical work flow by using the GUI is:
+\begin{enumerate}
+\item Select a loaded data.frame
+\item Transfer variable from left to right
+\item Determine the order in which they are shown by the Up and Down buttons
+\item Determine on which variable(s) the data is sorted by the Sort button
+\end{enumerate}
+Optional:
+\begin{enumerate}[resume]
+\item Per numerical variable, determine the scale by the Scale button
+\item Per categorical variable, determine the color palette by the Palette button
+\item Change the number of row bins 
+\item Zoom to a subset of the data, by checking the Zoom in box, and changing the from and to parameters
+\item Each numerical variable can be cast to a categorical variable by the As Categorical button
+\end{enumerate}
+Ready?
+\begin{enumerate}[resume]
+\item Click the Run button!
+\end{enumerate}
+
+The command {\tt tableGUI()} starts an empty GUI. It is also possible to start the GUI with predefined settings. This can be done in two ways: by giving the same arguments as in {\tt tableplot}, or by giving a {\tt tabplot} object.
 
 
+\section{Resources}
+\begin{itemize}
+\item Summary of the package: {\tt help(package=tabplot)}
+\item The main help page: {\tt ?tabplot}
+\item Project site: \url{http://code.google.com/p/tableplot/}
+\item Publications:
+\begin{itemize}
+\item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2011) Visual profiling of large statistical datasets. Proceedings of the 2011 New Techniques and Technologies for Statistics conference, Brussels, Belgium.
+\href{http://www.von-tijn.nl/tijn/research/publications/Tableplots.pdf}{paper}
+\href{http://www.von-tijn.nl/tijn/research/presentations/NTTS_tableplots.pdf}{presentation}
+\end{itemize}
+\end{itemize}
 
-
-\section{Final remarks}
-Conclusions
-
-
-\bibliographystyle{chicago}
-\bibliography{tabplot}
 
 \appendix
 \newpage
@@ -269,8 +298,6 @@ A tabplot is basically created by Algorithm~\ref{alg}.
 \end{algorithmic}
 \end{minipage}
 \end{algorithm}
-
-\section{Second appendix}
 
 
 

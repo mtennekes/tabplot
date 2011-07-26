@@ -1,6 +1,6 @@
-#' Visualization of large statistical datasets.
+#' Visualization of large multivariate datasets.
 #'
-#' A tableplot is a visualisation of a (large) statistical dataset with a dozen of variables, both both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package. Use \code{\link{tableGUI}} to customize this function with a GUI.
+#' A tableplot is a visualisation of a (large) multivariate dataset. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package. Use \code{\link{tableGUI}} to customize this function with a GUI.
 #'
 #' @aliases tableplot
 #' @param dat a data.frame, data.table, or an ffdf object (required)
@@ -20,10 +20,10 @@
 #' @param to percentage to which the data is shown
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
-#' @param plot boolean, tableplot is plot (TRUE) or it a tabplot object is returned
+#' @param plot boolean, to plot or not to plot a tableplot
 #' @param ... arguments passed to \code{\link{plot.tabplot}}
 #' @return if \code{plot=FALSE} then a tabplot object is returned
-#' @export
+#' @export tabplot-object (silent export)
 #' @keywords visualization
 #' @example examples/tableplot.R
 

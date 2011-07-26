@@ -1,13 +1,12 @@
-## test
-# dat <- data.frame(x = rnorm(10000,mean=10, sd=2), y=factor(round(runif(10000)*6)))
-# dat$df <- ISOdate(2011, 7, 14) + 10000*86400*runif(100)
-# dat$df2 <- ISOdate(2011, 7, 14) + 10000*3600*runif(100)
-# dat$df3 <- ISOdate(2011, 7, 14) + 20*runif(100)
-# dat$df4 <- rep(sample(seq(Sys.Date(), length.out=100, by="1 week")), length.out=10000)
-# dat$df5 <- rep(Sys.Date(), length.out=10000)
-# dat$temp <- datetime2fac(dat$df4)
-
-
+#' Function that creates a factor vector out of a date-time vector.
+#'
+#' Creates a factor vector out of a date-time vector that an inherits from class "POSIXt" or "Date".
+#'
+#' @aliases datetime2fac
+#' @param p date-time vector
+#' @return A factor vector
+#' @export
+#' @note \code{ff} vectors are not implemented yet
 datetime2fac <- function(p) {
 
 	rng <- range(p)

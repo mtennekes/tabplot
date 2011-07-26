@@ -1,9 +1,9 @@
 #' A graphical user interface for customizing a tableplot visualization.
 #'
-#' A GUI by which the user can specify tableplots. First, the user selects a data.frame (of ffdf object). Second, the user selects columns from this data.frame that are visualized. Thirds, the user customizes the tableplot by changing the number of row bins, determine which column should be sorted. Further, the user is able to create a factor vector out of a numerical vector (by means of the function \code{\link{num2fac}}).
+#' A GUI by which tableplots can be created. General work flow: 1) a loaded dataset is selected, 2) variables of this dataset are selected, 3) sorted variable(s) are chosen, the number of row bins is set, etc. It is also possible to cast numerical vector to a factor vector (by means of the function \code{\link{num2fac}}). The GUI is started empty by calling it without any arguments.
 #'
 #' @aliases tableGUI
-#' @param dat see \code{\link{tableplot}}
+#' @param dat either a \code{tabplot} object or a dataset (see \code{\link{tableplot}})
 #' @param colNames see \code{\link{tableplot}}
 #' @param sortCol see \code{\link{tableplot}}
 #' @param decreasing see \code{\link{tableplot}}

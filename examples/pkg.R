@@ -1,5 +1,11 @@
-irisNA <- iris
-# simulate missing data
-is.na(irisNA$Sepal.Width) <- sample(1:nrow(iris), 30)
-is.na(irisNA$Species) <- sample(1:nrow(iris), 15)
-tableplot(irisNA)
+# load diamonds dataset from ggplot2
+require(ggplot2)
+data(diamonds)
+
+# create tableplot
+tableplot(diamonds)
+
+# start GUI
+# Not run:
+tableGUI()
+# End(Not run)

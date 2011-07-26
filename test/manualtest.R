@@ -81,3 +81,15 @@ tableGUI(diamonds, pals=list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4))
 tableplot(diamonds, pals=list("hcl12(4)", gray(seq(0,1,length.out=10)), rainbow(8), 4))
 
 tableGUI(diamonds)
+
+###########################################
+## test datatime2fac
+###########################################
+dat <- data.frame(x = rnorm(10000,mean=10, sd=2), y=factor(round(runif(10000)*6)))
+dat$df <- ISOdate(2011, 7, 14) + 10000*86400*runif(100)
+dat$df2 <- ISOdate(2011, 7, 14) + 10000*3600*runif(100)
+dat$df3 <- ISOdate(2011, 7, 14) + 20*runif(100)
+dat$df4 <- rep(sample(seq(Sys.Date(), length.out=100, by="1 week")), length.out=10000)
+dat$df5 <- rep(Sys.Date(), length.out=10000)
+dat$temp <- datetime2fac(dat$df4)
+

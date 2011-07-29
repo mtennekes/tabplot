@@ -7,9 +7,8 @@
 #' @keywords color palettes
 tableplot_showPalettes <- function() {
 
-	## for package building, uncomment these rules
+	tabplotPalettes <- NULL; rm(tabplotPalettes); #trick R CMD check
 	data("tabplotPalettes")
-	tabplotPalettes <- get("tabplotPalettes", pos=globalenv())
 	
 	k <- length(tabplotPalettes)
 	ncols <- max(sapply(tabplotPalettes,FUN=length))

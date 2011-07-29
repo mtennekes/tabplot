@@ -1,8 +1,6 @@
 tableGUI_pal_layout <- function(e) {
 	with(e, {
-		#### load color palettes
-		tabplotPalettes <- get("tabplotPalettes", .GlobalEnv)
-		
+
 		wdw_pal <- gwindow("Color palette", width=150, height=100, parent=wdw, visible=FALSE)
 		#wdw_pal <- gwindow("Color palette", width=200, height=100)
 		gpan_pal <- gpanedgroup(cont=wdw_pal)

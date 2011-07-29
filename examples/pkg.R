@@ -6,6 +6,7 @@ data(diamonds)
 tableplot(diamonds)
 
 # start GUI
+
 # Not run:
 tableGUI()
 # End(Not run)

@@ -16,18 +16,5 @@ Description: A tableplot is a visualisation of a (large) statistical
 Version: 0.10
 URL: http://code.google.com/p/tableplot/
 Date: 2011-05-30
-Depends: grid, RColorBrewer, data.table
+Depends: data.table, grid, RColorBrewer
 Suggests: ff (>= 2.2-0), gWidgets, gWidgetsRGtk2, classInt, ggplot2
-Collate: 'brokenX.R' 'cellplot.R' 'changeTabplot.R' 'columnsPlot.R'
-    'datetime2fac.R' 'generalFunctions.R' 'getBinSizes.R'
-    'getFreqTable.R' 'getFreqTable_DT.R' 'isTabplotUsable.R'
-    'num2fac.R' 'pkg.R' 'plot_tabplot.R' 'plotCatCol.R' 'plotColumns.R'
-    'plotNumCol.R' 'preprocess.data.table.R' 'preprocess.ffdf.R'
-    'preprocess.R' 'summary_tabplot.R' 'tableGUI.R'
-    'tableGUI_functions.R' 'tableGUI_main_handlers.R'
-    'tableGUI_main_layout.R' 'tableGUI_n2f_handlers.R'
-    'tableGUI_n2f_layout.R' 'tableGUI_pal_functions.R'
-    'tableGUI_pal_handlers.R' 'tableGUI_pal_layout.R' 'tableplot.R'
-    'tableplot_checkDecreasing.R' 'tableplot_checkPals.R'
-    'tableplot_checkScales.R' 'tableplot_checktCols.R'
-    'tableplot_showPalettes.R' 'tableViewport.R' 'tabplotPalettes.R'

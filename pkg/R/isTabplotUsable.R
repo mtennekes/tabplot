@@ -12,13 +12,16 @@ isTabplotUsable <- function(tab, colNames, sortCol, decreasing, scales, nBins, f
 
 	
 	## check if the scales correspond
-	tabColScales_init <- sapply(tab$columns, function(col)ifelse(is.null(x<-col$scale_init), NA, x))
-	tabColScales_final <- sapply(tab$columns, function(col)ifelse(is.null(x<-col$scale_final), NA, x))
+	if (any(tab$isNumber)) {
+		tabColScales_init <- sapply(tab$columns, function(col)ifelse(is.null(x<-col$scale_init), NA, x))
+		tabColScales_final <- sapply(tab$columns, function(col)ifelse(is.null(x<-col$scale_final), NA, x))
 
-	colScales_init <- na.omit(tabColScales_init[colID])
-	colScales_final <- na.omit(tabColScales_final[colID])
+		colScales_init <- na.omit(tabColScales_init[colID])
+		colScales_final <- na.omit(tabColScales_final[colID])
+
+		if (!all(scales==colScales_init | scales==colScales_final)) return(FALSE)
+	}
 	
-	if (!all(scales==colScales_init | scales==colScales_final)) return(FALSE)
 	
 	sortColNames <- colNames[sortCol]
 

@@ -1,6 +1,4 @@
-#' Summary of a tabplot object.
-#'
-#' Summary of a tabplot object that is created with \code{\link{tableplot}(..., plot=FALSE)}.
+#' Summary of a \link{tabplot-object}.
 #'
 #' @aliases summary.tabplot
 #' @param object tabplot object
@@ -20,6 +18,7 @@ function(object, digits = max(3, getOption("digits") -
     }
 	
 	general <- list(
+					dataset=object$dataset,
 					variables=object$n,
 					objects=object$rows$m,
 					bins=object$nBins,

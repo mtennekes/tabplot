@@ -27,9 +27,20 @@ getClasses <- function(vars, DF) {
 			dfTypes[i] <- ifelse(is.null(ramclass(tmp)), "numeric", ramclass(tmp)[1])
 		}
 	} else if (classDF=="data.table") {
-		dfTypes <- sapply(get(DF,envir=.GlobalEnv)[, vars, with=FALSE], FUN=function(x) class(x)[1])
+		dfTypes <- sapply(get(DF,envir=.GlobalEnv)[, vars, with=FALSE], FUN=classSimplified)
 	} else {
-		dfTypes <- sapply(get(DF,envir=.GlobalEnv)[vars], FUN=function(x) class(x)[1])
+		dfTypes <- sapply(get(DF,envir=.GlobalEnv)[vars], FUN=classSimplified)
 	}
 	return(dfTypes)
+}
+
+classSimplified <- function(x) {
+	knownClasses <- c("numeric", "integer", "logical", "factor", "POSIXt", "Date")
+	result <- inherits(x, knownClasses, which=TRUE)
+	index <- which(result!=0)[1]
+	if (is.na(index)) {
+		return(class(x)[1])
+	} else {
+		return(knownClasses[index])
+	}
 }

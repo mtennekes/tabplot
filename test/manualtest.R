@@ -34,6 +34,7 @@ setwd(wd1)
 setwd("R/")
 setwd(scriptmap)
 sapply(list.files(), source)
+setwd(wd1)
 
 ######################################
 ## load test data
@@ -68,7 +69,8 @@ tab <- tableplot(diamonds, plot=FALSE)
 plot(tab)
 
 pals <- list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4)
-tab2 <- changeTabplot(tab, colNames=rev(names(diamonds)), flip=TRUE, pals=pals)
+tab2 <- changeTabplot(tab, colNames=rev(names(diamonds)), flip=TRUE, pals=list(rainbow(6), rainbow(3)))
+
 
 plot(tab2)
 
@@ -76,7 +78,9 @@ plot(tab2)
 ## test GUI
 tableGUI()
 
-tableGUI(diamonds, colNames=c("table","price","x","y","z","expensive"), sortCol=2, decreasing=FALSE, scales="auto", nBins=100, from=0, to=100)
+tableGUI(tab2)
+
+tableGUI(diamonds, colNames=c("table","price","x","y","z"), sortCol=2, decreasing=FALSE, scales="auto", nBins=100, from=0, to=100)
 tableGUI(diamonds, pals=list(1, gray(seq(0,1,length.out=10)), rainbow(8), 4))
 tableplot(diamonds, pals=list("hcl12(4)", gray(seq(0,1,length.out=10)), rainbow(8), 4))
 
@@ -92,4 +96,6 @@ dat$df3 <- ISOdate(2011, 7, 14) + 20*runif(100)
 dat$df4 <- rep(sample(seq(Sys.Date(), length.out=100, by="1 week")), length.out=10000)
 dat$df5 <- rep(Sys.Date(), length.out=10000)
 dat$temp <- datetime2fac(dat$df4)
+
+str(datetime2fac(dat$df))
 

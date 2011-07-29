@@ -1,5 +1,5 @@
 preprocess.ffdf <-
-function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
+function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
    if (!require(ff)){
 		stop("This function needs package ff")
    }   
@@ -89,6 +89,7 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		## bypass Rcmd warning
 		aggIndex <- NULL; rm(aggIndex)
 
+		.SD <- NULL; rm(.SD); #trick R CMD check
 		for (i in chunk(dat)){
 			cdat <- data.table(dat[i,])[, c(numcols, "aggIndex"), with=FALSE]
 			setkey(cdat, aggIndex)
@@ -167,6 +168,7 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 
 	
 	tab <- list()
+	tab$dataset <- datName
 	tab$n <- n
 	tab$nBins <- nBins
 	tab$binSizes <- binSizes
@@ -191,14 +193,16 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		if (isNumber[i]) {
 			col$mean <- datMean[[colNames[i]]]
 			col$compl <- datCompl[[colNames[i]]]
-			col$lower <- datLower[[colNames[i]]]
-			col$upper <- datUpper[[colNames[i]]]
+			# TODO
+			#col$lower <- datLower[[colNames[i]]]
+			#col$upper <- datUpper[[colNames[i]]]
 			col$scale_init <- scales[scalesNr]
 			scalesNr <- scalesNr + 1
 		} else {
 			col$freq <- datFreq[[colNames[i]]]$freqTable
 			col$categories <- datFreq[[colNames[i]]]$categories
-			col$palet <- pals[[paletNr]]
+			col$paletname <- pals$name[paletNr]
+			col$palet <- pals$palette[[paletNr]]
 			paletNr <- ifelse(paletNr==length(pals), 1, paletNr + 1)
 		}
  		tab$columns[[i]] <- col

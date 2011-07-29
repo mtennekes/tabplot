@@ -2,9 +2,8 @@ tableplot_checkPals <- function(pals) {
 
 	if (class(pals)!="list") stop("<pals> is not a list")
 
-	## for package building, uncomment these rules
+	tabplotPalettes <- NULL; rm(tabplotPalettes); #trick R CMD check
 	data("tabplotPalettes")
-	tabplotPalettes <- get("tabplotPalettes", pos=globalenv())
 	
 	palNames <- names(tabplotPalettes)
 	palLengths <- nchar(palNames)

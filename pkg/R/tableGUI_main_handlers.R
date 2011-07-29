@@ -11,7 +11,6 @@ tableGUI_main_handlers <- function(e) {
 				if (is.null(svalue(h$obj))) {
 					svalue(h$obj) <- tableGUI_getCurrentDFname(e)
 				}
-				
 				tableGUI_refreshDF(newDF=svalue(h$obj), wdw, e)
 				
 				tbl1[] <- tableGUI_getTbl1(e=e)
@@ -39,6 +38,8 @@ tableGUI_main_handlers <- function(e) {
 		addHandlerClicked(btnReload, function(h,...) {
 			#disactivate cmb handler (blockHandler does not work)
 			e$blockCmbHandler <- TRUE
+			tableGUI_init_data(tableGUI_getCurrentDFname(e), e=e)
+			#tableGUI_refreshDF(newDF=tableGUI_getCurrentDFname(e), wdw, e)
 			cmb[] <- e$datlist
 			e$blockCmbHandler <- FALSE
 		

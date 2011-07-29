@@ -23,6 +23,12 @@
 \renewcommand{\dbltopfraction}{.9}
 \hyphenation{time-stamp}
 \hypersetup{colorlinks, urlcolor=blue, linkcolor=blue}
+\newenvironment{myindentpar}[1]%
+{\begin{list}{}%
+         {\setlength{\leftmargin}{#1}}%
+         \item[]%
+}
+{\end{list}}
 
 \title{Visualization of large multivariate datasets with the {\tt tabplot} package}
 \author{Martijn Tennekes and Edwin de Jonge}
@@ -186,9 +192,9 @@ Suppose we want a to use the default palette for the variable {\tt cut}, but sta
 \label{fig:tp4}
 \end{figure}
 
-\subsection{The {\tt tabplot} object}
+\subsection{The tabplot object}
 
-The function {\tt tableplot} returns a {\tt tabplot} object, that can be used to make minor changes to the tableplot, for instance the order of columns or the color palettes. Of course, these changes can also be made by generating a new tableplot, such as in the examples above. However, if it takes considerable time to generate a tableplot, then it is practical to make minor changes immediately.
+The function {\tt tableplot} returns a tabplot-object, that can be used to make minor changes to the tableplot, for instance the order of columns or the color palettes. Of course, these changes can also be made by generating a new tableplot, such as in the examples above. However, if it takes considerable time to generate a tableplot, then it is practical to make minor changes immediately.
 
 The output of the {\tt tableplot} function can be assigned to a variable. The graphical output can be omitted by setting the argument {\tt plot} to FALSE.
 
@@ -198,31 +204,34 @@ The output of the {\tt tableplot} function can be assigned to a variable. The gr
 \end{Sinput}
 \end{Schunk}
 
-The {\tt tabplot} object is a list that contains all information to depict a tableplot. The generic functions {\tt summary} and {\tt plot} can be applied to the {\tt tabplot} object.
+The tabplot-object is a list that contains all information to depict a tableplot. The generic functions {\tt summary} and {\tt plot} can be applied to the {\tt tabplot} object.
 
 \begin{Schunk}
 \begin{Sinput}
 > summary(tab)
 \end{Sinput}
 \begin{Soutput}
-      general            variable1               variable2          
- variables:10      name       :carat        name      :cut          
- objects  :53940   type       :numeric      type      :categorical  
- bins     :100     sort       :decreasing   sort      :NA           
- from     :0%      scale_init :auto         categories:6            
- to       :100%    scale_final:lin                                  
+      general               variable1               variable2          
+ dataset  :diamonds   name       :carat        name      :cut          
+ variables:10         type       :numeric      type      :categorical  
+ objects  :53940      sort       :decreasing   sort      :NA           
+ bins     :100        scale_init :auto         categories:6            
+ from     :0%         scale_final:lin                                  
+ to       :100%                                                        
       variable3                variable4                 variable5      
  name      :color         name      :clarity       name       :depth    
  type      :categorical   type      :categorical   type       :numeric  
  sort      :NA            sort      :NA            sort       :NA       
  categories:7             categories:8             scale_init :auto     
                                                    scale_final:lin      
+                                                                        
        variable6             variable7             variable8      
  name       :table     name       :price     name       :x        
  type       :numeric   type       :numeric   type       :numeric  
  sort       :NA        sort       :NA        sort       :NA       
  scale_init :auto      scale_init :auto      scale_init :auto     
  scale_final:lin       scale_final:lin       scale_final:lin      
+                                                                  
        variable9             variable10     
  name       :y         name       :z        
  type       :numeric   type       :numeric  
@@ -235,7 +244,7 @@ The {\tt tabplot} object is a list that contains all information to depict a tab
 \end{Sinput}
 \end{Schunk}
 
-The function {\tt changeTabplot} is used to make minor changes to a {\tt tabplot} object. Suppose we want the columns in the order of \ref{fig:tp2}, and we want to change all color palettes to default starting with the first color.
+The function {\tt changeTabplot} is used to make minor changes to a tabplot-object. Suppose we want the columns in the order of \ref{fig:tp2}, and we want to change all color palettes to default starting with the first color.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -254,7 +263,9 @@ The function {\tt tableGUI} starts a Graphical User Interface (GUI).
 > tableGUI()
 \end{Sinput}
 \end{Schunk}
-A pratical work flow by using the GUI is:
+A pratical work flow for the GUI is the following:
+\begin{myindentpar}{1cm}
+{\footnotesize
 \begin{enumerate}
 \item Select a loaded data.frame
 \item Transfer variable from left to right
@@ -273,8 +284,10 @@ Ready?
 \begin{enumerate}[resume]
 \item Click the Run button!
 \end{enumerate}
+}
+\end{myindentpar}
 
-
+The command {\tt tableGUI()} starts an empty GUI. It is also possible to start the GUI with predefined settings. This can be done in two ways: by giving the same arguments as in {\tt tableplot}, or by giving a tabplot-object.
 
 
 \section{Resources}
@@ -284,9 +297,10 @@ Ready?
 \item Project site: \url{http://code.google.com/p/tableplot/}
 \item Publications:
 \begin{itemize}
-\item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2011) Visual profiling of large statistical datasets. Proceedings of the 2011 New Techniques and Technologies for Statistics conference, Brussels, Belgium.
-\href{http://www.von-tijn.nl/tijn/research/publications/Tableplots.pdf}{paper}
+\item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2011) Visual profiling of large statistical datasets. Proceedings of the 2011 New Techniques and Technologies for Statistics conference, Brussels, Belgium. (
+\href{http://www.von-tijn.nl/tijn/research/publications/Tableplots.pdf}{paper}, 
 \href{http://www.von-tijn.nl/tijn/research/presentations/NTTS_tableplots.pdf}{presentation}
+)
 \end{itemize}
 \end{itemize}
 
@@ -300,9 +314,9 @@ A tabplot is basically created by Algorithm~\ref{alg}.
 \caption{Create tableplot}\label{alg}
 \begin{minipage}{0.8\textwidth}
 \begin{algorithmic}[1]
-\Require Tabular dataset $t$, column $i_s$ of which the distribution is of interest.\footnote{The dataset $t$ can also be sorted according to multiple columns.}
+\Require Tabular dataset $t$, column $i_s$ of which the distribution is of interest\footnote{The dataset $t$ can also be sorted according to multiple columns.}, number of row bins $n$.
 \State $t'\leftarrow$ sort $t$ according to the values of column $i_s$.
-\State Divide $t'$ into $n$ row bins according to the order of $t'$.
+\State Divide $t'$ into $n$ equally sized row bins according to the order of $t'$.
 \For {each column $i$}
 \If{$i$ is numeric}
 \State $m_{ib}\leftarrow$ mean value per bin $b$
@@ -333,6 +347,7 @@ A tabplot is basically created by Algorithm~\ref{alg}.
 	\end{aligned}$
 \EndIf
 \EndFor
+\Ensure Tableplot
 \end{algorithmic}
 \end{minipage}
 \end{algorithm}

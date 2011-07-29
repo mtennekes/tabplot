@@ -1,5 +1,5 @@
 preprocess.data.table <-
-function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
+function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 
 	n <- length(colNames)
 
@@ -82,6 +82,7 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		aggIndex <- NULL; rm(aggIndex)
 
 		## calculate means
+		.SD <- NULL; rm(.SD); #trick R CMD check
 		datMean <- dat[, c(colNames[isNumber], "aggIndex"), with=FALSE][,lapply(.SD, function(x)mean(x, na.rm=TRUE)),by=aggIndex]
 		
 		datMean <- subset(datMean, !is.na(datMean$aggIndex), select=names(datMean)[-1])
@@ -128,9 +129,9 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 	## Create list object that contains all data needed to plot
 	##
 	#############################
-
 	
 	tab <- list()
+	tab$dataset <- datName
 	tab$n <- n
 	tab$nBins <- nBins
 	tab$binSizes <- binSizes
@@ -162,7 +163,8 @@ function(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 		} else {
 			col$freq <- datFreq[[colNames[i]]]$freqTable
 			col$categories <- datFreq[[colNames[i]]]$categories
-			col$palet <- pals[[paletNr]]
+			col$paletname <- pals$name[paletNr]
+			col$palet <- pals$palette[[paletNr]]
 			paletNr <- ifelse(paletNr==length(pals), 1, paletNr + 1)
 		}
  		tab$columns[[i]] <- col

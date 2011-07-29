@@ -1,6 +1,4 @@
-#' Function that plots a tabplot object.
-#'
-#' Plots a tabplot object that is created with \code{\link{tableplot}(..., plot=FALSE)}.
+#' Function that plots a \link{tabplot-object}.
 #'
 #' @aliases plot.tabplot
 #' @param x tabplot object

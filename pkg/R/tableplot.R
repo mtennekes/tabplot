@@ -3,7 +3,7 @@
 #' A tableplot is a visualisation of a (large) multivariate dataset. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package. Use \code{\link{tableGUI}} to customize this function with a GUI.
 #'
 #' @aliases tableplot
-#' @param dat a data.frame, data.table, or an ffdf object (required)
+#' @param dat a \code{\link{data.frame}}, \code{\link{data.table}}, or an \code{\link[ff:ffdf]{ffdf}} object (required)
 #' @param colNames character vector containing the names of the columns of \code{dat} that are visualized in the tablelplot. If omitted, all columns are visualized. All selected columns should be of class: numeric, integer, factor, or logical.
 #' @param sortCol columns that are sorted. \code{sortCol} is either a vector of column names of a vector of indices of \code{colNames}
 #' @param decreasing determines whether the columns are sorted decreasingly (TRUE) of increasingly (FALSE). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.
@@ -22,8 +22,8 @@
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
 #' @param plot boolean, to plot or not to plot a tableplot
 #' @param ... arguments passed to \code{\link{plot.tabplot}}
-#' @return if \code{plot=FALSE} then a tabplot object is returned
-#' @export tabplot-object (silent export)
+#' @return \link{tabplot-object} (silent output)
+#' @export
 #' @keywords visualization
 #' @example examples/tableplot.R
 
@@ -34,6 +34,7 @@
 
 tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, bias_brokenX=0.8, IQR_bias=5, plot=TRUE, ...) {
 
+	datName <- deparse(substitute(dat))
 	if (class(dat)[1]=="data.frame") dat <- data.table(dat)
 	
 	#####################################
@@ -67,21 +68,14 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	scales <- tableplot_checkScales(scales)
 
 	## Check palet indices
-	pals <- tableplot_checkPals(pals)$palette
+	pals <- tableplot_checkPals(pals)
 	
 	## Check nBins
-	if (class(nBins)[1]!="numeric") stop("<nBins> is not numeric")
-	if (nBins > nrow(dat)) { 
-		warning("Setting nBins (",nBins,") to number of rows (", nrow(dat), ")")
-		nBins <- nrow(dat)
-	}
+	nBins <- tableplot_checkBins(nBins, nrow(dat))
 	
 	## Check from and to
-	if (class(from)[1]!="numeric") stop("<from> is not numeric")
-	if (class(to)[1]!="numeric") stop("<to> is not numeric")
-	if (from < 0 && from > 100) stop("<from> is not a number in [0, 100]")
-	if (to < 0 && to > 100) stop("<to> is not a number in [0, 100]")
-	if (from >= to) stop("<from> is not smaller than <to>")
+	tableplot_checkFromTo(from, to)
+	
 
 	## Check filter variables
 	# if (!is.null(filter)) filter <- tableplot_checkCols(filter, colNames)
@@ -92,8 +86,7 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	#### Preprocess
 	##########################
 
-	tab <- preprocess(dat, colNames, sortCol,  decreasing, scales, pals, nBins, from,to)
-
+	tab <- preprocess(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from,to)
 	
 	isNumber <- tab$isNumber
 	

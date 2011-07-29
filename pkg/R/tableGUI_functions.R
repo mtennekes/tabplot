@@ -23,7 +23,7 @@ tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames) {
 	dfLevels[dfClasses=="logical"] <- 2
 	
 	dfTypes <- mapply(dfClasses, dfLevels, FUN=function(x,y) {
-			ifelse(x%in%c("factor", "logical"), paste("categorical (", y, ")", sep=""),
+			ifelse(x=="factor", paste("categorical (", y, ")", sep=""),
 				ifelse(x=="logical", "categorical (2)",
 					ifelse(x %in% c("numeric", "integer"), "numeric", "unknown")))
 		})
@@ -42,8 +42,8 @@ tableGUI_createVarTbl <- function(DF, vars, sorts, scales, palNames) {
 		
 		dfSort[indices] <- sorts
 		
-		dfScales <- rep("", length(dfNames))
-		dfScales[indices] <- scales
+		#dfScales <- rep("", length(dfNames))
+		dfScale[indices] <- scales
 		dfPalette[indices] <- palNames
 		dfSelected[indices] <- TRUE
 	}
@@ -159,9 +159,12 @@ tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, paren
 	## add temporary column to data.frame
 	currentDF <- tableGUI_getCurrentDFname(e)
 	tmpdat <- get(currentDF, envir=.GlobalEnv)
-	if (class(tmpdat[,name])[1] %in% c("numeric", "integer")) {
+	if (classSimplified(tmpdat[,name])[1] %in% c("numeric", "integer")) {
 		tmpdat$tmptmp <- num2fac(tmpdat[, name], num_scale=num_scale, method=method, n=n, brks=brks)
 		CLmethod <- paste("num2fac(", currentDF, "$", name, ", num_scale=\"", num_scale, "\", method=\"", method, "\", n=", n, ", brks=", brks, ")\n", sep="")
+	} else if (classSimplified(tmpdat[,name])[1] %in% c("POSIXt", "Date")) {
+		tmpdat$tmptmp <- datetime2fac(tmpdat[, name])
+		CLmethod <- paste("datetime2fac(", currentDF, "$", name, ")\n", sep="")
 	} else {
 		tmpdat$tmptmp <- as.factor(tmpdat[, name])
 		lvls <- length(levels(tmpdat$tmptmp))
@@ -226,8 +229,8 @@ tableGUI_selectVars <- function(vars, parent, e) {
 	## count number of categorical variables
 	numOfCat <- sum(varTbl$Selected & substr(varTbl$Type, 1, 3)=="cat")
 	
-  ## count number of selected variables
-  numSelected <- sum(varTbl$Selected)
+	## count number of selected variables
+	numSelected <- sum(varTbl$Selected)
 
 
 	
@@ -320,6 +323,8 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 	# prepare scales
 	isCat <- varTable$Palette!=""
 	scales <- varTable$Scale[!isCat]
+	
+	if (length(scales)==0) scales <- "auto"
 	
 	# prepare sortCol and decreasing
 	sorts <- varTable$Sort

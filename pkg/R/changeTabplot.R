@@ -1,9 +1,9 @@
-#' Changes a tabplot object
+#' Changes a \link{tabplot-object}
 #'
-#' Function to change the order of columns, to flip, and to change the palettes of a tabplot object.
+#' Function to change the order of columns, to flip, and to change the palettes of a \link{tabplot-object}.
 #'
 #' @aliases changeTabplot
-#' @param tab tabplot object
+#' @param tab \link{tabplot-object}
 #' @param colNames vector of names of the desired columns
 #' @param flip logical, if TRUE then the plot is flipped vertically, i.e.\ the row bins are reversed
 #' @param pals list of color palettes. Each list item is on of the following:
@@ -12,8 +12,10 @@
 #' \item a palette name in \code{\link{tabplotPalettes}}, optionally with the starting color between brackets.
 #' \item a palette vector
 #' }
-#' @return tabplot object
+#' @return \link{tabplot-object}
 #' @export
+#' @example examples/changeTabplot.R
+
 changeTabplot <- function(tab, colNames=sapply(tab$columns, function(col)col$name), flip=FALSE, pals=list()) {
 
 	## change order of columns
@@ -24,7 +26,8 @@ changeTabplot <- function(tab, colNames=sapply(tab$columns, function(col)col$nam
 	## check if each column in colNames exist in tab
 	if (any(is.na(colID))) stop(paste("Column(s) ", paste(colNames[is.na(colID)], collapse=", "), " does(do) not exist."  , sep=""))
 
-	tab2 <- list(n=length(colNames),
+	tab2 <- list(dataset=tab$dataset,
+			n=length(colNames),
 			nBins=tab$nBins,
 			binSizes=tab$binSizes,
 			isNumber=tab$isNumber[colID],
@@ -65,14 +68,15 @@ changeTabplot <- function(tab, colNames=sapply(tab$columns, function(col)col$nam
 	
 	## change palettes
 	if (length(pals)!=0) {
-		pals <- tableplot_checkPals(pals)$palette
+		pals <- tableplot_checkPals(pals)
 
 		whichCategorical <- which(sapply(tab2$columns, FUN=function(col)!col$isnumeric))
 
 		paletNr <- 1
 		for (i in whichCategorical) {
-			tab2$columns[[i]]$palet <- pals[[paletNr]]
-			paletNr <- ifelse(paletNr==length(pals), 1, paletNr + 1)
+			tab2$columns[[i]]$paletname <- pals$name[paletNr]
+			tab2$columns[[i]]$palet <- pals$palette[[paletNr]]
+			paletNr <- ifelse(paletNr==length(pals$name), 1, paletNr + 1)
 		}
 	}
 	

@@ -9,6 +9,8 @@
 #' @note \code{ff} vectors are not implemented yet
 datetime2fac <- function(p) {
 
+	if (!inherits(p, c("Date", "POSIXt"))) stop(paste(parse(substitute(p)), "is not a valid date/time vector"))
+
 	rng <- range(p)
 
 

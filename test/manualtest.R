@@ -62,7 +62,14 @@ tableplot_showPalettes()
 
 
 ## tableplot
-tableplot(diamonds, fontsize=7, legend.lines=5)
+jpeg(filename = "Tableplot.jpg", width = 800, height = 500)
+tableplot(diamonds, fontsize=8, legend.lines=6)
+dev.off()
+
+tableGUI()
+
+tab <- tableplot(diamonds, pals = list(7, "col_blind_friendly(2)", rainbow(8)))
+plot(tab)
 
 ## with generic plot function
 tab <- tableplot(diamonds, plot=FALSE)

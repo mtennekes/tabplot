@@ -203,7 +203,7 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 			col$categories <- datFreq[[colNames[i]]]$categories
 			col$paletname <- pals$name[paletNr]
 			col$palet <- pals$palette[[paletNr]]
-			paletNr <- ifelse(paletNr==length(pals), 1, paletNr + 1)
+			paletNr <- ifelse(paletNr==length(pals$name), 1, paletNr + 1)
 		}
  		tab$columns[[i]] <- col
 	}

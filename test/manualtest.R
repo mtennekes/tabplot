@@ -93,6 +93,12 @@ tableplot(diamonds, pals=list("hcl12(4)", gray(seq(0,1,length.out=10)), rainbow(
 
 tableGUI(diamonds)
 
+
+##### test gWidgetsWWW
+library(gWidgetsWWW)
+
+localServerOpen("../test/tableGUI_script.R")
+
 ###########################################
 ## test datatime2fac
 ###########################################

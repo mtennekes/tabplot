@@ -13,11 +13,13 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 	for (i in which(isLogical)) {
 		levels(dat[,i]) <- c("TRUE", "FALSE")
 	}
-	
+
+  isBoolean <- vmode(dat) == "boolean"
+
 	isFactor <- sapply(physical(dat), is.factor)	
 	
 	## find numerical variables
-	isNumber <- !isFactor & !isLogical
+	isNumber <- !isFactor & !isLogical & !isBoolean
 	
 	## cast logical columns to factors
 	#TODO
@@ -80,7 +82,7 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 	#####################
 	## Aggregate numeric variables
 	#####################
-	if (sum(isNumber)>0) {
+	if (any(isNumber)) {
 		
 		numcols <- names(dat)[as.which(isNumber)] # needed because isNumber is otherwise recycled!!
 		
@@ -118,8 +120,8 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 	#####################
 	## Aggregate categorical variables
 	#####################
-	if (any(!isNumber)) {
-		catcols <- names(dat)[as.which(!isNumber)] # needed because isNumber is otherwise recycled!!
+	if (any(isFactor | isLogical)) {
+		catcols <- names(dat)[as.which(isFactor | isLogical)] # needed because isNumber is otherwise recycled!!
 
 
 		datFreq <- list()
@@ -130,8 +132,8 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 		
 		cdat <- dat[chunks[[1]], c(catcols, "aggIndex")]
 		# cast logicals to factors
-		for (i in colNames[isLogical]) {
-			cdat[[i]] <- factor(cdat[[i]], levels=c("TRUE", "FALSE"))
+		for (col in colNames[isLogical]) {
+			cdat[[col]] <- factor(cdat[[col]], levels=c("TRUE", "FALSE"))
 		}
 
 		datFreq <- lapply(cdat[, catcols], FUN=getFreqTable_DT, cdat$aggIndex, nBins, useNA="always")
@@ -139,8 +141,8 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 		for (i in chunks[-1]){
 			cdat <- dat[i, c(catcols, "aggIndex")]
 			# cast logicals to factors
-			for (i in colNames[isLogical]) {
-				cdat[[i]] <- factor(cdat[[i]], levels=c("TRUE", "FALSE"))
+			for (col in colNames[isLogical]) {
+				cdat[[col]] <- factor(cdat[[col]], levels=c("TRUE", "FALSE"))
 			}
 
 			datFreq2 <- lapply(cdat[, catcols], FUN=getFreqTable_DT, cdat$aggIndex, nBins, useNA="always")
@@ -159,7 +161,46 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 				return(df)
 			}, SIMPLIFY=FALSE)
 	}	
+
+  	#####################
+	## Aggregate boolean variables (not logical!)
+	#####################
+	if (any(isBoolean)) {
+		#browser()
+		blncols <- names(dat)[as.which(isBoolean)] # needed because isNumber is otherwise recycled!!
+				
+		
+		datFreqB <- list()
+		
+		chunks <- chunk(dat)
+		
+		
+		
+		for (i in chunks){
+			cdat <- data.table(dat[i,])[, c(blncols, "aggIndex"), with=FALSE]
+			setkey(cdat, aggIndex)
+			dsum <- cdat[, lapply(.SD, function(x)sum(x, na.rm=TRUE)), by=aggIndex]
+
+			datFreqB2 <- lapply(dsum[, blncols, with=FALSE], FUN=function(x){
+					y <- unlist(x)
+					list(freqTable=matrix(c(y, binSizes-y), ncol=2), categories=c("TRUE", "FALSE"))
+				})
+
+			if (length(datFreqB)==0)
+				datFreqB <- datFreqB2
+			else
+				datFreqB <- mapply(datFreqB, datFreqB2, FUN=function(df1, df2){
+						return(list(freqTable=df1$freqTable + df2$freqTable, categories=df1$categories))
+				}, SIMPLIFY=FALSE)
 	
+		}
+
+		if (exists("datFreq"))
+			datFreq <- c(datFreq, datFreqB)
+		else
+			datFreq <- datFreqB
+	}   
+   
 	#############################
 	##
 	## Create list object that contains all data needed to plot
@@ -207,6 +248,5 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 		}
  		tab$columns[[i]] <- col
 	}
-	
 	return(tab)
 }

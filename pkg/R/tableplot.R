@@ -32,10 +32,29 @@
 # @param filter variable name(s) on which the tableplot is filtered
 
 
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, bias_brokenX=0.8, IQR_bias=5, plot=TRUE, ...) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, filter=NULL, bias_brokenX=0.8, IQR_bias=5, plot=TRUE, ...) {
 
 	datName <- deparse(substitute(dat))
 	if (class(dat)[1]=="data.frame") dat <- data.table(dat)
+	
+	#####################################
+	## Filter data
+	#####################################
+	if (!is.null(filter)) {
+		if (class(filter)[1]!="expression") stop("<filter> is not an expression")
+		
+		if (class(dat)[1]=="ffdf") {
+			sel <- bit(nrow(dat))
+			for (i in chunk(dat)) {
+				sel[i] <- eval(filter, dat[i,])
+			}
+			dat <- subset(dat, sel)
+		} else {
+			sel <- eval(filter, dat)
+			dat <- dat[sel,]
+		}
+		
+	}
 	
 	#####################################
 	## Check arguments and cast dat-columns to numeric or factor

@@ -14,7 +14,7 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 		levels(dat[,i]) <- c("TRUE", "FALSE")
 	}
 
-  isBoolean <- vmode(dat) == "boolean"
+	isBoolean <- vmode(dat) == "boolean"
 
 	isFactor <- sapply(physical(dat), is.factor)	
 	
@@ -32,6 +32,7 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 	#####################################
 	
 	## Determine viewport, and check if nBins is at least number of items
+   
 	vp <- tableViewport(nrow(dat), from, to)
 	if (nBins > vp$m) nBins <- vp$m
 
@@ -104,7 +105,7 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 			datCompl <- rbind(datCompl, dcompl)
 		}
 
-		datSum <- datSum[, lapply(.SD, sum), by=aggIndex][!is.na(aggIndex),]
+		datSum <- tail(datSum[, lapply(.SD, sum), by=aggIndex], nBins) #to exclude aggIndex=NA
 		datSum$binSizes <- binSizes[datSum$aggIndex]
 		
 		datCompl <- datCompl[, lapply(.SD, sum), by=aggIndex][!is.na(aggIndex),]
@@ -136,7 +137,7 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 			cdat[[col]] <- factor(cdat[[col]], levels=c("TRUE", "FALSE"))
 		}
 
-		datFreq <- lapply(cdat[, catcols], FUN=getFreqTable_DT, cdat$aggIndex, nBins, useNA="always")
+		datFreq <- lapply(cdat[, catcols], FUN=getFreqTable_DT, cdat$aggIndex, useNA="always")
 	
 		for (i in chunks[-1]){
 			cdat <- dat[i, c(catcols, "aggIndex")]
@@ -145,7 +146,7 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 				cdat[[col]] <- factor(cdat[[col]], levels=c("TRUE", "FALSE"))
 			}
 
-			datFreq2 <- lapply(cdat[, catcols], FUN=getFreqTable_DT, cdat$aggIndex, nBins, useNA="always")
+			datFreq2 <- lapply(cdat[, catcols], FUN=getFreqTable_DT, cdat$aggIndex, useNA="always")
 
 			datFreq <- mapply(datFreq, datFreq2, FUN=function(df1, df2){
 					return(list(freqTable=df1$freqTable + df2$freqTable, categories=df1$categories))
@@ -177,7 +178,7 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 		
 		
 		for (i in chunks){
-			cdat <- data.table(dat[i,])[, c(blncols, "aggIndex"), with=FALSE]
+			cdat <- na.omit(data.table(dat[i,])[, c(blncols, "aggIndex"), with=FALSE]) # works because there are no NA's in data (only in aggIndex)
 			setkey(cdat, aggIndex)
 			dsum <- cdat[, lapply(.SD, function(x)sum(x, na.rm=TRUE)), by=aggIndex]
 
@@ -194,7 +195,7 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 				}, SIMPLIFY=FALSE)
 	
 		}
-
+	
 		if (exists("datFreq"))
 			datFreq <- c(datFreq, datFreqB)
 		else

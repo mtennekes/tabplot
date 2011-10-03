@@ -1,4 +1,4 @@
-getFreqTable_DT <- function(fac, aggIndex, nBins, useNA="ifany") {
+getFreqTable_DT <- function(fac, aggIndex, useNA="ifany") {
 
 	DT <- data.table(fac=fac, aggIndex=aggIndex)
 	setkey(DT, aggIndex)

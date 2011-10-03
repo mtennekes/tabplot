@@ -1,5 +1,5 @@
 plotCatCol <- function(tCol, tab, colorpalet, vpTitle, vpGraph, vpLegend){
-	isCairo <- (names(dev.cur())=="Cairo")
+	drawContours <- TRUE
 	
 	cellplot(2,1,vpGraph, {
 
@@ -12,7 +12,7 @@ plotCatCol <- function(tCol, tab, colorpalet, vpTitle, vpGraph, vpLegend){
 		## create large vector of colors (one color for each bin*category
 		colorset <- colorpalet[rep(colorID, each=tab$nBins)]
 		
-		if (isCairo) {
+		if (drawContours) {
 			cols <- colorset
 		} else {
 			cols <- NA
@@ -45,7 +45,7 @@ plotCatCol <- function(tCol, tab, colorpalet, vpTitle, vpGraph, vpLegend){
 			cellplot(j,1, NULL, {
 				grid.rect( x = 0, y = 0.5, width = 0.2, height = 1
 						 , just=c("left")
-						 , gp = gpar(col=NA, fill = colorpalet[colorID][j])
+						 , gp = gpar(col=colorpalet[colorID][j], fill = colorpalet[colorID][j])
 						 )
 				grid.text( tCol$categories[j]
 						 , x = 0.25
@@ -56,7 +56,7 @@ plotCatCol <- function(tCol, tab, colorpalet, vpTitle, vpGraph, vpLegend){
 			cellplot(nLegendRows,1, NULL, {
 				grid.rect( x = 0, y = 0.5, width = 0.2, height = 1
 						 , just=c("left")
-						 , gp = gpar(col=NA, fill = colorpalet[colorID][nCategories + 1])
+						 , gp = gpar(col=colorpalet[colorID][nCategories + 1], fill = colorpalet[colorID][nCategories + 1])
 						 )
 				grid.text( tCol$categories[nCategories + 1]
 						 , x = 0.25

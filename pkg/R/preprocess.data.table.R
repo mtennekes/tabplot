@@ -1,5 +1,5 @@
 preprocess.data.table <-
-function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
+function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
 
 	n <- length(colNames)
 
@@ -132,6 +132,7 @@ function(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from
 	
 	tab <- list()
 	tab$dataset <- datName
+	tab$filter <- filterName
 	tab$n <- n
 	tab$nBins <- nBins
 	tab$binSizes <- binSizes

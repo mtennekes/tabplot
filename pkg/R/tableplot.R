@@ -105,7 +105,11 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	#### Preprocess
 	##########################
 
-	tab <- preprocess(dat, datName, colNames, sortCol,  decreasing, scales, pals, nBins, from,to)
+	tab <- preprocess(dat, datName, as.character(filter), colNames, sortCol,  decreasing, scales, pals, nBins, from,to)
+	
+	# delete cloned ffdf (those with filter)
+	if (!is.null(filter) && class(dat)[1]=="ffdf") delete(dat)
+
 	
 	isNumber <- tab$isNumber
 	

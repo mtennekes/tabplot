@@ -55,7 +55,9 @@ dat <- subset(x=diamFF, subset=include)
 
 tableplot(diamonds, filter=expression(color=="D"))
 
-tableplot(diamFF, filter=expression(color=="D"))
+tab <- tableplot(diamFF, filter=expression(color=="D"))
 
-
-
+tableSave(filename="test.png", tab=tab)
+png("test2.png", width=8, height=4, units="in", res=300)
+plot(tab)
+dev.off()

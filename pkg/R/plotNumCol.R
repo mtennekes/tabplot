@@ -1,6 +1,6 @@
 plotNumCol <- function(tCol, tab, blues, vpTitle, vpGraph, vpLegend){
 	## checks if device is Cario {cairoDevice}
-	isCairo <- (names(dev.cur())=="Cairo")
+	drawContours <- TRUE
 
 	lgrey <- brewer.pal(9,"Greys")[2]
 	lred <- brewer.pal(9,"Reds")[2]
@@ -12,7 +12,7 @@ plotNumCol <- function(tCol, tab, blues, vpTitle, vpGraph, vpLegend){
 		missings <- which(tCol$compl==0)
 
 		## when cairoDevice is enabled, not only fill the bins with colors, but also color the contours
-		if (isCairo) {
+		if (drawContours) {
 			cols <- blues[tCol$compl + 1]
 		} else {
 			cols <- NA
@@ -37,7 +37,7 @@ plotNumCol <- function(tCol, tab, blues, vpTitle, vpGraph, vpLegend){
 				 )
 
 		
-		if (isCairo) {
+		if (drawContours) {
 			cols <- lred
 		} else {
 			cols <- NA
@@ -50,7 +50,7 @@ plotNumCol <- function(tCol, tab, blues, vpTitle, vpGraph, vpLegend){
 					 , width =  rep(1, length(missings))
 					 , height = tab$rows$heights[missings]
 					 , just=c("left","bottom")
-					 , gp = gpar(fill = lred,col=cols, linejoin="mitre")
+					 , gp = gpar(fill = lred, col=cols, linejoin="mitre")
 					 )
 		}
 	 

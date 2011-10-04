@@ -24,16 +24,16 @@ plotNumCol <- function(tCol, tab, blues, vpTitle, vpGraph, vpLegend){
 				 , width = tCol$widths
 				 , height = tab$rows$heights
 				 , just=c("left","bottom")
-				 , gp = gpar(col=cols, fill = blues[tCol$compl + 1], linejoin="mitre")
+				 , gp = gpar(col=cols, fill = blues[tCol$compl + 1], linejoin="mitre", lwd=0.01)
 				 )
 		
 		## plot small lines at the righthand side of the bins
 		grid.rect( x = rep(tCol$xline,tab$nBins)+tCol$widths
 				 , y = tab$rows$y
-				 , width = unit(0.75, "points")
+				 , width = unit(0.5, "points")
 				 , height = tab$rows$heights
 				 , just=c("left","bottom")
-				 , gp = gpar(col=NA, fill = blues[length(blues)])
+				 , gp = gpar(col=blues[length(blues)], fill = blues[length(blues)], lwd=0.01)
 				 )
 
 		
@@ -50,7 +50,7 @@ plotNumCol <- function(tCol, tab, blues, vpTitle, vpGraph, vpLegend){
 					 , width =  rep(1, length(missings))
 					 , height = tab$rows$heights[missings]
 					 , just=c("left","bottom")
-					 , gp = gpar(fill = lred, col=cols, linejoin="mitre")
+					 , gp = gpar(fill = lred, col=cols, linejoin="mitre", lwd=0.01)
 					 )
 		}
 	 

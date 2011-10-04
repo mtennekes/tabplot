@@ -1,9 +1,11 @@
 tableSave <- function (filename = paste(tab$dataset, ".pdf", sep = ""), tab, 
     device = default_device(filename), path = NULL, scale = 1, 
-    width = par("din")[1], height = par("din")[2], dpi = 300, ...) 
+    width = par("din")[1], height = par("din")[2], dpi = 300, 
+	fontsize = 8, legend.lines = 8, title = tab$dataset, showTitle = FALSE, ...) 
 {
     if (class(tab) != "tabplot") 
         stop("plot should be a tabplot object")
+    
     eps <- ps <- function(..., width, height) grDevices::postscript(..., 
         width = width, height = height, onefile = FALSE, horizontal = FALSE, 
         paper = "special")
@@ -32,7 +34,7 @@ tableSave <- function (filename = paste(tab$dataset, ".pdf", sep = ""), tab,
     }
     if (missing(width) || missing(height)) {
         message("Saving ", prettyNum(width * scale, digits = 3), 
-            "\" x ", prettyNum(height * scale, digits = 3), "\" image")
+            "\" x ", prettyNum(height * scale, digits = 3), "\" tableplot")
     }
     width <- width * scale
     height <- height * scale
@@ -40,7 +42,7 @@ tableSave <- function (filename = paste(tab$dataset, ".pdf", sep = ""), tab,
         filename <- file.path(path, filename)
     }
     device(file = filename, width = width, height = height, ...)
-    plot(tab)
+    plot(tab, fontsize = fontsize, legend.lines = legend.lines, title = title, showTitle = showTitle)
     on.exit(capture.output(dev.off()))
     invisible()
 }

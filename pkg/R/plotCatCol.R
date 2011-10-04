@@ -11,9 +11,12 @@ plotCatCol <- function(tCol, tab, colorpalet, vpTitle, vpGraph, vpLegend){
 		
 		## create large vector of colors (one color for each bin*category
 		colorset <- colorpalet[rep(colorID, each=tab$nBins)]
+	
+		missings <- which(tCol$widths==0)
 		
 		if (drawContours) {
 			cols <- colorset
+			cols[missings] <- NA
 		} else {
 			cols <- NA
 		}
@@ -22,7 +25,7 @@ plotCatCol <- function(tCol, tab, colorpalet, vpTitle, vpGraph, vpLegend){
 		grid.rect( x = tCol$x, y = tab$rows$y
 				 , width = tCol$widths, height = tab$rows$heights
 				 , just=c("left","bottom")
-				 , gp = gpar(col=cols, fill = colorset, linejoin="mitre"))
+				 , gp = gpar(col=cols, fill = colorset, linejoin="mitre", lwd=0.01))
 	})
 
 

@@ -43,6 +43,26 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	if (!is.null(filter)) {
 		if (class(filter)[1]!="expression") stop("<filter> is not an expression")
 		
+		browser()
+		# split by one variable
+		if (filter %in% names(dat)) {
+			filter <- as.character(filter)
+			lvls <- levels(dat[[filter]])
+			
+			if ((class(dat[[filter]])[1]=="logical") || (class(dat)[1]=="ffdf" && vmode(dat[[filter]]) %in% c("boolean", "logical"))) {
+				isLogical <- TRUE
+				lvls <- c("TRUE", "FALSE")
+			} else {
+				isLogical <- FALSE
+			}
+			if (is.null(lvls)) stop("filter variable is not categorical")
+			exprChar <- paste(filter, " == ", ifelse(isLogical, "", "\""), lvls, ifelse(isLogical, "", "\""), sep="")
+			expr <- sapply(exprChar, expression)
+			#paste()
+			#tabs <- 
+		}
+		
+		# other filters
 		if (class(dat)[1]=="ffdf") {
 			sel <- bit(nrow(dat))
 			for (i in chunk(dat)) {

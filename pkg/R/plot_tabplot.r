@@ -7,7 +7,7 @@
 #' @param ... arguments passed to other methods
 #' @export
 plot.tabplot <-
-function(x, fontsize = 8, legend.lines = 8, title = x$dataset, showTitle = FALSE, ...) {
+function(x, fontsize = 8, legend.lines = 8, title = ifelse(length(x$filter)==0, x$dataset, paste(x$dataset, " (", x$filter, ")", sep="")), showTitle = FALSE, ...) {
 	
 		
 	#############################

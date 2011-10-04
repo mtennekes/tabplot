@@ -14,14 +14,12 @@ data(tabplotPalettes)
 
 
 ## ff
-options(fftempdir = "d:/fftemp/")
-require(ffbase)
+options(fftempdir = "c:/fftemp/")
+#require(ffbase)
 
 library(ggplot2)
 data(diamonds)
 tableplot(diamonds)
-
-
 
 
 diamFF <- as.ffdf(diamonds)
@@ -44,20 +42,12 @@ diam$very_expensive <- diam$price >= 10000
 
 tableplot(diam)
 
-
-include <- bit(nrow(diamFF))
-include <- ff(length=nrow(diamFF), vmode="logical")
-
-for (i in chunk(diamFF)) {
-	include[i] <- diamFF$color[i]=="D"
-}
-dat <- subset(x=diamFF, subset=include)
-
 tableplot(diamonds, filter=expression(color=="D"))
 
 tab <- tableplot(diamFF, filter=expression(color=="D"))
 
+tab2 <- tableplot(diamFF)
+
+
 tableSave(filename="test.png", tab=tab)
-png("test2.png", width=8, height=4, units="in", res=300)
-plot(tab)
-dev.off()
+tableSave(filename="test.png", width=7, height=5, tab=tab, fontsize = 6, legend.lines = 6, showTitle = TRUE)

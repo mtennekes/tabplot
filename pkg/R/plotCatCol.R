@@ -25,7 +25,10 @@ plotCatCol <- function(tCol, tab, colorpalet, vpTitle, vpGraph, vpLegend){
 		grid.rect( x = tCol$x, y = tab$rows$y
 				 , width = tCol$widths, height = tab$rows$heights
 				 , just=c("left","bottom")
-				 , gp = gpar(col=cols, fill = colorset, linejoin="mitre", lwd=0.01))
+				 , gp = gpar(col=cols, fill = colorset, linejoin="mitre", lwd=0))
+		
+		## draw white rect at the right to correct for rounding errors during plotting
+		grid.rect(x = 1,  y=-.005, width=0.1, height=1.01, just=c("left", "bottom"), gp=gpar(col=NA, fill="white"))
 	})
 
 

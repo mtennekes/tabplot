@@ -1,24 +1,22 @@
 Package: tabplot
 Maintainer: Martijn Tennekes <mtennekes@gmail.com>
 License: GPL version 3
-Title: Tableplot, a visualization of large statistical
-    datasets
+Title: Tableplot, a visualization of large datasets
 Type: Package
 LazyLoad: yes
 Author: Martijn Tennekes and Edwin de Jonge
 Description: A tableplot is a visualisation of a (large)
-    statistical dataset with a dozen of variables, both
-    both numeric and categorical. Each column represents a
-    variable and each row bin is an aggregate of a certain
-    number of records. Numeric variables are visualized as
-    bar charts, and categorical variables as stacked bar
-    charts. Missing values are taken into account. A GUI
-    has been implemented which is used to easily customize
-    the tableplot. Also supports large ffdf datasets from
-    the ff package.
-Version: 0.10-1
+    dataset with a dozen of variables, both numeric and
+    categorical. Each column represents a variable and each
+    row bin is an aggregate of a certain number of records.
+    Numeric variables are visualized as bar charts, and
+    categorical variables as stacked bar charts. Missing
+    values are taken into account. With a GUI tableplots
+    can easily be customized. Also supports large ffdf
+    datasets from the ff package.
+Version: 0.11
 URL: http://code.google.com/p/tableplot/
-Date: 2011-07-30
+Date: 2011-10-07
 Depends:
     data.table (>= 1.5.3),
     grid,
@@ -50,6 +48,8 @@ Collate:
     'preprocess.data.table.R'
     'preprocess.ffdf.R'
     'preprocess.R'
+    'print_tabplot.R'
+    'subset.R'
     'summary_tabplot.R'
     'tableGUI.R'
     'tableGUI_functions.R'
@@ -68,6 +68,7 @@ Collate:
     'tableplot_checkScales.R'
     'tableplot_checktCols.R'
     'tableplot_showPalettes.R'
+    'tableSave.R'
     'tableViewport.R'
     'tabplot_object.R'
     'tabplotPalettes.R'

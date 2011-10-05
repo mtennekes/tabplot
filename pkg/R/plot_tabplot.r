@@ -4,8 +4,11 @@
 #' @param x tabplot object
 #' @param fontsize the (maximum) fontsize
 #' @param legend.lines the number of lines preserved for the legend
+#' @param title title of the plot (shown if \code{showTitle==TRUE})
+#' @param showTitle show the title
 #' @param ... arguments passed to other methods
 #' @export
+#' @method plot tabplot
 plot.tabplot <-
 function(x, fontsize = 8, legend.lines = 8, title = ifelse(length(x$filter)==0, x$dataset, paste(x$dataset, " (", x$filter, ")", sep="")), showTitle = FALSE, ...) {
 	

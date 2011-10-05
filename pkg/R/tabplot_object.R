@@ -5,5 +5,4 @@
 #' supress that the tableplot is plot. The function \code{\link{changeTabplot}} can be used to change a tabplot-object. The generic functions \code{\link[=plot.tabplot]{plot}} and \code{\link[=summary.tabplot]{summary}} are used to plot and summarize a tabplot-object.
 #'
 #' @name tabplot-object
-#' @aliases tabplot-object
 {}

@@ -14,7 +14,7 @@
 #' }
 #' @return \link{tabplot-object}
 #' @export
-#' @example examples/changeTabplot.R
+#' @example ../examples/changeTabplot.R
 
 changeTabplot <- function(tab, colNames=sapply(tab$columns, function(col)col$name), flip=FALSE, pals=list()) {
 

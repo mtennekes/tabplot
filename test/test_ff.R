@@ -44,7 +44,7 @@ tableplot(diam)
 
 tableplot(diamonds, filter=expression(color=="D"))
 
-tab <- tableplot(diamFF, filter=expression(color=="D"))
+tab <- tableplot(diamFF, filter=expression(color), plot=TRUE)
 
 tab2 <- tableplot(diamFF)
 

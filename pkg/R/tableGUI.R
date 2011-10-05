@@ -13,7 +13,7 @@
 #' @param from see \code{\link{tableplot}}
 #' @param to see \code{\link{tableplot}}
 #' @export
-#' @example examples/tableGUI.R
+#' @example ../examples/tableGUI.R
 tableGUI <-
 function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100) {
     if (!require(gWidgetsRGtk2)){

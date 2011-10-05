@@ -1,9 +1,9 @@
 #' Function that creates a factor vector out of a date-time vector.
 #'
-#' Creates a factor vector out of a date-time vector that an inherits from class "POSIXt" or "Date".
+#' Creates a factor vector out of a date-time vector from class "POSIXt" or "Date".
 #'
-#' @aliases datetime2fac
 #' @param p date-time vector
+#' @param rng range of the factor. Values of \code{p} outside this range are translated to \code{NA} 
 #' @return A factor vector
 #' @export
 #' @note \code{ff} vectors are not implemented yet

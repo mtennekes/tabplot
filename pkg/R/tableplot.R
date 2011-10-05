@@ -2,7 +2,6 @@
 #'
 #' A tableplot is a visualisation of a (large) multivariate dataset. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package. Use \code{\link{tableGUI}} to customize this function with a GUI.
 #'
-#' @aliases tableplot
 #' @param dat a \code{\link{data.frame}}, \code{\link{data.table}}, or an \code{\link[ff:ffdf]{ffdf}} object (required)
 #' @param colNames character vector containing the names of the columns of \code{dat} that are visualized in the tablelplot. If omitted, all columns are visualized. All selected columns should be of class: numeric, integer, factor, or logical.
 #' @param sortCol columns that are sorted. \code{sortCol} is either a vector of column names of a vector of indices of \code{colNames}
@@ -18,6 +17,7 @@
 #' @param nBins number of row bins
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
+#' @param filter condition to filter the data, either an expression of a character
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
 #' @param plot boolean, to plot or not to plot a tableplot
@@ -25,13 +25,7 @@
 #' @return \link{tabplot-object} (silent output)
 #' @export
 #' @keywords visualization
-#' @example examples/tableplot.R
-
-
-# TO DO:
-# @param filter variable name(s) on which the tableplot is filtered
-
-
+#' @example ../examples/tableplot.R
 tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100, filter=NULL, bias_brokenX=0.8, IQR_bias=5, plot=TRUE, ...) {
 
 	datName <- deparse(substitute(dat))
@@ -41,9 +35,8 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	## Filter data
 	#####################################
 	if (!is.null(filter)) {
-		if (class(filter)[1]!="expression") stop("<filter> is not an expression")
+		if (!(class(filter)[1] %in% c("character", "expression"))) stop("<filter> is not an expression nor a character")
 		
-		browser()
 		# split by one variable
 		if (filter %in% names(dat)) {
 			filter <- as.character(filter)
@@ -57,12 +50,17 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 			}
 			if (is.null(lvls)) stop("filter variable is not categorical")
 			exprChar <- paste(filter, " == ", ifelse(isLogical, "", "\""), lvls, ifelse(isLogical, "", "\""), sep="")
-			expr <- sapply(exprChar, expression)
-			#paste()
-			#tabs <- 
+			expr <- lapply(exprChar, FUN=function(x)parse(text=x))
+			
+			tabs <- lapply(expr, FUN=function(e){
+				tab <- tableplot(dat, colNames=colNames, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals, nBins=nBins, from=from, to=to, filter=e, bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
+				tab
+			})
+			return(tabs)
 		}
 		
 		# other filters
+		if (class(filter)[1]=="character") filter <- parse(text=filter)
 		if (class(dat)[1]=="ffdf") {
 			sel <- bit(nrow(dat))
 			for (i in chunk(dat)) {
@@ -196,14 +194,14 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, sca
 	for (i in which(!isNumber)) {
 		categories <- tab$columns[[i]]$categories
 		widths <- tab$columns[[i]]$freq / rep(tab$binSizes, length(categories))
-		
+	
 		x <- cbind(0,(t(apply(widths, 1, cumsum)))[, -length(categories)])
 		tab$columns[[i]]$categories <- categories
 		tab$columns[[i]]$x <- x
 		tab$columns[[i]]$widths <- widths
 	}
 
-
+	
 	#############################
 	## Numeric variables
 	#############################

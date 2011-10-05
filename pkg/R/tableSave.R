@@ -1,4 +1,25 @@
-tableSave <- function (filename = paste(tab$dataset, ".pdf", sep = ""), tab, 
+#' Save a tableplot.
+#'
+#' Save a tableplot in pdf, eps, svg, wmf, png, jpg, bmp, or tiff format.
+#'
+#' @aliases tableSave
+#' @param tab a \link{tabplot-object}
+#' @param filename filename with extention (pdf, eps, svg, wmf, png, jpg, bmp, or tiff)
+#' @param device device, automatically extracted from filename extension 
+#' @param path path to save to
+#' @param scale scaling factor
+#' @param width width (in inches)
+#' @param height height (in inches)
+#' @param dpi dpi to use for raster graphics
+#' @param fontsize the (maximum) fontsize
+#' @param legend.lines the number of lines preserved for the legend
+#' @param title title of the plot (shown if \code{showTitle==TRUE})
+#' @param showTitle show the title
+#' @param ... other arguments passed to graphics device
+#' @export
+#' @keywords save tableplot
+#' @example ../examples/tableSave.R
+tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""), 
     device = default_device(filename), path = NULL, scale = 1, 
     width = par("din")[1], height = par("din")[2], dpi = 300, 
 	fontsize = 8, legend.lines = 8, title = tab$dataset, showTitle = FALSE, ...) 
@@ -9,8 +30,6 @@ tableSave <- function (filename = paste(tab$dataset, ".pdf", sep = ""), tab,
     eps <- ps <- function(..., width, height) grDevices::postscript(..., 
         width = width, height = height, onefile = FALSE, horizontal = FALSE, 
         paper = "special")
-    tex <- function(..., width, height) grDevices::pictex(..., 
-        width = width, height = height)
     pdf <- function(..., version = "1.4") grDevices::pdf(..., 
         version = version)
     svg <- function(...) grDevices::svg(...)
@@ -30,6 +49,8 @@ tableSave <- function (filename = paste(tab$dataset, ".pdf", sep = ""), tab,
     default_device <- function(filename) {
         pieces <- strsplit(filename, "\\.")[[1]]
         ext <- tolower(pieces[length(pieces)])
+        if (!(ext %in% c("eps", "pdf", "svg", "wmf", "png", "jpg", "jpeg", "bmp", "tiff"))) 
+        	stop("missing or unknown extension")
         match.fun(ext)
     }
     if (missing(width) || missing(height)) {

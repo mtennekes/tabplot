@@ -1,19 +1,5 @@
-require(gWidgets)
-require(gWidgetsRGtk2)
-require(data.table)
-require(ff)
-require(RColorBrewer)
-require(classInt)
-
-scriptmap <- "../pkg/R/"
-setwd(scriptmap)
-sapply(list.files(), source)
-
-setwd("../")  # in order to let it find data(tabplotPalettes)
-data(tabplotPalettes)
-
-
 ## ff
+require(ff)
 options(fftempdir = "c:/fftemp/")
 #require(ffbase)
 

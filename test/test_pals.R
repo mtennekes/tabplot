@@ -30,5 +30,3 @@ CBS <- c(rgb(255 / 255, 213 / 255,   7 / 255)
 	   , rgb(128 / 255,  42 / 255, 142 / 255))
 	
 tableplot(diamonds, pals=list(CBS))
-
-tableplot(diamonds, colorNA="#FF1414", numPals="Greens")

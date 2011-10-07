@@ -37,7 +37,7 @@ tableGUI_pal_layout <- function(e) {
 		# }
 
 		grp_pal4 <- ggroup(horizontal = FALSE, cont = grp_pal3, expand=FALSE)
-		cmb_pal2 <- gcombobox(names(tabplotPalettes), cont=grp_pal4)
+		cmb_pal2 <- gcombobox(names(tabplotPalettes$qual), cont=grp_pal4)
 
 		grp_pal6 <- ggroup(horizontal = TRUE, cont = grp_pal4, expand=FALSE)
 		lbl_pal <- glabel("start color:", cont=grp_pal6)

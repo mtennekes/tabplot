@@ -13,8 +13,7 @@
 #' @param scales determines the horizontal axes of the numeric variables in \code{colNames}, options: "lin", "log", and "auto" for automatic detection. If necessary, \code{scales} is recycled.
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
-#' \item a index number between 1 and 16. In this case, the default palette is used with the index number being the first color that is used.
-#' \item a palette name in \code{\link{tabplotPalettes}}, optionally with the starting color between brackets.
+#' \item a palette name in \code{\link{tablePalettes()}}, optionally with the starting color between brackets.
 #' \item a palette vector
 #' }
 #' The items of \code{pals} are applied to the categorical variables of \code{colNames}. If necessary, \code{pals} is recycled.
@@ -28,7 +27,7 @@
 #' @export
 #' @keywords visualization
 #' @example ../examples/tableplot.R
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, from=0, to=100, filter=NULL, scales="auto", pals=list(1, 9, 3, 10), colorNA = "#E41A1C", numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, plot=TRUE, ...) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, from=0, to=100, filter=NULL, scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, plot=TRUE, ...) {
 
 	datName <- deparse(substitute(dat))
 	if (class(dat)[1]=="data.frame") dat <- data.table(dat)

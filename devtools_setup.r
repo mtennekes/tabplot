@@ -13,6 +13,5 @@ check("pkg")
 
 document("pkg")
 
-build_win("pkg")
 
 

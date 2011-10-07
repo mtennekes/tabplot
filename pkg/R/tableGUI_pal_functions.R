@@ -35,7 +35,6 @@ tableGUI_initPal <- function(e) {
 tableGUI_updatePal <- function(e) {
 	with(e, {
 		if (blockHandler_pal) return()
-	
 		varName <- svalue(cmb_pal1)
 		if (is.null(varName)) {
 			# if (cairoLoaded) {
@@ -68,7 +67,7 @@ tableGUI_updatePal <- function(e) {
 				svalue(spb_col) <- 1
 				enabled(spb_col) <- FALSE
 			} else {
-				colPal <- tabplotPalettes[[palName]]
+				colPal <- tabplotPalettes$qual[[palName]]
 				enabled(spb_col) <- TRUE
 				spb_col[] <- seq(1, length(colPal), by=1)
 			}

@@ -15,16 +15,16 @@ tableGUI_pal_handlers <- function(e) {
 			assign("blockHandler_pal", TRUE, envir=e)
 			
 			if (varName %in% names(customPals)) {
-				cmb_pal2[] <- c(names(tabplotPalettes), "custom")
+				cmb_pal2[] <- c(names(tabplotPalettes$qual), "custom")
 			} else {
-				cmb_pal2[] <- names(tabplotPalettes)
+				cmb_pal2[] <- names(tabplotPalettes$qual)
 			}
 
 			if (colPalName=="custom") {
 				enabled(spb_col) <- FALSE
 			} else {
 				enabled(spb_col) <- TRUE
-				spb_col[] <- seq(1, length(tabplotPalettes[[colPalName]]), by=1)
+				spb_col[] <- seq(1, length(tabplotPalettes$qual[[colPalName]]), by=1)
 			}
 			
 			

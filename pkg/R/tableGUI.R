@@ -15,7 +15,7 @@
 #' @export
 #' @example ../examples/tableGUI.R
 tableGUI <-
-function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="auto", pals=list(1, 9, 3, 10), nBins=100, from=0, to=100) {
+function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, from=0, to=100, filter=NULL, scales="auto", pals=list("Set1", "Set2", "Set3", "Set4")) {
     if (!require(gWidgetsRGtk2)){
 		stop("This function requires gWidgetsRGtk2")
 	}
@@ -27,7 +27,6 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 	#####################################
 	## Check arguments
 	#####################################
-
 	
 
 
@@ -139,7 +138,7 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, scales="aut
 
 
 	# load palettes
-	data("tabplotPalettes")
+	#data("tabplotPalettes")
 	
 	
 	#' load information about loaded data.frames

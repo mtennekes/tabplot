@@ -30,3 +30,8 @@ CBS <- c(rgb(255 / 255, 213 / 255,   7 / 255)
 	   , rgb(128 / 255,  42 / 255, 142 / 255))
 	
 tableplot(diamonds, pals=list(CBS))
+
+
+tableplot(diamonds, pals=list("CBL"))
+tableplot(diamonds, pals=list("HCL1", "HCL2", "HCL3"))
+tableplot(diamonds, colNames=c("carat", "cut", "color", "clarity", "cut", "color", "clarity"), pals=list("Set1", "Set2", "Set3", "Set4", "Set5", "Set6"))

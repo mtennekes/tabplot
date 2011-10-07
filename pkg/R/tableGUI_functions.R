@@ -197,7 +197,7 @@ tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, paren
 				colnames(tmpdat)[ncol(tmpdat)] <- newname
 				assign(currentDF, tmpdat, envir=.GlobalEnv)
 						
-				newRow <- data.frame(Variable=newname, Class="factor", Levels=nlevels(tmpdat[[newname]]), Type=paste("categorical (", nlevels(tmpdat[[newname]]),")", sep=""), Scale="", Sort="", Palette="default (1)", Selected=TRUE, New=TRUE, stringsAsFactors=FALSE)
+				newRow <- data.frame(Variable=newname, Class="factor", Levels=nlevels(tmpdat[[newname]]), Type=paste("categorical (", nlevels(tmpdat[[newname]]),")", sep=""), Scale="", Sort="", Palette="Set1 (1)", Selected=TRUE, New=TRUE, stringsAsFactors=FALSE)
 				
 				# print command line
 				cat(paste(currentDF, "$", newname, " <- ", CLmethod, sep=""))
@@ -266,9 +266,9 @@ tableGUI_selectVars <- function(vars, parent, e) {
 	varIdCat <- varId[which(substr(varTbl[varId, "Type"],1 ,3)=="cat")]
 	numOfNewCat <- length(varIdCat)
 	if (numOfNewCat!=0) {
-		palNrs <- rep(c(1, 9, 3, 11), length.out=numOfCat+numOfNewCat)
+		palNrs <- rep(c("Set1", "Set2", "Set3", "Set4"), length.out=numOfCat+numOfNewCat)
 		if (numOfCat!=0) palNrs <- palNrs[-(1:numOfCat)]
-		varTbl[varIdCat, "Palette"] <- sapply(palNrs, FUN=function(x){paste("default(", x, ")", sep="")})
+		varTbl[varIdCat, "Palette"] <- palNrs #sapply(palNrs, FUN=function(x){paste("default(", x, ")", sep="")})
 		
 		palettes <- e$palettes
 		for (i in 1:numOfNewCat) {

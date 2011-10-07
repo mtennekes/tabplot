@@ -5,7 +5,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 	lgrey <- "#F0F0F0"	#brewer.pal(9,"Greys")[2]
 	lred <- "#FEE0D2"	#brewer.pal(9,"Reds")[2]
 
-	colors <- c(NA, colorRampPalette(tabplotPalettes[[tCol$paletname]],space="rgb")(100))
+	colors <- c(NA, colorRampPalette(tabplotPalettes$seq[[tCol$paletname]],space="rgb")(100))
 
 	
 	cellplot(2,1,vpGraph, {		

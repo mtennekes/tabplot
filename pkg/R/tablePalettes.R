@@ -1,14 +1,13 @@
 #' Show all palettes of the tabplot package
 #'
-#' All palettes in \code{\link{tabplotPalettes}} are shown in a new device.
+#' All palettes in \code{\link{tabplotPalettes}} are shown.
 #'
-#' @aliases tableplot_showPalettes
 #' @export
 #' @keywords color palettes
-tableplot_showPalettes <- function() {
+tablePalettes <- function() {
 
-	tabplotPalettes <- NULL; rm(tabplotPalettes); #trick R CMD check
-	data("tabplotPalettes")
+	#tabplotPalettes <- NULL; rm(tabplotPalettes); #trick R CMD check
+	#data("tabplotPalettes")
 	
 	k <- length(tabplotPalettes)
 	ncols <- max(sapply(tabplotPalettes,FUN=length))

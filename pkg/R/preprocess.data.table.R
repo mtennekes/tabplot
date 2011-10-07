@@ -1,5 +1,5 @@
 preprocess.data.table <-
-function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, nBins, from, to) {
+function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
 
 	n <- length(colNames)
 
@@ -150,6 +150,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	tab$columns <- list()
 	paletNr <- 1
 	scales <- rep(scales, length.out=sum(isNumber))
+	numP <- rep(numPals, length.out=sum(isNumber))
 	scalesNr <- 1
 	for (i in 1:n) {
 		sortc <- ifelse(i %in% sortCol, ifelse(decreasing[which(i==sortCol)], "decreasing", "increasing"), "")
@@ -160,12 +161,14 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 			col$lower <- datLower[[colNames[i]]]
 			col$upper <- datUpper[[colNames[i]]]
 			col$scale_init <- scales[scalesNr]
+			col$paletname <- numP[scalesNr]
 			scalesNr <- scalesNr + 1
 		} else {
 			col$freq <- datFreq[[colNames[i]]]$freqTable
 			col$categories <- datFreq[[colNames[i]]]$categories
 			col$paletname <- pals$name[paletNr]
 			col$palet <- pals$palette[[paletNr]]
+			col$colorNA <- colorNA
 			paletNr <- ifelse(paletNr==length(pals$name), 1, paletNr + 1)
 		}
  		tab$columns[[i]] <- col

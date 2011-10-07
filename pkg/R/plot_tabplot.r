@@ -17,12 +17,11 @@ function(x, fontsize = 8, legend.lines = 8, title = ifelse(length(x$filter)==0, 
 	## Determine colors and color scales
 	#############################
 	
-	blues <- c(NA, colorRampPalette(brewer.pal(9,"Blues")[2:9],space="rgb")(100))
-	# blues[1] is for missing values, blues[2]...blues[101] is for completion percentages of 1...100
+	#blues <- c(NA, colorRampPalette(brewer.pal(9,"Blues")[2:9],space="rgb")(100))
 
-	lgrey <- brewer.pal(9,"Greys")[2]
-	lred <- brewer.pal(9,"Reds")[2]
-	red <- brewer.pal(9,"Set1")[1]
+	lgrey <- "#F0F0F0"	#brewer.pal(9,"Greys")[2]
+	lred <- "#FEE0D2"	#brewer.pal(9,"Reds")[2]
+	#red <- "#E41A1C"	#brewer.pal(9,"Set1")[1]
 	
 	#############################
 	## Set layout
@@ -148,11 +147,10 @@ function(x, fontsize = 8, legend.lines = 8, title = ifelse(length(x$filter)==0, 
 				})
 			
 				if (tCol$isnumeric){
-					plotNumCol(tCol, x, blues, vpTitle, vpGraph, vpLegend)
+					plotNumCol(tCol, x, vpTitle, vpGraph, vpLegend)
 				}
 				else {
-					catPalet <- c(red, tCol$palet)
-					plotCatCol(tCol, x, catPalet, vpTitle, vpGraph, vpLegend)
+					plotCatCol(tCol, x, vpTitle, vpGraph, vpLegend)
 				}
 			})
 		}

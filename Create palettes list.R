@@ -26,7 +26,7 @@ getHcl <- function(n, start) {
 
 tabplotPalettes <- list(
 	qual = list(
-		Set1 = c("#D55E00", "#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2","#CC79A7", "#000000"),
+		Set1 = c("#D55E00", "#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2","#CC79A7"),
 		Set2=brewer$Set1[-1], 
 		Set3=brewer$Dark2,
 		Set4=brewer$Accent[c(1,5,2,6,3,7,4,8)],

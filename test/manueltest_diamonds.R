@@ -31,4 +31,5 @@ CBS <- c(rgb(255 / 255, 213 / 255,   7 / 255)
 	
 tableplot(diamonds, pals=list(CBS))
 
-tableplot(diamonds, colorNA="#FF1414", numPals="Greens")
+tableplot(diamonds, numPals="Blues")
+tableplot(diamonds, pals=list("HCL1", "HCL2", "HCL3"))

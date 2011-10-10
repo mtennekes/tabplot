@@ -1,5 +1,4 @@
-#' Subsetting a ffdfdata frame (modified from ffbase r62)
-#'
+# Subsetting a ffdfdata frame (modified from ffbase r62)
 subset.ffdf <- function(x, subset, ...){
 	y <- clone(x)
 	n <- 0

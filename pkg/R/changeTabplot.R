@@ -9,7 +9,7 @@
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
 #' \item a index number between 1 and 16. In this case, the default palette is used with the index number being the first color that is used.
-#' \item a palette name in \code{\link{tabplotPalettes}}, optionally with the starting color between brackets.
+#' \item a palette name in \code{\link{tablePalettes}}, optionally with the starting color between brackets.
 #' \item a palette vector
 #' }
 #' @return \link{tabplot-object}

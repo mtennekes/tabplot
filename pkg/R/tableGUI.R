@@ -7,11 +7,12 @@
 #' @param colNames see \code{\link{tableplot}}
 #' @param sortCol see \code{\link{tableplot}}
 #' @param decreasing see \code{\link{tableplot}}
-#' @param scales see \code{\link{tableplot}}
-#' @param pals see \code{\link{tableplot}}
 #' @param nBins see \code{\link{tableplot}}
 #' @param from see \code{\link{tableplot}}
 #' @param to see \code{\link{tableplot}}
+#' @param filter see \code{\link{tableplot}}
+#' @param scales see \code{\link{tableplot}}
+#' @param pals see \code{\link{tableplot}}
 #' @export
 #' @example ../examples/tableGUI.R
 tableGUI <-
@@ -28,8 +29,6 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, 
 	## Check arguments
 	#####################################
 	
-
-
 	## check datName
 	if (!is.null(dat)) {
 		if (class(dat)=="tabplot") {

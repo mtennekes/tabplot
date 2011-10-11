@@ -1,3 +1,7 @@
+library(devtools)
+load_all("../pkg")
+require(classInt)
+
 require(ggplot2)
 data(diamonds)
 ## add some NA's
@@ -33,3 +37,5 @@ tableplot(diamonds, pals=list(CBS))
 
 tableplot(diamonds, numPals="Blues")
 tableplot(diamonds, pals=list("HCL1", "HCL2", "HCL3"))
+
+tableGUI()

@@ -29,8 +29,6 @@ Suggests:
 Collate:
     'brokenX.R'
     'cellplot.R'
-    'changeTabplot.R'
-    'columnsPlot.R'
     'datetime2fac.R'
     'generalFunctions.R'
     'getBinSizes.R'
@@ -49,6 +47,7 @@ Collate:
     'print_tabplot.R'
     'subset.R'
     'summary_tabplot.R'
+    'tableChange.R'
     'tableGUI.R'
     'tableGUI_functions.R'
     'tableGUI_main_handlers.R'

@@ -26,11 +26,11 @@ tableGUI_main_layout <- function(e) {
 		btnReload <- gbutton("Reload", cont=grp9, expand=FALSE)
 
 		######## temp
-		#btnTemp <- gbutton("varTbl", cont=grp9, expand=FALSE)
+		btnTemp <- gbutton("varTbl", cont=grp9, expand=FALSE)
 
-		#addHandlerClicked(btnTemp, function(h,...) {
-		#	print(e$varTbl)
-		#})
+		addHandlerClicked(btnTemp, function(h,...) {
+			print(e$varTbl)
+		})
 		########
 		
 		
@@ -68,11 +68,13 @@ tableGUI_main_layout <- function(e) {
 		btnAsCategory <- gbutton("As Categorical", cont=grp7, expand=TRUE); enabled(btnAsCategory) <- FALSE
 		btnPal <- gbutton("Palette", cont=grp7, expand=TRUE); enabled(btnPal) <- FALSE
 
-		#lbl10 <- glabel("Rows", cont=grp6)
+		ready <- nrow(table2content)!=0 
+		
 		
 		grp2 <- ggroup(horizontal = TRUE, cont = grp6) 
-		showZoom <- (from!=0 || to!=100)
+		showZoom <- (from!=0 || to!=100) & ready
 		cbx <- gcheckbox(text="Zoom in", checked = showZoom, cont= grp2)
+		
 		lbl7 <- glabel("from", cont=grp2)
 		spbBinsFrom <- gspinbutton(0, 100, by = 10, cont=grp2, expand=FALSE)
 		svalue(spbBinsFrom) <- from
@@ -81,16 +83,26 @@ tableGUI_main_layout <- function(e) {
 		spbBinsTo <- gspinbutton(0, 100, by = 10, cont=grp2, expand=FALSE)
 		svalue(spbBinsTo) <- to
 		lbl9 <- glabel("percent", cont=grp2)
+		enabled(cbx) <- ready
 		enabled(lbl7) <- showZoom
 		enabled(spbBinsFrom) <- showZoom
 		enabled(lbl8) <- showZoom
 		enabled(spbBinsTo) <- showZoom
 		enabled(lbl9) <- showZoom
-			
+
+		
+		correctFilter <- tableGUI_filter(filter, e)
+		grp3 <- ggroup(horizontal = TRUE, cont = grp6) 
+		lbl10 <- glabel("Filter:", cont=grp3)
+		gtxtFilter <- gedit(text= filter, cont=grp3)
+		enabled(lbl10) <- enabled(gtxtFilter) <- ready
+		
 		grp1 <- ggroup(horizontal = TRUE, cont = grp6) 
 		lbl1 <- glabel("Number of Row Bins:", cont=grp1)
 		spbBins <- gspinbutton(0, 1000, by = 10, cont=grp1, expand=TRUE)
 		svalue(spbBins) <- nBins
-		btnRun <- gbutton("Run", cont=grp1, expand=TRUE); enabled(btnRun) <- nrow(tbl2[,])!=0
+		enabled(lbl1) <- enabled(spbBins) <- ready
+		
+		btnRun <- gbutton("Run", cont=grp1, expand=TRUE); enabled(btnRun) <- ready
 	})
 }

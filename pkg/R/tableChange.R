@@ -8,15 +8,16 @@
 #' @param flip logical, if TRUE then the plot is flipped vertically, i.e.\ the row bins are reversed
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
-#' \item a index number between 1 and 16. In this case, the default palette is used with the index number being the first color that is used.
 #' \item a palette name in \code{\link{tablePalettes}}, optionally with the starting color between brackets.
 #' \item a palette vector
 #' }
+#' @param colorNA color for missing values
+#' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
 #' @return \link{tabplot-object}
 #' @export
-#' @example ../examples/changeTabplot.R
+#' @example ../examples/tableChange.R
 
-changeTabplot <- function(tab, colNames=sapply(tab$columns, function(col)col$name), flip=FALSE, pals=list()) {
+tableChange <- function(tab, colNames=sapply(tab$columns, function(col)col$name), flip=FALSE, pals=list(), colorNA = NULL, numPals = NULL) {
 
 	## change order of columns
 	currentColNames <- sapply(tab$columns, function(col)col$name)
@@ -79,12 +80,34 @@ changeTabplot <- function(tab, colNames=sapply(tab$columns, function(col)col$nam
 			paletNr <- ifelse(paletNr==length(pals$name), 1, paletNr + 1)
 		}
 	}
+
+	## change colorNA
+	if (!is.null(colorNA)) {
+		## Check colorNA
+		if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") {
+			stop("<colorNA> is not correct")
+		}
+		whichCategorical <- which(sapply(tab2$columns, FUN=function(col)!col$isnumeric))
+
+		for (i in whichCategorical) {
+			tab2$columns[[i]]$colorNA <- colorNA
+		}
+	}
 	
-	## set initial scales to final scales
-	#for (i in which(tab2$isNumber)) {
-	#	tab2$columns[[i]]$scale_init <- tab2$columns[[i]]$scale_final
-	#}
-	
+	## change numeric palettes
+	if (!is.null(numPals)) {
+		## Check numPals
+		if ((class(numPals)!="character") || !all(numPals %in% c("Blues", "Greens", "Greys"))) stop("<numPals> is not correct")
+
+		whichNumeric <- which(sapply(tab2$columns, FUN=function(col)col$isnumeric))	
+		numPals <- rep(numPals, length.out=length(whichNumeric))
+		paletNr <- 1
+		for (i in whichNumeric) {
+			tab2$columns[[i]]$paletname <- numPals[paletNr]
+			paletNr <- paletNr + 1
+		}
+		
+	}
 	
 	class(tab2) <- "tabplot"
 	return(tab2)

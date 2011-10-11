@@ -1,6 +1,6 @@
-export(changeTabplot)
 export(datetime2fac)
 export(num2fac)
+export(tableChange)
 export(tableGUI)
 export(tablePalettes)
 export(tableplot)

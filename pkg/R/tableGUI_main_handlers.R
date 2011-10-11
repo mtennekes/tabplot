@@ -98,6 +98,22 @@ tableGUI_main_handlers <- function(e) {
 			}
 		})
 
+		
+		## change filter
+		addHandlerChanged(gtxtFilter, function(h,...) {
+			#test filter
+			svalue(sbr) <- "Testing filter..."
+			correctF <- tableGUI_filter(svalue(h$obj), e)
+			enabled(btnRun) <- correctF
+			if (correctF) {
+				font(lbl10)  <- c(color="black", weight="normal")
+				svalue(sbr) <- "Ready"
+			} else {
+				font(lbl10)  <- c(color="red", weight="normal")
+				svalue(sbr) <- "Incorrect filter"
+			}
+		})
+		
 
 				
 		## run!
@@ -108,8 +124,9 @@ tableGUI_main_handlers <- function(e) {
 			gui_from <- svalue(spbBinsFrom)
 			gui_to <- svalue(spbBinsTo)
 			gui_nBins <- svalue(spbBins)
+			gui_filter <- svalue(gtxtFilter)
 			
-			tableGUI_run(tbl2[,1], gui_from, gui_to, gui_nBins, e) 
+			tableGUI_run(tbl2[,1], gui_from, gui_to, gui_nBins, gui_filter, e) 
 			
 			svalue(sbr) <- "Ready"
 		})
@@ -308,6 +325,11 @@ tableGUI_main_handlers <- function(e) {
 				enabled(lbl1) <- FALSE
 				enabled(spbBins) <- FALSE
 				
+				# disable filter
+				svalue(gtxtFilter) <- ""
+				enabled(gtxtFilter) <- FALSE
+				enabled(lbl10) <- FALSE
+				
 				# disable button row under tbl2
 				enabled(btnUp) <- FALSE
 				enabled(btnDown) <- FALSE
@@ -326,6 +348,11 @@ tableGUI_main_handlers <- function(e) {
 				# enable number of bins
 				enabled(lbl1) <- TRUE
 				enabled(spbBins) <- TRUE
+				
+				# enable filter
+				enabled(gtxtFilter) <- TRUE
+				enabled(lbl10) <- TRUE
+
 				
 				# check selected rows
 				index <- svalue(tbl2, index=TRUE)

@@ -208,10 +208,10 @@ summary(tab)
 plot(tab)
 @
 
-The function {\tt changeTabplot} is used to make minor changes to a tabplot-object. Suppose we want the columns in the order of \ref{fig:tp2}, and we want to change all color palettes to default starting with the first color.
+The function {\tt tableChange} is used to make minor changes to a tabplot-object. Suppose we want the columns in the order of \ref{fig:tp2}, and we want to change all color palettes to default starting with the second color.
 
 <<>>=
-tab2 <- changeTabplot(tab, colNames=c("carat", "price", "cut", "color", "clarity"), pals=list("Set1(1)"))
+tab2 <- tableChange(tab, colNames=c("carat", "price", "cut", "color", "clarity"), pals=list("Set1(2)"))
 plot(tab2)
 @
 

@@ -24,11 +24,12 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, 
 	options("guiToolkit"="RGtk2")
 
 	e <- environment()
-
+	
 	#####################################
 	## Check arguments
 	#####################################
-	
+	if (is.null(filter)) filter <- ""
+    
 	## check datName
 	if (!is.null(dat)) {
 		if (class(dat)=="tabplot") {
@@ -44,7 +45,10 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, 
 
 			from <- dat$rows$from
 			to <- dat$rows$to
-
+			
+			filter <- dat$filter
+			if (filter==character(0)) filter <- ""
+			
 			# colNames
 			colNames <- sapply(dat$columns, FUN=function(x)x$name)
 			if (class(colNames)[1]!="character") stop("<colNames> is not a character(vector)")

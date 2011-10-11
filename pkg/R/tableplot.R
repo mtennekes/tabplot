@@ -108,6 +108,14 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBi
 	## Check palet indices
 	pals <- tableplot_checkPals(pals)
 	
+	## Check colorNA
+	if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") {
+		stop("<colorNA> is not correct")
+	}
+	
+	## Check numPals
+	if ((class(numPals)!="character") || !all(numPals %in% c("Blues", "Greens", "Greys"))) stop("<numPals> is not correct")
+	
 	## Check nBins
 	nBins <- tableplot_checkBins(nBins, nrow(dat))
 	

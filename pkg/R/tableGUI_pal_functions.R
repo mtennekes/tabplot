@@ -93,7 +93,7 @@ tableGUI_updatePal <- function(e) {
 			# } else {
 				for (i in 1:8) {
 					svalue(tbl_pal[i,2]) <- printCol[i]
-					font(tbl_pal[i,2])  <- c(color=drawFill[i], style="bold")
+					font(tbl_pal[i,2])  <- c(color=drawFill[i], style="normal")
 					
 				}
 			# }

@@ -161,7 +161,13 @@ tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, paren
 	tmpdat <- get(currentDF, envir=.GlobalEnv)
 	if (classSimplified(tmpdat[,name])[1] %in% c("numeric", "integer")) {
 		tmpdat$tmptmp <- num2fac(tmpdat[, name], num_scale=num_scale, method=method, n=n, brks=brks)
-		CLmethod <- paste("num2fac(", currentDF, "$", name, ", num_scale=\"", num_scale, "\", method=\"", method, "\", n=", n, ", brks=", brks, ")\n", sep="")
+		CLmethod <- paste("num2fac(", currentDF, "$", name,
+						  ", num_scale=\"", num_scale, 
+						  "\", method=\"", method, "\", n=", n, 
+						  ifelse(length(brks)==1, ", brks=", ", brks=c("),
+						  paste(brks,collapse=","), 
+						  ifelse(length(brks)==1, "", ")"),
+						  ")\n", sep="")
 	} else if (classSimplified(tmpdat[,name])[1] %in% c("POSIXt", "Date")) {
 		tmpdat$tmptmp <- datetime2fac(tmpdat[, name])
 		CLmethod <- paste("datetime2fac(", currentDF, "$", name, ")\n", sep="")
@@ -197,7 +203,7 @@ tableGUI_castToCat <- function(name, num_scale="", method="", n=0, brks=0, paren
 				colnames(tmpdat)[ncol(tmpdat)] <- newname
 				assign(currentDF, tmpdat, envir=.GlobalEnv)
 						
-				newRow <- data.frame(Variable=newname, Class="factor", Levels=nlevels(tmpdat[[newname]]), Type=paste("categorical (", nlevels(tmpdat[[newname]]),")", sep=""), Scale="", Sort="", Palette="Set1 (1)", Selected=TRUE, New=TRUE, stringsAsFactors=FALSE)
+				newRow <- data.frame(Variable=newname, Class="factor", Levels=nlevels(tmpdat[[newname]]), Type=paste("categorical (", nlevels(tmpdat[[newname]]),")", sep=""), Scale="", Sort="", Palette="Set1", Selected=TRUE, New=TRUE, stringsAsFactors=FALSE)
 				
 				# print command line
 				cat(paste(currentDF, "$", newname, " <- ", CLmethod, sep=""))
@@ -300,8 +306,49 @@ tableGUI_unselectVars <- function(vars, parent, e) {
 	return(vars)
 }
 
+
+## function to test filter
+tableGUI_filter <- function(filter, e) {
+
+	if (filter=="") {
+		assign("correctFilter", TRUE, envir=e)
+		return(TRUE)
+	}
+	
+	filter <- gsub("Â.", "'", filter)
+	
+	varTable <- tableGUI_getTbl2(cols=c("Variable", "Class"), e=e)
+	if (filter %in% varTable$Variable) {
+		if (varTable$Class[varTable$Variable==filter]=="factor") {
+			assign("correctFilter", TRUE, envir=e)
+			return(TRUE)
+		} else {
+			gmessage("Filter variable is not a categorical variable", title = "Error", icon = "error")	
+			assign("correctFilter", FALSE, envir=e)
+			return(FALSE)
+		}
+	} 
+	
+	currentDFname <- tableGUI_getCurrentDFname(e)
+	dat <- get(currentDFname, envir=.GlobalEnv)[1:5, ]
+
+	
+	if (class(try({
+		filterExpr <- parse(text=filter)
+		sel <- eval(filterExpr, dat)
+		dat <- dat[sel,]}, silent=TRUE))=="try-error") {
+		gmessage("Filter is not correct", title = "Error", icon = "error")	
+		assign("correctFilter", FALSE, envir=e)
+		return(FALSE)
+	} else {
+		assign("correctFilter", TRUE, envir=e)
+		return(TRUE)
+	}
+}
+
+
 ## applied when clicked on run button 
-tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
+tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, gui_filter, e) {
 	currentDFname <- tableGUI_getCurrentDFname(e)
 	
 	nBins <- min(gui_nBins, tableGUI_getCurrentDFnrow(e))
@@ -340,6 +387,13 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 	decreasingPrint <- createVector(decreasing)
 
 	
+	# filter
+	gui_filter <- gsub("Â.", "'", gui_filter)
+	gui_filter2 <- gsub("\"", "\\\\\"", gui_filter)
+	filterPrint <- ifelse(gui_filter=="", "", paste(", filter=\"",gui_filter2,"\"", sep=""))
+	if (gui_filter=="") gui_filter <- NULL
+	
+	# palettes	
 	isCat <- varTable$Palette!=""
 	palettes <- as.list(varTable$Palette[isCat])
 	names(palettes) <- varTable$Variable[isCat]
@@ -352,19 +406,17 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 	
 	palPrint <- paste("list(", paste(sapply(palettes, createVector, quotes=TRUE), collapse=","), ")", sep="")
 		
-	
-	
 	if (dev.cur()==1) {
 		dev.new(width=min(11, 2+2*tableGUI_getNumSel(e)), height=7, rescale="fixed")
 	}
-	if (!is.null(e$tab)) {
+	if (!is.null(e$tab) && class(e$tab)=="tabplot") { ##second check needed since tab can be a list of tabplots
 		## check whether existing tabplot object is usable
 		tab <- e$tab
-		isUsable <- isTabplotUsable(tab, vars, sortCol, decreasing, scales, nBins, gui_from, gui_to)
+		isUsable <- isTabplotUsable(tab, vars, sortCol, decreasing, scales, nBins, gui_from, gui_to, gui_filter)
 	} else {
 		isUsable <- FALSE
 	}
-
+	 
 	## simplify scales vector
 	if (all(scales==scales[1])) scales <- scales[1]
 	scalesPrint <- createVector(scales, quotes=TRUE)
@@ -373,23 +425,26 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, e) {
 	if (isUsable) {
 		firstSortColID <- match(vars[sortCol[1]], sapply(tab$columns, function(col)col$name))
 		flip <- (tab$columns[[firstSortColID]]$sort=="decreasing") != decreasing[1]
-		tab <- changeTabplot(tab, colNames=vars, flip=flip, pals=palettes)
+		tab <- tableChange(tab, colNames=vars, flip=flip, pals=palettes)
 	} else {
 		if (tableGUI_getCurrentDFclass(e)=="data.table") {
-			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[, vars, with=FALSE], sortCol=sortCol, decreasing=decreasing, scales=scales, pals=palettes, nBins=nBins, from=gui_from, to=gui_to, plot=FALSE)
+			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[, vars, with=FALSE], sortCol=sortCol, decreasing=decreasing, nBins=nBins, from=gui_from, to=gui_to, filter=gui_filter, scales=scales, pals=palettes, plot=FALSE)
 		} else 
 		{
-			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[vars], sortCol=sortCol, decreasing=decreasing, scales=scales, pals=palettes, nBins=nBins, from=gui_from, to=gui_to, plot=FALSE)
+			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[vars], sortCol=sortCol, decreasing=decreasing, nBins=nBins, from=gui_from, to=gui_to, filter=gui_filter, scales=scales, pals=palettes, plot=FALSE)
 		}
 	}
 
 	
 	## print commandline to reproduce tableplot
-	cat("tableplot(", currentDFname, ", colNames=c(", paste("\"",paste(vars,collapse="\",\""),"\"", sep=""), "), sortCol=", sortColPrint, ", decreasing=", decreasingPrint, ", scales=", scalesPrint, ", pals=", palPrint, ", nBins=", nBins, ", from=", gui_from, ", to=", gui_to, ")\n", sep="")
+	cat("tableplot(", currentDFname, ", colNames=c(", paste("\"",paste(vars,collapse="\",\""),"\"", sep=""), "), sortCol=", sortColPrint, ", decreasing=", decreasingPrint, ", nBins=", nBins, ", from=", gui_from, ", to=", gui_to, filterPrint, ", scales=", scalesPrint, ", pals=", palPrint, ")\n", sep="")
 
 	
 	assign("tab", tab, envir=e)	
-	plot(tab)
+	if(class(tab)=="tabplot")
+		plot(tab)
+	else
+		lapply(tab, plot)
 }
 
 

@@ -314,8 +314,8 @@ tableGUI_filter <- function(filter, e) {
 		assign("correctFilter", TRUE, envir=e)
 		return(TRUE)
 	}
-	
-	filter <- gsub("Â.", "'", filter)
+
+	filter <- gsub("\u00c2.", "'", filter)
 	
 	varTable <- tableGUI_getTbl2(cols=c("Variable", "Class"), e=e)
 	if (filter %in% varTable$Variable) {
@@ -388,7 +388,7 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, gui_filter, e) {
 
 	
 	# filter
-	gui_filter <- gsub("Â.", "'", gui_filter)
+	gui_filter <- gsub("\u00c2.", "'", gui_filter)
 	gui_filter2 <- gsub("\"", "\\\\\"", gui_filter)
 	filterPrint <- ifelse(gui_filter=="", "", paste(", filter=\"",gui_filter2,"\"", sep=""))
 	if (gui_filter=="") gui_filter <- NULL

@@ -35,7 +35,7 @@ CBS <- c(rgb(255 / 255, 213 / 255,   7 / 255)
 	
 tableplot(diamonds, pals=list(CBS))
 
-tableplot(diamonds, numPals="Blues")
+tableplot(diamonds, numPals="Greens")
 tableplot(diamonds, pals=list("HCL1", "HCL2", "HCL3"))
 
 tableGUI()

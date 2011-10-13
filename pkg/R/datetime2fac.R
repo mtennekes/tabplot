@@ -2,9 +2,10 @@
 #'
 #' Creates a factor vector out of a date-time vector from class "POSIXt" or "Date".
 #'
+#' The range \code{rng} is cut according to different pretty rounded time periods. The cut with the number of levels that is closest to 6 is chosen. Vector \code{p} is cut accordingly. Values of \code{p} outside \code{rng} are translated to \code{NA}.
 #' @param p date-time vector
-#' @param rng range of the factor. Values of \code{p} outside this range are translated to \code{NA} 
-#' @return A factor vector
+#' @param rng range of the factor. 
+#' @return A factor vector. 
 #' @export
 #' @note \code{ff} vectors are not implemented yet
 datetime2fac <- function(p, rng=range(p, na.rm=TRUE)) {

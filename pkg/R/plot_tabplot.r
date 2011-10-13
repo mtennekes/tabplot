@@ -1,7 +1,7 @@
 #' Function that plots a \link{tabplot-object}.
 #'
 #' @aliases plot.tabplot
-#' @param x tabplot object
+#' @param x \link{tabplot-object}
 #' @param fontsize the (maximum) fontsize
 #' @param legend.lines the number of lines preserved for the legend
 #' @param title title of the plot (shown if \code{showTitle==TRUE})

@@ -103,6 +103,7 @@ tableGUI_main_layout <- function(e) {
 		svalue(spbBins) <- nBins
 		enabled(lbl1) <- enabled(spbBins) <- ready
 		
+		btnSave <- gbutton("Save", cont=grp1, expand=TRUE); enabled(btnSave) <- FALSE
 		btnRun <- gbutton("Run", cont=grp1, expand=TRUE); enabled(btnRun) <- ready
 	})
 }

@@ -1,6 +1,17 @@
 #' A graphical user interface for customizing a tableplot visualization.
 #'
-#' A GUI by which tableplots can be created. General work flow: 1) a loaded dataset is selected, 2) variables of this dataset are selected, 3) sorted variable(s) are chosen, the number of row bins is set, etc. It is also possible to cast numerical vector to a factor vector (by means of the function \code{\link{num2fac}}). The GUI is started empty by calling it without any arguments.
+#' A GUI by which tableplots can be created.
+#'
+#' General work flow: 
+#' \enumerate{
+#' \item select a loaded dataset 
+#' \item select variables
+#' \item configure the tableplot: determine the sorted variable, the scales, palettes, number of bins, etc.}
+#' There are three options to start the GUI:
+#' \enumerate{
+#' \item Without any arguments. The GUI is initialized empty.
+#' \item With \code{dat} being a \link{tabplot-object}. The GUI is initialized according to the settings of \code{dat}.
+#' \item With the same set of arguments as \code{\link{tableplot}}. The GUI is initialized according to these arguments.}
 #'	
 #' @aliases tableGUI
 #' @param dat either a \link{tabplot-object} or a dataset (see \code{\link{tableplot}})
@@ -13,10 +24,11 @@
 #' @param filter see \code{\link{tableplot}}
 #' @param scales see \code{\link{tableplot}}
 #' @param pals see \code{\link{tableplot}}
+#' @param ... other arguments of \code{\link{tableplot}} are currently ignored
 #' @export
 #' @example ../examples/tableGUI.R
 tableGUI <-
-function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, from=0, to=100, filter=NULL, scales="auto", pals=list("Set1", "Set2", "Set3", "Set4")) {
+function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, from=0, to=100, filter=NULL, scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), ...) {
     if (!require(gWidgetsRGtk2)){
 		stop("This function requires gWidgetsRGtk2")
 	}
@@ -157,6 +169,8 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, 
 	## create window for color palettes 
 	tableGUI_pal_layout(e)
 
+	## create window for saving
+	tableGUI_save_layout(e)
 	
 	#' functions and handlers
     tableGUI_main_handlers(e)
@@ -164,7 +178,9 @@ function(dat=NULL, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, 
 	tableGUI_n2f_handlers(e)
    
 	tableGUI_pal_handlers(e)
-	
+
+	tableGUI_save_handlers(e)
+
 	######################################################
 	## activate GUI
 	######################################################

@@ -43,12 +43,12 @@ tableGUI_updatePal <- function(e) {
 
 			# } else {
 				for (i in 1:8) {
-					svalue(tbl_pal[i,2]) <- ""
+					svalue(tblCol2[[i]]) <- ""
 				}
 			# }
 
 			for (i in 1:8) {
-				svalue(tbl_pal[i,1]) <- ""
+				svalue(tblCol1[[i]]) <- ""
 			}
 
 		} else {
@@ -92,14 +92,13 @@ tableGUI_updatePal <- function(e) {
 				
 			# } else {
 				for (i in 1:8) {
-					svalue(tbl_pal[i,2]) <- printCol[i]
-					font(tbl_pal[i,2])  <- c(color=drawFill[i], style="normal")
-					
+					svalue(tblCol2[[i]]) <- printCol[i]
+					font(tblCol2[[i]])  <- c(color=drawFill[i], style="normal")
 				}
 			# }
 
 			for (i in 1:8) {
-				svalue(tbl_pal[i,1]) <- printLev[i]
+				svalue(tblCol1[[i]]) <- printLev[i]
 			}
 			
 			##save pal info

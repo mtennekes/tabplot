@@ -19,11 +19,11 @@ URL: http://code.google.com/p/tableplot/
 Date: 2011-10-07
 Depends:
     data.table (>= 1.5.3),
-    gWidgets,
-    gWidgetsRGtk2,
     grid,
 Suggests:
     ff (>= 2.2-0),
+    gWidgets,
+    gWidgetsRGtk2,
     classInt,
     ggplot2
 Collate:

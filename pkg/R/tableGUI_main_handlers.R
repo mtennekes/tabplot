@@ -63,7 +63,7 @@ tableGUI_main_handlers <- function(e) {
 				vars1 <- setdiff(tbl1[,1], vars2)
 				tbl1[] <- tableGUI_getTbl1(vars=vars1, e=e)
 				svalue(btnTransfer)<-">"
-				enabled(btnRun) <- TRUE
+				enabled(btnRun) <- correctFilter
 				enabled(btnTransfer) <- FALSE
 			} else {
 				indices <- svalue(tbl2, index=TRUE)
@@ -79,14 +79,14 @@ tableGUI_main_handlers <- function(e) {
 				vars2 <- setdiff(tbl2[,1], vars)
 				tbl2[] <- tableGUI_getTbl2(vars=vars2, e=e)
 				svalue(btnTransfer)<-"<"
-				enabled(btnRun) <- nrow(tbl2)!=0
+				enabled(btnRun) <- nrow(tbl2)!=0 && correctFilter
 			}
 			svalue(sbr) <- "Ready"
 		})
 
 		## change number of bins
 		addHandlerKeystroke(spbBins, function(h,...) {
-			enabled(btnRun) <- (svalue(spbBins) > 0 && nrow(tbl2)!=0)
+			enabled(btnRun) <- (svalue(spbBins) > 0 && nrow(tbl2)!=0)  && correctFilter
 		})
 		addHandlerChanged(spbBins, function(h,...) {
 			mx <- tableGUI_getCurrentDFnrow(e)
@@ -114,6 +114,13 @@ tableGUI_main_handlers <- function(e) {
 			}
 		})
 		
+		## save
+		addHandlerClicked(btnSave, function(h,...) {
+			enabled(btnSave) <- FALSE
+			svalue(sbr) <- "Saving..."
+
+			tableGUI_initSave(e) 
+		})
 
 				
 		## run!
@@ -125,8 +132,9 @@ tableGUI_main_handlers <- function(e) {
 			gui_to <- svalue(spbBinsTo)
 			gui_nBins <- svalue(spbBins)
 			gui_filter <- svalue(gtxtFilter)
-			
+
 			tableGUI_run(tbl2[,1], gui_from, gui_to, gui_nBins, gui_filter, e) 
+			enabled(btnSave) <- TRUE
 			
 			svalue(sbr) <- "Ready"
 		})
@@ -140,7 +148,7 @@ tableGUI_main_handlers <- function(e) {
 			}
 			tbl2[] <- tbl2temp
 			svalue(tbl2,index=TRUE) <- index - 1
-			enabled(btnRun) <- TRUE
+			enabled(btnRun) <-  correctFilter
 		})
 
 		## move down
@@ -152,7 +160,7 @@ tableGUI_main_handlers <- function(e) {
 			}
 			tbl2[] <- tbl2temp
 			svalue(tbl2,index=TRUE) <- index + 1
-			enabled(btnRun) <- TRUE
+			enabled(btnRun) <-  correctFilter
 		})
 		  
 		  
@@ -169,7 +177,7 @@ tableGUI_main_handlers <- function(e) {
 			
 			tableGUI_setVarTbl(vars=tbl2[index, 1], cols="Scale", value=newValues, e=e)
 			
-			enabled(btnRun) <- TRUE
+			enabled(btnRun) <-  correctFilter
 		})
 		  
 		## sort
@@ -190,7 +198,7 @@ tableGUI_main_handlers <- function(e) {
 				enabled(btnRun) <- FALSE
 			} else {
 				svalue(sbr) <- "Ready"
-				enabled(btnRun) <- TRUE
+				enabled(btnRun) <-  correctFilter
 			}
 		})
 
@@ -222,7 +230,7 @@ tableGUI_main_handlers <- function(e) {
 			assign("palVarName", palVarName, envir=e)
 			
 			tableGUI_initPal(e) 
-			enabled(btnRun) <- TRUE
+			enabled(btnRun) <-  correctFilter
 	
 		})
 		
@@ -242,7 +250,7 @@ tableGUI_main_handlers <- function(e) {
 				enabled(lbl8) <- FALSE
 				enabled(spbBinsTo) <- FALSE
 				enabled(lbl9) <- FALSE
-				if (!((svalue(spbBinsFrom)==0) && (svalue(spbBinsTo)==100)))  enabled(btnRun) <- TRUE
+				if (!((svalue(spbBinsFrom)==0) && (svalue(spbBinsTo)==100)))  enabled(btnRun) <-  correctFilter
 
 				svalue(spbBinsFrom) <- 0
 				svalue(spbBinsTo) <- 100
@@ -251,7 +259,7 @@ tableGUI_main_handlers <- function(e) {
 
 		## change <from>	
 		addHandlerKeystroke(spbBinsFrom, function(h,...) {
-			enabled(btnRun) <- TRUE
+			enabled(btnRun) <-  correctFilter
 		})
 		addHandlerChanged(spbBinsFrom, function(h,...) {
 			if (svalue(h$obj) >= svalue(spbBinsTo)) {
@@ -262,7 +270,7 @@ tableGUI_main_handlers <- function(e) {
 		
 		## change <to>	
 		addHandlerKeystroke(spbBinsTo, function(h,...) {
-			enabled(btnRun) <- TRUE
+			enabled(btnRun) <-  correctFilter
 		})
 		addHandlerChanged(spbBinsTo, function(h,...) {
 			if (svalue(h$obj) <= svalue(spbBinsFrom)) {
@@ -365,7 +373,7 @@ tableGUI_main_handlers <- function(e) {
 					enabled(btnAsCategory) <- (any(substr(tbl2[index, 2],1,3)=="num") && tableGUI_getCurrentDFclass(e)!="ffdf")
 					enabled(btnPal) <- (any(substr(tbl2[1:nrow(tbl2), 2],1,3)=="cat"))
 
-					enabled(btnScale) <- TRUE
+					enabled(btnScale) <- any(substr(tbl2[index, 2],1,3)=="num")
 					enabled(btnTransfer) <- TRUE
 					svalue(btnTransfer) <- "<"
 				} else {

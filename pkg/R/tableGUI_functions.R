@@ -386,12 +386,11 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, gui_filter, e) {
 	decreasing <- sorts[sortID]=="\\/"
 	decreasingPrint <- createVector(decreasing)
 
-	
 	# filter
 	gui_filter <- gsub("\u00c2.", "'", gui_filter)
 	gui_filter2 <- gsub("\"", "\\\\\"", gui_filter)
 	filterPrint <- ifelse(gui_filter=="", "", paste(", filter=\"",gui_filter2,"\"", sep=""))
-	if (gui_filter=="") gui_filter <- NULL
+	if (gui_filter=="") gui_filter3 <- NULL else gui_filter3 <- gui_filter
 	
 	# palettes	
 	isCat <- varTable$Palette!=""
@@ -428,10 +427,10 @@ tableGUI_run <- function(vars, gui_from, gui_to, gui_nBins, gui_filter, e) {
 		tab <- tableChange(tab, colNames=vars, flip=flip, pals=palettes)
 	} else {
 		if (tableGUI_getCurrentDFclass(e)=="data.table") {
-			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[, vars, with=FALSE], sortCol=sortCol, decreasing=decreasing, nBins=nBins, from=gui_from, to=gui_to, filter=gui_filter, scales=scales, pals=palettes, plot=FALSE)
+			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[, vars, with=FALSE], sortCol=sortCol, decreasing=decreasing, nBins=nBins, from=gui_from, to=gui_to, filter=gui_filter3, scales=scales, pals=palettes, plot=FALSE)
 		} else 
 		{
-			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[vars], sortCol=sortCol, decreasing=decreasing, nBins=nBins, from=gui_from, to=gui_to, filter=gui_filter, scales=scales, pals=palettes, plot=FALSE)
+			tab <- tableplot(get(currentDFname, envir=.GlobalEnv)[vars], sortCol=sortCol, decreasing=decreasing, nBins=nBins, from=gui_from, to=gui_to, filter=gui_filter3, scales=scales, pals=palettes, plot=FALSE)
 		}
 	}
 

@@ -53,6 +53,12 @@ tableGUI_pal_handlers <- function(e) {
 			enabled(wdw) <- TRUE
 		})
 
+
+		addHandlerClicked(btn_show, handler = function(h,...) {
+			tablePalettes()
+		})
+
+		
 		addHandlerClicked(btn_cancel, handler = function(h,...) {
 			visible(wdw_pal) <- FALSE
 			enabled(wdw) <- TRUE

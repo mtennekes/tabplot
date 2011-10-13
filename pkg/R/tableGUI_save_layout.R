@@ -1,19 +1,27 @@
-tableGUI_pal_layout <- function(e) {
+tableGUI_save_layout <- function(e) {
 	with(e, {
 
-		wdw_pal <- gwindow("Color palette", width=150, height=100, parent=wdw, visible=FALSE)
-		#wdw_pal <- gwindow("Color palette", width=200, height=100)
-		gpan_pal <- gpanedgroup(cont=wdw_pal)
+		wdw_save <- gwindow("Save", width=150, height=100, parent=wdw, visible=FALSE)
+		gpan_save <- gpanedgroup(cont=wdw_save)
 		
-		grp_pal1 <- ggroup(horizontal = FALSE, cont = gpan_pal, expand=FALSE)
-		frm_pal1 <- gframe(text="Categorical Variable", horizontal = FALSE, cont = grp_pal1) 
+		grp0_save <- ggroup(horizontal = FALSE, cont = gpan_save, expand=FALSE)
+		
+		grp1_save <- ggroup(horizontal = TRUE, cont = grp0_save, expand=FALSE)
+		grad_save <- gradio(c("Save to file", "Save to workspace"), cont=grp1_save)
+		
+		grp2_save <- ggroup(horizontal = TRUE, cont = grp0_save, expand=FALSE)
+		formats <- c("pdf", "eps", "svg", "wmf", "png", "jpg", "bmp","tiff")
+		
+		edt_save <- gedit(text="", cont=grp2_save)
+		lbl1_save <- glabel(".", cont=grp2_save)
+		cmb_save <- gcombobox(formats, cont=grp2_save)
 
-
-		#lbl_pal <- glabel("Categorical variable:", cont=grp_pal3)
-		blockHandler_cmb_pal1 <- FALSE
-		blockHandler_pal <- FALSE
-		cmb_pal1 <- gcombobox("temp", cont=frm_pal1)
-
+		grp3_save <- ggroup(horizontal = TRUE, cont = grp0_save, expand=FALSE)
+		btn_cancelsave <- gbutton("Cancel", container = grp3_save)
+		btn_save <- gbutton("Save", container = grp3_save)
+				
+		
+		
 		frm_pal2 <- gframe(text="Color palette", horizontal = FALSE, cont = grp_pal1) 
 		
 		grp_pal3 <- ggroup(horizontal = TRUE, cont = frm_pal2, expand=TRUE)

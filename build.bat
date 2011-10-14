@@ -4,8 +4,11 @@
 echo Removing building information...
 rm -rf output
 
-echo Generate documentation...
-R -q -f roxygen.R
+echo Create palletes...
+R -q -f build/createpallete.R
+
+echo Build documentation...
+R -q -f build/roxygen.R
 
 md output
 cd output

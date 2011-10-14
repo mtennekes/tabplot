@@ -68,3 +68,6 @@ Collate:
     'tableSave.R'
     'tableViewport.R'
     'tabplot_object.R'
+    'tableGUI_save_functions.R'
+    'tableGUI_save_handlers.R'
+    'tableGUI_save_layout.R'

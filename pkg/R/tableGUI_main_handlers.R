@@ -116,7 +116,6 @@ tableGUI_main_handlers <- function(e) {
 		
 		## save
 		addHandlerClicked(btnSave, function(h,...) {
-			enabled(btnSave) <- FALSE
 			svalue(sbr) <- "Saving..."
 
 			tableGUI_initSave(e) 

@@ -19,7 +19,7 @@ tableGUI_save_layout <- function(e) {
 		grp3_save <- ggroup(horizontal = TRUE, cont = grp0_save, expand=FALSE)
 		btn_cancelsave <- gbutton("Cancel", container = grp3_save)
 		btn_save <- gbutton("Save", container = grp3_save)
-				
+		enabled(btn_save) <- FALSE		
 		
 		
 		frm_pal2 <- gframe(text="Color palette", horizontal = FALSE, cont = grp_pal1) 

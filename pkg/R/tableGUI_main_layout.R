@@ -26,11 +26,11 @@ tableGUI_main_layout <- function(e) {
 		btnReload <- gbutton("Reload", cont=grp9, expand=FALSE)
 
 		######## temp
-		btnTemp <- gbutton("varTbl", cont=grp9, expand=FALSE)
-
-		addHandlerClicked(btnTemp, function(h,...) {
-			print(e$varTbl)
-		})
+# 		btnTemp <- gbutton("varTbl", cont=grp9, expand=FALSE)
+# 
+# 		addHandlerClicked(btnTemp, function(h,...) {
+# 			print(e$varTbl)
+# 		})
 		########
 		
 		

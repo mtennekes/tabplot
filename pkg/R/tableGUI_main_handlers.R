@@ -6,12 +6,12 @@ tableGUI_main_handlers <- function(e) {
 
 	with(e, {	
 		# select data.frame
-		addHandlerChanged(cmb, handler = function(h,...) {
+		refreshCmb <- function(obj) {
 			if (!blockCmbHandler) {
-				if (is.null(svalue(h$obj))) {
-					svalue(h$obj) <- tableGUI_getCurrentDFname(e)
+				if (is.null(svalue(obj))) {
+					svalue(obj) <- tableGUI_getCurrentDFname(e)
 				}
-				tableGUI_refreshDF(newDF=svalue(h$obj), wdw, e)
+				tableGUI_refreshDF(newDF=svalue(obj), wdw, e)
 				
 				tbl1[] <- tableGUI_getTbl1(e=e)
 				tbl2[] <- tableGUI_getTbl2(e=e)
@@ -32,8 +32,39 @@ tableGUI_main_handlers <- function(e) {
 				}
 				enabled(btnTransfer) <- FALSE
 			}
+			
+		}
+		
+		addHandlerChanged(cmb, handler = function(h,...) {
+			refreshCmb(h$obj)
+# 			if (!blockCmbHandler) {
+# 				if (is.null(svalue(h$obj))) {
+# 					svalue(h$obj) <- tableGUI_getCurrentDFname(e)
+# 				}
+# 				tableGUI_refreshDF(newDF=svalue(h$obj), wdw, e)
+# 				
+# 				tbl1[] <- tableGUI_getTbl1(e=e)
+# 				tbl2[] <- tableGUI_getTbl2(e=e)
+# 				
+# 				nr <- tableGUI_getCurrentDFnrow(e)
+# 				
+# 				svalue(lbl5) <- nr
+# 
+# 				if (nr<2) {
+# 					svalue(sbr) <- ifelse(nr==0, "Warning: no objects available.", "Warning: only one object available.")
+# 					svalue(spbBins) <- nr
+# 				} else if (nr < 10) {
+# 					svalue(sbr) <- "Warning: only a few objects available. Number of row bins will be ignored."
+# 					svalue(spbBins) <- nr
+# 				} else {
+# 					svalue(sbr) <- ""
+# 					svalue(spbBins) <- min(nr, 100)
+# 				}
+# 				enabled(btnTransfer) <- FALSE
+# 			}
 		})
 
+		
 		## refresh table1
 		addHandlerClicked(btnReload, function(h,...) {
 			#disactivate cmb handler (blockHandler does not work)
@@ -41,12 +72,16 @@ tableGUI_main_handlers <- function(e) {
 			tableGUI_init_data(tableGUI_getCurrentDFname(e), e=e)
 			#tableGUI_refreshDF(newDF=tableGUI_getCurrentDFname(e), wdw, e)
 			cmb[] <- e$datlist
+			svalue(cmb) <- tableGUI_getCurrentDFname(e)
 			e$blockCmbHandler <- FALSE
 		
 			#activate cmb handler
-			svalue(cmb) <- ""
-			svalue(cmb) <- tableGUI_getCurrentDFname(e)
+			refreshCmb(cmb)
 			
+			# disable run and save button
+			enabled(btnRun) <- FALSE
+			enabled(btnSave) <- FALSE
+
 		})
 		
 		## transfer variables
@@ -326,8 +361,9 @@ tableGUI_main_handlers <- function(e) {
 		
 		changeTbl2 <- function() {
 			if (nrow(tbl2)==0) {
-				# disable run button
+				# disable run and save button
 				enabled(btnRun) <- FALSE
+				enabled(btnSave) <- FALSE
 				# disable number of bins
 				enabled(lbl1) <- FALSE
 				enabled(spbBins) <- FALSE

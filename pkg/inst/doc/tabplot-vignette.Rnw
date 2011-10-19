@@ -217,38 +217,6 @@ plot(tab2)
 
 
 
-\section{Graphical User Interface {\tt tableGUI}}
-The function {\tt tableGUI} starts a Graphical User Interface (GUI).
-<<>>=
-tableGUI()
-@
-A pratical work flow for the GUI is the following:
-\begin{myindentpar}{1cm}
-{\footnotesize
-\begin{enumerate}
-\item Select a loaded data.frame
-\item Transfer variables from left to right
-\item Determine the order in which they are shown by the Up and Down buttons
-\item Determine on which variable(s) the data is sorted by the Sort button
-\end{enumerate}
-Optional:
-\begin{enumerate}[resume]
-\item Per numerical variable, determine the scale by the Scale button
-\item Per categorical variable, determine the color palette by the Palette button
-\item Change the number of row bins 
-\item Zoom to a subset of the data, by checking the Zoom in box, and changing the from and to parameters
-\item Each numerical variable can be cast to a categorical variable by the As Categorical button
-\end{enumerate}
-Ready?
-\begin{enumerate}[resume]
-\item Click the Run button!
-\end{enumerate}
-}
-\end{myindentpar}
-
-The command {\tt tableGUI()} starts an empty GUI. It is also possible to start the GUI with predefined settings. This can be done in two ways: by giving the same arguments as in {\tt tableplot}, or by giving a tabplot-object.
-
-
 \section{Resources}
 \begin{itemize}
 \item Summary of the package: {\tt help(package=tabplot)}

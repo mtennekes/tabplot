@@ -1,3 +1,9 @@
+#' Function to check the tableplot argument: pals
+#'
+#' @aliases tableplot_checkPals
+#' @param pals pals
+#' @return object with palette information
+#' @export 
 tableplot_checkPals <- function(pals) {
 
 	if (class(pals)!="list") stop("<pals> is not a list")

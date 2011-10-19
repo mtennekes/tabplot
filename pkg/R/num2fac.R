@@ -1,6 +1,6 @@
 #' Function that creates a factor vector out of a numerical vector.
 #'
-#' Creates a factor vector out of a numerical vector. The levels can be determined by several methods. This function can be called via \code{\link{tableGUI}}.
+#' Creates a factor vector out of a numerical vector. The levels can be determined by several methods.
 #'
 #' @aliases num2fac
 #' @param num numeric vector

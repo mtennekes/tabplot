@@ -11,7 +11,7 @@
 #'
 #' A tableplot is a visualisation of a (large) dataset. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package.
 #'
-#' The function \code{\link{tableplot}} is used to create a tableplot. Tableplots can also be designed by the GUI \code{\link{tableGUI}}. Other useful functions are
+#' The function \code{\link{tableplot}} is used to create a tableplot. Other useful functions are
 #' \itemize{
 #' \item \code{\link{tablePalettes}} to show all quantitative and qualitative palettes that are included
 #' \item \code{\link{tableSave}} to save a tableplot

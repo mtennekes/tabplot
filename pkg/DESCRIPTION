@@ -11,30 +11,25 @@ Description: A tableplot is a visualisation of a (large)
     row bin is an aggregate of a certain number of records.
     Numeric variables are visualized as bar charts, and
     categorical variables as stacked bar charts. Missing
-    values are taken into account. With a GUI tableplots
-    can easily be customized. Also supports large ffdf
+    values are taken into account. Also supports large ffdf
     datasets from the ff package.
 Version: 0.11
 URL: http://code.google.com/p/tableplot/
-Date: 2011-10-07
+Date: 2011-10-21
 Depends:
     data.table (>= 1.5.3),
     grid,
 Suggests:
     ff (>= 2.2-0),
-    gWidgets,
-    gWidgetsRGtk2,
     classInt,
     ggplot2
 Collate:
     'brokenX.R'
     'cellplot.R'
     'datetime2fac.R'
-    'generalFunctions.R'
     'getBinSizes.R'
     'getFreqTable.R'
     'getFreqTable_DT.R'
-    'isTabplotUsable.R'
     'num2fac.R'
     'onLoad.R'
     'pkg.R'
@@ -48,15 +43,6 @@ Collate:
     'subset.R'
     'summary_tabplot.R'
     'tableChange.R'
-    'tableGUI.R'
-    'tableGUI_functions.R'
-    'tableGUI_main_handlers.R'
-    'tableGUI_main_layout.R'
-    'tableGUI_n2f_handlers.r'
-    'tableGUI_n2f_layout.R'
-    'tableGUI_pal_functions.R'
-    'tableGUI_pal_handlers.R'
-    'tableGUI_pal_layout.r'
     'tablePalettes.R'
     'tableplot.R'
     'tableplot_checkBins.R'
@@ -68,6 +54,3 @@ Collate:
     'tableSave.R'
     'tableViewport.R'
     'tabplot_object.R'
-    'tableGUI_save_functions.R'
-    'tableGUI_save_handlers.R'
-    'tableGUI_save_layout.R'

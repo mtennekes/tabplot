@@ -1,6 +1,6 @@
-#' Visualization of large multivariate datasets.
+#' Visualization of large multivariate datasets
 #'
-#' A tableplot is a visualisation of a (large) multivariate dataset. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package.
+#' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package.
 #'
 #' @param dat a \code{\link{data.frame}}, \code{\link{data.table}}, or an \code{\link[ff:ffdf]{ffdf}} object (required)
 #' @param colNames character vector containing the names of the columns of \code{dat} that are visualized in the tablelplot. If omitted, all columns are visualized. All selected columns should be of class: numeric, integer, factor, or logical.
@@ -9,7 +9,7 @@
 #' @param nBins number of row bins
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
-#' @param filter condition to filter the data, either an expression of a character
+#' @param filter filter condition to subset the observations in \code{dat}, either a character or an expression. It is also possible to give the name of a categorical variable: then, a tableplot for each category is generated.
 #' @param scales determines the horizontal axes of the numeric variables in \code{colNames}, options: "lin", "log", and "auto" for automatic detection. If necessary, \code{scales} is recycled.
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{

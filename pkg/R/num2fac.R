@@ -1,4 +1,4 @@
-#' Function that creates a factor vector out of a numerical vector.
+#' Creates a factor vector out of a numerical vector
 #'
 #' Creates a factor vector out of a numerical vector. The levels can be determined by several methods.
 #'

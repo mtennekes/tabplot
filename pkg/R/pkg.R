@@ -17,6 +17,7 @@
 #' \item \code{\link{tableSave}} to save a tableplot
 #' \item \code{\link{tableChange}} to make layout changes to a tableplot
 #' }
+#' Further, with a graphical user interface has been implemented in the package \code{tabplotGTK}
 #'
 #' @name tabplot-package
 #' @aliases tabplot

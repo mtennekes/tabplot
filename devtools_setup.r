@@ -8,5 +8,7 @@ check("pkg")
 
 document("pkg")
 
+build_vignettes("pkg")
+
 
 

@@ -18,7 +18,7 @@ URL: http://code.google.com/p/tableplot/
 Date: 2011-10-21
 Depends:
     data.table (>= 1.5.3),
-    grid,
+    grid
 Suggests:
     ff (>= 2.2-0),
     classInt,

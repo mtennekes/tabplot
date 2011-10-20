@@ -2,7 +2,7 @@
 #'
 #' Function to change the order of columns, to flip, and to change the palettes of a \link{tabplot-object}.
 #'
-#' @aliases changeTabplot
+#' @aliases tableChange
 #' @param tab \link{tabplot-object}
 #' @param colNames vector of names of the desired columns
 #' @param flip logical, if TRUE then the plot is flipped vertically, i.e.\ the row bins are reversed

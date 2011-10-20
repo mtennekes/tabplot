@@ -1,4 +1,4 @@
-#' Function that creates a factor vector out of a date-time vector.
+#' Creates a factor vector out of a date-time vector
 #'
 #' Creates a factor vector out of a date-time vector from class "POSIXt" or "Date".
 #'

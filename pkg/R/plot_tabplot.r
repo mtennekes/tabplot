@@ -1,4 +1,4 @@
-#' Function that plots a \link{tabplot-object}.
+#' Plot a \link{tabplot-object}
 #'
 #' @aliases plot.tabplot
 #' @param x \link{tabplot-object}

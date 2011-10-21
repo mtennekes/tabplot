@@ -1,4 +1,4 @@
-#' Summary of a \link{tabplot-object}.
+#' Summarize a \link{tabplot-object}
 #'
 #' @aliases summary.tabplot
 #' @param object tabplot object

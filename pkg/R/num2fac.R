@@ -1,6 +1,6 @@
-#' Creates a factor vector out of a numerical vector
+#' Create a factor vector out of a numerical vector
 #'
-#' Creates a factor vector out of a numerical vector. The levels can be determined by several methods.
+#' Create a factor vector out of a numerical vector. The levels can be determined by several methods.
 #'
 #' @aliases num2fac
 #' @param num numeric vector

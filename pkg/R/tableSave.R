@@ -1,6 +1,6 @@
-#' Saves a tableplot
+#' Save a tableplot
 #'
-#' Saves a tableplot in pdf, eps, wmf, png, jpg, bmp, or tiff format.
+#' Save a tableplot in pdf, eps, wmf, png, jpg, bmp, or tiff format.
 #'
 #' @aliases tableSave
 #' @param tab a \link{tabplot-object}

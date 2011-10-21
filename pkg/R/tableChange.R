@@ -1,6 +1,6 @@
-#' Changes a \link{tabplot-object}
+#' Change a \link{tabplot-object}
 #'
-#' Function to change the order of columns, to flip, and to change the palettes of a \link{tabplot-object}.
+#' Change the order of columns, flip, and change the palettes of a \link{tabplot-object}.
 #'
 #' @aliases tableChange
 #' @param tab \link{tabplot-object}

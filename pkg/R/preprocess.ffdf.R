@@ -3,7 +3,6 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
    if (!require(ff)){
 		stop("This function needs package ff")
    }   
-
 	n <- length(colNames)
 
 	#############################

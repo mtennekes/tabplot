@@ -1,5 +1,6 @@
 library(devtools)
 load_all("../pkg")
+
 require(classInt)
 
 require(ggplot2)
@@ -7,6 +8,11 @@ data(diamonds)
 ## add some NA's
 is.na(diamonds$price) <- diamonds$cut=="Ideal"
 is.na(diamonds$cut) <- (runif(nrow(diamonds))>0.8)
+
+require(ff)
+dFF <- as.ffdf(diamonds)
+tableplot(dFF)
+
 
 tableplot(diamonds)
 

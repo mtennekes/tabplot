@@ -1,4 +1,4 @@
-#' Print a \link{tabplot-object}.
+#' Print a \link{tabplot-object}
 #'
 #' @param x tabplot object
 #' @param ... arguments passed to other methods

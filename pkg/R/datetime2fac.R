@@ -1,6 +1,6 @@
-#' Creates a factor vector out of a date-time vector
+#' Create a factor vector out of a date-time vector
 #'
-#' Creates a factor vector out of a date-time vector from class "POSIXt" or "Date".
+#' Create a factor vector out of a date-time vector from class "POSIXt" or "Date".
 #'
 #' The range \code{rng} is cut according to different pretty rounded time periods. The cut with the number of levels that is closest to 6 is chosen. Vector \code{p} is cut accordingly. Values of \code{p} outside \code{rng} are translated to \code{NA}.
 #' @param p date-time vector

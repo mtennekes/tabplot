@@ -243,7 +243,7 @@ plot(tab2)
 \item Summary of the package: {\tt help(package=tabplot)}
 \item The main help page: {\tt ?tabplot}
 \item Project site: \url{http://code.google.com/p/tableplot/}
-\item Publications:
+\item References:
 \begin{itemize}
 \item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2011) Visual profiling of large statistical datasets. Paper presented at the 2011 New Techniques and Technologies for Statistics conference, Brussels, Belgium. (
 \href{http://www.von-tijn.nl/tijn/research/publications/Tableplots.pdf}{paper}, 

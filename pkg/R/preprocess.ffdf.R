@@ -95,7 +95,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		for (i in chunk(dat)){
 			cdat <- data.table(dat[i,])[, c(numcols, "aggIndex"), with=FALSE]
 			setkey(cdat, aggIndex)
-			dsum <- cdat[, lapply(.SD, function(x)sum(x, na.rm=TRUE)), by=aggIndex]
+			dsum <- cdat[, lapply(.SD, function(x)sum(as.numeric(x), na.rm=TRUE)), by=aggIndex]
 
 			datSum <- rbind(datSum, dsum)
 			## calculate completion percentages

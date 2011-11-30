@@ -245,7 +245,7 @@ plot(tab2)
 \item Project site: \url{http://code.google.com/p/tableplot/}
 \item Publications:
 \begin{itemize}
-\item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2011) Visual profiling of large statistical datasets. Proceedings of the 2011 New Techniques and Technologies for Statistics conference, Brussels, Belgium. (
+\item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2011) Visual profiling of large statistical datasets. Paper presented at the 2011 New Techniques and Technologies for Statistics conference, Brussels, Belgium. (
 \href{http://www.von-tijn.nl/tijn/research/publications/Tableplots.pdf}{paper}, 
 \href{http://www.von-tijn.nl/tijn/research/presentations/NTTS_tableplots.pdf}{presentation}
 )

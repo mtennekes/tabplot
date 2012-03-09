@@ -1,5 +1,7 @@
 library(ff)
+options(fftempdir = "d:/temp")
 
+library(ggplot2); data(diamonds)
 n <- nrow(diamonds)
 N <- 1000L * n
 
@@ -12,7 +14,9 @@ for (i in chunk(from=1, to=N, by=n)){
   diamondsff[i,] <- diamonds
 }
 
+library(tabplot)
+
 # and timing
 system.time(
-  tableplot(diamondsff)
+  tab <- tableplot(diamondsff)
 )

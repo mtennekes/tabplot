@@ -1,10 +1,10 @@
 #' Save a tableplot
 #'
-#' Save a tableplot in pdf, eps, wmf, png, jpg, bmp, or tiff format.
+#' Save a tableplot in pdf, eps, svg, wmf, png, jpg, bmp, or tiff format.
 #'
 #' @aliases tableSave
 #' @param tab a \link{tabplot-object}
-#' @param filename filename with extention (pdf, eps, wmf, png, jpg, bmp, or tiff)
+#' @param filename filename with extention (pdf, eps, svg, wmf, png, jpg, bmp, or tiff)
 #' @param device device, automatically extracted from filename extension 
 #' @param path path to save to
 #' @param scale scaling factor
@@ -27,12 +27,12 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
     if (class(tab) != "tabplot") 
         stop("plot should be a tabplot object")
     
-    eps <- ps <- function(..., width, height) grDevices::postscript(..., 
-        width = width, height = height, onefile = FALSE, horizontal = FALSE, 
-        paper = "special")
     pdf <- function(..., version = "1.4") grDevices::pdf(..., 
-        version = version)
-    #svg <- function(...) grDevices::svg(...) #isn't supported for Windows
+    													 version = version)
+    eps <- ps <- function(..., width, height) grDevices::postscript(..., 
+        width = width, height = height, horizontal=FALSE,
+        paper = "special")
+    svg <- function(...) grDevices::svg(...) 
     wmf <- function(..., width, height) grDevices::win.metafile(..., 
         width = width, height = height)
     png <- function(..., width, height) grDevices::png(..., width = width, 
@@ -49,7 +49,7 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
     default_device <- function(filename) {
         pieces <- strsplit(filename, "\\.")[[1]]
         ext <- tolower(pieces[length(pieces)])
-        if (!(ext %in% c("eps", "pdf", "wmf", "png", "jpg", "jpeg", "bmp", "tiff"))) 
+        if (!(ext %in% c("eps", "pdf", "svg", "wmf", "png", "jpg", "jpeg", "bmp", "tiff"))) 
         	stop("missing or unknown extension")
         match.fun(ext)
     }

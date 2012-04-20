@@ -3,8 +3,8 @@
 #' \tabular{ll}{
 #' Package: \tab tabplot\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.11\cr
-#' Date: \tab 2011-10-13\cr
+#' Version: \tab 0.11-2\cr
+#' Date: \tab 2012-04-20\cr
 #' License: \tab GPL-3\cr
 #' LazyLoad: \tab yes\cr
 #' }

@@ -4,7 +4,7 @@
 #' Package: \tab tabplot\cr
 #' Type: \tab Package\cr
 #' Version: \tab 0.11-2\cr
-#' Date: \tab 2012-04-20\cr
+#' Date: \tab 2012-05-01\cr
 #' License: \tab GPL-3\cr
 #' LazyLoad: \tab yes\cr
 #' }

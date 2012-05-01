@@ -1,6 +1,6 @@
 Package: tabplot
 Maintainer: Martijn Tennekes <mtennekes@gmail.com>
-License: GPL version 3
+License: GPL-3
 Title: Tableplot, a visualization of large datasets
 Type: Package
 LazyLoad: yes
@@ -20,7 +20,6 @@ Depends:
     data.table (>= 1.5.3),
     grid
 Suggests:
-    tabplotGTK,
     ff (>= 2.2-0),
     classInt,
     ggplot2

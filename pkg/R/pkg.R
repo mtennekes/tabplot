@@ -22,6 +22,6 @@
 #' @name tabplot-package
 #' @docType package
 #' @author Martijn Tennekes \email{mtennekes@@gmail.com} and Edwin de Jonge
-#' @keywords visualization, large datasets
+#' @keywords visualization large datasets
 #' @example ../examples/pkg.R
 {}

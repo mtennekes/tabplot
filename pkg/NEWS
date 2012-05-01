@@ -1,0 +1,3 @@
+version 0.11-2
+- tableSave: added svg output
+- fixed ffdf bug introduced since R2.15

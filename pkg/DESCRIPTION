@@ -20,6 +20,7 @@ Depends:
     data.table (>= 1.5.3),
     grid
 Suggests:
+    tabplotGTK,
     ff (>= 2.2-0),
     classInt,
     ggplot2

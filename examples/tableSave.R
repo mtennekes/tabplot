@@ -1,5 +1,6 @@
-\dontrun{
-	# load diamonds dataset from ggplot2
+# load diamonds dataset from ggplot2:
+
+# Not run:
 	require(ggplot2)
 	data(diamonds)
 	
@@ -8,4 +9,5 @@
 	
 	# save tableplot
 	tableSave(tab, filename="diamonds.png")
-}
+# End(Not run)
+	

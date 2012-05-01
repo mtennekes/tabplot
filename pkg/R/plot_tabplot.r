@@ -62,7 +62,7 @@ function(x, fontsize = 8, legend.lines = 8, title = ifelse(length(x$filter)==0, 
 	## set grid layout
 	grid.newpage()
 	
-	Layout <- grid.layout( nrow = 2, ncol = 1, height = unit(c(ifelse(showTitle, 2, 0), 1), c("lines", "null")))
+	Layout <- grid.layout( nrow = 2, ncol = 1, heights = unit(c(ifelse(showTitle, 2, 0), 1), c("lines", "null")))
 	
 	pushViewport(viewport(layout = Layout))
 	

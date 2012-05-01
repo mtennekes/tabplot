@@ -94,7 +94,9 @@ tableplot(diamonds)
 The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt colNames}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variable(s) the data is sorted.
 
 <<label=tp2, include=FALSE>>=
-tableplot(diamonds, colNames=c("carat", "price", "cut", "color", "clarity"), sortCol="price")
+tableplot(diamonds, 
+          colNames=c("carat", "price", "cut", "color", "clarity"), 
+          sortCol="price")
 @
 
 \begin{figure}[htp]
@@ -117,7 +119,11 @@ The percentages near the vertical axis indicate which subset of the data in term
 We can focus our attention to the 5\% most expensive diamonds by setting the {\tt from} argument to 0 and the {\tt to} argument to 5:
 
 <<label=tp3, include=FALSE>>=
-tableplot(diamonds, colNames=c("carat", "price", "cut", "color", "clarity"), sortCol="price", from=0, to=5)
+tableplot(diamonds, 
+          colNames=c("carat", "price", "cut", "color", "clarity"), 
+          sortCol="price", 
+          from=0, 
+          to=5)
 @
 
 \begin{figure}[htp]
@@ -232,9 +238,23 @@ plot(tab)
 The function {\tt tableChange} is used to make minor changes to a tabplot-object. Suppose we want the columns in the order of \ref{fig:tp2}, and we want to change all color palettes to default starting with the second color.
 
 <<>>=
-tab2 <- tableChange(tab, colNames=c("carat", "price", "cut", "color", "clarity"), pals=list("Set1(2)"))
+tab2 <- tableChange(tab, 
+                    colNames=c("carat", "price", "cut", "color", "clarity"), 
+                    pals=list("Set1(2)"))
 plot(tab2)
 @
+
+With the function {\tt tableSave}, tableplots can be saved to a desired grahical output format: pdf, eps, svg, wmf, png, jpg, bmp, or tiff.
+
+<<>>=
+tableSave(tab, 
+          filename="diamonds.png", 
+          width=5,
+          height=3,
+          fontsize = 6, 
+          legend.lines = 6)
+@
+
 
 
 

@@ -23,6 +23,16 @@ library(ff)
 library(ggplot2)
 data(diamonds)
 
+tab <- tableplot(diamonds)
+
+tableSave(tab, 
+		  filename="diamonds.png", 
+		  width=5,
+		  height=3,
+		  fontsize = 6, 
+		  legend.lines = 6)
+
+
 tableplot(diamonds)
 
 diamondsFF <- as.ffdf(diamonds)

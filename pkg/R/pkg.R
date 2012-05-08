@@ -20,6 +20,7 @@
 #' Further, a graphical user interface has been implemented in the package \code{tabplotGTK}
 #'
 #' @name tabplot-package
+#' @aliases tabplot
 #' @docType package
 #' @author Martijn Tennekes \email{mtennekes@@gmail.com} and Edwin de Jonge
 #' @keywords visualization large datasets

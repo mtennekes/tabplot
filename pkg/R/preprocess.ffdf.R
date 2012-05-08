@@ -15,8 +15,9 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 
 	isBoolean <- vmode(dat) == "boolean"
 
-	isFactor <- sapply(physical(dat), is.factor)	
-	
+   #isFactor <- sapply(physical(dat), is.factor)	
+    isFactor <- sapply(physical(dat), function(x)nlevels(x)!=0)	
+   
 	## find numerical variables
 	isNumber <- !isFactor & !isLogical & !isBoolean
 	

@@ -137,7 +137,6 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBi
 	# delete cloned ffdf (those with filter)
 	if (!is.null(filter) && class(dat)[1]=="ffdf") delete(dat)
 
-	
 	isNumber <- tab$isNumber
 	
 	###########################

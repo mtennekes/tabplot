@@ -153,14 +153,14 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 				}, SIMPLIFY=FALSE)
 		}
 
-		datFreq <- mapply(datFreq, FUN=function(df) {
+		datFreq <- lapply(datFreq, FUN=function(df) {
 				if (all(df$freqTable[,"missing"]==0)) {
 					ncols <- ncol(df$freqTable)
-					df$freqTable <- df$freqTable[,-ncols]
+					df$freqTable <- as.matrix(df$freqTable[,-ncols])
 					df$categories <- df$categories[-ncols]
 				}
 				return(df)
-			}, SIMPLIFY=FALSE)
+			})
 	}	
 
   	#####################

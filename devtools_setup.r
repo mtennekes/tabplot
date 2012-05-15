@@ -23,7 +23,24 @@ library(ff)
 library(ggplot2)
 data(diamonds)
 
-tab <- tableplot(diamonds)
+
+dDT <- as.data.table(diamonds)
+dDT <- dDT[rep(seq.int(nrow(dDT)), 100),]
+
+Rprof(tf <- "rprof.log", memory.profiling=TRUE)
+tab <- tableplot(dDT, sortCol=2:1, decreasing = TRUE)
+Rprof(NULL)
+summaryRprof(tf)
+
+
+
+
+tab <- tableplot(diamonds, ncolumns=5)
+tableplot(diamonds, 
+		  colNames=c("carat", "price", "cut", "color", "clarity"), 
+		  sortCol="price")
+
+
 
 tableSave(tab, 
 		  filename="diamonds.png", 

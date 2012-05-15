@@ -2,12 +2,13 @@ preprocess.data.table <-
 function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
 
 	n <- length(colNames)
-
 	#############################
 	## Determine column classes
 	#############################
-	datClasses <- sapply(dat,FUN=function(x)class(x)[1])
+	datClasses <- sapply(dat[1,],FUN=function(x)class(x)[1])
 
+	
+	
 	
 	## cast logical columns to factors
 	isLogical <- datClasses == "logical"
@@ -47,30 +48,68 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	#####################
 	## Determine bin indices (needed for aggregation)
 	#####################
+	#browser()
+	
+	colNames <- copy(colNames)
 	
 	# create random vector
-	rand <- sample.int(nrow(dat), nrow(dat))
+	dat[, randCol:= sample.int(nrow(dat), nrow(dat))]
+	gc()
 	
 	# put all columns that are sorted in a list, and if decreasing, then change sign ('order' cannot handle a vectorized decreasing)
-	datList <- mapply(as.list(subset(dat, select=colNames[sortCol])), decreasing, isNumber[sortCol], FUN=function(vec, decr, isNum) {
-			if (decr & isNum) {
-				return(-vec)
-			} else if (decr) {
-				return(-as.integer(vec))
-			} else {
-				return(vec)
-			}
-		}, SIMPLIFY=FALSE)
+	
+	#isNumber[sortCol]
+	
+	sortColNames <- c(colNames[sortCol], "randCol")
+	for (i in colNames[sortCol[decreasing & isNumber[sortCol]]]) {
+		colName <- paste(i,"decreasing", sep="_")
+		sortColNames[sortColNames==i] <- colName
+		dat[, colName:=-dat[[i]], with=FALSE]
+	}
+	
+
+	for (i in colNames[sortCol[decreasing & !isNumber[sortCol]]]) {
+		colName <- paste(i, "decreasing", sep="_")
+		sortColNames[sortColNames==i] <- colName
+		dat[, colName:=-as.integer(dat[[i]]), with=FALSE]
+	}
+	gc()
+	
+	o <- order(do.call(order, dat[, sortColNames, with=FALSE]))
+	gc()
+	
+	
+	dat[, setdiff(sortColNames, colNames):=NULL, with=FALSE]
+	gc()
+	
+	#colNames[sortCol[decreasing & !isNumber[sortCol]]]
+	
+	
+	
+	
+	#for (i in sortCol[] which(decreasing & isNumber[sortCol]))
+	
+	
+# 	datList <- mapply(subset(dat, select=colNames[sortCol]), decreasing, isNumber[sortCol], FUN=function(vec, decr, isNum) {
+# 			if (decr & isNum) {
+# 				return(-vec)
+# 			} else if (decr) {
+# 				return(-as.integer(vec))
+# 			} else {
+# 				return(vec)
+# 			}
+# 		}, SIMPLIFY=FALSE)
 	
 	# order all columns that are sorted
-	o <- order(do.call(order, as.list(c(datList, list(rand=rand)))))
+# 	o <- order(do.call(order, as.list(c(datList, list(rand=rand)))))
 	
 	brks <- c(0, cumsum(binSizes)) + (vp$iFrom-1)
 	
 	# TODO in stead of precalculating the brks, we can also give the number of breaks and calculate binSizes from summing the bins.
 	# RE: Tried it, by cut(o, brks=nBins, ...) gives strange results (first and last bin were smaller)
 	dat$aggIndex <- cut(o, brks, right=TRUE, labels=FALSE)
-
+	gc()
+	
 	setkey(dat, aggIndex)
 	
 	#####################
@@ -84,6 +123,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		## calculate means
 		.SD <- NULL; rm(.SD); #trick R CMD check
 		datMean <- dat[, c(colNames[isNumber], "aggIndex"), with=FALSE][,lapply(.SD, function(x)mean(x, na.rm=TRUE)),by=aggIndex]
+		gc()
 		
 		datMean <- subset(datMean, !is.na(datMean$aggIndex), select=names(datMean)[-1])
 		
@@ -91,13 +131,15 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 
 		## calculate completion percentages
 		datCompl <- dat[, c(colNames[isNumber], "aggIndex"), with=FALSE][,lapply(.SD, function(x){sum(!is.na(x))/length(x)}),by=aggIndex]
-
+		gc()
+		
 		datCompl <- datCompl[!is.na(datCompl$aggIndex), names(datCompl)[-1], with=FALSE]
 
 		datMissing <- 1 - datCompl
       
 		#calculate the min and max value of each column
 		datRange <- as.data.frame(lapply(subset(dat, select=colNames[isNumber]), range))
+		gc()
 		
 		#use it to calculate an lower and upper boundary for each bin
 		datLower <- (datCompl * datMean) + (datMissing * rep(as.integer(datRange[1,]), each=nBins))
@@ -115,12 +157,12 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		datMean <- data.table(mapply(datMean, datCompl, FUN=function(x,y)ifelse(y==0, 0, x)))
 		
 	}
-		
 	#####################
 	## Aggregate categorical variables
 	#####################
 	if (any(!isNumber)) {	
 		datFreq <- lapply(dat[, colNames[!isNumber], with=FALSE], FUN=getFreqTable_DT, dat$aggIndex)
+		gc()		
 	}
 	
 	

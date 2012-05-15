@@ -10,6 +10,7 @@
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
 #' @param filter filter condition to subset the observations in \code{dat}, either a character or an expression. It is also possible to give the name of a categorical variable: then, a tableplot for each category is generated.
+#' @param ncolumns the maximum number of columns per tableplot. If this number is smaller than the number of columns selected in \code{datNames}, multiple tableplots are generated, where each of them contains the sorted column(s).
 #' @param scales determines the horizontal axes of the numeric variables in \code{colNames}, options: "lin", "log", and "auto" for automatic detection. If necessary, \code{scales} is recycled.
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
@@ -27,7 +28,7 @@
 #' @export
 #' @keywords visualization
 #' @example ../examples/tableplot.R
-tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, from=0, to=100, filter=NULL, scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, plot=TRUE, ...) {
+tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBins=100, from=0, to=100, filter=NULL, ncolumns=length(colNames), scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, plot=TRUE, ...) {
 
 	datName <- deparse(substitute(dat))
 	if (class(dat)[1]=="data.frame") dat <- data.table(dat)
@@ -89,7 +90,14 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBi
 
 	## Only select the columns of colNames
 	if (class(dat)[1]=="data.table") {
-		dat <- dat[, colNames, with=FALSE] 
+		#browser()
+		
+		ignoreNames <- setdiff(names(dat), colNames)
+		if (length(ignoreNames)!=0) 
+			dat[, ignoreNames:=NULL, with=FALSE]
+		if (!identical(colNames, names(dat)))
+			setcolorder(dat, colNames)
+			#dat <- subset(dat, select=colNames)
 	} else {
 		dat <- dat[colNames]
 	}
@@ -102,6 +110,14 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBi
 	## Check decreasing vector
 	decreasing <- tableplot_checkDecreasing(decreasing, sortCol)
 
+	
+	## Check number of columns
+	if (!is.numeric(ncolumns)) stop("<ncolums> is not numeric")
+	if (ncolumns < length(sortCol)) stop("<ncolumns> less than number of sorted columns")
+	if (ncolumns == length(sortCol) && length(sortCol) < length(colNames)) stop("<ncolumns> equal to number of sorted columns while number of selected columns is larger")
+	
+	if (ncolumns > length(colNames)) ncolumns <- length(colNames)
+	
 	## Check scales
 	scales <- tableplot_checkScales(scales)
 
@@ -123,15 +139,11 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBi
 	tableplot_checkFromTo(from, to)
 	
 
-	## Check filter variables
-	# if (!is.null(filter)) filter <- tableplot_checkCols(filter, colNames)
-
-	######## TO DO: implement filter variable(s)
-
 	##########################
 	#### Preprocess
 	##########################
 
+	
 	tab <- preprocess(dat, datName, as.character(filter), colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
 	
 	# delete cloned ffdf (those with filter)
@@ -250,8 +262,34 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBi
 		tab$columns[[i]]$widths <- widths
 	}
 	
-	## plot
-	class(tab) <- "tabplot"
-	if (plot) plot(tab, ...)
-	invisible(tab)
+	### multiple tableplots if ncolumns < length(colNames)
+	if (ncolumns < length(colNames)) {
+		nOtherCol <- ncolumns - length(sortCol)
+		
+		otherCols <- setdiff(seq.int(length(colNames)), sortCol)
+		
+		nOtherCols <- length(otherCols)
+		
+		ntab <- ceiling(nOtherCols / nOtherCol)
+		tabs <- list()
+		j <- 1
+		for (i in seq.int(ntab))	{
+			id <- unique(c(sortCol,
+				otherCols[j:(min(j-1+nOtherCol, nOtherCols))]))
+			tab_sec <- tab
+			tab_sec$n <- length(id)
+			tab_sec$isNumber <- tab$isNumber[id]
+			tab_sec$columns <- tab$columns[id]
+			class(tab_sec) <- "tabplot"
+			tabs[[i]] <- tab_sec
+			if (plot) plot(tab_sec, ...)
+			j <- j + nOtherCol
+		}
+		invisible(tabs)
+	} else {		
+		## plot
+		class(tab) <- "tabplot"
+		if (plot) plot(tab, ...)
+		invisible(tab)
+	}
 }

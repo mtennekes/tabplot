@@ -1,3 +1,7 @@
+version 0.11-3 (in progress)
+- added argument ncolumns, which sets the maximum number of columns. Now it is possible to automatically generate easy to read tableplots for all columns in the dataset.
+- fixed small ffdf bug
+
 version 0.11-2
 - tableSave: added svg output
 - fixed ffdf bug introduced since R2.15

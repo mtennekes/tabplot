@@ -28,7 +28,9 @@ dDT <- as.data.table(diamonds)
 dDT <- dDT[rep(seq.int(nrow(dDT)), 100),]
 
 Rprof(tf <- "rprof.log", memory.profiling=TRUE)
-tab <- tableplot(dDT, sortCol=2:1, decreasing = TRUE)
+system.time({
+tab <- tableplot(diamonds, plot=FALSE)
+})
 Rprof(NULL)
 summaryRprof(tf)
 

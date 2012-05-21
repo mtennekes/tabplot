@@ -1,23 +1,20 @@
-getFreqTable_DT <- function(fac, aggIndex, useNA="ifany") {
+getFreqTable_DT <- function(DT, col) {
+	categories <- levels(DT[, get(col)])
+	nlev <- length(categories)
+	
+	freqTable <- matrix(DT[, tabulate(get(col), nbins=nlev),
+						   by=aggIndex][,V1],
+						ncol=nlev, byrow=TRUE)
+	missings <- DT[, sum(is.na(get(col))), by=aggIndex][,V1]
 
-	DT <- data.table(fac=fac, aggIndex=aggIndex)
-	setkey(DT, aggIndex)
 	
-	DT_freq <- DT[, tabulate(fac, nbins=nlevels(fac)), by=aggIndex]
 	
-	freqTable <- matrix(DT_freq[!is.na(aggIndex), "V1", with=FALSE]$V1, ncol=nlevels(fac), byrow=TRUE)
-	
-	DT_miss <- DT[, sum(is.na(fac)), by=aggIndex]
-	missings <- DT_miss[!is.na(aggIndex), "V1", with=FALSE]$V1
-	
-	if (any(missings!=0) | useNA=="always") {
+	if (any(missings!=0)) {
 		freqTable <- cbind(freqTable, missings)
-		categories <- c(levels(fac), "missing")
-	} else {
-		categories <- levels(fac)
+		categories <- c(categories, "missing")
 	}
-	colnames(freqTable) <- categories
 	
+	colnames(freqTable) <- categories
 	
 	return(list(freqTable=freqTable, categories=categories))
 }

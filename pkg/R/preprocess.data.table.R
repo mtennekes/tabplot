@@ -1,8 +1,13 @@
 preprocess.data.table <-
 function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
 
+	
+	
 	n <- length(colNames)
 	nr <- nrow(dat)
+	
+	
+	
 	#############################
 	## Determine column classes
 	#############################
@@ -14,24 +19,27 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	## cast logical columns to factors
 	isLogical <- datClasses == "logical"
 	for (i in which(isLogical)) {
-		dat[[i]] <- factor(dat[[i]], levels=c("TRUE", "FALSE"))
+		dat[, i:=factor(dat[[i]], levels=c("TRUE", "FALSE")), with=FALSE]
 	}
 	
 	## cast date/time columns to factors
 	isDateTime <- (datClasses %in% c("POSIXct", "POSIXlt", "Date"))
 	for (i in which(isDateTime)) {
-		dat[[i]] <- datetime2fac(dat[[i]])
+		dat[, i:=datetime2fac(dat[[i]]), with=FALSE]
 	}
 	
 	## cast non-factor columns that are non-numeric either to factor
+
 	isNumber <- (datClasses %in% c("numeric","integer"))
-	isFactor <- (datClasses == "factor")
+	isFactor <- (datClasses %in% c("factor", "ordered"))
 	castToFactor <- !isFactor & !isNumber & !isLogical & !isDateTime
 	
 	for (i in colNames[castToFactor]) {
-		dat[[i]] <- as.factor(dat[[i]])
+		dat[, i:=as.factor(dat[[i]]), with=FALSE]
 	}
 
+	
+	
 	#####################################
 	## Grammar of Graphics: Stats
 	##
@@ -55,6 +63,9 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	
 	# create random vector
 	randCol <- NULL; rm(randCol); #trick R CMD check
+	
+	
+	#dat[, randCol:= 1]
 	dat[, randCol:= sample.int(nr, nr)]
 	
 	# put all columns that are sorted in a list, and if decreasing, then change sign ('order' cannot handle a vectorized decreasing)

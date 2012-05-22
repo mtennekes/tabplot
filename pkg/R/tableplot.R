@@ -32,7 +32,8 @@ tableplot <- function(dat, colNames=names(dat), sortCol=1,  decreasing=TRUE, nBi
 
 	datName <- deparse(substitute(dat))
 	if (class(dat)[1]=="data.frame") dat <- data.table(dat)
-	
+
+
 	#####################################
 	## Filter data
 	#####################################

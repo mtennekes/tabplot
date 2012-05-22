@@ -2,6 +2,7 @@ preprocess.data.table <-
 function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
 
 	n <- length(colNames)
+	nr <- nrow(dat)
 	#############################
 	## Determine column classes
 	#############################
@@ -38,7 +39,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	#####################################
 	
 	## Determine viewport, and check if nBins is at least number of items
-	vp <- tableViewport(nrow(dat), from, to)
+	vp <- tableViewport(nr, from, to)
 	if (nBins > vp$m) nBins <- vp$m
 
 	## Calculate bin sizes
@@ -53,7 +54,8 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	colNames <- copy(colNames)
 	
 	# create random vector
-	dat[, randCol:= sample.int(nrow(dat), nrow(dat))]
+	randCol <- NULL; rm(randCol); #trick R CMD check
+	dat[, randCol:= sample.int(nr, nr)]
 	
 	# put all columns that are sorted in a list, and if decreasing, then change sign ('order' cannot handle a vectorized decreasing)
 	
@@ -105,7 +107,9 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	# TODO in stead of precalculating the brks, we can also give the number of breaks and calculate binSizes from summing the bins.
 	# RE: Tried it, by cut(o, brks=nBins, ...) gives strange results (first and last bin were smaller)
 	gc()
-	dat$aggIndex <- cut(o, brks, right=TRUE, labels=FALSE)
+	## bypass Rcmd warning
+	aggIndex <- NULL; rm(aggIndex); #trick R CMD check
+	dat[, aggIndex:= cut(o, brks, right=TRUE, labels=FALSE)]
 	
 	setkey(dat, aggIndex)
 	
@@ -114,8 +118,6 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	#####################
 	if (sum(isNumber)>0) {
 	
-		## bypass Rcmd warning
-		aggIndex <- NULL; rm(aggIndex)
 
 		## calculate means
 		.SD <- NULL; rm(.SD); #trick R CMD check
@@ -162,7 +164,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		gc()
 		datFreq <- list()
 		for (col in colNames[!isNumber]) {
-			datFreq[[col]] <- getFreqTable_DT2(dat[, c("aggIndex", col), with=FALSE], col)
+			datFreq[[col]] <- getFreqTable_DT(dat[, c("aggIndex", col), with=FALSE], col)
 		}
 		
 		# more memory-efficient than datFreq <- lapply(dat[, colNames[!isNumber], with=FALSE], FUN=getFreqTable_DT, dat$aggIndex)
@@ -170,6 +172,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		
 	}
 	
+	dat[, aggIndex:=NULL]
 	
 	#############################
 	##

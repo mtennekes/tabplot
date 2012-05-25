@@ -12,7 +12,12 @@ library(ggplot2)
 data(diamonds)
 
 
-tableplot()
+tableplot(diamonds, select=c("carat", "depth", "cut"), subset=cut)
+tableplot(diamonds, select=c(carat, depth), subset=price > 5000)
+
+tableplot(diamonds, select=c(1,6))
+tableplot(diamonds, select=c(TRUE, FALSE))
+
 
 
 dDT <- as.data.table(diamonds)

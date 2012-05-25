@@ -30,50 +30,72 @@
 #' @export
 #' @keywords visualization
 #' @example ../examples/tableplot.R
-tableplot <- function(dat, select=names(dat), subset=NULL, sortCol=1,  decreasing=TRUE, nBins=100, from=0, to=100, filter=NULL, ncolumns=length(colNames), scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, colNames=NULL, filter=NULL, plot=TRUE, ...) {
+tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
+					  nBins=100, from=0, to=100, ncolumns=ncol(dat), 
+					  scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", 
+					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, colNames=NULL, filter=NULL, 
+					  plot=TRUE, ...) {
 
 	datName <- deparse(substitute(dat))
 	if (class(dat)[1]=="data.frame") dat <- data.table(dat)
 
 
+	
+	## discourage select and filter arguments
+	if (!is.null(filter)) {
+		warning("As of 0.11-2, the arguments colNames and filter are replaced by select and subset")
+		subset <- filter
+	}
+	
+	if (!is.null(colNames)) {
+		warning("As of 0.11-2, the arguments colNames and filter are replaced by select and subset")
+		select <- colNames
+	}
+	
+	
 	#####################################
 	## Filter data
 	#####################################
-	if (!is.null(filter)) {
-		if (!(class(filter)[1] %in% c("character", "expression"))) stop("<filter> is not an expression nor a character")
+#browser()
+	
+	if (!missing(subset)) {
+		if (deparse(substitute(subset))!="expr")
+			subset <- as.expression(substitute(subset))
+		if (!(class(subset)[1] %in% c("character", "expression"))) stop("<subset> is not an expression nor a character")
 		
 		# split by one variable
-		if (filter %in% names(dat)) {
-			filter <- as.character(filter)
-			lvls <- levels(dat[[filter]])
+		if (subset %in% names(dat)) {
+			subset <- as.character(subset)
+			lvls <- levels(dat[[subset]])
 			
-			if ((class(dat[[filter]])[1]=="logical") || (class(dat)[1]=="ffdf" && vmode(dat[[filter]]) %in% c("boolean", "logical"))) {
+			if ((class(dat[[subset]])[1]=="logical") || (class(dat)[1]=="ffdf" && vmode(dat[[subset]]) %in% c("boolean", "logical"))) {
 				isLogical <- TRUE
 				lvls <- c("TRUE", "FALSE")
 			} else {
 				isLogical <- FALSE
 			}
-			if (is.null(lvls)) stop("filter variable is not categorical")
-			exprChar <- paste(filter, " == ", ifelse(isLogical, "", "\""), lvls, ifelse(isLogical, "", "\""), sep="")
+			if (is.null(lvls)) stop("subset variable is not categorical")
+			exprChar <- paste(subset, " == ", ifelse(isLogical, "", "\""), lvls, ifelse(isLogical, "", "\""), sep="")
 			expr <- lapply(exprChar, FUN=function(x)parse(text=x))
 			
-			tabs <- lapply(expr, FUN=function(e){
-				tab <- tableplot(dat, colNames=colNames, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals, nBins=nBins, from=from, to=to, filter=e, bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
+			tabs <- lapply(expr, FUN=function(expr){
+				tab <- tableplot(dat, select=select, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals, nBins=nBins, from=from, to=to, subset=expr, bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
 				tab
 			})
 			return(tabs)
 		}
 		
 		# other filters
-		if (class(filter)[1]=="character") filter <- parse(text=filter)
+		if (class(subset)[1]=="character") subset <- parse(text=subset)
 		if (class(dat)[1]=="ffdf") {
 			sel <- bit(nrow(dat))
 			for (i in chunk(dat)) {
-				sel[i] <- eval(filter, dat[i,])
+				sel[i] <- eval(subset, dat[i,])
 			}
 			dat <- subset(dat, sel)
 		} else {
-			sel <- eval(filter, dat)
+			browser()
+			sel <- eval(subset, dat)
 			dat <- dat[sel,]
 		}
 		
@@ -87,10 +109,18 @@ tableplot <- function(dat, select=names(dat), subset=NULL, sortCol=1,  decreasin
 	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
 	if (nrow(dat)==1) stop("<dat> has only one row")
 	
-	## Check colNames
-	if (class(colNames)[1]!="character") stop("<colNames> is not a character(vector)")
-	if (!all(colNames %in% names(dat))) stop("<colNames> contains column names that are not found in <dat>")
+	## Check select
 
+	
+	if (missing(select)) {
+		colNames <- names(dat)
+	} else {
+		nl <- as.list(seq_along(dat))
+		names(nl) <- names(dat)
+		colNames <- eval(substitute(select), nl, parent.frame())
+		if (!is.character(colNames)) colNames <- names(dat)[colNames]
+	}
+	
 	## Only select the columns of colNames
 	if (class(dat)[1]=="data.table") {
 		#browser()
@@ -147,10 +177,10 @@ tableplot <- function(dat, select=names(dat), subset=NULL, sortCol=1,  decreasin
 	##########################
 
 	
-	tab <- preprocess(dat, datName, as.character(filter), colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
+	tab <- preprocess(dat, datName, as.character(subset), colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
 	
 	# delete cloned ffdf (those with filter)
-	if (!is.null(filter) && class(dat)[1]=="ffdf") delete(dat)
+	if (!is.null(subset) && class(dat)[1]=="ffdf") delete(dat)
 
 	isNumber <- tab$isNumber
 	

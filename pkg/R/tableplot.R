@@ -10,7 +10,7 @@
 #' @param nBins number of row bins
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
-#' @param ncolumns the maximum number of columns per tableplot. If this number is smaller than the number of columns selected in \code{datNames}, multiple tableplots are generated, where each of them contains the sorted column(s).
+#' @param ncols the maximum number of columns per tableplot. If this number is smaller than the number of columns selected in \code{datNames}, multiple tableplots are generated, where each of them contains the sorted column(s).
 #' @param scales determines the horizontal axes of the numeric variables in \code{colNames}, options: "lin", "log", and "auto" for automatic detection. If necessary, \code{scales} is recycled.
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
@@ -31,7 +31,7 @@
 #' @keywords visualization
 #' @example ../examples/tableplot.R
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
-					  nBins=100, from=0, to=100, ncolumns=ncol(dat), 
+					  nBins=100, from=0, to=100, ncols=ncol(dat), 
 					  scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", 
 					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, colNames=NULL, filter=NULL, 
 					  plot=TRUE, ...) {
@@ -94,7 +94,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 			}
 			dat <- subset(dat, sel)
 		} else {
-			browser()
+			#browser()
 			sel <- eval(subset, dat)
 			dat <- dat[sel,]
 		}
@@ -145,11 +145,11 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 
 	
 	## Check number of columns
-	if (!is.numeric(ncolumns)) stop("<ncolums> is not numeric")
-	if (ncolumns < length(sortCol)) stop("<ncolumns> less than number of sorted columns")
-	if (ncolumns == length(sortCol) && length(sortCol) < length(colNames)) stop("<ncolumns> equal to number of sorted columns while number of selected columns is larger")
+	if (!is.numeric(ncols)) stop("<ncolums> is not numeric")
+	if (ncols < length(sortCol)) stop("<ncols> less than number of sorted columns")
+	if (ncols == length(sortCol) && length(sortCol) < length(colNames)) stop("<ncols> equal to number of sorted columns while number of selected columns is larger")
 	
-	if (ncolumns > length(colNames)) ncolumns <- length(colNames)
+	if (ncols > length(colNames)) ncols <- length(colNames)
 	
 	## Check scales
 	scales <- tableplot_checkScales(scales)
@@ -295,9 +295,9 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		tab$columns[[i]]$widths <- widths
 	}
 	
-	### multiple tableplots if ncolumns < length(colNames)
-	if (ncolumns < length(colNames)) {
-		nOtherCol <- ncolumns - length(sortCol)
+	### multiple tableplots if ncols < length(colNames)
+	if (ncols < length(colNames)) {
+		nOtherCol <- ncols - length(sortCol)
 		
 		otherCols <- setdiff(seq.int(length(colNames)), sortCol)
 		

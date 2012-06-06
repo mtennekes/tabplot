@@ -1,7 +1,9 @@
 preprocess.data.table <-
 function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
-
+#browser()
 	
+	optSpace <- (object.size(dat)*2.5 > (memory.limit() - memory.size())*2^20)
+	if (optSpace) cat("Optimized for space \n")
 	
 	n <- length(colNames)
 	nr <- nrow(dat)
@@ -66,8 +68,10 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	
 	
 	#dat[, randCol:= 1]
+	if (optSpace) gc()
 	dat[, randCol:= sample.int(nr, nr)]
 	
+
 	# put all columns that are sorted in a list, and if decreasing, then change sign ('order' cannot handle a vectorized decreasing)
 	
 	#isNumber[sortCol]
@@ -86,12 +90,13 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		dat[, colName:=-as.integer(dat[[i]]), with=FALSE]
 	}
 	
-	gc()
+	if (optSpace) gc()
 	o <- order(do.call(order, dat[, sortColNames, with=FALSE]))
 	
 	
 	dat[, setdiff(sortColNames, colNames):=NULL, with=FALSE]
-	
+
+
 	#colNames[sortCol[decreasing & !isNumber[sortCol]]]
 	
 	
@@ -117,7 +122,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	
 	# TODO in stead of precalculating the brks, we can also give the number of breaks and calculate binSizes from summing the bins.
 	# RE: Tried it, by cut(o, brks=nBins, ...) gives strange results (first and last bin were smaller)
-	gc()
+	if (optSpace) gc()
 	## bypass Rcmd warning
 	aggIndex <- NULL; rm(aggIndex); #trick R CMD check
 	dat[, aggIndex:= cut(o, brks, right=TRUE, labels=FALSE)]
@@ -132,7 +137,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 
 		## calculate means
 		.SD <- NULL; rm(.SD); #trick R CMD check
-		gc()
+		if (optSpace) gc()
 		datMean <- dat[, c(colNames[isNumber], "aggIndex"), with=FALSE][,lapply(.SD, function(x)mean(x, na.rm=TRUE)),by=aggIndex]
 		
 		datMean <- subset(datMean, !is.na(datMean$aggIndex), select=names(datMean)[-1])
@@ -140,16 +145,16 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		
 
 		## calculate completion percentages
-		gc()
+		if (optSpace) gc()
 		datCompl <- dat[, c(colNames[isNumber], "aggIndex"), with=FALSE][,lapply(.SD, function(x){sum(!is.na(x))/length(x)}),by=aggIndex]
-		gc()
+		if (optSpace) gc()
 		
 		datCompl <- datCompl[!is.na(datCompl$aggIndex), names(datCompl)[-1], with=FALSE]
 
 		datMissing <- 1 - datCompl
       
 		#calculate the min and max value of each column
-		gc()
+		if (optSpace) gc()
 		datRange <- as.data.frame(lapply(subset(dat, select=colNames[isNumber]), range))
 		
 		#use it to calculate an lower and upper boundary for each bin
@@ -172,7 +177,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	## Aggregate categorical variables
 	#####################
 	if (any(!isNumber)) {	
-		gc()
+		if (optSpace) gc()
 		datFreq <- list()
 		for (col in colNames[!isNumber]) {
 			datFreq[[col]] <- getFreqTable_DT(dat[, c("aggIndex", col), with=FALSE], col)

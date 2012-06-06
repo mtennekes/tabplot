@@ -12,8 +12,8 @@ library(ggplot2)
 data(diamonds)
 
 dDT <- as.data.table(diamonds)
-dDT <- dDT[sample.int(nrow(dDT), 1e7, replace=TRUE),]
+dDT <- dDT[sample.int(nrow(dDT), 2.5e7, replace=TRUE),]
 
-system.time({
+Rprof(tmp <- tempfile())
 	tab <- tableplot(dDT, plot=FALSE)
-})
+Rprof(); summaryRprof(tmp); unlink(tmp)

@@ -12,7 +12,7 @@ library(ggplot2)
 data(diamonds)
 
 dDT <- as.data.table(diamonds)
-dDT <- dDT[sample.int(nrow(dDT), 2.5e7, replace=TRUE),]
+dDT <- dDT[sample.int(nrow(dDT), 3e7, replace=TRUE),]
 
 Rprof(tmp <- tempfile())
 	tab <- tableplot(dDT, plot=FALSE)

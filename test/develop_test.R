@@ -14,10 +14,11 @@ data(diamonds)
 
 Rprof(tmp <- tempfile())
 
-tab <- tableplot(diamonds, select=c("carat", "depth", "cut", "color"), subset=color, ncols=4, plot=FALSE)
+tab <- tableplot(diamonds, select=c(carat, depth, cut), 
+				 subset=color=="F", ncols=4, plot=TRUE)
 
 
-tableplot(diamonds, select=c(carat, depth), subset=price > 5000)
+tableplot(diamonds, select=c(carat, depth), subset=price > 5000, title="test", showTitle=TRUE)
 
 tableplot(diamonds, select=c(1,6))
 tableplot(diamonds, select=c(TRUE, FALSE))

@@ -1,6 +1,6 @@
 preprocess.data.table <-
 function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
-#browser()
+
 	
 	optSpace <- (object.size(dat)*2.5 > (memory.limit() - memory.size())*2^20)
 	if (optSpace) cat("Optimized for space \n")
@@ -129,6 +129,9 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	
 	setkey(dat, aggIndex)
 	
+	rm(o)
+		
+
 	#####################
 	## Aggregate numeric variables
 	#####################

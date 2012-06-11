@@ -22,7 +22,6 @@
 #' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
-#' @param title title of the tableplot
 #' @param colNames equal to select; used in older versions of tabplot (<= 0.11-2)
 #' @param filter equal to subset; used in older versions oftabplot (<= 0.11-2)
 #' @param plot boolean, to plot or not to plot a tableplot
@@ -34,7 +33,7 @@
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
 					  nBins=100, from=0, to=100, ncols=ncol(dat), 
 					  scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", 
-					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, title=NA, colNames=NULL, filter=NULL, 
+					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, colNames=NULL, filter=NULL, 
 					  plot=TRUE, ...) {
 
 	datName <- deparse(substitute(dat))

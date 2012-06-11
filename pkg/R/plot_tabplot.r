@@ -10,9 +10,13 @@
 #' @export
 #' @method plot tabplot
 plot.tabplot <-
-function(x, fontsize = 8, legend.lines = 8, title = ifelse(length(x$filter)==0, x$dataset, paste(x$dataset, " (", x$filter, ")", sep="")), showTitle = FALSE, ...) {
+function(x, fontsize = 8, legend.lines = 8, title = NULL, showTitle = NULL, ...) {
 	
-		
+	if (missing(showTitle)) showTitle <- !missing(title)
+	
+	if (missing(title)) 
+		title <- ifelse(length(x$filter)==0, x$dataset, paste(x$dataset, " (", x$filter, ")", sep=""))
+	
 	#############################
 	## Determine colors and color scales
 	#############################

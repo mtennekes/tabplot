@@ -42,12 +42,12 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 
 	
 	## discourage select and filter arguments
-	if (!is.null(filter)) {
+	if (!missing(filter)) {
 		warning("As of 0.11-2, the arguments colNames and filter are replaced by select and subset")
 		subset <- filter
 	}
 	
-	if (!is.null(colNames)) {
+	if (!missing(colNames)) {
 		warning("As of 0.11-2, the arguments colNames and filter are replaced by select and subset")
 		select <- colNames
 	}
@@ -56,47 +56,54 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	#####################################
 	## Filter data
 	#####################################
-#browser()
+browser()
 	
 	if (!missing(subset)) {
-		if (deparse(substitute(subset))!="expr")
-			subset <- as.expression(substitute(subset))
-		if (!(class(subset)[1] %in% c("character", "expression"))) stop("<subset> is not an expression nor a character")
+		
+		deparse(substitute(subset))
+		
+		deparse(subset)
+		
+		e <- substitute(subset)
+		if (e=="expr") e <- subset
+		if (is.character(e)) e <- parse(text=e)
 		
 		# split by one variable
-		if (subset %in% names(dat)) {
-			subset <- as.character(subset)
-			lvls <- levels(dat[[subset]])
-			
-			if ((class(dat[[subset]])[1]=="logical") || (class(dat)[1]=="ffdf" && vmode(dat[[subset]]) %in% c("boolean", "logical"))) {
-				isLogical <- TRUE
-				lvls <- c("TRUE", "FALSE")
-			} else {
-				isLogical <- FALSE
-			}
-			if (is.null(lvls)) stop("subset variable is not categorical")
-			exprChar <- paste(subset, " == ", ifelse(isLogical, "", "\""), lvls, ifelse(isLogical, "", "\""), sep="")
-			expr <- lapply(exprChar, FUN=function(x)parse(text=x))
-			
-			tabs <- lapply(expr, FUN=function(expr){
-				tab <- tableplot(dat, select=select, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals, nBins=nBins, from=from, to=to, subset=expr, bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
-				tab
-			})
-			return(tabs)
+		if (is.name(e) ) {
+			echar <- as.character(e)
+			if (echar %in% names(dat)) {
+				lvls <- levels(dat[[echar]])
+				
+				if ((class(dat[[echar]])[1]=="logical") || (class(dat)[1]=="ffdf" && vmode(dat[[echar]]) %in% c("boolean", "logical"))) {
+					isLogical <- TRUE
+					lvls <- c("TRUE", "FALSE")
+				} else {
+					isLogical <- FALSE
+				}
+				if (is.null(lvls)) stop("subset variable is not categorical")
+				exprChar <- paste(echar, " == ", ifelse(isLogical, "", "\""), lvls, ifelse(isLogical, "", "\""), sep="")
+				#expr <- lapply(exprChar, FUN=function(x)parse(text=x))
+				
+				tabs <- lapply(exprChar, FUN=function(expr){
+					tab <- tableplot(dat, select=select, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals, nBins=nBins, from=from, to=to, subset=expr, bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
+					tab
+				})
+				return(tabs)
+			} else stop("Invalid subset argument")
 		}
 		
 		# other filters
-		if (class(subset)[1]=="character") subset <- parse(text=subset)
 		if (class(dat)[1]=="ffdf") {
-			sel <- bit(nrow(dat))
+			r <- bit(nrow(dat))
 			for (i in chunk(dat)) {
-				sel[i] <- eval(subset, dat[i,])
+				r[i] <- eval(subset, dat[i,])
+				r <- r & !is.na(r)
 			}
-			dat <- subset(dat, sel)
+			dat <- subset(dat, r)
 		} else {
-			#browser()
-			sel <- eval(subset, dat)
-			dat <- dat[sel,]
+			r <- eval(e, dat, parent.frame())
+			r <- r & !is.na(r)
+			dat <- dat[r, ]
 		}
 		
 	}

@@ -3,8 +3,8 @@
 #' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package.
 #'
 #' @param dat a \code{\link{data.frame}}, \code{\link{data.table}}, or an \code{\link[ff:ffdf]{ffdf}} object (required)
-#' @param select expression or character vector indicating the columns of \code{dat} that are visualized in the tablelplot. By default, all columns are visualized. 
-#' @param subset filter condition to subset the observations in \code{dat}, either a character or an expression (like in the function \code{\link{subset}}). It is also possible to give the name of a categorical variable: then, a tableplot for each category is generated.
+#' @param select expression indicating the columns of \code{dat} that are visualized in the tablelplot. By default, all columns are visualized. Use \code{select\_string} to provide a character string instead of an expression. 
+#' @param subset filter that condition to subset the observations in \code{dat} (expression). It is also possible to provide the name of a categorical variable: then, a tableplot for each category is generated. Use \code{subset\_string} to provide a character string instead of an expression.
 #' @param sortCol columns that are sorted. \code{sortCol} is either a vector of column names of a vector of indices of \code{colNames}
 #' @param decreasing determines whether the columns are sorted decreasingly (TRUE) of increasingly (FALSE). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.
 #' @param nBins number of row bins
@@ -22,8 +22,10 @@
 #' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
-#' @param colNames equal to select; used in older versions of tabplot (<= 0.11-2)
-#' @param filter equal to subset; used in older versions oftabplot (<= 0.11-2)
+#' @param \code{select\_string} character equivalent of the \code{select} argument (particularly useful when writing functions)
+#' @param \code{subset\_string} character equivalent of the \code{subset} argument (particularly useful when writing functions) 
+#' @param colNames used in older versions of tabplot (<= 0.11-2): use \code{select(\_string)} instead
+#' @param filter used in older versions oftabplot (<= 0.11-2): use \code{subset(\_string)} instead
 #' @param plot boolean, to plot or not to plot a tableplot
 #' @param ... arguments passed to \code{\link{plot.tabplot}}
 #' @return \link{tabplot-object} (silent output)
@@ -33,7 +35,8 @@
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
 					  nBins=100, from=0, to=100, ncols=ncol(dat), 
 					  scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", 
-					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, colNames=NULL, filter=NULL, 
+					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, select_string = NULL,
+					  subset_string=NULL, colNames=NULL, filter=NULL, 
 					  plot=TRUE, ...) {
 
 	datName <- deparse(substitute(dat))
@@ -42,61 +45,60 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 
 	
 	## discourage select and filter arguments
-	if (!missing(filter)) {
-		warning("As of 0.11-2, the arguments colNames and filter are replaced by select and subset")
-		subset <- filter
-	}
-	
 	if (!missing(colNames)) {
-		warning("As of 0.11-2, the arguments colNames and filter are replaced by select and subset")
-		select <- colNames
+		warning("The argument colNames will not be supported anymore in the future versions of tabplot. Use select or select_string instead")
+		select_string <- colNames
+	}
+
+	if (!missing(filter)) {
+		warning("The argument filter will not be supported anymore in the future versions of tabplot. Use subset or subset_string instead")  
+		subset_string <- filter
 	}
 	
 	
 	#####################################
-	## Filter data
+	## Filter data: subset(string)
 	#####################################
-browser()
-	
+	# complement subset and subset_string
 	if (!missing(subset)) {
-		
-		deparse(substitute(subset))
-		
-		deparse(subset)
-		
-		e <- substitute(subset)
-		if (e=="expr") e <- subset
-		if (is.character(e)) e <- parse(text=e)
-		
+		subset_string <- deparse(substitute(subset))
+	} else if (!missing(subset_string)) {
+		subset <- parse(text=subset_string)
+	}
+
+	
+	if (!missing(subset_string)) {
+
 		# split by one variable
-		if (is.name(e) ) {
-			echar <- as.character(e)
-			if (echar %in% names(dat)) {
-				lvls <- levels(dat[[echar]])
-				
-				if ((class(dat[[echar]])[1]=="logical") || (class(dat)[1]=="ffdf" && vmode(dat[[echar]]) %in% c("boolean", "logical"))) {
-					isLogical <- TRUE
-					lvls <- c("TRUE", "FALSE")
-				} else {
-					isLogical <- FALSE
-				}
-				if (is.null(lvls)) stop("subset variable is not categorical")
-				exprChar <- paste(echar, " == ", ifelse(isLogical, "", "\""), lvls, ifelse(isLogical, "", "\""), sep="")
-				#expr <- lapply(exprChar, FUN=function(x)parse(text=x))
-				
-				tabs <- lapply(exprChar, FUN=function(expr){
-					tab <- tableplot(dat, select=select, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals, nBins=nBins, from=from, to=to, subset=expr, bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
-					tab
-				})
-				return(tabs)
-			} else stop("Invalid subset argument")
+		if (subset_string %in% names(dat)) {
+			lvls <- levels(dat[[subset_string]])
+			
+			if ((class(dat[[subset_string]])[1]=="logical") || (class(dat)[1]=="ffdf" &&
+				vmode(dat[[subset_string]]) %in% c("boolean", "logical"))) {
+				isLogical <- TRUE
+				lvls <- c("TRUE", "FALSE")
+			} else {
+				isLogical <- FALSE
+			}
+			if (is.null(lvls)) stop("subset variable is not categorical")
+			
+			subsets_string <- paste(subset_string, " == ", ifelse(isLogical, "", "\""), lvls,
+									ifelse(isLogical, "", "\""), sep="")
+			tabs <- lapply(subsets_string, FUN=function(subs_string){
+				tab <- tableplot(dat, select_string=select_string, sortCol=sortCol, 
+								 decreasing=decreasing, scales=scales, pals=pals, nBins=nBins,
+								 from=from, to=to, subset_string=subs_string, 
+								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
+				tab
+			})
+			return(tabs)
 		}
-		
+		e <- substitute(subset)
 		# other filters
 		if (class(dat)[1]=="ffdf") {
 			r <- bit(nrow(dat))
 			for (i in chunk(dat)) {
-				r[i] <- eval(subset, dat[i,])
+				r[i] <- eval(e, dat[i,])
 				r <- r & !is.na(r)
 			}
 			dat <- subset(dat, r)
@@ -116,16 +118,17 @@ browser()
 	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
 	if (nrow(dat)==1) stop("<dat> has only one row")
 	
-	## Check select
-
-	
-	if (missing(select)) {
-		colNames <- names(dat)
-	} else {
+	## Check select(_string)
+	if (!missing(select)) {
 		nl <- as.list(seq_along(dat))
 		names(nl) <- names(dat)
 		colNames <- eval(substitute(select), nl, parent.frame())
-		if (!is.character(colNames)) colNames <- names(dat)[colNames]
+		colNames <- names(dat)[colNames]
+	} else if (!missing(select_string)) {
+		if (!all(colNames %in% names(dat))) stop("select_string contains wrong column names")
+		colNames <- select_string
+	} else {
+		colNames <- names(dat)
 	}
 	
 	## Only select the columns of colNames
@@ -184,10 +187,10 @@ browser()
 	##########################
 
 	
-	tab <- preprocess(dat, datName, as.character(subset), colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
+	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
 	
 	# delete cloned ffdf (those with filter)
-	if (!is.null(subset) && class(dat)[1]=="ffdf") delete(dat)
+	if (!missing(subset_string) && class(dat)[1]=="ffdf") delete(dat)
 
 	isNumber <- tab$isNumber
 	

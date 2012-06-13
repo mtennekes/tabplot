@@ -17,9 +17,9 @@ Rprof(tmp <- tempfile())
 
 test <- subset(diamonds, select="carat", subset="color=='F'")
 
-subs <- "cut==\"Fair\""
+sel <- "carat"
 
-tab <- tableplot(diamonds, select="carat", subset=cut=="Fair")
+tab <- tableplot(diamonds, select_string=c("carat", "price"), subset_string="cut==\"Fair\"", showTitle=TRUE)
 
 plot(tab)
 

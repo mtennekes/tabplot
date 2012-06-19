@@ -95,7 +95,7 @@ The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the
 
 <<label=tp2, include=FALSE>>=
 tableplot(diamonds, 
-          colNames=c("carat", "price", "cut", "color", "clarity"), 
+          select=c(carat, price, cut, color, clarity), 
           sortCol="price")
 @
 
@@ -120,7 +120,7 @@ We can focus our attention to the 5\% most expensive diamonds by setting the {\t
 
 <<label=tp3, include=FALSE>>=
 tableplot(diamonds, 
-          colNames=c("carat", "price", "cut", "color", "clarity"), 
+          select=c(carat, price, cut, color, clarity), 
           sortCol="price", 
           from=0, 
           to=5)
@@ -203,7 +203,7 @@ tableplot(diamonds, pals=list("Set1(7)", "Set5", rainbow(8)))
 The argument {\tt filter} serves as a filter condition for the data. The following code generates a tableplot of premium cut diamonds that cost less than 5000\$.
 
 <<label=tp5, include=FALSE>>=
-tableplot(diamonds, filter="price < 5000 & cut=='Premium'")
+tableplot(diamonds, subset=price < 5000 & cut=="Premium")
 @
 
 \begin{figure}[htp]

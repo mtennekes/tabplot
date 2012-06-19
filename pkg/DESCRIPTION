@@ -50,7 +50,7 @@ Collate:
     'tableplot_checkFromTo.R'
     'tableplot_checkPals.R'
     'tableplot_checkScales.R'
-    'tableplot_checktCols.R'
+    'tableplot_checkCols.R'
     'tableSave.R'
     'tableViewport.R'
     'tabplot_object.R'

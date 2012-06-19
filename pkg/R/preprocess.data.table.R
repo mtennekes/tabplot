@@ -1,6 +1,5 @@
 preprocess.data.table <-
 function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
-
 	
 	optSpace <- (object.size(dat)*2.5 > (memory.limit() - memory.size())*2^20)
 	if (optSpace) cat("Optimized for space \n")
@@ -94,8 +93,10 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	o <- order(do.call(order, dat[, sortColNames, with=FALSE]))
 	
 	
-	dat[, setdiff(sortColNames, colNames):=NULL, with=FALSE]
-
+	extraCols <- setdiff(sortColNames, colNames)
+	for (col in extraCols) dat[, col:=NULL, with=FALSE]
+	# dat[, extraCols:=NULL, with=FALSE] somehow doesn't work
+	
 
 	#colNames[sortCol[decreasing & !isNumber[sortCol]]]
 	
@@ -137,7 +138,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	#####################
 	if (sum(isNumber)>0) {
 	
-
+	
 		## calculate means
 		.SD <- NULL; rm(.SD); #trick R CMD check
 		if (optSpace) gc()
@@ -179,6 +180,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	#####################
 	## Aggregate categorical variables
 	#####################
+	
 	if (any(!isNumber)) {	
 		if (optSpace) gc()
 		datFreq <- list()

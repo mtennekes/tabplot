@@ -44,14 +44,16 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 
 
 	
-	## discourage select and filter arguments
+	## discourage colNames and filter arguments
 	if (!missing(colNames)) {
-		warning("The argument colNames will not be supported anymore in the future versions of tabplot. Use select or select_string instead")
+		warning("The argument colNames will not be supported anymore in the future versions 
+				of tabplot. Use select or select_string instead")
 		select_string <- colNames
 	}
 
 	if (!missing(filter)) {
-		warning("The argument filter will not be supported anymore in the future versions of tabplot. Use subset or subset_string instead")  
+		warning("The argument filter will not be supported anymore in the future versions of tabplot. 
+				Use subset or subset_string instead")  
 		subset_string <- filter
 	}
 	
@@ -148,7 +150,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	n <- length(colNames)
 
 	## Check sortCol, and (if necessary) cast it to indices
-	sortCol <- tableplot_checkCols(sortCol, colNames)
+
+	sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
 
 	## Check decreasing vector
 	decreasing <- tableplot_checkDecreasing(decreasing, sortCol)
@@ -157,7 +160,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	## Check number of columns
 	if (!is.numeric(ncols)) stop("<ncolums> is not numeric")
 	if (ncols < length(sortCol)) stop("<ncols> less than number of sorted columns")
-	if (ncols == length(sortCol) && length(sortCol) < length(colNames)) stop("<ncols> equal to number of sorted columns while number of selected columns is larger")
+	if (ncols == length(sortCol) && length(sortCol) < length(colNames)) 
+		stop("<ncols> equal to number of sorted columns while number of selected columns is larger")
 	
 	if (ncols > length(colNames)) ncols <- length(colNames)
 	
@@ -173,7 +177,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	}
 	
 	## Check numPals
-	if ((class(numPals)!="character") || !all(numPals %in% c("Blues", "Greens", "Greys"))) stop("<numPals> is not correct")
+	if ((class(numPals)!="character") || !all(numPals %in% c("Blues", "Greens", "Greys")))
+		stop("<numPals> is not correct")
 	
 	## Check nBins
 	nBins <- tableplot_checkBins(nBins, nrow(dat))
@@ -187,7 +192,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##########################
 
 	
-	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
+	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
+					  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
 	
 	# delete cloned ffdf (those with filter)
 	if (!missing(subset_string) && class(dat)[1]=="ffdf") delete(dat)

@@ -14,7 +14,7 @@ data(diamonds)
 
 Rprof(tmp <- tempfile())
 
-tab <- tableplot(diamonds, select=c(depth, carat, color), subset_string="cut=='Fair'", sortCol=depth, showTitle=FALSE)
+tab <- tableplot(diamonds, subset_string="cut=='Fair'", sortCol=depth, showTitle=FALSE, nCols=4)
 
 plot(tab)
 

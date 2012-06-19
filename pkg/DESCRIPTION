@@ -13,14 +13,13 @@ Description: A tableplot is a visualisation of a (large)
     categorical variables as stacked bar charts. Missing
     values are taken into account. Also supports large ffdf
     datasets from the ff package.
-Version: 0.11-3
+Version: 0.100
 URL: http://code.google.com/p/tableplot/
 Date: 2012-05-14
 Depends:
-    data.table (>= 1.5.3),
+    ffbase (>= 0.5),
     grid
 Suggests:
-    ff (>= 2.2-0),
     classInt,
     ggplot2
 Collate:
@@ -46,11 +45,11 @@ Collate:
     'tablePalettes.R'
     'tableplot.R'
     'tableplot_checkBins.R'
+    'tableplot_checkCols.R'
     'tableplot_checkDecreasing.R'
     'tableplot_checkFromTo.R'
     'tableplot_checkPals.R'
     'tableplot_checkScales.R'
-    'tableplot_checkCols.R'
     'tableSave.R'
     'tableViewport.R'
     'tabplot_object.R'

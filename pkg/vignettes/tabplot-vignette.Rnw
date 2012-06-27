@@ -91,12 +91,12 @@ tableplot(diamonds)
 \label{fig:tp1}
 \end{figure}
 
-The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt colNames}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variable(s) the data is sorted.
+The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt select}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variable(s) the data is sorted.
 
 <<label=tp2, include=FALSE>>=
 tableplot(diamonds, 
           select=c(carat, price, cut, color, clarity), 
-          sortCol="price")
+          sortCol=price)
 @
 
 \begin{figure}[htp]
@@ -121,7 +121,7 @@ We can focus our attention to the 5\% most expensive diamonds by setting the {\t
 <<label=tp3, include=FALSE>>=
 tableplot(diamonds, 
           select=c(carat, price, cut, color, clarity), 
-          sortCol="price", 
+          sortCol=price, 
           from=0, 
           to=5)
 @

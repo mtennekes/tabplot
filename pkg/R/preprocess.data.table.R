@@ -130,6 +130,8 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	
 	setkey(dat, aggIndex)
 	
+	#dat <- dat[!is.na(dat$aggIndex),]
+	
 	rm(o)
 		
 
@@ -181,6 +183,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	## Aggregate categorical variables
 	#####################
 	
+	
 	if (any(!isNumber)) {	
 		if (optSpace) gc()
 		datFreq <- list()
@@ -192,9 +195,10 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		
 		
 	}
-	
+
 	dat[, aggIndex:=NULL]
 	
+	#browser()
 	#############################
 	##
 	## Create list object that contains all data needed to plot
@@ -244,6 +248,6 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		}
  		tab$columns[[i]] <- col
 	}
-	
+
 	return(tab)
 }

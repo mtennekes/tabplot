@@ -3,8 +3,8 @@
 #' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package.
 #'
 #' @param dat a \code{\link{data.frame}}, \code{\link{data.table}}, or an \code{\link[ff:ffdf]{ffdf}} object (required)
-#' @param select expression indicating the columns of \code{dat} that are visualized in the tablelplot. By default, all columns are visualized. Use \code{select\_string} to provide a character string instead of an expression. 
-#' @param subset filter that condition to subset the observations in \code{dat} (expression). It is also possible to provide the name of a categorical variable: then, a tableplot for each category is generated. Use \code{subset\_string} to provide a character string instead of an expression.
+#' @param select expression indicating the columns of \code{dat} that are visualized in the tablelplot. By default, all columns are visualized. Use \code{select_string} to provide a character string instead of an expression. 
+#' @param subset filter that condition to subset the observations in \code{dat} (expression). It is also possible to provide the name of a categorical variable: then, a tableplot for each category is generated. Use \code{subset_string} to provide a character string instead of an expression.
 #' @param sortCol columns that are sorted. \code{sortCol} is either a vector of column names of a vector of indices of \code{colNames}
 #' @param decreasing determines whether the columns are sorted decreasingly (TRUE) of increasingly (FALSE). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.
 #' @param nBins number of row bins
@@ -22,8 +22,8 @@
 #' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
-#' @param \code{select\_string} character equivalent of the \code{select} argument (particularly useful when writing functions)
-#' @param \code{subset\_string} character equivalent of the \code{subset} argument (particularly useful when writing functions) 
+#' @param select_string character equivalent of the \code{select} argument (particularly useful when writing functions)
+#' @param subset_string character equivalent of the \code{subset} argument (particularly useful when writing functions) 
 #' @param colNames used in older versions of tabplot (<= 0.11-2): use \code{select(\_string)} instead
 #' @param filter used in older versions oftabplot (<= 0.11-2): use \code{subset(\_string)} instead
 #' @param plot boolean, to plot or not to plot a tableplot
@@ -195,6 +195,9 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
 					  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
 	
+	browser()
+	#dat[, agg Index:=NULL]
+	
 	# delete cloned ffdf (those with filter)
 	if (!missing(subset_string) && class(dat)[1]=="ffdf") delete(dat)
 
@@ -310,7 +313,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		tab$columns[[i]]$xline <- xline
 		tab$columns[[i]]$widths <- widths
 	}
-	
+
 	### multiple tableplots if nCols < length(colNames)
 	if (nCols < length(colNames)) {
 		nOtherCol <- nCols - length(sortCol)

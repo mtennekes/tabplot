@@ -195,7 +195,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
 					  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
 	
-	browser()
 	#dat[, agg Index:=NULL]
 	
 	# delete cloned ffdf (those with filter)

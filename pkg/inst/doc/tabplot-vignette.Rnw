@@ -1,0 +1,297 @@
+%\VignetteIndexEntry{tabplot}
+\documentclass[11pt, fleqn, a4paper]{article}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{hyperref}
+\usepackage{alltt}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage{threeparttable}
+\usepackage{enumitem}
+
+% stimulate latex to put multiple floats on a page.
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{3}
+\setcounter{dbltopnumber}{2}
+\renewcommand{\topfraction}{.9}
+\renewcommand{\textfraction}{.1}
+\renewcommand{\bottomfraction}{.75}
+\renewcommand{\floatpagefraction}{.9}
+\renewcommand{\dblfloatpagefraction}{.9}
+\renewcommand{\dbltopfraction}{.9}
+\hyphenation{time-stamp}
+\hypersetup{colorlinks, urlcolor=blue, linkcolor=blue}
+\newenvironment{myindentpar}[1]%
+{\begin{list}{}%
+         {\setlength{\leftmargin}{#1}}%
+         \item[]%
+}
+{\end{list}}
+
+\title{Visualization of large multivariate datasets with the {\tt tabplot} package}
+\author{Martijn Tennekes and Edwin de Jonge}
+\date{\today\\ (A later version may be available on \href{http://cran.r-project.org/package=tabplot}{CRAN})}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\setkeys{Gin}{width=1\textwidth}
+
+\maketitle
+\begin{abstract}
+
+The tableplot is a powerful visualization method to explore and analyse large multivariate datasets. In this vignette, the implementation of tableplots in R is described. 
+
+
+\end{abstract}
+
+<<eval=FALSE>>=
+library(tabplot)
+@
+\maketitle
+
+%\newpage
+
+%\tableofcontents
+%\listofalgorithms
+%\newpage
+\section{Introduction}
+The tableplot is a visualization method that is used to explore and analyse large datasets. Tableplots are used to explore the relationships between the variables, to discover strange data patterns, and to check the occurrence and selectivity of missing values. 
+
+A tableplot applied to the diamonds dataset of the {\tt ggplot2} package (where some missing values were added) is illustrated in Figure~\ref{fig:tp1}. Each column represents a variable. The whole data set is sorted according to one column (in this case, carat), and then grouped into row bins. Algorithm~\ref{alg} in Appendix~\ref{secalg} describes the creation of a tableplot into detail.
+
+Tableplots are aimed to visualize multivariate datasets with several variabels (up tot a dozen) and a large number of records, say at least one thousand. Tableplots can also be generated for datasets with less records, but they may be less useful. The maximum size of datasets that can be visualized with the {\tt tabplot} package depends on the R's memory, or, when using the {\tt ff} package, on the limitations of that package.
+
+A graphical user interface for generating tableplots is implemented in the package {\tt tabplotGTK}.
+
+\section{Getting started with the {\tt tableplot} function}
+
+The diamonds dataset is very suitable to demonstrate the {\tt tabplot} package. To illustrate the visualization of missing values, we add several {\tt NA}'s.
+
+<<chunk1,  results='hide'>>=
+require(ggplot2)
+data(diamonds)
+## add some NA's
+is.na(diamonds$price) <- diamonds$cut=="Ideal"
+is.na(diamonds$cut) <- (runif(nrow(diamonds))>0.8)
+@
+
+A tableplot is simply created by the function {\tt tableplot}:
+
+\begin{figure}[htp]
+<<chunk2, fig.height=7, fig.width=10, dev='pdf'>>=
+tableplot(diamonds)
+@
+\caption{Tableplot of the diamonds dataset}
+\label{fig:tp1}
+\end{figure}
+
+The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt select}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variable(s) the data is sorted.
+
+\begin{figure}[htp]
+<<chunk3, fig.height=7, fig.width=10>>=
+tableplot(diamonds, 
+          select=c(carat, price, cut, color, clarity), 
+          sortCol=price)
+@
+\caption{Tableplot of the diamonds dataset: sorted by price}
+\label{fig:tp2}
+\end{figure}
+
+The result is illustrated in Figure~\ref{fig:tp2}. 
+
+Setting an appropriate number of row bins (by the argument {\tt nbins}) is important, like in a histogram. A good number of row bins is a trade of between good polished but meaningless data, and detailed, but noisy data. In practice, we found that the default number of 100 usually is a good starting point.
+
+The percentages near the vertical axis indicate which subset of the data in terms of units (rows) is depicted. The range from 0\% to 100\% in Figure~\ref{fig:tp2} means that all units of the data are plotted. 
+
+
+We can focus our attention to the 5\% most expensive diamonds by setting the {\tt from} argument to 0 and the {\tt to} argument to 5:
+
+
+\begin{figure}[htp]
+<<chunk4, fig.height=7, fig.width=10>>=
+tableplot(diamonds, 
+          select=c(carat, price, cut, color, clarity), 
+          sortCol=price, 
+          from=0, 
+          to=5)
+@
+\caption{Tableplot of the diamonds dataset: zooming in}
+\label{fig:tp3}
+\end{figure}
+
+
+Observe that in the obtained tableplot in Figure~\ref{fig:tp3}, the number of row bins is still 100, so that the number of units per row bin is now 27 instead of 540. Therefore, much more detail can be observed in this tableplot.
+
+The vertical axis contains two sets of tick marks. The small tick marks correspond with the row bins and the large tick marks correspond with the percentages between {\tt from} and {\tt to}. The latter are determined by R's base function {\tt pretty}.
+
+
+\section{Customizing the tableplot}
+
+
+\subsection{Continuous variables}
+
+For each bin of a continuous variable, the mean value is calculated (see Algorithm~\ref{alg}).
+When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation. The argument {\tt scales} can be set to linear mode {\tt "lin"}, logarithmic mode {\tt "log"}, or the default value {\tt "auto"}, which automatically determines which of the former two modes is used.
+
+Observe that the x-axes of the variables depth and table in Figure~\ref{fig:tp1} are broken. The x-axis of a variable $i$ is broken if
+either
+\begin{align*}
+& 0 < \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
+& \mbox{{\tt bias\_brokenX}} \cdot \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}) < \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) 
+\end{align*}
+\textsc{or}
+\begin{align*}
+& 0 > \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
+& \mbox{{\tt bias\_brokenX}} \cdot \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) > \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}),
+\end{align*}
+where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 and 1. If {\tt bias\_brokenX=1} then the above conditions are always false, which implies that the x-axes are never broken. On the other hand, if {\tt bias\_brokenX=0} then the x-axes are always broken. By default, {\tt bias\_brokenX} {\tt=0.8}, which mean that an x-axis is broken if (in case of a variable with positive values) the minimum value is at least 0.8 times the maximum value. In the diamonds dataset, this applies to the variables depth and table.
+
+
+\subsection{Categorical variables}
+The color palettes of categorical variables can be customized with the argument {\tt pals}. Several qualitative palettes are implemented. They can be shown by
+
+\begin{figure}[htp]
+<<chunk5, fig.height=7, fig.width=10>>=
+tablePalettes()
+@
+\caption{Color palettes}
+\label{fig:pals}
+\end{figure}
+
+The default palette is a combination of Set1 and Set2. It has the advantage that each category has a unique color for variables with up to 16 categories.
+
+Suppose we want a to use the default palette for the variable {\tt cut}, but starting with the seventh color, pink. Further we want the fifth palette for the variable {\tt color}, but without the first color (black), and a custom palette, say a rainbow palette, for the variable {\tt clarity}:
+
+
+\begin{figure}[htp]
+<<chunk6, fig.height=7, fig.width=10>>=
+tableplot(diamonds, pals=list("Set1(7)", "Set5", rainbow(8)))
+@
+\caption{Tableplot of the diamonds dataset: other colour palettes}
+\label{fig:tp4}
+\end{figure}
+
+\subsection{Filtering data}
+The argument {\tt filter} serves as a filter condition for the data. The following code generates a tableplot of premium cut diamonds that cost less than 5000\$.
+
+
+\begin{figure}[htp]
+<<chunk7, fig.height=3, fig.width=10>>=
+tableplot(diamonds, subset=price < 5000 & cut=="Premium")
+@
+\caption{Tableplot of the diamonds dataset: filtered}
+\label{fig:tp5}
+\end{figure}
+
+
+
+\subsection{The tabplot object}
+
+The function {\tt tableplot} returns a tabplot-object, that can be used to make minor changes to the tableplot, for instance the order of columns or the color palettes. Of course, these changes can also be made by generating a new tableplot, such as in the examples above. However, if it takes considerable time to generate a tableplot, then it is practical to make minor changes immediately.
+
+The output of the {\tt tableplot} function can be assigned to a variable. The graphical output can be omitted by setting the argument {\tt plot} to FALSE.
+
+<<chunk8>>=
+tab <- tableplot(diamonds, plot=FALSE)
+@
+
+The tabplot-object is a list that contains all information to depict a tableplot. The generic functions {\tt summary} and {\tt plot} can be applied to the {\tt tabplot} object.
+
+<<chunk9>>=
+summary(tab)
+plot(tab)
+@
+
+The function {\tt tableChange} is used to make minor changes to a tabplot-object. Suppose we want the columns in the order of \ref{fig:tp2}, and we want to change all color palettes to default starting with the second color.
+
+<<chunk10, fig.keep='non'>>=
+tab2 <- tableChange(tab, 
+                    colNames=c("carat", "price", "cut", "color", "clarity"), 
+                    pals=list("Set1(2)"))
+plot(tab2)
+@
+
+With the function {\tt tableSave}, tableplots can be saved to a desired grahical output format: pdf, eps, svg, wmf, png, jpg, bmp, or tiff.
+
+<<chunk11>>=
+tableSave(tab, 
+          filename="diamonds.png", 
+          width=5,
+          height=3,
+          fontsize = 6, 
+          legend.lines = 6)
+@
+
+
+
+
+\section{Resources}
+\begin{itemize}
+\item Summary of the package: {\tt help(package=tabplot)}
+\item The main help page: {\tt ?tabplot}
+\item Project site: \url{http://code.google.com/p/tableplot/}
+\item References:
+\begin{itemize}
+\item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2011) Visual profiling of large statistical datasets. Paper presented at the 2011 New Techniques and Technologies for Statistics conference, Brussels, Belgium. (
+\href{http://www.von-tijn.nl/tijn/research/publications/Tableplots.pdf}{paper}, 
+\href{http://www.von-tijn.nl/tijn/research/presentations/NTTS_tableplots.pdf}{presentation}
+)
+\end{itemize}
+\end{itemize}
+
+
+\appendix
+\newpage
+\section{Tableplot creation algorithm}\label{secalg}
+A tabplot is basically created by Algorithm~\ref{alg}.
+
+\begin{algorithm}[h]
+\caption{Create tableplot}\label{alg}
+\begin{minipage}{0.8\textwidth}
+\begin{algorithmic}[1]
+\Require Tabular dataset $t$, column $i_s$ of which the distribution is of interest\footnote{The dataset $t$ can also be sorted according to multiple columns.}, number of row bins $n$.
+\State $t'\leftarrow$ sort $t$ according to the values of column $i_s$.
+\State Divide $t'$ into $n$ equally sized row bins according to the order of $t'$.
+\For {each column $i$}
+\If{$i$ is numeric}
+\State $m_{ib}\leftarrow$ mean value per bin $b$
+\State $c_{ib}\leftarrow$ fraction of missing values per bin $b$
+\EndIf
+\If{$i$ is categorical}
+\State $\begin{aligned}[t]
+		&\mbox{$f_{ijb}\leftarrow$ frequency of each category $j$ (including missing values)}\\[-3pt]
+		&\mbox{per bin $b$}
+	\end{aligned}$
+\EndIf
+\EndFor
+\For {each column $i$}
+\If{$i$ is numeric}
+\State $\begin{aligned}[t]
+		&\mbox{Plot a bar chart of the mean values $\{m_{i1}, m_{i2},\ldots, m_{in}\}$, option-}\\[-3pt]
+		&\mbox{ally with a logarithmic scale. The fraction of missing values $\{c_{i1},$}\\[-3pt]
+		&\mbox{$c_{i2},\ldots, c_{in}\}$ determines the lightness of the bar colour. The light-}\\[-3pt]
+		&\mbox{er the colour, the more missing values occur in bin $b$. If all values}\\[-3pt]
+		&\mbox{are missing, a light red bar of full length is drawn.}
+	\end{aligned}$
+\EndIf
+\If{$i$ is categorical}
+\State $\begin{aligned}[t]
+		&\mbox{Plot a stacked bar chart according to the frequencies $\{f_{i1b}, f_{i2b},$}\\[-3pt]
+		&\mbox{$\ldots\}$ for each bin $b$. Each category is shown is a distinct colour.}\\[-3pt]
+		&\mbox{If there are missing values, they are depicted by a red colour.}
+	\end{aligned}$
+\EndIf
+\EndFor
+\Ensure Tableplot
+\end{algorithmic}
+\end{minipage}
+\end{algorithm}
+
+
+
+
+\end{document}

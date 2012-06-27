@@ -1,6 +1,4 @@
-library(devtools)
-
-load_all("pkg")
+load_all()
 
 ### test installed package
 library(tabplot)

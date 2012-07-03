@@ -10,6 +10,9 @@ R -q -f build/createpallete.R
 echo Build documentation...
 R -q -f build/roxygen.R
 
+echo Build vignette...
+R -q -f build/vignette.R
+
 md output
 cd output
 R CMD build --resave-data ../pkg

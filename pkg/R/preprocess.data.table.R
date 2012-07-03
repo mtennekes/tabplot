@@ -133,7 +133,6 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	#dat <- dat[!is.na(dat$aggIndex),]
 	
 	rm(o)
-		
 
 	#####################
 	## Aggregate numeric variables
@@ -187,6 +186,9 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	if (any(!isNumber)) {	
 		if (optSpace) gc()
 		datFreq <- list()
+		
+		datCat <- dat[J(1:nBins), c("aggIndex", colNames[!isNumber]), with=FALSE]
+		
 		for (col in colNames[!isNumber]) {
 			datFreq[[col]] <- getFreqTable_DT(dat[, c("aggIndex", col), with=FALSE], col)
 		}

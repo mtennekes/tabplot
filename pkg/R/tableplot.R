@@ -69,7 +69,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	}
 
 	
-	if (!missing(subset_string)) {
+	if (!is.null(subset_string)) {
 
 		# split by one variable
 		if (subset_string %in% names(dat)) {
@@ -93,7 +93,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
 				tab
 			})
-			return(tabs)
+			return(invisible(tabs))
 		}
 		e <- substitute(subset)
 		# other filters
@@ -126,8 +126,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		names(nl) <- names(dat)
 		colNames <- eval(substitute(select), nl, parent.frame())
 		colNames <- names(dat)[colNames]
-	} else if (!missing(select_string)) {
-		if (!all(colNames %in% names(dat))) stop("select_string contains wrong column names")
+	} else if (!is.null(select_string)) {
+		if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
 		colNames <- select_string
 	} else {
 		colNames <- names(dat)
@@ -135,7 +135,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	## Only select the columns of colNames
 	if (class(dat)[1]=="data.table") {
-		#browser()
 		
 		ignoreNames <- setdiff(names(dat), colNames)
 		if (length(ignoreNames)!=0) 

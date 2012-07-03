@@ -48,8 +48,11 @@ The tableplot is a powerful visualization method to explore and analyse large mu
 
 \end{abstract}
 
-<<eval=FALSE>>=
-library(tabplot)
+<<echo=FALSE, results='hide', message=FALSE>>=
+#library(tabplot)
+#getwd()
+library(devtools)
+load_all("../pkg")
 @
 \maketitle
 
@@ -180,7 +183,7 @@ The argument {\tt filter} serves as a filter condition for the data. The followi
 
 
 \begin{figure}[htp]
-<<chunk7, fig.height=3, fig.width=10>>=
+<<chunk7, fig.height=7, fig.width=10>>=
 tableplot(diamonds, subset=price < 5000 & cut=="Premium")
 @
 \caption{Tableplot of the diamonds dataset: filtered}

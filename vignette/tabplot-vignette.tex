@@ -442,13 +442,7 @@ The tableplot is a powerful visualization method to explore and analyse large mu
 
 \end{abstract}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{library}(tabplot)
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+
 
 \maketitle
 
@@ -474,13 +468,6 @@ The diamonds dataset is very suitable to demonstrate the {\tt tabplot} package. 
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlfunctioncall{require}(ggplot2)
-\end{alltt}
-\begin{verbatim}
-## Loading required package: ggplot2
-
-## Use suppressPackageStartupMessages to eliminate package startup messages.
-\end{verbatim}
-\begin{alltt}
 \hlfunctioncall{data}(diamonds)
 \hlcomment{## add some NA's}
 \hlfunctioncall{is.na}(diamonds$price) <- diamonds$cut == \hlstring{"Ideal"}
@@ -498,10 +485,7 @@ A tableplot is simply created by the function {\tt tableplot}:
 \begin{alltt}
 \hlfunctioncall{tableplot}(diamonds)
 \end{alltt}
-\begin{verbatim}
-## Error: could not find function "tableplot"
-\end{verbatim}
-\end{kframe}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk2} 
 \end{knitrout}
 
 \caption{Tableplot of the diamonds dataset}
@@ -517,10 +501,7 @@ The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the
 \hlfunctioncall{tableplot}(diamonds, select = \hlfunctioncall{c}(carat, price, cut, color, clarity), 
     sortCol = price)
 \end{alltt}
-\begin{verbatim}
-## Error: could not find function "tableplot"
-\end{verbatim}
-\end{kframe}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk3} 
 \end{knitrout}
 
 \caption{Tableplot of the diamonds dataset: sorted by price}
@@ -544,10 +525,7 @@ We can focus our attention to the 5\% most expensive diamonds by setting the {\t
 \hlfunctioncall{tableplot}(diamonds, select = \hlfunctioncall{c}(carat, price, cut, color, clarity), 
     sortCol = price, from = 0, to = 5)
 \end{alltt}
-\begin{verbatim}
-## Error: could not find function "tableplot"
-\end{verbatim}
-\end{kframe}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk4} 
 \end{knitrout}
 
 \caption{Tableplot of the diamonds dataset: zooming in}
@@ -591,10 +569,7 @@ The color palettes of categorical variables can be customized with the argument 
 \begin{alltt}
 \hlfunctioncall{tablePalettes}()
 \end{alltt}
-\begin{verbatim}
-## Error: could not find function "tablePalettes"
-\end{verbatim}
-\end{kframe}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk5} 
 \end{knitrout}
 
 \caption{Color palettes}
@@ -612,10 +587,7 @@ Suppose we want a to use the default palette for the variable {\tt cut}, but sta
 \begin{alltt}
 \hlfunctioncall{tableplot}(diamonds, pals = \hlfunctioncall{list}(\hlstring{"\hlfunctioncall{Set1}(7)"}, \hlstring{"Set5"}, \hlfunctioncall{rainbow}(8)))
 \end{alltt}
-\begin{verbatim}
-## Error: could not find function "tableplot"
-\end{verbatim}
-\end{kframe}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk6} 
 \end{knitrout}
 
 \caption{Tableplot of the diamonds dataset: other colour palettes}
@@ -632,10 +604,7 @@ The argument {\tt filter} serves as a filter condition for the data. The followi
 \begin{alltt}
 \hlfunctioncall{tableplot}(diamonds, subset = price < 5000 & cut == \hlstring{"Premium"})
 \end{alltt}
-\begin{verbatim}
-## Error: could not find function "tableplot"
-\end{verbatim}
-\end{kframe}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk7} 
 \end{knitrout}
 
 \caption{Tableplot of the diamonds dataset: filtered}
@@ -655,9 +624,6 @@ The output of the {\tt tableplot} function can be assigned to a variable. The gr
 \begin{alltt}
 tab <- \hlfunctioncall{tableplot}(diamonds, plot = FALSE)
 \end{alltt}
-\begin{verbatim}
-## Error: could not find function "tableplot"
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 
@@ -670,15 +636,39 @@ The tabplot-object is a list that contains all information to depict a tableplot
 \hlfunctioncall{summary}(tab)
 \end{alltt}
 \begin{verbatim}
-## Error: object 'tab' not found
+##       general               variable1               variable2          
+##  dataset  :diamonds   name       :carat        name      :cut          
+##  variables:10         type       :numeric      type      :categorical  
+##  objects  :53940      sort       :decreasing   sort      :NA           
+##  bins     :100        scale_init :auto         categories:6            
+##  from     :0%         scale_final:lin                                  
+##  to       :100%                                                        
+##       variable3                variable4                 variable5      
+##  name      :color         name      :clarity       name       :depth    
+##  type      :categorical   type      :categorical   type       :numeric  
+##  sort      :NA            sort      :NA            sort       :NA       
+##  categories:7             categories:8             scale_init :auto     
+##                                                    scale_final:lin      
+##                                                                         
+##        variable6             variable7             variable8      
+##  name       :table     name       :price     name       :x        
+##  type       :numeric   type       :numeric   type       :numeric  
+##  sort       :NA        sort       :NA        sort       :NA       
+##  scale_init :auto      scale_init :auto      scale_init :auto     
+##  scale_final:lin       scale_final:lin       scale_final:lin      
+##                                                                   
+##        variable9             variable10     
+##  name       :y         name       :z        
+##  type       :numeric   type       :numeric  
+##  sort       :NA        sort       :NA       
+##  scale_init :auto      scale_init :auto     
+##  scale_final:lin       scale_final:lin      
+##                                             
 \end{verbatim}
 \begin{alltt}
 \hlfunctioncall{plot}(tab)
 \end{alltt}
-\begin{verbatim}
-## Error: object 'tab' not found
-\end{verbatim}
-\end{kframe}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk9} 
 \end{knitrout}
 
 
@@ -689,17 +679,9 @@ The function {\tt tableChange} is used to make minor changes to a tabplot-object
 \begin{alltt}
 tab2 <- \hlfunctioncall{tableChange}(tab, colNames = \hlfunctioncall{c}(\hlstring{"carat"}, \hlstring{"price"}, \hlstring{"cut"}, \hlstring{"color"}, 
     \hlstring{"clarity"}), pals = \hlfunctioncall{list}(\hlstring{"\hlfunctioncall{Set1}(2)"}))
-\end{alltt}
-\begin{verbatim}
-## Error: could not find function "tableChange"
-\end{verbatim}
-\begin{alltt}
 \hlfunctioncall{plot}(tab2)
 \end{alltt}
-\begin{verbatim}
-## Error: object 'tab2' not found
-\end{verbatim}
-\end{kframe}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk10} 
 \end{knitrout}
 
 
@@ -711,9 +693,6 @@ With the function {\tt tableSave}, tableplots can be saved to a desired grahical
 \hlfunctioncall{tableSave}(tab, filename = \hlstring{"diamonds.png"}, width = 5, height = 3, 
     fontsize = 6, legend.lines = 6)
 \end{alltt}
-\begin{verbatim}
-## Error: could not find function "tableSave"
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 

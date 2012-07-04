@@ -66,7 +66,7 @@ The tableplot is a visualization method that is used to explore and analyse larg
 
 A tableplot applied to the diamonds dataset of the {\tt ggplot2} package (where some missing values were added) is illustrated in Figure~\ref{fig:tp1}. Each column represents a variable. The whole data set is sorted according to one column (in this case, carat), and then grouped into row bins. Algorithm~\ref{alg} in Appendix~\ref{secalg} describes the creation of a tableplot into detail.
 
-Tableplots are aimed to visualize multivariate datasets with several variabels (up tot a dozen) and a large number of records, say at least one thousand. Tableplots can also be generated for datasets with less records, but they may be less useful. The maximum size of datasets that can be visualized with the {\tt tabplot} package depends on the R's memory, or, when using the {\tt ff} package, on the limitations of that package.
+Tableplots are aimed to visualize multivariate datasets with several variabels (up tot a dozen) and a large number of records, say at least one thousand. Tableplots can also be generated for datasets with less records, but they may be less useful. The maximum number of rows that can be visualized with the {\tt tabplot} package depends on the R's memory, or, when using the {\tt ff} package, on the limitations of that package.
 
 A graphical user interface for generating tableplots is implemented in the package {\tt tabplotGTK}.
 
@@ -92,9 +92,9 @@ tableplot(diamonds)
 \label{fig:tp1}
 \end{figure}
 
-The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt select}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first variable. With the argument {\tt sortCol}, we can specify on which variable(s) the data is sorted.
+The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt select}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first column. With the argument {\tt sortCol}, we can specify on which column(s) the data is sorted.
 
-\begin{figure}[htp]
+\begin{figure}[!htp]
 <<chunk3, fig.height=7, fig.width=10>>=
 tableplot(diamonds, 
           select=c(carat, price, cut, color, clarity), 
@@ -104,33 +104,48 @@ tableplot(diamonds,
 \label{fig:tp2}
 \end{figure}
 
-The result is illustrated in Figure~\ref{fig:tp2}. 
+The resulting tableplot in Figure~\ref{fig:tp2} consists of five columns, where the data is sorted on price. Notice that the missing values that we have added are placed at the bottom and (by default) shown in a bright red color.
 
-Setting an appropriate number of row bins (by the argument {\tt nbins}) is important, like in a histogram. A good number of row bins is a trade of between good polished but meaningless data, and detailed, but noisy data. In practice, we found that the default number of 100 usually is a good starting point.
+Setting an appropriate number of row bins (by the argument {\tt nBins}) is important, like in a histogram. A good number of row bins is a trade of between good polished but meaningless data, and detailed, but noisy data. In practice, we found that the default number of 100 usually is a good starting point.
 
-The percentages near the vertical axis indicate which subset of the data in terms of units (rows) is depicted. The range from 0\% to 100\% in Figure~\ref{fig:tp2} means that all units of the data are plotted. 
+The percentages near the vertical axis indicate which subset of the data in terms of units (rows) is depicted. The range from 0\% to 100\% in Figure~\ref{fig:tp2} means that all units of the data are plotted.
+
+\clearpage
+
+\section{Zooming and filtering}
 
 
-We can focus our attention to the 5\% most expensive diamonds by setting the {\tt from} argument to 0 and the {\tt to} argument to 5:
+\subsection{Zooming}
+We can focus our attention to the 5\% most expensive diamonds by setting the {\tt from} argument to 0 and the {\tt to} argument to 5. The resulting tableplot are depicted in Figure~\ref{fig:tp3}. Observe that the number of row bins is still 100, so that the number of units per row bin is now 27 instead of 540. Therefore, much more detail can be observed in this tableplot.
 
 
-\begin{figure}[htp]
-<<chunk4, fig.height=7, fig.width=10>>=
-tableplot(diamonds, 
-          select=c(carat, price, cut, color, clarity), 
-          sortCol=price, 
-          from=0, 
-          to=5)
+\begin{figure}[!htp]
+<<chunk4, fig.height=7, fig.width=10, tidy=FALSE>>=
+tableplot(diamonds, select=c(carat, price, cut, color, 
+          		 clarity), sortCol=price, from=0, to=5)
 @
 \caption{Tableplot of the diamonds dataset: zooming in}
 \label{fig:tp3}
 \end{figure}
 
-
-Observe that in the obtained tableplot in Figure~\ref{fig:tp3}, the number of row bins is still 100, so that the number of units per row bin is now 27 instead of 540. Therefore, much more detail can be observed in this tableplot.
-
 The vertical axis contains two sets of tick marks. The small tick marks correspond with the row bins and the large tick marks correspond with the percentages between {\tt from} and {\tt to}. The latter are determined by R's base function {\tt pretty}.
 
+\clearpage
+
+\subsection{Filtering}
+The argument {\tt subset} serves as a data filter. The tableplot in Figure~\ref{fig:tp5} shows that data of premium cut diamonds that cost less than 5000\$.
+
+\begin{figure}[!htp]
+<<chunk7, fig.height=7, fig.width=10>>=
+tableplot(diamonds, subset=price < 5000 & cut=="Premium")
+@
+\caption{Tableplot of the diamonds dataset: filtered}
+\label{fig:tp5}
+\end{figure}
+
+It is also possible to create a tableplot of each category of a categorical variable in one call. For instance, by setting {\tt subset=color}, we create a tableplot for each color class.
+
+\clearpage
 
 \section{Customizing the tableplot}
 
@@ -178,17 +193,7 @@ tableplot(diamonds, pals=list("Set1(7)", "Set5", rainbow(8)))
 \label{fig:tp4}
 \end{figure}
 
-\subsection{Filtering data}
-The argument {\tt filter} serves as a filter condition for the data. The following code generates a tableplot of premium cut diamonds that cost less than 5000\$.
 
-
-\begin{figure}[htp]
-<<chunk7, fig.height=7, fig.width=10>>=
-tableplot(diamonds, subset=price < 5000 & cut=="Premium")
-@
-\caption{Tableplot of the diamonds dataset: filtered}
-\label{fig:tp5}
-\end{figure}
 
 
 
@@ -204,7 +209,7 @@ tab <- tableplot(diamonds, plot=FALSE)
 
 The tabplot-object is a list that contains all information to depict a tableplot. The generic functions {\tt summary} and {\tt plot} can be applied to the {\tt tabplot} object.
 
-<<chunk9>>=
+<<chunk9, size="scriptsize">>=
 summary(tab)
 plot(tab)
 @

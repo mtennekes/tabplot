@@ -1,7 +1,7 @@
 ## this script creates a list of qualitative palettes
 require(RColorBrewer)
 require(colorspace)
-
+require(dichromat)
 require(ggplot2)
 
 ######################################################
@@ -25,6 +25,10 @@ getHcl <- function(n, start) {
 
 
 tabplotPalettes <- list(
+	seq = list(
+		Blues = brewer$Blues[-1],
+		Greens = brewer$Greens[-1],
+		Greys = brewer$Greys[-1]),
 	qual = list(
 		Set1 = c("#D55E00", "#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2","#CC79A7"),
 		Set2=brewer$Set1[-1], 
@@ -32,14 +36,11 @@ tabplotPalettes <- list(
 		Set4=brewer$Accent[c(1,5,2,6,3,7,4,8)],
 		Set5=brewer$Set2[c(1:6,8,7)],
 		Set6=brewer$Set3[c(1:4, 9, 5:8, 12, 9:11)],
+		Set7=colorschemes$Categorical.12[c(5, 2, 7, 4, 9, 6, 11, 8, 1, 10, 3)],
 		Paired=brewer$Paired[c(1:4, 7:12)],
 		HCL1 = getHcl(n=8, start=10)[c(1, 4, 7, 2, 5, 8, 3, 6)],
 		HCL2 = getHcl(n=8, start=17)[c(1, 4, 7, 2, 5, 8, 3, 6)],
-		HCL3 = getHcl(n=8, start=24)[c(1, 4, 7, 2, 5, 8, 3, 6)]),
-	seq = list(
-		Blues = brewer$Blues[-1],
-		Greens = brewer$Greens[-1],
-		Greys = brewer$Greys[-1]))
+		HCL3 = getHcl(n=8, start=24)[c(1, 4, 7, 2, 5, 8, 3, 6)]))
 
 	
 	

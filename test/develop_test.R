@@ -17,6 +17,8 @@ tab <- tableplot(diamonds, select=c(1, 3), subset_string="cut=='Fair'", sortCol=
 
 plot(tab)
 
+tableplot(diamonds, sortCol=price, colorNA="blue", numPals="Greens")
+
 
 tableplot(diamonds, select=c(carat, depth), subset=price > 5000)
 

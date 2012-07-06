@@ -82,7 +82,7 @@ is.na(diamonds$price) <- diamonds$cut=="Ideal"
 is.na(diamonds$cut) <- (runif(nrow(diamonds))>0.8)
 @
 
-A tableplot is simply created by the function {\tt tableplot}:
+A tableplot is simply created by the function {\tt tableplot}. The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt select}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first column. With the argument {\tt sortCol}, we can specify on which column(s) the data is sorted.
 
 \begin{figure}[htp]
 <<chunk2, fig.height=7, fig.width=10, dev='pdf'>>=
@@ -92,7 +92,7 @@ tableplot(diamonds)
 \label{fig:tp1}
 \end{figure}
 
-The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt select}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first column. With the argument {\tt sortCol}, we can specify on which column(s) the data is sorted.
+The resulting tableplot in Figure~\ref{fig:tp2} consists of five columns, where the data is sorted on price. Notice that the missing values that we have added are placed at the bottom and (by default) shown in a bright red color.
 
 \begin{figure}[!htp]
 <<chunk3, fig.height=7, fig.width=10>>=
@@ -100,17 +100,13 @@ tableplot(diamonds,
           select=c(carat, price, cut, color, clarity), 
           sortCol=price)
 @
-\caption{Tableplot of the diamonds dataset: sorted by price}
+\caption{Tableplot sorted by price}
 \label{fig:tp2}
 \end{figure}
-
-The resulting tableplot in Figure~\ref{fig:tp2} consists of five columns, where the data is sorted on price. Notice that the missing values that we have added are placed at the bottom and (by default) shown in a bright red color.
 
 Setting an appropriate number of row bins (by the argument {\tt nBins}) is important, like in a histogram. A good number of row bins is a trade of between good polished but meaningless data, and detailed, but noisy data. In practice, we found that the default number of 100 usually is a good starting point.
 
 The percentages near the vertical axis indicate which subset of the data in terms of units (rows) is depicted. The range from 0\% to 100\% in Figure~\ref{fig:tp2} means that all units of the data are plotted.
-
-\clearpage
 
 \section{Zooming and filtering}
 
@@ -120,26 +116,27 @@ We can focus our attention to the 5\% most expensive diamonds by setting the {\t
 
 
 \begin{figure}[!htp]
-<<chunk4, fig.height=7, fig.width=10, tidy=FALSE>>=
+<<chunk4, fig.height=5, fig.width=10, tidy=FALSE>>=
 tableplot(diamonds, select=c(carat, price, cut, color, 
           		 clarity), sortCol=price, from=0, to=5)
 @
-\caption{Tableplot of the diamonds dataset: zooming in}
+\vspace{-2em}
+\caption{Zooming in}
 \label{fig:tp3}
 \end{figure}
 
 The vertical axis contains two sets of tick marks. The small tick marks correspond with the row bins and the large tick marks correspond with the percentages between {\tt from} and {\tt to}. The latter are determined by R's base function {\tt pretty}.
 
-\clearpage
 
-\subsection{Filtering}
+\subsection{Filtering}\label{secfilt}
 The argument {\tt subset} serves as a data filter. The tableplot in Figure~\ref{fig:tp5} shows that data of premium cut diamonds that cost less than 5000\$.
 
 \begin{figure}[!htp]
-<<chunk7, fig.height=7, fig.width=10>>=
+<<chunk7, fig.height=5, fig.width=10>>=
 tableplot(diamonds, subset=price < 5000 & cut=="Premium")
 @
-\caption{Tableplot of the diamonds dataset: filtered}
+\vspace{-2em}
+\caption{Tableplot of filtered diamonds data}
 \label{fig:tp5}
 \end{figure}
 
@@ -147,61 +144,58 @@ It is also possible to create a tableplot of each category of a categorical vari
 
 \clearpage
 
-\section{Customizing the tableplot}
+\section{Continuous variables}
 
-
-\subsection{Continuous variables}
-
+\subsection{Scaling}
 For each bin of a continuous variable, the mean value is calculated (see Algorithm~\ref{alg}).
 When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation. The argument {\tt scales} can be set to linear mode {\tt "lin"}, logarithmic mode {\tt "log"}, or the default value {\tt "auto"}, which automatically determines which of the former two modes is used.
 
-Observe that the x-axes of the variables depth and table in Figure~\ref{fig:tp1} are broken. The x-axis of a variable $i$ is broken if
-either
-\begin{align*}
-& 0 < \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
-& \mbox{{\tt bias\_brokenX}} \cdot \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}) < \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) 
-\end{align*}
-\textsc{or}
-\begin{align*}
-& 0 > \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
-& \mbox{{\tt bias\_brokenX}} \cdot \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) > \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}),
-\end{align*}
-where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 and 1. If {\tt bias\_brokenX=1} then the above conditions are always false, which implies that the x-axes are never broken. On the other hand, if {\tt bias\_brokenX=0} then the x-axes are always broken. By default, {\tt bias\_brokenX} {\tt=0.8}, which mean that an x-axis is broken if (in case of a variable with positive values) the minimum value is at least 0.8 times the maximum value. In the diamonds dataset, this applies to the variables depth and table.
-
-
-\subsection{Categorical variables}
-The color palettes of categorical variables can be customized with the argument {\tt pals}. Several qualitative palettes are implemented. They can be shown by
+\subsection{Used colors}
+The colors of the bins indicate the fraction of missing values. By default, a sequential color palette of blues is used. If a bin does not contain any missing values, the corresponding bar is depicted in dark blue. The more missing values, the brighter the color. (Alternatively, a grey or a green palette can be used by setting the argument {\tt numPals}; see Figure~\ref{fig:pals}.) Bars of which all values are missing are depicted in light red.
 
 \begin{figure}[htp]
-<<chunk5, fig.height=7, fig.width=10>>=
+<<chunk5, fig.height=3.5, fig.width=10>>=
 tablePalettes()
 @
 \caption{Color palettes}
 \label{fig:pals}
 \end{figure}
 
-The default palette is a combination of Set1 and Set2. It has the advantage that each category has a unique color for variables with up to 16 categories.
+\subsection{Broken x-axes}
 
-Suppose we want a to use the default palette for the variable {\tt cut}, but starting with the seventh color, pink. Further we want the fifth palette for the variable {\tt color}, but without the first color (black), and a custom palette, say a rainbow palette, for the variable {\tt clarity}:
+Observe that the x-axes of the variables depth and table in Figure~\ref{fig:tp1} are broken. The reason is that otherwise the lengths of the bars are hard to tell apart. For instance, the mean values of the variable depth in Figure~\ref{fig:tp1} range between $61.36$ and $62.33$. The argument {\tt bias\_brokenX} can be set to determine when a broken x-axis is applied. See Appendix~\ref{secbrokenx} for details.
+
+
+
+\section{Categorical variables}
+\subsection{Color palettes}
+Several qualitative palettes are implemented. See Figure~\ref{fig:pals}. Most palettes are based on palettes from the {\tt RColorBrewer} package. Palettes {\tt "Set1"} and {\tt "Set7"} are colorblind-friendly palettes.
+
+The argument {\tt pals} is used to assign color palettes to the categorical variables. All qualitative palettes listed in Figure~\ref{fig:pals} can be used as well as custom palettes.  
+
+Suppose we want a to use the default palette for the variable {\tt cut}, but starting with the seventh color, pink. Further we want the fifth palette for the variable {\tt color}, and a custom palette, say a rainbow palette, for the variable {\tt clarity}. The resulting tableplot is depicted in Figure~\ref{fig:tp4}.
 
 
 \begin{figure}[htp]
 <<chunk6, fig.height=7, fig.width=10>>=
 tableplot(diamonds, pals=list("Set1(7)", "Set5", rainbow(8)))
 @
-\caption{Tableplot of the diamonds dataset: other colour palettes}
+\caption{Tableplot with other color palettes}
 \label{fig:tp4}
 \end{figure}
 
 
+Missing values are by default depicted in red. This can be changed by the argument {\tt colorNA}.
 
 
+
+\section{Advanced tableplot features}
 
 \subsection{The tabplot object}
 
-The function {\tt tableplot} returns a tabplot-object, that can be used to make minor changes to the tableplot, for instance the order of columns or the color palettes. Of course, these changes can also be made by generating a new tableplot, such as in the examples above. However, if it takes considerable time to generate a tableplot, then it is practical to make minor changes immediately.
+The function {\tt tableplot} returns a tabplot-object, that can be used to make minor changes to the tableplot, for instance the order of columns or the color palettes. Of course, these changes can also be made by generating a new tableplot. However, if it takes considerable time to generate a tableplot, then it is practical to make minor changes immediately.
 
-The output of the {\tt tableplot} function can be assigned to a variable. The graphical output can be omitted by setting the argument {\tt plot} to FALSE.
+The output of the {\tt tableplot} function can be assigned to a variable. The graphical output can be omitted by setting the argument {\tt plot} to {\tt FALSE}.
 
 <<chunk8>>=
 tab <- tableplot(diamonds, plot=FALSE)
@@ -209,19 +203,34 @@ tab <- tableplot(diamonds, plot=FALSE)
 
 The tabplot-object is a list that contains all information to depict a tableplot. The generic functions {\tt summary} and {\tt plot} can be applied to the {\tt tabplot} object.
 
-<<chunk9, size="scriptsize">>=
+<<chunk9, size="scriptsize", fig.keep='none'>>=
 summary(tab)
 plot(tab)
 @
 
-The function {\tt tableChange} is used to make minor changes to a tabplot-object. Suppose we want the columns in the order of \ref{fig:tp2}, and we want to change all color palettes to default starting with the second color.
+\subsection{Multiple tableplots}
 
-<<chunk10, fig.keep='non'>>=
+When a dataset contains more variables than can be plotted, multiple tableplots can be generated by the argument {\tt nCols}. This argument determines the maximum number of columns per tableplot. When the number of selected columns is larger than {\tt nCols}, multiple tableplots are generated. In each of them, the sorted columns are plotted on the lefthand side. 
+
+When multiple tableplots are created, the (silent) output is a list of {\tt tabplot} objects. This is also the case when the dataset is filtered by a categorical variable, e.~g. {\tt subset=color}
+(see Section~\ref{secfilt}).
+
+\subsection{Minor changes}
+
+The function {\tt tableChange} is used to make minor changes to a tabplot-object. Suppose we want the columns in the order of \ref{fig:tp2}, and we want to change all color palettes to default starting with the second color. The code and the resulting tableplot are given in Figure~\ref{fig:tp5}.
+
+\begin{figure}[htp]
+<<chunk10, fig.height=7, fig.width=10>>=
 tab2 <- tableChange(tab, 
                     colNames=c("carat", "price", "cut", "color", "clarity"), 
                     pals=list("Set1(2)"))
 plot(tab2)
 @
+\caption{Plot of a {\tt tabplot} object}
+\label{fig:tp5}
+\end{figure}
+
+\subsection{Save tableplots}
 
 With the function {\tt tableSave}, tableplots can be saved to a desired grahical output format: pdf, eps, svg, wmf, png, jpg, bmp, or tiff.
 
@@ -299,7 +308,21 @@ A tabplot is basically created by Algorithm~\ref{alg}.
 \end{minipage}
 \end{algorithm}
 
+\newpage
+\section{Broken x-axes}\label{secbrokenx}
 
+The x-axis of a variable $i$ is broken if
+either
+\begin{align*}
+& 0 < \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
+& \mbox{{\tt bias\_brokenX}} \cdot \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}) < \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) 
+\end{align*}
+\textsc{or}
+\begin{align*}
+& 0 > \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
+& \mbox{{\tt bias\_brokenX}} \cdot \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) > \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}),
+\end{align*}
+where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 and 1. If {\tt bias\_brokenX=1} then the above conditions are always false, which implies that the x-axes are never broken. On the other hand, if {\tt bias\_brokenX=0} then the x-axes are always broken. By default, {\tt bias\_brokenX} {\tt=0.8}, which mean that an x-axis is broken if (in case of a variable with positive values) the minimum value is at least 0.8 times the maximum value. In Figure~\ref{fig:tp1}, this applies to the variables depth and table.
 
 
 \end{document}

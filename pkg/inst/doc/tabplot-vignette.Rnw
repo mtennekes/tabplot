@@ -1,0 +1,4 @@
+%\VignetteIndexEntry{tabplot-vignette}
+\documentclass{article}
+\begin{document}
+\end{document}

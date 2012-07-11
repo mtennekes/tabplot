@@ -446,11 +446,11 @@ The tableplot is a powerful visualization method to explore and analyse large mu
 
 \maketitle
 
-%\newpage
+\newpage
 
-%\tableofcontents
+\tableofcontents
 %\listofalgorithms
-%\newpage
+\newpage
 \section{Introduction}
 The tableplot is a visualization method that is used to explore and analyse large datasets. Tableplots are used to explore the relationships between the variables, to discover strange data patterns, and to check the occurrence and selectivity of missing values. 
 
@@ -466,13 +466,15 @@ The diamonds dataset is very suitable to demonstrate the {\tt tabplot} package. 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{require}(ggplot2)
-\hlfunctioncall{data}(diamonds)
-\hlcomment{## add some NA's}
-\hlfunctioncall{is.na}(diamonds$price) <- diamonds$cut == \hlstring{"Ideal"}
-\hlfunctioncall{is.na}(diamonds$cut) <- (\hlfunctioncall{runif}(\hlfunctioncall{nrow}(diamonds)) > 0.8)
-\end{alltt}
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{require}\hlkeyword{(}\hlsymbol{ggplot2}\hlkeyword{)}\hspace*{\fill}\\
+\hlstd{}\hlfunctioncall{data}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{)}\hspace*{\fill}\\
+\hlstd{}\hlcomment{\usebox{\hlnormalsizeboxhash}\usebox{\hlnormalsizeboxhash}{\ }add{\ }some{\ }NA\usebox{\hlnormalsizeboxsinglequote}s}\hspace*{\fill}\\
+\hlstd{}\hlfunctioncall{is.na}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{\usebox{\hlnormalsizeboxdollar}}\hlsymbol{price}\hlkeyword{)}{\ }\hlassignement{\usebox{\hlnormalsizeboxlessthan}-}{\ }\hlsymbol{diamonds}\hlkeyword{\usebox{\hlnormalsizeboxdollar}}\hlsymbol{cut}{\ }=={\ }\hlstring{"{}{}Ideal"{}{}}\hspace*{\fill}\\
+\hlstd{}\hlfunctioncall{is.na}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{\usebox{\hlnormalsizeboxdollar}}\hlsymbol{cut}\hlkeyword{)}{\ }\hlassignement{\usebox{\hlnormalsizeboxlessthan}-}{\ }\hlkeyword{(}\hlfunctioncall{runif}\hlkeyword{(}\hlfunctioncall{nrow}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{)}\hlkeyword{)}{\ }\hlkeyword{\usebox{\hlnormalsizeboxgreaterthan}}{\ }\hlnumber{0.8}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
 \end{kframe}
 \end{knitrout}
 
@@ -482,12 +484,15 @@ A tableplot is simply created by the function {\tt tableplot}. The result is dep
 \begin{figure}[htp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{tableplot}(diamonds)
-\end{alltt}
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{tableplot}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
 \end{kframe}\includegraphics[width=\maxwidth]{figure/chunk2} 
 \end{knitrout}
 
+\vspace{-2em}
 \caption{Tableplot of the diamonds dataset}
 \label{fig:tp1}
 \end{figure}
@@ -497,13 +502,15 @@ The resulting tableplot in Figure~\ref{fig:tp2} consists of five columns, where 
 \begin{figure}[!htp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{tableplot}(diamonds, select = \hlfunctioncall{c}(carat, price, cut, color, clarity), 
-    sortCol = price)
-\end{alltt}
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{tableplot}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{,}{\ }\hlargument{select}{\ }\hlargument{=}{\ }\hlfunctioncall{c}\hlkeyword{(}\hlsymbol{carat}\hlkeyword{,}{\ }\hlsymbol{price}\hlkeyword{,}{\ }\hlsymbol{cut}\hlkeyword{,}{\ }\hlsymbol{color}\hlkeyword{,}{\ }\hlsymbol{clarity}\hlkeyword{)}\hlkeyword{,}{\ }\hlargument{sortCol}{\ }\hlargument{=}{\ }\hlsymbol{price}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
 \end{kframe}\includegraphics[width=\maxwidth]{figure/chunk3} 
 \end{knitrout}
 
+\vspace{-2em}
 \caption{Tableplot sorted by price}
 \label{fig:tp2}
 \end{figure}
@@ -522,10 +529,11 @@ We can focus our attention to the 5\% most expensive diamonds by setting the {\t
 \begin{figure}[!htp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{tableplot}(diamonds, select=\hlfunctioncall{c}(carat, price, cut, color, 
-          		 clarity), sortCol=price, from=0, to=5)
-\end{alltt}
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{tableplot}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{,}{\ }\hlargument{select}{\ }\hlargument{=}{\ }\hlfunctioncall{c}\hlkeyword{(}\hlsymbol{carat}\hlkeyword{,}{\ }\hlsymbol{price}\hlkeyword{,}{\ }\hlsymbol{cut}\hlkeyword{,}{\ }\hlsymbol{color}\hlkeyword{,}{\ }\hlsymbol{clarity}\hlkeyword{)}\hlkeyword{,}{\ }\hlargument{sortCol}{\ }\hlargument{=}{\ }\hlsymbol{price}\hlkeyword{,}{\ }\hlargument{from}{\ }\hlargument{=}{\ }\hlnumber{0}\hlkeyword{,}{\ }\hlargument{to}{\ }\hlargument{=}{\ }\hlnumber{5}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
 \end{kframe}\includegraphics[width=\maxwidth]{figure/chunk4} 
 \end{knitrout}
 
@@ -538,20 +546,22 @@ The vertical axis contains two sets of tick marks. The small tick marks correspo
 
 
 \subsection{Filtering}\label{secfilt}
-The argument {\tt subset} serves as a data filter. The tableplot in Figure~\ref{fig:tp5} shows that data of premium cut diamonds that cost less than 5000\$.
+The argument {\tt subset} serves as a data filter. The tableplot in Figure~\ref{fig:tp4} shows that data of premium cut diamonds that cost less than 5000\$.
 
 \begin{figure}[!htp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{tableplot}(diamonds, subset = price < 5000 & cut == \hlstring{"Premium"})
-\end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk7} 
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{tableplot}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{,}{\ }\hlargument{subset}{\ }\hlargument{=}{\ }\hlsymbol{price}{\ }\hlkeyword{\usebox{\hlnormalsizeboxlessthan}}{\ }\hlnumber{5000}{\ }\hlkeyword{\usebox{\hlnormalsizeboxand}}{\ }\hlsymbol{cut}{\ }=={\ }\hlstring{"{}{}Premium"{}{}}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk5} 
 \end{knitrout}
 
 \vspace{-2em}
 \caption{Tableplot of filtered diamonds data}
-\label{fig:tp5}
+\label{fig:tp4}
 \end{figure}
 
 It is also possible to create a tableplot of each category of a categorical variable in one call. For instance, by setting {\tt subset=color}, we create a tableplot for each color class.
@@ -570,12 +580,15 @@ The colors of the bins indicate the fraction of missing values. By default, a se
 \begin{figure}[htp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{tablePalettes}()
-\end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk5} 
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{tablePalettes}\hlkeyword{(}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk6} 
 \end{knitrout}
 
+\vspace{-2em}
 \caption{Color palettes}
 \label{fig:pals}
 \end{figure}
@@ -592,30 +605,54 @@ Several qualitative palettes are implemented. See Figure~\ref{fig:pals}. Most pa
 
 The argument {\tt pals} is used to assign color palettes to the categorical variables. All qualitative palettes listed in Figure~\ref{fig:pals} can be used as well as custom palettes.  
 
-Suppose we want a to use the default palette for the variable {\tt cut}, but starting with the seventh color, pink. Further we want the fifth palette for the variable {\tt color}, and a custom palette, say a rainbow palette, for the variable {\tt clarity}. The resulting tableplot is depicted in Figure~\ref{fig:tp4}.
+Suppose we want a to use the default palette for the variable {\tt cut}, but starting with the seventh color, pink. Further we want the fifth palette for the variable {\tt color}, and a custom palette, say a rainbow palette, for the variable {\tt clarity}. The resulting tableplot is depicted in Figure~\ref{fig:tp5}.
 
 
 \begin{figure}[htp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{tableplot}(diamonds, pals = \hlfunctioncall{list}(\hlstring{"\hlfunctioncall{Set1}(7)"}, \hlstring{"Set5"}, \hlfunctioncall{rainbow}(8)))
-\end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk6} 
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{tableplot}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{,}{\ }\hlargument{pals}{\ }\hlargument{=}{\ }\hlfunctioncall{list}\hlkeyword{(}\hlstring{"{}{}Set1(7)"{}{}}\hlkeyword{,}{\ }\hlstring{"{}{}Set5"{}{}}\hlkeyword{,}{\ }\hlfunctioncall{rainbow}\hlkeyword{(}\hlnumber{8}\hlkeyword{)}\hlkeyword{)}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk7} 
 \end{knitrout}
 
+\vspace{-2em}
 \caption{Tableplot with other color palettes}
-\label{fig:tp4}
+\label{fig:tp5}
 \end{figure}
 
 
 Missing values are by default depicted in red. This can be changed with the argument {\tt colorNA}.
 
+\section{Layout options}
+There are several arguments that determine the layout of the plot:
+{\tt fontsize}, {\tt legend.lines}, {\tt title}, {\tt showTitle}, and {\tt fontsize.title}. An example of the use of these arguments is given in Figure~\ref{fig:tp6}.
+
+\begin{figure}[htp]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{tableplot}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{,}{\ }\hlargument{select}{\ }\hlargument{=}{\ }\hlnumber{1}\hlkeyword{:}\hlnumber{7}\hlkeyword{,}{\ }\hlargument{fontsize}{\ }\hlargument{=}{\ }\hlnumber{14}\hlkeyword{,}{\ }\hlargument{legend.lines}{\ }\hlargument{=}{\ }\hlnumber{8}\hlkeyword{,}{\ }\hlargument{title}{\ }\hlargument{=}{\ }\hlstring{"{}{}Shine{\ }on{\ }you{\ }crazy{\ }Diamond"{}{}}\hlkeyword{,}{\ }\hlargument{fontsize.title}{\ }\hlargument{=}{\ }\hlnumber{18}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk8} 
+\end{knitrout}
+
+\vspace{-2em}
+\caption{Tableplot with other color palettes}
+\label{fig:tp6}
+\end{figure}
+
+These layout arguments are not handled by the {\tt tableplot} function directly, but they are on to {\tt plot.tabplot}. This function plots a {\tt tabplot} object, which is explained in Section~\ref{sectab}. The layout arguments will be especially important when saving a tableplot (see Section~\ref{secsave}).
 
 
 \section{Advanced tableplot features}
 
-\subsection{The tabplot object}
+\subsection{The tabplot object}\label{sectab}
 
 The function {\tt tableplot} returns a tabplot-object, that can be used to make minor changes to the tableplot, for instance the order of columns or the color palettes. Of course, these changes can also be made by generating a new tableplot. However, if it takes considerable time to generate a tableplot, then it is practical to make minor changes immediately.
 
@@ -623,9 +660,11 @@ The output of the {\tt tableplot} function can be assigned to a variable. The gr
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-tab <- \hlfunctioncall{tableplot}(diamonds, plot = FALSE)
-\end{alltt}
+\begin{flushleft}
+\ttfamily\noindent
+\hlsymbol{tab}{\ }\hlassignement{\usebox{\hlnormalsizeboxlessthan}-}{\ }\hlfunctioncall{tableplot}\hlkeyword{(}\hlsymbol{diamonds}\hlkeyword{,}{\ }\hlargument{plot}{\ }\hlargument{=}{\ }\hlnumber{FALSE}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
 \end{kframe}
 \end{knitrout}
 
@@ -634,9 +673,11 @@ The tabplot-object is a list that contains all information to depict a tableplot
 
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{summary}(tab)
-\end{alltt}
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{summary}\hlkeyword{(}\hlsymbol{tab}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
 \begin{verbatim}
 ##       general               variable1               variable2          
 ##  dataset  :diamonds   name       :carat        name      :cut          
@@ -667,9 +708,11 @@ The tabplot-object is a list that contains all information to depict a tableplot
 ##  scale_final:lin       scale_final:lin      
 ##                                             
 \end{verbatim}
-\begin{alltt}
-\hlfunctioncall{plot}(tab)
-\end{alltt}
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{plot}\hlkeyword{(}\hlsymbol{tab}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
 \end{kframe}
 \end{knitrout}
 
@@ -678,55 +721,51 @@ The tabplot-object is a list that contains all information to depict a tableplot
 
 When a dataset contains more variables than can be plotted, multiple tableplots can be generated with the argument {\tt nCols}. This argument determines the maximum number of columns per tableplot. When the number of selected columns is larger than {\tt nCols}, multiple tableplots are generated. In each of them, the sorted columns are plotted on the lefthand side. 
 
-When multiple tableplots are created, the (silent) output is a list of {\tt tabplot} objects. This is also the case when the dataset is filtered by a categorical variable, e.~g. {\tt subset=color}
+When multiple tableplots are created, the (silent) output is a list of {\tt tabplot} objects. This is also the case when the dataset is filtered by a categorical variable, e.~g. {\tt subset = color}
 (see Section~\ref{secfilt}).
 
 \subsection{Minor changes}
 
-The function {\tt tableChange} is used to make minor changes to a tabplot-object. Suppose we want the columns in the order of \ref{fig:tp2}, and we want to change all color palettes to default starting with the second color. The code and the resulting tableplot are given in Figure~\ref{fig:tp5}.
+The function {\tt tableChange} is used to make minor changes to a tabplot-object. Suppose we want the columns in the order of \ref{fig:tp1}, and we want to change all color palettes to default starting with the second color. The code and the resulting tableplot are given in Figure~\ref{fig:tp7}.
 
 \begin{figure}[htp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-tab2 <- \hlfunctioncall{tableChange}(tab, colNames = \hlfunctioncall{c}(\hlstring{"carat"}, \hlstring{"price"}, \hlstring{"cut"}, \hlstring{"color"}, 
-    \hlstring{"clarity"}), pals = \hlfunctioncall{list}(\hlstring{"\hlfunctioncall{Set1}(2)"}))
-\end{alltt}
-\begin{verbatim}
-## Error: unused argument(s) (colNames = c("carat", "price", "cut", "color",
-## "clarity"))
-\end{verbatim}
-\begin{alltt}
-\hlfunctioncall{plot}(tab2)
-\end{alltt}
-\begin{verbatim}
-## Error: object 'tab2' not found
-\end{verbatim}
-\end{kframe}
+\begin{flushleft}
+\ttfamily\noindent
+\hlsymbol{tab2}{\ }\hlassignement{\usebox{\hlnormalsizeboxlessthan}-}{\ }\hlfunctioncall{tableChange}\hlkeyword{(}\hlsymbol{tab}\hlkeyword{,}{\ }\hlargument{select\usebox{\hlnormalsizeboxunderscore}string}{\ }\hlargument{=}{\ }\hlfunctioncall{c}\hlkeyword{(}\hlstring{"{}{}carat"{}{}}\hlkeyword{,}{\ }\hlstring{"{}{}price"{}{}}\hlkeyword{,}{\ }\hlstring{"{}{}cut"{}{}}\hlkeyword{,}{\ }\hlstring{"{}{}color"{}{}}\hlkeyword{,}{\ }\hlstring{"{}{}clarity"{}{}}\hlkeyword{)}\hlkeyword{,}{\ }\hlargument{pals}{\ }\hlargument{=}{\ }\hlfunctioncall{list}\hlkeyword{(}\hlstring{"{}{}Set1(2)"{}{}}\hlkeyword{)}\hlkeyword{)}\hspace*{\fill}\\
+\hlstd{}\hlfunctioncall{plot}\hlkeyword{(}\hlsymbol{tab2}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
+\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk11} 
 \end{knitrout}
 
+\vspace{-2em}
 \caption{Plot of a {\tt tabplot} object}
-\label{fig:tp5}
+\label{fig:tp7}
 \end{figure}
 
-\subsection{Save tableplots}
+\subsection{Save tableplots}\label{secsave}
 
 With the function {\tt tableSave}, tableplots can be saved to a desired grahical output format: pdf, eps, svg, wmf, png, jpg, bmp, or tiff.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{tableSave}(tab, filename = \hlstring{"diamonds.png"}, width = 5, height = 3, 
-    fontsize = 6, legend.lines = 6)
-\end{alltt}
+\begin{flushleft}
+\ttfamily\noindent
+\hlfunctioncall{tableSave}\hlkeyword{(}\hlsymbol{tab}\hlkeyword{,}{\ }\hlargument{filename}{\ }\hlargument{=}{\ }\hlstring{"{}{}diamonds.png"{}{}}\hlkeyword{,}{\ }\hlargument{width}{\ }\hlargument{=}{\ }\hlnumber{5}\hlkeyword{,}{\ }\hlargument{height}{\ }\hlargument{=}{\ }\hlnumber{3}\hlkeyword{,}{\ }\hlargument{fontsize}{\ }\hlargument{=}{\ }\hlnumber{6}\hlkeyword{,}{\ }\hlargument{legend.lines}{\ }\hlargument{=}{\ }\hlnumber{6}\hlkeyword{)}\mbox{}
+\normalfont
+\end{flushleft}
 \end{kframe}
 \end{knitrout}
 
 
 
+\newpage
 
+\section*{Resources}
+\addcontentsline{toc}{section}{Resources}
 
-\section{Resources}
 \begin{itemize}
 \item Summary of the package: {\tt help(package=tabplot)}
 \item The main help page: {\tt ?tabplot}
@@ -802,7 +841,7 @@ either
 & 0 > \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) \qquad \textsc{and}\\
 & \mbox{{\tt bias\_brokenX}} \cdot \textit{min}(m_{i1}, m_{i2},\ldots, m_{in}) > \textit{max}(m_{i1}, m_{i2},\ldots, m_{in}),
 \end{align*}
-where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 and 1. If {\tt bias\_brokenX=1} then the above conditions are always false, which implies that the x-axes are never broken. On the other hand, if {\tt bias\_brokenX=0} then the x-axes are always broken. By default, {\tt bias\_brokenX} {\tt=0.8}, which mean that an x-axis is broken if (in case of a variable with positive values) the minimum value is at least 0.8 times the maximum value. In Figure~\ref{fig:tp1}, this applies to the variables depth and table.
+where {\tt bias\_brokenX} is a bias parameter that should be a number between 0 and 1. If {\tt bias\_brokenX = 1} then the above conditions are always false, which implies that the x-axes are never broken. On the other hand, if {\tt bias\_brokenX = 0} then the x-axes are always broken. By default, {\tt bias\_brokenX} {\tt= 0.8}, which mean that an x-axis is broken if (in case of a variable with positive values) the minimum value is at least 0.8 times the maximum value. In Figure~\ref{fig:tp1}, this applies to the variables depth and table.
 
 
 \end{document}

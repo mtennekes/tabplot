@@ -15,7 +15,7 @@ Description: A tableplot is a visualisation of a (large)
     datasets from the ff package.
 Version: 0.12
 URL: http://code.google.com/p/tableplot/
-Date: 2012-07-06
+Date: 2012-07-11
 Depends:
     data.table (>= 1.8.0),
     grid

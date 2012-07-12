@@ -1,14 +1,14 @@
 preprocess.data.table <-
 function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
 	
-	## if data.table fits less than 2.5 time into free memory space, optimize space (by gc())
-	optSpace <- (object.size(dat)*2.5 > (memory.limit() - memory.size())*2^20)
-	#cat ("factor: ", ((memory.limit() - memory.size())*2^20) / object.size(dat), "\n")
-	#if (optSpace) cat("Optimized for space \n")
+
 	
 	n <- length(colNames)
 	nr <- nrow(dat)
 	
+	## Optimize space (by calling gc()) for datasets of at least 10 million rows (arbitrary number)
+	#optSpace <- (object.size(dat)*2.5 > (memory.limit() - memory.size())*2^20)
+	optSpace <- (nr >= 1e7)
 	
 	
 	#############################

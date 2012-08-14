@@ -40,27 +40,55 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 
 		anyNA <- tail(tCol$categories, 1)=="missing"
 		nCategories <- length(tCol$categories) - anyNA
-		nLegendRows <- nCategories + 2 * anyNA
+
+		if (nCategories <= 30) {
+			nLegendRows <- 7 + 2 * anyNA
+		} else {
+			nLegendRows <- nCategories + 2 * anyNA 
+		}
 		
 		Layout2 <- grid.layout(nrow = nLegendRows, ncol = 1)
-
+	
 		cex <- min(1, 1 / (convertHeight(unit(1,"lines"), "npc", valueOnly=TRUE) * nLegendRows))
 
 		pushViewport(viewport(name="legendblocks", layout = Layout2, gp=gpar(cex=cex)))
 		#print(current.vpPath())
 		grid.rect(gp=gpar(col=NA, fill="white"))
 		
-		for (j in 1:nCategories) {
-			cellplot(j,1, NULL, {
-				grid.rect( x = 0, y = 0.5, width = 0.2, height = 1
-						 , just=c("left")
-						 , gp = gpar(col=palet[j], fill = palet[j])
-						 )
-				grid.text( tCol$categories[j]
-						 , x = 0.25
-						 , just="left")
-			})
+		if (nCategories <= 30) {
+			labels <- c(tCol$categories[1], "...", 
+						tCol$categories[round(nCategories/3)], "...",
+						tCol$categories[round(nCategories/3*2)], "...",
+						tCol$categories[nCategories])
+			
+			for (j in 1:7) {
+				cellplot(j,1, NULL, {
+					grid.rect( x = 0, y = 0.5, width = 0.2, height = 1
+							   , just=c("left")
+							   , gp = gpar(col=palet[j], fill = palet[j])
+					)
+					grid.text( tCol$categories[j]
+							   , x = 0.25
+							   , just="left")
+				})
+			}
+			
+			
+			
+		} else {
+			for (j in 1:nCategories) {
+				cellplot(j,1, NULL, {
+					grid.rect( x = 0, y = 0.5, width = 0.2, height = 1
+							 , just=c("left")
+							 , gp = gpar(col=palet[j], fill = palet[j])
+							 )
+					grid.text( tCol$categories[j]
+							 , x = 0.25
+							 , just="left")
+				})
+			}
 		}
+		
 		if (anyNA) {
 			cellplot(nLegendRows,1, NULL, {
 				grid.rect( x = 0, y = 0.5, width = 0.2, height = 1

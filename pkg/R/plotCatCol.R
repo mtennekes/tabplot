@@ -42,12 +42,12 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 		nCategories <- length(tCol$categories) - anyNA
 
 		if (nCategories <= 30) {
-			nLegendRows <- 7 + 2 * anyNA
-		} else {
 			nLegendRows <- nCategories + 2 * anyNA 
+		} else {
+			nLegendRows <- 7 + 2 * anyNA
 		}
 		
-		Layout2 <- grid.layout(nrow = nLegendRows, ncol = 1)
+		Layout2 <- grid.layout(nrow = nLegendRows, ncol = 1 + (nCategories > 30))
 	
 		cex <- min(1, 1 / (convertHeight(unit(1,"lines"), "npc", valueOnly=TRUE) * nLegendRows))
 
@@ -56,12 +56,7 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 		grid.rect(gp=gpar(col=NA, fill="white"))
 		
 		if (nCategories <= 30) {
-			labels <- c(tCol$categories[1], "...", 
-						tCol$categories[round(nCategories/3)], "...",
-						tCol$categories[round(nCategories/3*2)], "...",
-						tCol$categories[nCategories])
-			
-			for (j in 1:7) {
+			for (j in 1:nCategories) {
 				cellplot(j,1, NULL, {
 					grid.rect( x = 0, y = 0.5, width = 0.2, height = 1
 							   , just=c("left")
@@ -72,19 +67,25 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 							   , just="left")
 				})
 			}
-			
-			
-			
 		} else {
-			for (j in 1:nCategories) {
-				cellplot(j,1, NULL, {
-					grid.rect( x = 0, y = 0.5, width = 0.2, height = 1
-							 , just=c("left")
-							 , gp = gpar(col=palet[j], fill = palet[j])
-							 )
-					grid.text( tCol$categories[j]
-							 , x = 0.25
-							 , just="left")
+			cellplot(1:7,1, NULL, {
+				grid.rect( x = 0, y = 0.5, width = 0.2, height = 1
+						   , just=c("left")
+						   , gp = gpar(col=palet[1], fill = palet[1])
+				)
+			})
+			
+			labels <- c(tCol$categories[1], "...", 
+						tCol$categories[round(nCategories/3)], "...",
+						tCol$categories[round(nCategories/3*2)], "...",
+						tCol$categories[nCategories])
+			
+			
+			for (j in 1:7) {
+				cellplot(j,2, NULL, {
+					grid.text( labels[j]
+							   , x = 0.25
+							   , just="left")
 				})
 			}
 		}

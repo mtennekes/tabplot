@@ -1,3 +1,6 @@
+version 0.12-1
+- fixed bug with one-level-factors
+
 version 0.12
 - added more flexibility to select columns and to subset the data. The new argument select allows both column indices and expressions while the new argument select_string allows character strings. The new argument subset allows logical expressions to indicate which rows to select, while subset_string allows character strings. The subset(_string) can also be used to select a categorical variable to split the data.
 - vignette rewritten (with knitr)

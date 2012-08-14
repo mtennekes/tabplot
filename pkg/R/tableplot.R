@@ -259,13 +259,12 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	#############################
 	## Categorical variables
 	#############################
-
 	## determine widths and x positions of the categorical variables
 	for (i in which(!isNumber)) {
 		categories <- tab$columns[[i]]$categories
 		widths <- tab$columns[[i]]$freq / rep(tab$binSizes, length(categories))
 	
-		x <- cbind(0,(t(apply(widths, 1, cumsum)))[, -length(categories)])
+		x <- cbind(0,(matrix(apply(widths, 1, cumsum), nrow=nBins,byrow=TRUE)[, -length(categories)]))
 		tab$columns[[i]]$categories <- categories
 		tab$columns[[i]]$x <- x
 		tab$columns[[i]]$widths <- widths

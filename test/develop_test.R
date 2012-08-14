@@ -28,6 +28,9 @@ tableplot(diamonds, select=c(TRUE, FALSE))
 
 Rprof(); summaryRprof(tmp); unlink(tmp)
 
+dt1 <- data.table(x=factor(1), y=1:10, c=factor(c("a", "b")))
+tab <- tableplot(dt1)
+
 
 
 dDT <- as.data.table(diamonds)

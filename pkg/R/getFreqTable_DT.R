@@ -1,4 +1,5 @@
 getFreqTable_DT <- function(DT, col) {
+	browser()
 	V1 <- aggIndex <-NULL;  rm(V1, aggIndex)
 	categories <- levels(DT[, get(col)])
 	nlev <- length(categories)

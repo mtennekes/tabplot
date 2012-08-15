@@ -197,11 +197,12 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 				levels(tempCol) <- paste0("cat", 1:30)
 				
 				dat[, tempCol:=tempCol]
-				col2 <- "tempCol"
-			} else {
-				col2 <- col
+				col <- "tempCol"
 			}
-			datFreq[[col]] <- getFreqTable_DT(dat[, c("aggIndex", col2), with=FALSE], col2)
+			col2 <- col
+			browser()
+			datFreq[[col2]] <- getFreqTable_DT(dat[, c("aggIndex", col), with=FALSE], col)
+			if (nlevels(dat[[col2]]) > 30) dat[, tempCol:=NULL]
 		}
 		
 		# more memory-efficient than datFreq <- lapply(dat[, colNames[!isNumber], with=FALSE], FUN=getFreqTable_DT, dat$aggIndex)

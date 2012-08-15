@@ -1,5 +1,5 @@
 preprocess.data.table <-
-function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
+function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_levels, pals, colorNA, numPals, nBins, from, to) {
 	
 
 	
@@ -188,21 +188,36 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	if (any(!isNumber)) {	
 		if (optSpace) gc()
 		datFreq <- list()
-		
+		paltype <- rep("recycled", n)
 		#datCat <- dat[J(1:nBins), c("aggIndex", colNames[!isNumber]), with=FALSE]
 		
 		for (col in colNames[!isNumber]) {
-			if (nlevels(dat[[col]]) > 30) {
-				tempCol <- cut(as.numeric(dat[[col]]), breaks=30)
-				levels(tempCol) <- paste0("cat", 1:30)
+			col_orig <- col
+			if (nlevels(dat[[col]]) > max_levels) {
+				paltype[which(col==colNames)] <- "interpolate"
+				
+				temp <- cut(1:nlevels(dat[[col]]), breaks=max_levels)
+				
+
+				lbinSizes <-	getBinSizes(nlevels(dat[[col]]), max_levels)
+				lbrks <- c(0, cumsum(lbinSizes))
+				
+				tempCol <- factor(cut(as.numeric(dat[[col]]), lbrks, right=TRUE, labels=FALSE),
+							   labels=paste0(levels(dat[[col]])[lbrks[1:max_levels]+1], "...", 
+							   			  levels(dat[[col]])[lbrks[(1:max_levels)+1]]))
 				
 				dat[, tempCol:=tempCol]
 				col <- "tempCol"
 			}
-			col2 <- col
-			browser()
-			datFreq[[col2]] <- getFreqTable_DT(dat[, c("aggIndex", col), with=FALSE], col)
-			if (nlevels(dat[[col2]]) > 30) dat[, tempCol:=NULL]
+			datFreq[[col_orig]] <- getFreqTable_DT(dat[, c("aggIndex", col), with=FALSE], col)
+			if (nlevels(dat[[col_orig]]) > max_levels) {
+				dat[, tempCol:=NULL]
+				if (tail(datFreq[[col_orig]]$categories, 1)=="missing") {
+					datFreq[[col_orig]]$categories <- c(levels(dat[[col_orig]]), "missing")
+				} else {
+					datFreq[[col_orig]]$categories <- levels(dat[[col_orig]])
+				}
+			}
 		}
 		
 		# more memory-efficient than datFreq <- lapply(dat[, colNames[!isNumber], with=FALSE], FUN=getFreqTable_DT, dat$aggIndex)
@@ -256,6 +271,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 			col$freq <- datFreq[[colNames[i]]]$freqTable
 			col$categories <- datFreq[[colNames[i]]]$categories
 			col$paletname <- pals$name[paletNr]
+			col$palettype <- paltype[i]			
 			col$palet <- pals$palette[[paletNr]]
 			col$colorNA <- colorNA
 			paletNr <- ifelse(paletNr==length(pals$name), 1, paletNr + 1)

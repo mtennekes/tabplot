@@ -12,7 +12,7 @@ str(diamonds)
 
 diamonds$carat2 <- factor(diamonds$carat)
 
-tableplot(diamonds)
+tab <- tableplot(diamonds)
 
 
 

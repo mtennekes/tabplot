@@ -12,6 +12,7 @@
 #' @param to percentage to which the data is shown
 #' @param nCols the maximum number of columns per tableplot. If this number is smaller than the number of columns selected in \code{datNames}, multiple tableplots are generated, where each of them contains the sorted column(s).
 #' @param scales determines the horizontal axes of the numeric variables in \code{colNames}, options: "lin", "log", and "auto" for automatic detection. If necessary, \code{scales} is recycled.
+#' @param max_levels maximum number of levels for categorical variables. Categorical variables with more levels will be rebinned into \code{max_levels} levels. Either a positive number or -1, which means unlimited.
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
 #' \item a palette name in \code{\link{tablePalettes}}, optionally with the starting color between brackets.
@@ -34,7 +35,8 @@
 #' @example ../examples/tableplot.R
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
 					  nBins=100, from=0, to=100, nCols=ncol(dat), 
-					  scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", 
+					  scales="auto", max_levels=50, 
+					  pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", 
 					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, select_string = NULL,
 					  subset_string=NULL, colNames=NULL, filter=NULL, 
 					  plot=TRUE, ...) {
@@ -88,7 +90,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 									ifelse(isLogical, "", "\""), sep="")
 			tabs <- lapply(subsets_string, FUN=function(subs_string){
 				tab <- tableplot(dat, select_string=select_string, sortCol=sortCol, 
-								 decreasing=decreasing, scales=scales, pals=pals, nBins=nBins,
+								 decreasing=decreasing, scales=scales, max_levels=max_levels, 
+								 pals=pals, nBins=nBins,
 								 from=from, to=to, subset_string=subs_string, 
 								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
 				tab
@@ -192,7 +195,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 
 	
 	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
-					  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
+					  decreasing, scales, max_levels, pals, colorNA, numPals, nBins, from,to)
 	
 	#dat[, agg Index:=NULL]
 	
@@ -261,11 +264,11 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	#############################
 	## determine widths and x positions of the categorical variables
 	for (i in which(!isNumber)) {
-		categories <- tab$columns[[i]]$categories
-		widths <- tab$columns[[i]]$freq / rep(tab$binSizes, length(categories))
+		ncategories <- ncol(tab$columns[[i]]$freq)
+		widths <- tab$columns[[i]]$freq / rep(tab$binSizes, ncategories)
 	
-		x <- cbind(0,(matrix(apply(widths, 1, cumsum), nrow=nBins,byrow=TRUE)[, -length(categories)]))
-		tab$columns[[i]]$categories <- categories
+		x <- cbind(0,(matrix(apply(widths, 1, cumsum), nrow=nBins,byrow=TRUE)[, -ncategories]))
+		#tab$columns[[i]]$categories <- categories
 		tab$columns[[i]]$x <- x
 		tab$columns[[i]]$widths <- widths
 	}

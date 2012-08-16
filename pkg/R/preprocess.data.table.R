@@ -1,5 +1,5 @@
 preprocess.data.table <-
-function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_levels, pals, colorNA, numPals, nBins, from, to) {
+function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_levels, pals, recycle_palette, colorNA, numPals, nBins, from, to) {
 	
 
 	
@@ -193,9 +193,11 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_l
 		
 		for (col in colNames[!isNumber]) {
 			col_orig <- col
-			if (nlevels(dat[[col]]) > max_levels) {
+			if (nlevels(dat[[col]]) > recycle_palette) {
 				paltype[which(col==colNames)] <- "interpolate"
-				
+			}
+			
+			if (nlevels(dat[[col]]) > max_levels) {
 				temp <- cut(1:nlevels(dat[[col]]), breaks=max_levels)
 				
 

@@ -68,7 +68,7 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 			labels <- rep("...", 7)
 			labels[c(1,3,5,7)] <- tCol$categories[c(1, 
 										round(nCategoriesLabels/3), 
-										round(nCategoriesLabels/3),
+										round(nCategoriesLabels/3*2),
 										nCategoriesLabels)]
 			
 			for (j in 1:7) {

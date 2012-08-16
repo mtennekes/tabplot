@@ -19,6 +19,7 @@
 #' \item a palette vector
 #' }
 #' The items of \code{pals} are applied to the categorical variables of \code{colNames}. If necessary, \code{pals} is recycled.
+#' @param recycle_palette number that determines if either a palette is recycled or a new palette of interpolated colors is derived. For categorical variables with at most \code{recycle_palettes} categories, the palette is recycled (if necessary). For categorical variables with more than \code{recycle_palettes} categories, a new palette is defined with interpolated colors (like a rainbow).
 #' @param colorNA color for missing values
 #' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
@@ -36,8 +37,10 @@
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
 					  nBins=100, from=0, to=100, nCols=ncol(dat), 
 					  scales="auto", max_levels=50, 
-					  pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", 
-					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, select_string = NULL,
+					  pals=list("Set1", "Set2", "Set3", "Set4"), recycle_palette = 20,
+					  colorNA = "#FF1414", 
+					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, 
+					  select_string = NULL,
 					  subset_string=NULL, colNames=NULL, filter=NULL, 
 					  plot=TRUE, ...) {
 
@@ -195,7 +198,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 
 	
 	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
-					  decreasing, scales, max_levels, pals, colorNA, numPals, nBins, from,to)
+					  decreasing, scales, max_levels, pals, recycle_palette, 
+					  colorNA, numPals, nBins, from,to)
 	
 	#dat[, agg Index:=NULL]
 	

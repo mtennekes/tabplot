@@ -10,6 +10,9 @@ library(ggplot2)
 data(diamonds)
 str(diamonds)
 
+diamonds$carat[sample.int(nrow(diamonds),1000)] <- NA
+diamonds$cut[sample.int(nrow(diamonds),2000)] <- NA
+
 diamonds$carat2 <- factor(diamonds$carat)
 
 tab <- tableplot(diamonds)

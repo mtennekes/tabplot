@@ -5,6 +5,7 @@
 #' @param fontsize the (maximum) fontsize
 #' @param legend.lines the number of lines preserved for the legend
 #' @param max_print_levels maximum number of printed category labels in the legend
+#' @param text_NA text printed for the missing values category in the legend
 #' @param title title of the plot (shown if \code{showTitle==TRUE})
 #' @param showTitle show the title. By default \code{FALSE}, unless a \code{title} is given.
 #' @param fontsize.title the fontsize of the title
@@ -12,7 +13,7 @@
 #' @export
 #' @method plot tabplot
 plot.tabplot <-
-function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, title = NULL, showTitle = NULL, fontsize.title = 14, ...) {
+function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, ...) {
 	
 	if (missing(showTitle)) showTitle <- !missing(title)
 	
@@ -168,7 +169,8 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, title = NULL
 					plotNumCol(tCol, x, vpTitle, vpGraph, vpLegend)
 				}
 				else {
-					plotCatCol(tCol, x, vpTitle, vpGraph, vpLegend, max_print_levels)
+					plotCatCol(tCol, x, vpTitle, vpGraph, vpLegend, max_print_levels,
+							   text_NA)
 				}
 			})
 		}

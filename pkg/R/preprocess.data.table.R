@@ -201,10 +201,10 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_l
 
 				lbinSizes <-	getBinSizes(nlevels(dat[[col]]), max_levels)
 				lbrks <- c(0, cumsum(lbinSizes))
-				
 				tempCol <- factor(cut(as.numeric(dat[[col]]), lbrks, right=TRUE, labels=FALSE),
-							   labels=paste0(levels(dat[[col]])[lbrks[1:max_levels]+1], "...", 
-							   			  levels(dat[[col]])[lbrks[(1:max_levels)+1]]))
+                          levels=1:max_levels,
+                          labels=paste0(levels(dat[[col]])[lbrks[1:max_levels]+1], "...",
+                                        levels(dat[[col]])[lbrks[(1:max_levels)+1]]))
 				
 				dat[, tempCol:=tempCol]
 				col <- "tempCol"

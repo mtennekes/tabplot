@@ -1,9 +1,12 @@
-plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, text_NA){
+plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, text_NA, legend.lines){
 	drawContours <- TRUE
 
 	anyNA <- tail(tCol$categories, 1)=="missing"
+	
+	categories <- colnames(tCol$freq)
+	
 	nCategories <- ncol(tCol$freq) - anyNA
-	nCategoriesLabels <- length(tCol$categories) - anyNA
+	nOrigCategories <- length(tCol$categories) - anyNA
 	spread <- (nCategories > max_print_levels)
 	
 	## determine color indices for categories
@@ -45,7 +48,10 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 
 	## draw legend
 	cellplot(3,1, vpLegend, {
-		nLegendRows <- ifelse(spread, 7, nCategories) + 2 * anyNA
+		nLegendSpread <- min(((legend.lines-1) %/% 2) + 1, max_print_levels, nCategories)
+		nLegendSpreadRows <- nLegendSpread * 2 -1
+		
+		nLegendRows <- ifelse(spread, nLegendSpreadRows, nCategories) + 2 * anyNA
 		
 		Layout2 <- grid.layout(nrow = nLegendRows, ncol = 1 + spread, 
 							   widths=if(spread) c(0.25, 0.75) else {1})
@@ -58,20 +64,17 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 		grid.rect(gp=gpar(col=NA, fill="white"))
 		
 		if (spread) {
-			cellplot(1:7,1, NULL, {
+			cellplot(1:nLegendSpreadRows,1, NULL, {
 				grid.rect( x = 0, y = seq(1, 0, length.out=nCategories+1)[-(nCategories+1)]
 						   , width = 0.8, height = 1/nCategories
 						   , just=c("left", "top")
 						   , gp = gpar(col=palet, fill = palet)
 				)
 			})
-			labels <- rep("...", 7)
-			labels[c(1,3,5,7)] <- tCol$categories[c(1, 
-										round(nCategoriesLabels/3), 
-										round(nCategoriesLabels/3*2),
-										nCategoriesLabels)]
-			
-			for (j in 1:7) {
+			labels <- rep("...", nLegendSpreadRows)
+			labels[seq(1, nLegendSpreadRows, by=2)] <- tCol$categories[seq(1, nOrigCategories, length.out=nLegendSpread)]
+				
+			for (j in 1:nLegendSpreadRows) {
 				cellplot(j,2, NULL, {
 					grid.text( labels[j]
 							   , x = 0
@@ -100,7 +103,7 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 							   , just=c("left")
 							   , gp = gpar(col=palet[j], fill = palet[j])
 					)
-					grid.text( tCol$categories[j]
+					grid.text( categories[j]
 							   , x = 0.25
 							   , just="left")
 				})

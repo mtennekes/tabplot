@@ -24,6 +24,7 @@ Suggests:
     classInt,
     ggplot2
 Collate:
+	'aggCatCols.R'
     'brokenX.R'
     'cellplot.R'
     'datetime2fac.R'

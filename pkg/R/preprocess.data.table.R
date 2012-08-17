@@ -99,32 +99,8 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_l
 	for (col in extraCols) dat[, col:=NULL, with=FALSE]
 	# dat[, extraCols:=NULL, with=FALSE] somehow doesn't work
 	
-
-	#colNames[sortCol[decreasing & !isNumber[sortCol]]]
-	
-	
-	
-	
-	#for (i in sortCol[] which(decreasing & isNumber[sortCol]))
-	
-	
-# 	datList <- mapply(subset(dat, select=colNames[sortCol]), decreasing, isNumber[sortCol], FUN=function(vec, decr, isNum) {
-# 			if (decr & isNum) {
-# 				return(-vec)
-# 			} else if (decr) {
-# 				return(-as.integer(vec))
-# 			} else {
-# 				return(vec)
-# 			}
-# 		}, SIMPLIFY=FALSE)
-	
-	# order all columns that are sorted
-# 	o <- order(do.call(order, as.list(c(datList, list(rand=rand)))))
-	
 	brks <- c(0, cumsum(binSizes)) + (vp$iFrom-1)
 	
-	# TODO in stead of precalculating the brks, we can also give the number of breaks and calculate binSizes from summing the bins.
-	# RE: Tried it, by cut(o, brks=nBins, ...) gives strange results (first and last bin were smaller)
 	if (optSpace) gc()
 	## bypass Rcmd warning
 	aggIndex <- NULL; rm(aggIndex); #trick R CMD check
@@ -187,49 +163,19 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_l
 	
 	if (any(!isNumber)) {	
 		if (optSpace) gc()
-		datFreq <- list()
-		paltype <- rep("recycled", n)
-		#datCat <- dat[J(1:nBins), c("aggIndex", colNames[!isNumber]), with=FALSE]
 		
+		paltype <- rep("recycled", n)
 		for (col in colNames[!isNumber]) {
-			col_orig <- col
 			if (nlevels(dat[[col]]) > recycle_palette) {
 				paltype[which(col==colNames)] <- "interpolate"
 			}
-			
-			if (nlevels(dat[[col]]) > max_levels) {
-				temp <- cut(1:nlevels(dat[[col]]), breaks=max_levels)
-				
-
-				lbinSizes <-	getBinSizes(nlevels(dat[[col]]), max_levels)
-				lbrks <- c(0, cumsum(lbinSizes))
-				tempCol <- factor(cut(as.numeric(dat[[col]]), lbrks, right=TRUE, labels=FALSE),
-                          levels=1:max_levels,
-                          labels=paste0(levels(dat[[col]])[lbrks[1:max_levels]+1], "...",
-                                        levels(dat[[col]])[lbrks[(1:max_levels)+1]]))
-				
-				dat[, tempCol:=tempCol]
-				col <- "tempCol"
-			}
-			datFreq[[col_orig]] <- getFreqTable_DT(dat[, c("aggIndex", col), with=FALSE], col)
-			if (nlevels(dat[[col_orig]]) > max_levels) {
-				dat[, tempCol:=NULL]
-				if (tail(datFreq[[col_orig]]$categories, 1)=="missing") {
-					datFreq[[col_orig]]$categories <- c(levels(dat[[col_orig]]), "missing")
-				} else {
-					datFreq[[col_orig]]$categories <- levels(dat[[col_orig]])
-				}
-			}
 		}
 		
-		# more memory-efficient than datFreq <- lapply(dat[, colNames[!isNumber], with=FALSE], FUN=getFreqTable_DT, dat$aggIndex)
-		
-		
+		datFreq <- aggCatCols(dat, colNames[!isNumber], max_levels) 
 	}
 
 	dat[, aggIndex:=NULL]
 	
-	#browser()
 	#############################
 	##
 	## Create list object that contains all data needed to plot

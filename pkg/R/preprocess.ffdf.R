@@ -1,10 +1,9 @@
 preprocess.ffdf <-
-function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
+function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_levels, pals, recycle_palette, colorNA, numPals, nBins, from, to) {
    if (!require(ff)){
 		stop("This function needs package ff")
    }   
 	n <- length(colNames)
-
    #############################
 	## Determine column classes
 	#############################
@@ -124,43 +123,41 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	if (any(isFactor | isLogical)) {
 		catcols <- names(dat)[as.which(isFactor | isLogical)] # needed because isNumber is otherwise recycled!!
 
-
 		datFreq <- list()
-		maxlevels <- max(sapply(dat[1,], nlevels))
 		
 		chunks <- chunk(dat)
 		
-		
-		cdat <- dat[chunks[[1]], c(catcols, "aggIndex")]
+		cdat <- as.data.table(dat[chunks[[1]], c(catcols, "aggIndex")])
+		setkey(cdat, aggIndex)
+
 		# cast logicals to factors
 		for (col in colNames[isLogical]) {
-			cdat[[col]] <- factor(cdat[[col]], levels=c("TRUE", "FALSE"))
+			cdat[, col:=factor(cdat[[col]], levels=c("TRUE", "FALSE")), with=FALSE]
 		}
-
-		datFreq <- lapply(cdat[, catcols], FUN=getFreqTable_DT, cdat$aggIndex, useNA="always")
+		
+		paltype <- rep("recycled", n)
+		for (col in catcols) {
+			if (nlevels(cdat[[col]]) > recycle_palette) {
+				paltype[which(col==colNames)] <- "interpolate"
+			}
+		}
+		
+		datFreq <- aggCatCols(cdat, catcols, max_levels)
 	
 		for (i in chunks[-1]){
-			cdat <- dat[i, c(catcols, "aggIndex")]
+			cdat <- as.data.table(dat[i, c(catcols, "aggIndex")])
+			setkey(cdat, aggIndex)
+
 			# cast logicals to factors
 			for (col in colNames[isLogical]) {
-				cdat[[col]] <- factor(cdat[[col]], levels=c("TRUE", "FALSE"))
+				cdat[, col:=factor(cdat[[col]], levels=c("TRUE", "FALSE")), with=FALSE]
 			}
-
-			datFreq2 <- lapply(cdat[, catcols], FUN=getFreqTable_DT, cdat$aggIndex, useNA="always")
-
+			
+			datFreq2 <- aggCatCols(cdat, catcols, max_levels)
 			datFreq <- mapply(datFreq, datFreq2, FUN=function(df1, df2){
 					return(list(freqTable=df1$freqTable + df2$freqTable, categories=df1$categories))
 				}, SIMPLIFY=FALSE)
 		}
-
-		datFreq <- lapply(datFreq, FUN=function(df) {
-				if (all(df$freqTable[,"missing"]==0)) {
-					ncols <- ncol(df$freqTable)
-					df$freqTable <- as.matrix(df$freqTable[,-ncols])
-					df$categories <- df$categories[-ncols]
-				}
-				return(df)
-			})
 	}	
 
   	#####################
@@ -170,12 +167,9 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		#browser()
 		blncols <- names(dat)[as.which(isBoolean)] # needed because isNumber is otherwise recycled!!
 				
-		
 		datFreqB <- list()
 		
 		chunks <- chunk(dat)
-		
-		
 		
 		for (i in chunks){
 			cdat <- na.omit(data.table(dat[i,])[, c(blncols, "aggIndex"), with=FALSE]) # works because there are no NA's in data (only in aggIndex)
@@ -233,7 +227,8 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 
 	scalesNr <- 1
 	for (i in 1:n) {
-		sortc <- ifelse(i %in% sortCol, ifelse(decreasing[which(i==sortCol)], "decreasing", "increasing"), "")
+		sortc <- ifelse(i %in% sortCol, ifelse(decreasing[which(i==sortCol)], 
+											    "decreasing", "increasing"), "")
 		col <- list(name = colNames[i], isnumeric = isNumber[i], sort=sortc)
 		if (isNumber[i]) {
 			col$mean <- datMean[[colNames[i]]]
@@ -248,6 +243,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 			col$freq <- datFreq[[colNames[i]]]$freqTable
 			col$categories <- datFreq[[colNames[i]]]$categories
 			col$paletname <- pals$name[paletNr]
+			col$palettype <- paltype[i]
 			col$palet <- pals$palette[[paletNr]]
 			col$colorNA <- colorNA
 

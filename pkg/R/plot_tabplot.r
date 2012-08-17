@@ -170,7 +170,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 				}
 				else {
 					plotCatCol(tCol, x, vpTitle, vpGraph, vpLegend, max_print_levels,
-							   text_NA)
+							   text_NA, legend.lines)
 				}
 			})
 		}

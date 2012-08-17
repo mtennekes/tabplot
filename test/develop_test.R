@@ -14,46 +14,22 @@ diamonds$carat[sample.int(nrow(diamonds),1000)] <- NA
 diamonds$cut[sample.int(nrow(diamonds),2000)] <- NA
 
 diamonds$carat2 <- factor(diamonds$carat)
+diamonds$price2 <- factor(diamonds$price)
+
+diamonds$expensive <- diamonds$price >= 10000
 
 tab <- tableplot(diamonds)
+tab <- tableplot(diamonds, max_levels=50, recycle_palette=20, max_print_levels=15) # default values
+
+tab <- tableplot(diamonds, max_levels=50, recycle_palette=10, max_print_levels=5, legend.lines=16)
 
 
 
-
+library(ff)
+dFF <- as.ffdf(diamonds)
+tableplot(dFF)
 
 
 Rprof(tmp <- tempfile())
-
-depth="table"
-tab <- tableplot(diamonds, select=c(1, 3), subset_string="cut=='Fair'", sortCol=1, showTitle=TRUE)
-
-plot(tab)
-
-tableplot(diamonds, sortCol=price, colorNA="blue", numPals="Greens")
-
-
-tableplot(diamonds, select=c(carat, depth), subset=price > 5000)
-
-tableplot(diamonds, select=c(1,6))
-tableplot(diamonds, select=c(TRUE, FALSE))
-
-
 Rprof(); summaryRprof(tmp); unlink(tmp)
 
-dt1 <- data.table(x=factor(1), y=1:10, c=factor(c("a", "b")), d=NA)
-tab <- tableplot(dt1)
-
-
-dt1 <- dt1[,rep(1:3,4), with=FALSE]
-dt1$nieuw <- NA
-tableplot(dt1)
-
-dDT <- as.data.table(diamonds)
-dDT <- dDT[sample.int(nrow(dDT), 1e6, replace=TRUE),]
-
-
-
-
-system.time({
-	tab <- tableplot(dDT, plot=FALSE)
-})

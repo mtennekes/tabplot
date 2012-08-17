@@ -3,7 +3,7 @@ options(fftempdir = "d:/temp")
 
 library(ggplot2); data(diamonds)
 n <- nrow(diamonds)
-N <- 2000L * n
+N <- 100L * n
 
 # Create data set
 diamondsff <- as.ffdf(diamonds)

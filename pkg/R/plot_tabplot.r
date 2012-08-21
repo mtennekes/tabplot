@@ -9,11 +9,22 @@
 #' @param title title of the plot (shown if \code{showTitle==TRUE})
 #' @param showTitle show the title. By default \code{FALSE}, unless a \code{title} is given.
 #' @param fontsize.title the fontsize of the title
-#' @param ... arguments passed to other methods
+#' @param ... other arguments are not used
 #' @export
 #' @method plot tabplot
 plot.tabplot <-
 function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, ...) {
+	
+	if (class(x)[1]!="tabplot") stop(paste(deparse(substitute(x)), "is not a tabplot-object"))
+	
+	if (length(fontsize)!=1 || !is.numeric(fontsize)) stop("invalid fontsize")
+
+	if (length(legend.lines)!=1 || !is.numeric(legend.lines)) stop("invalid legend.lines")
+	if (length(max_print_levels)!=1 || !is.numeric(max_print_levels)) stop("invalid max_print_levels")
+	
+	if (max_print_levels < legend.lines) warning("max_print_levels is less than legend.lines")
+	
+	if (length(text_NA)!=1) stop("invalid text_NA")
 	
 	if (missing(showTitle)) showTitle <- !missing(title)
 	

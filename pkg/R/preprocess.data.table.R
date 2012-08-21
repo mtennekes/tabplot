@@ -1,5 +1,5 @@
 preprocess.data.table <-
-function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_levels, pals, recycle_palette, colorNA, numPals, nBins, from, to) {
+function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_levels, pals, change_palette_type_at, colorNA, numPals, nBins, from, to) {
 	
 
 	
@@ -166,7 +166,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_l
 		
 		paltype <- rep("recycled", n)
 		for (col in colNames[!isNumber]) {
-			if (nlevels(dat[[col]]) > recycle_palette) {
+			if (nlevels(dat[[col]]) > change_palette_type_at) {
 				paltype[which(col==colNames)] <- "interpolate"
 			}
 		}

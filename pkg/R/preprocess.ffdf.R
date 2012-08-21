@@ -1,5 +1,5 @@
 preprocess.ffdf <-
-function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_levels, pals, recycle_palette, colorNA, numPals, nBins, from, to) {
+function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_levels, pals, change_palette_type_at, colorNA, numPals, nBins, from, to) {
    if (!require(ff)){
 		stop("This function needs package ff")
    }   
@@ -137,7 +137,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_l
 		
 		paltype <- rep("recycled", n)
 		for (col in catcols) {
-			if (nlevels(cdat[[col]]) > recycle_palette) {
+			if (nlevels(cdat[[col]]) > change_palette_type_at) {
 				paltype[which(col==colNames)] <- "interpolate"
 			}
 		}

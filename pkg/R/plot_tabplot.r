@@ -9,13 +9,14 @@
 #' @param title title of the plot (shown if \code{showTitle==TRUE})
 #' @param showTitle show the title. By default \code{FALSE}, unless a \code{title} is given.
 #' @param fontsize.title the fontsize of the title
+#' @param vp \code{\link[grid:viewport]{viewport}} to draw plot in (for instance useful to stack multiple tableplots)
 #' @param ... other arguments are not used
 #' @export
 #' @method plot tabplot
 plot.tabplot <-
-function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, ...) {
+function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, vp=NULL, ...) {
 	
-	if (class(x)[1]!="tabplot") stop(paste(deparse(substitute(x)), "is not a tabplot-object"))
+	if (class(x)[1]!="tabplot") p(paste(deparse(substitute(x)), "is not a tabplot-object"))
 	
 	if (length(fontsize)!=1 || !is.numeric(fontsize)) stop("invalid fontsize")
 
@@ -91,8 +92,15 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 					   , gp=gpar(fontsize=fontsize)
 	)
 	
+	  
 	## set grid layout
-	grid.newpage()
+	if (is.null(vp)) {
+	  grid.newpage()
+	} else {
+	  if (is.character(vp)) 
+	    seekViewport(vp)
+	  else pushViewport(vp)
+	}
 	
 	pushViewport(vpBody)
 	
@@ -186,5 +194,6 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 			})
 		}
 	})
-
+  
+	upViewport(1 + !is.null(vp))
 }

@@ -3,7 +3,7 @@
 #' Save a tableplot in pdf, eps, svg, wmf, png, jpg, bmp, or tiff format.
 #'
 #' @aliases tableSave
-#' @param tab a \link{tabplot-object}
+#' @param tab a \link{tabplot-object}, or a list of \link{tabplot-object}s, which are stacked horizontally
 #' @param filename filename with extention (pdf, eps, svg, wmf, png, jpg, bmp, or tiff)
 #' @param device device, automatically extracted from filename extension 
 #' @param path path to save to
@@ -24,9 +24,12 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
     width = par("din")[1], height = par("din")[2], dpi = 300, 
 	fontsize = 8, legend.lines = 8, title = tab$dataset, showTitle = FALSE, ...) 
 {
-    if (class(tab) != "tabplot") 
-        stop("plot should be a tabplot object")
-    
+    if (is.list(tab)) {
+        if (!all(sapply(tab, class)=="tabplot")) stop(paste(deparse(substitute(tab)), "is not a list of tabplot-objects"))
+    } else {
+        if (class(tab)[1]!="tabplot") stop(paste(deparse(substitute(tab)), "is not a tabplot-object"))
+    }
+        
     pdf <- function(..., version = "1.4") grDevices::pdf(..., 
     													 version = version)
     eps <- ps <- function(..., width, height) grDevices::postscript(..., 
@@ -63,7 +66,18 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
         filename <- file.path(path, filename)
     }
     device(file = filename, width = width, height = height, ...)
-    plot(tab, fontsize = fontsize, legend.lines = legend.lines, title = title, showTitle = showTitle)
+    if (is.list(tab)) {
+        stackvp <- function(x) viewport(layout.pos.row=x,layout.pos.col=1)
+        nl <- length(tab)
+        grid.newpage()
+        pushViewport(viewport(layout=grid.layout(nl, 1)))
+        
+        lapply(1:nl, FUN=function(i){
+            plot(tab[[i]], fontsize = fontsize, legend.lines = legend.lines, title = title, 
+                 showTitle = showTitle, vp=stackvp(i))
+        })
+    } else plot(tab, fontsize = fontsize, legend.lines = legend.lines, title = title, showTitle = showTitle)
+    
     on.exit(capture.output(dev.off()))
     invisible()
 }

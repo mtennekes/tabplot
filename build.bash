@@ -8,6 +8,9 @@ R -q -f build/createpallete.R
 echo "Generate documentation..."
 R -q -f build/roxygen.R
 
+echo "Generate vignette..."
+R -q -f build/vignette.R
+
 mkdir output
 cd output
 R CMD build ../pkg

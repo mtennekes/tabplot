@@ -1,12 +1,14 @@
 preprocess.data.table <-
 function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
 	
-	optSpace <- (object.size(dat)*2.5 > (memory.limit() - memory.size())*2^20)
-	if (optSpace) cat("Optimized for space \n")
+
 	
 	n <- length(colNames)
 	nr <- nrow(dat)
 	
+	## Optimize space (by calling gc()) for datasets of at least 10 million rows (arbitrary number)
+	#optSpace <- (object.size(dat)*2.5 > (memory.limit() - memory.size())*2^20)
+	optSpace <- (nr >= 1e7)
 	
 	
 	#############################
@@ -130,8 +132,9 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	
 	setkey(dat, aggIndex)
 	
+	#dat <- dat[!is.na(dat$aggIndex),]
+	
 	rm(o)
-		
 
 	#####################
 	## Aggregate numeric variables
@@ -181,9 +184,13 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 	## Aggregate categorical variables
 	#####################
 	
+	
 	if (any(!isNumber)) {	
 		if (optSpace) gc()
 		datFreq <- list()
+		
+		datCat <- dat[J(1:nBins), c("aggIndex", colNames[!isNumber]), with=FALSE]
+		
 		for (col in colNames[!isNumber]) {
 			datFreq[[col]] <- getFreqTable_DT(dat[, c("aggIndex", col), with=FALSE], col)
 		}
@@ -192,9 +199,10 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		
 		
 	}
-	
+
 	dat[, aggIndex:=NULL]
 	
+	#browser()
 	#############################
 	##
 	## Create list object that contains all data needed to plot
@@ -244,6 +252,6 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, pals,
 		}
  		tab$columns[[i]] <- col
 	}
-	
+
 	return(tab)
 }

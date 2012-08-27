@@ -5,12 +5,13 @@
 #' @param fontsize the (maximum) fontsize
 #' @param legend.lines the number of lines preserved for the legend
 #' @param title title of the plot (shown if \code{showTitle==TRUE})
-#' @param showTitle show the title
+#' @param showTitle show the title. By default \code{FALSE}, unless a \code{title} is given.
+#' @param fontsize.title the fontsize of the title
 #' @param ... arguments passed to other methods
 #' @export
 #' @method plot tabplot
 plot.tabplot <-
-function(x, fontsize = 8, legend.lines = 8, title = NULL, showTitle = NULL, ...) {
+function(x, fontsize = 10, legend.lines = 8, title = NULL, showTitle = NULL, fontsize.title = 14, ...) {
 	
 	if (missing(showTitle)) showTitle <- !missing(title)
 	
@@ -32,23 +33,21 @@ function(x, fontsize = 8, legend.lines = 8, title = NULL, showTitle = NULL, ...)
 	#############################
 	
 	## configure viewports
-	marginT <- 0.02;	marginB <- 0.02
+	marginT <- 0.01;	marginB <- 0.02
 	marginL <- 0.05;	marginR <- 0.05
 	marginLT <- 0.0;	marginLB <- 0.02
-	
 	
 	vpColumn <- viewport( name="Column"
 	                   ,  x = unit(marginL, "npc")
  					    , width = unit(1 - marginL - marginR, "npc")
 	                    , layout = grid.layout( nrow=3
 						                      , ncol=1
-						                      , heights = unit(c(1,1, legend.lines), c("lines","null", "lines"))
+						                      , heights = unit(c(1, 1, legend.lines), c("lines", "null", "lines"))
 						    				  )
-	                   , gp=gpar(fontsize=fontsize)
 					   )
 						
 	vpTitle <- viewport( name = "title"
-					   , just = c("left", "top")
+					   , just = c("left", "center")
 					   )
 	  
 	vpGraph <- viewport( name = "graph"
@@ -63,30 +62,44 @@ function(x, fontsize = 8, legend.lines = 8, title = NULL, showTitle = NULL, ...)
 						, just = c("left", "bottom")
 						)
 	
+	vpBody <- viewport( name="Body"
+						, layout = grid.layout( nrow=2
+												, ncol=1
+												, heights = unit(c(ifelse(showTitle, 2, 0), 1), c("lines", "null"))
+						)
+						, gp=gpar(fontsize=fontsize.title)
+	)
+	
+	vpBodyCols <- viewport(name="BodyCols",
+						 , layout = grid.layout( nrow = 1
+						 						, ncol = x$n+1
+						 						, widths = unit(c(3,rep(1,x$n)), c("lines",rep("null",x$n)))
+						   )
+					   , gp=gpar(fontsize=fontsize)
+	)
+	
 	## set grid layout
 	grid.newpage()
 	
-	Layout <- grid.layout( nrow = 2, ncol = 1, heights = unit(c(ifelse(showTitle, 2, 0), 1), c("lines", "null")))
-	
-	pushViewport(viewport(layout = Layout))
+	pushViewport(vpBody)
 	
 	if (showTitle) cellplot(1, 1, e={
 		grid.text(title)	
 	})
 	
-	cellplot(2, 1, e={
+	cellplot(2, 1, vpBodyCols, {
 	
-		BodyLayout <- grid.layout( nrow = 1, ncol = x$n+1
-		                     , widths = unit(c(3,rep(1,x$n)), c("lines",rep("null",x$n)))
-							 )
-		pushViewport(viewport(layout = BodyLayout))
+		#BodyLayout <- grid.layout( nrow = 1, ncol = x$n+1
+		#                     , widths = unit(c(3,rep(1,x$n)), c("lines",rep("null",x$n)))
+	#						 )
+		#pushViewport(viewport(layout = BodyLayout))
 		
 		
 		#############################
 		## Configure y-axis
 		#############################
-		
 		cellplot(1,1,vpColumn, {
+
 			cellplot(2,1,vpGraph,{
 				## y axes and bin ticks
 				grid.polyline( x=c(0.80,0.80,rep(c(0.80,0.83),x$nBins+1))
@@ -125,7 +138,7 @@ function(x, fontsize = 8, legend.lines = 8, title = NULL, showTitle = NULL, ...)
 		for (i in 1:x$n) {
 			cellplot(1,i+1, vpColumn, {
 				tCol <- x$columns[[i]]
-				cellplot(1,1, vpTitle, {
+				cellplot(1, 1, vpTitle, {
 					## Determine column name. Place "log(...)" around name when scale is logarithmic
 					columnName <- ifelse(tCol$isnumeric && tCol$scale_final=="log", paste("log(",tCol$name, ")", sep=""), tCol$name)
 					nameWidth <- convertWidth(stringWidth(columnName), "npc",valueOnly=TRUE)
@@ -136,7 +149,7 @@ function(x, fontsize = 8, legend.lines = 8, title = NULL, showTitle = NULL, ...)
 					}
 					
 					grid.text(columnName, gp=gpar(cex=cex))
-	
+					
 					## Place sorting arrow before name
 					if (tCol$sort!="") {
 						grid.polygon( x = c(0.1, 0.4, 0.7)

@@ -1,12 +1,12 @@
 #' Create a tableplot
 #'
-#' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large ffdf datasets from the ff package.
+#' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff:ff]{ff}} package.
 #'
-#' @param dat a \code{\link{data.frame}}, \code{\link{data.table}}, or an \code{\link[ff:ffdf]{ffdf}} object (required)
-#' @param select expression indicating the columns of \code{dat} that are visualized in the tablelplot. By default, all columns are visualized. Use \code{select\_string} to provide a character string instead of an expression. 
-#' @param subset filter that condition to subset the observations in \code{dat} (expression). It is also possible to provide the name of a categorical variable: then, a tableplot for each category is generated. Use \code{subset\_string} to provide a character string instead of an expression.
-#' @param sortCol columns that are sorted. \code{sortCol} is either a vector of column names of a vector of indices of \code{colNames}
-#' @param decreasing determines whether the columns are sorted decreasingly (TRUE) of increasingly (FALSE). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.
+#' @param dat a \code{\link{data.frame}}, \code{\link{data.table}}, or an \code{\link[ff:ffdf]{ffdf}} object (required). 
+#' @param select expression indicating the columns of \code{dat} that are visualized in the tablelplot Also column indices are supported. By default, all columns are visualized. Use \code{select_string} for character strings instead of expressions. 
+#' @param subset logical expression indicing which rows to select in \code{dat} (as in \code{\link{subset}}). It is also possible to provide the name of a categorical variable: then, a tableplot for each category is generated. Use \code{subset_string} for character strings instead of an expressions.
+#' @param sortCol expression indication the column(s) that is(are) sorted. Also supports indices. Also character strings can be used, but this is discouraged for programming purposes (use indices instead).
+#' @param decreasing determines whether the columns are sorted decreasingly (\code{TRUE}) of increasingly (\code{FALSE}). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.
 #' @param nBins number of row bins
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
@@ -22,13 +22,13 @@
 #' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
-#' @param \code{select\_string} character equivalent of the \code{select} argument (particularly useful when writing functions)
-#' @param \code{subset\_string} character equivalent of the \code{subset} argument (particularly useful when writing functions) 
-#' @param colNames used in older versions of tabplot (<= 0.11-2): use \code{select(\_string)} instead
-#' @param filter used in older versions oftabplot (<= 0.11-2): use \code{subset(\_string)} instead
+#' @param select_string character equivalent of the \code{select} argument (particularly useful for programming purposes)
+#' @param subset_string character equivalent of the \code{subset} argument (particularly useful for programming purposes) 
+#' @param colNames deprecated; used in older versions of tabplot (prior to 0.12): use \code{select_string)} instead
+#' @param filter deprecated; used in older versions of tabplot (prior to 0.12): use \code{subset_string)} instead
 #' @param plot boolean, to plot or not to plot a tableplot
 #' @param ... arguments passed to \code{\link{plot.tabplot}}
-#' @return \link{tabplot-object} (silent output)
+#' @return \code{\link{tabplot-object}} (silent output). If multiple tableplots are generated (which can be done by either setting \code{subset} to a categorical column name, or by restricting the number of columns with \code{nCols}), then a list of \code{\link{tabplot-object}s} is silently returned.
 #' @export
 #' @keywords visualization
 #' @example ../examples/tableplot.R
@@ -69,7 +69,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	}
 
 	
-	if (!missing(subset_string)) {
+	if (!is.null(subset_string)) {
 
 		# split by one variable
 		if (subset_string %in% names(dat)) {
@@ -93,7 +93,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
 				tab
 			})
-			return(tabs)
+			return(invisible(tabs))
 		}
 		e <- substitute(subset)
 		# other filters
@@ -126,8 +126,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		names(nl) <- names(dat)
 		colNames <- eval(substitute(select), nl, parent.frame())
 		colNames <- names(dat)[colNames]
-	} else if (!missing(select_string)) {
-		if (!all(colNames %in% names(dat))) stop("select_string contains wrong column names")
+	} else if (!is.null(select_string)) {
+		if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
 		colNames <- select_string
 	} else {
 		colNames <- names(dat)
@@ -135,7 +135,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	## Only select the columns of colNames
 	if (class(dat)[1]=="data.table") {
-		#browser()
 		
 		ignoreNames <- setdiff(names(dat), colNames)
 		if (length(ignoreNames)!=0) 
@@ -194,6 +193,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
 					  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
+	
+	#dat[, agg Index:=NULL]
 	
 	# delete cloned ffdf (those with filter)
 	if (!missing(subset_string) && class(dat)[1]=="ffdf") delete(dat)
@@ -258,13 +259,12 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	#############################
 	## Categorical variables
 	#############################
-
 	## determine widths and x positions of the categorical variables
 	for (i in which(!isNumber)) {
 		categories <- tab$columns[[i]]$categories
 		widths <- tab$columns[[i]]$freq / rep(tab$binSizes, length(categories))
 	
-		x <- cbind(0,(t(apply(widths, 1, cumsum)))[, -length(categories)])
+		x <- cbind(0,(matrix(apply(widths, 1, cumsum), nrow=nBins,byrow=TRUE)[, -length(categories)]))
 		tab$columns[[i]]$categories <- categories
 		tab$columns[[i]]$x <- x
 		tab$columns[[i]]$widths <- widths
@@ -310,7 +310,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		tab$columns[[i]]$xline <- xline
 		tab$columns[[i]]$widths <- widths
 	}
-	
+
 	### multiple tableplots if nCols < length(colNames)
 	if (nCols < length(colNames)) {
 		nOtherCol <- nCols - length(sortCol)

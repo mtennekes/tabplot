@@ -6,9 +6,14 @@ getFreqTable_DT <- function(DT, col) {
 	freqTable <- matrix(DT[, tabulate(get(col), nbins=nlev),
 						   by=aggIndex][,V1],
 						ncol=nlev, byrow=TRUE)
+	
+	
 	missings <- DT[, sum(is.na(get(col))), by=aggIndex][,V1]
 
-	
+	if (any(is.na(DT[, aggIndex]))) {
+		freqTable <- freqTable[-1,]
+		missings <- missings[-1]
+	}
 	
 	if (any(missings!=0)) {
 		freqTable <- cbind(freqTable, missings)

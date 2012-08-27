@@ -4,7 +4,7 @@
 #'
 #' @aliases tableChange
 #' @param tab \link{tabplot-object}
-#' @param colNames vector of names of the desired columns
+#' @param select_string vector of names of the desired columns
 #' @param flip logical, if TRUE then the plot is flipped vertically, i.e.\ the row bins are reversed
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
@@ -17,18 +17,18 @@
 #' @export
 #' @example ../examples/tableChange.R
 
-tableChange <- function(tab, colNames=sapply(tab$columns, function(col)col$name), flip=FALSE, pals=list(), colorNA = NULL, numPals = NULL) {
+tableChange <- function(tab, select_string=sapply(tab$columns, function(col)col$name), flip=FALSE, pals=list(), colorNA = NULL, numPals = NULL) {
 
 	## change order of columns
 	currentColNames <- sapply(tab$columns, function(col)col$name)
 
-	colID <- match(colNames, currentColNames)
+	colID <- match(select_string, currentColNames)
 	
 	## check if each column in colNames exist in tab
-	if (any(is.na(colID))) stop(paste("Column(s) ", paste(colNames[is.na(colID)], collapse=", "), " does(do) not exist."  , sep=""))
+	if (any(is.na(colID))) stop(paste("Column(s) ", paste(select_string[is.na(colID)], collapse=", "), " does(do) not exist."  , sep=""))
 
 	tab2 <- list(dataset=tab$dataset,
-			n=length(colNames),
+			n=length(select_string),
 			nBins=tab$nBins,
 			binSizes=tab$binSizes,
 			isNumber=tab$isNumber[colID],

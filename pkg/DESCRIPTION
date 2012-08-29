@@ -53,3 +53,5 @@ Collate:
     'tableSave.R'
     'tableViewport.R'
     'tabplot_object.R'
+    'bin_data.R'
+    'prepare.R'

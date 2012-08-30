@@ -1,6 +1,12 @@
 #' Prepares a data.frame or ffdf for tableplotting
 #' 
+#' The function \code{\link{bin_data}} needs a prepared data.frame
+#' Prepare transforms the supplied data into a ffdf data.frame and calculates
+#' the order of each of its columns. Knowing the order of the columns speeds up
+#' the binning process consideratly, For large ffdf this may be a time consuming
+#' step so it can be wise to call prepare before making a tableplot.
 #' @param x data.frame or ffdf, will be transformed into a ffdf
+#' @param path where the resulting 
 #' @param ... at the moment not used
 #' @return a prepared object, including the data and order of each of the columns
 #' @export

@@ -2,16 +2,16 @@
 # working horse for tableplot, does the actual binning
 #' binning data
 #' 
-#' @param p
-#' @param bin
+#' @param p prepared data.frame or ffdf (see \code{\link{prepare}})
 #' @param sortCol column on which the table will be sorted
 #' @param from lower boundary
 #' @param to upper boundary
 #' @param nbins number of bins
-#' @param decreasing not working
+#' @param decreasing should the variable 
 #' @export
-bin_data <- function(p, bin, sortCol, from=0, to=1, nbins=100, decreasing = FALSE){
-	x <- p$data
+bin_data <- function(p, sortCol=1, cols=seq_along(p$data), from=0, to=1, nbins=100, decreasing = FALSE){
+	stopifnot(inherits(p, what="prepared"))
+	x <- p$data[cols]
 	o <- p$ordered[[sortCol]]
 	
 	# create bin vector
@@ -21,6 +21,7 @@ bin_data <- function(p, bin, sortCol, from=0, to=1, nbins=100, decreasing = FALS
 	if (decreasing){
 		from <- max(floor(N-N*to), 1L)
 		to <- min(ceiling(N-N*from), N)
+		# can be improved (not that difficult)
 		chunks <- rev(chunk(from=from, to=to, length.out=nbins, method="seq"))
 	} else {
 		from <- max(floor(from*N), 1L)

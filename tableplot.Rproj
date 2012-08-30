@@ -11,6 +11,4 @@ Encoding: UTF-8
 
 RnwWeave: knitr
 LaTeX: pdfLaTeX
-
-BuildType: Package
-PackagePath: pkg
+RootDocument: 

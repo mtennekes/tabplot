@@ -6,7 +6,7 @@
 #' the binning process consideratly, For large ffdf this may be a time consuming
 #' step so it can be wise to call prepare before making a tableplot.
 #' @param x data.frame or ffdf, will be transformed into a ffdf
-#' @param path where the resulting 
+#' @param path where the resulting prepared dataset should be stored, at the moment not working.
 #' @param ... at the moment not used
 #' @return a prepared object, including the data and order of each of the columns
 #' @export
@@ -27,10 +27,13 @@ prepare <- function(x, path = NULL, ...){
 	ordered[isFactor] <- lapply(ordered[isFactor], function(f) { levels(f) <- NULL; f})
 	ordered <- lapply(ordered, fforder)
 	
+	#ranked <- lapply(ordered, fforder)
+	
 	structure(
 		list( data = x
 			, ordered = ordered
-		    )
+#			, ranked = ranked
+		)
 		, class="prepared"
 	)
 }

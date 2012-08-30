@@ -10,24 +10,24 @@
 #' @param nbins number of bins
 #' @param decreasing should the variable 
 #' @export
-bin_data <- function(p, sortCol=1, cols=seq_along(p$data), from=0, to=1, nbins=100, decreasing = FALSE){
+bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE){
 	stopifnot(inherits(p, what="prepared"))
 	x <- p$data[cols]
 	o <- p$ordered[[sortCol]]
 	
 	# create bin vector
 	N <- length(o)
+	nbins <- min(nbins, N)
 	bin <- ff(0L, vmode="integer", length = N)
 	
 	if (decreasing){
 		from <- max(floor(N-N*to), 1L)
 		to <- min(ceiling(N-N*from), N)
-		# can be improved (not that difficult)
-		chunks <- rev(chunk(from=from, to=to, length.out=nbins, method="seq"))
+		chunks <- rev(binRanges(from=from, to=to, nbins=nbins))
 	} else {
 		from <- max(floor(from*N), 1L)
 		to <- min(ceiling(to*N), N)
-		chunks <- chunk(from=from, to=to, length.out=nbins, method="seq")
+		chunks <- binRanges(from=from, to=to, nbins=nbins)
 	}
 
 	# assign bin numbers
@@ -46,15 +46,24 @@ bin_data <- function(p, sortCol=1, cols=seq_along(p$data), from=0, to=1, nbins=1
 			
 			count <- bs[,1]
 			mean <- bs[,2] / count
-			complete <- 1 - (bs[,3] / count)
+			na <- bs[,3] / count
 			
 			if (is.logical(v)){
-				cbind(count, "FALSE"=(1-mean), "TRUE"=mean, "<NA>"=bs[,3]/count)				
+				cbind(count, "FALSE"=(1-mean), "TRUE"=mean, "<NA>"=na)
 			} else {
-				cbind(count, mean=mean, complete=complete)
+				cbind(count, mean=mean, complete = 1-na)
 			}
 		}
 	})
+}
+
+binRanges <- function(from, to, nbins){
+	t <- as.integer(seq(from, to, length.out=nbins+1))
+	f <- t+1L
+	
+	f <- f[-(nbins+1)]
+	t <- t[-1]
+	mapply(ri, f, t, SIMPLIFY=FALSE)
 }
 
 # # quick testing
@@ -64,7 +73,8 @@ bin_data <- function(p, sortCol=1, cols=seq_along(p$data), from=0, to=1, nbins=1
 # 
 # px <- prepare(x)
 # 
-# 
 # system.time(
-# agg <- bin_data(px, bin, sortCol=2, nbins=100)
+# 	agg <- bin_data(px, sortCol=2, nbins=100)
 # )
+# 
+# binRanges(2, 100, nbins=3)

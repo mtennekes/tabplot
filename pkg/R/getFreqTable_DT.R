@@ -1,4 +1,4 @@
-getFreqTable_DT <- function(DT, col) {
+getFreqTable_DT <- function(DT, col, useNA="ifany") {
 	V1 <- aggIndex <-NULL;  rm(V1, aggIndex)
 	categories <- levels(DT[, get(col)])
 	nlev <- length(categories)
@@ -15,7 +15,7 @@ getFreqTable_DT <- function(DT, col) {
 		missings <- missings[-1]
 	}
 	
-	if (any(missings!=0)) {
+	if (any(missings!=0) || useNA=="always") {
 		freqTable <- cbind(freqTable, missings)
 		categories <- c(categories, "missing")
 	}

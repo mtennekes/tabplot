@@ -1,5 +1,5 @@
 aggCatCols <- 
-function(dat, colNames, max_levels) {
+function(dat, colNames, max_levels, useNA="ifany") {
 	datFreq <- list()
 	
 	for (col in colNames) {
@@ -26,7 +26,7 @@ function(dat, colNames, max_levels) {
 			dat[, tempCol:=tempCol]
 			col <- "tempCol"
 		}
-		datFreq[[col_orig]] <- getFreqTable_DT(dat[, c("aggIndex", col), with=FALSE], col)
+		datFreq[[col_orig]] <- getFreqTable_DT(dat[, c("aggIndex", col), with=FALSE], col, useNA=useNA)
 		if (nlevels(dat[[col_orig]]) > max_levels) {
 			dat[, tempCol:=NULL]
 			if (tail(datFreq[[col_orig]]$categories, 1)=="missing") {

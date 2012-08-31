@@ -142,7 +142,7 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_l
 			}
 		}
 		
-		datFreq <- aggCatCols(cdat, catcols, max_levels)
+		datFreq <- aggCatCols(cdat, catcols, max_levels, useNA="always")
 	
 		for (i in chunks[-1]){
 			cdat <- as.data.table(dat[i, c(catcols, "aggIndex")])
@@ -153,11 +153,20 @@ function(dat, datName, filterName, colNames, sortCol,  decreasing, scales, max_l
 				cdat[, col:=factor(cdat[[col]], levels=c("TRUE", "FALSE")), with=FALSE]
 			}
 			
-			datFreq2 <- aggCatCols(cdat, catcols, max_levels)
+			datFreq2 <- aggCatCols(cdat, catcols, max_levels, useNA="always")
 			datFreq <- mapply(datFreq, datFreq2, FUN=function(df1, df2){
 					return(list(freqTable=df1$freqTable + df2$freqTable, categories=df1$categories))
 				}, SIMPLIFY=FALSE)
 		}
+		datFreq <- lapply(datFreq, FUN=function(df) {
+		    if (all(df$freqTable[,"missing"]==0)) {
+		        ncols <- ncol(df$freqTable)
+		        df$freqTable <- as.matrix(df$freqTable[,-ncols])
+		        df$categories <- df$categories[-ncols]
+		    }
+		    return(df)
+		})
+        
 	}	
 
   	#####################

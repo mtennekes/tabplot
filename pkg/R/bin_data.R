@@ -17,17 +17,17 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	
 	# create bin vector
 	N <- length(o)
-	nbins <- min(nbins, N)
+	nbins <- min(nbins, as.integer(N*(to-from)))
 	bin <- ff(0L, vmode="integer", length = N)
 	
 	if (decreasing){
-		from <- max(floor(N-N*to), 1L)
-		to <- min(ceiling(N-N*from), N)
-		chunks <- rev(binRanges(from=from, to=to, nbins=nbins))
+		from_r <- max(floor(N-N*to), 1L)
+		to_r <- min(ceiling(N-N*from), N)
+		chunks <- rev(binRanges(from=from_r, to=to_r, nbins=nbins))
 	} else {
-		from <- max(floor(from*N), 1L)
-		to <- min(ceiling(to*N), N)
-		chunks <- binRanges(from=from, to=to, nbins=nbins)
+		from_r <- max(floor(from*N), 1L)
+		to_r <- min(ceiling(to*N), N)
+		chunks <- binRanges(from=from_r, to=to_r, nbins=nbins)
 	}
 
 	# assign bin numbers

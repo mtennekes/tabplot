@@ -1,4 +1,4 @@
-#' Create a tableplot
+  #' Create a tableplot
 #'
 #' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff:ff]{ff}} package.
 #'
@@ -40,9 +40,12 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 					  plot=TRUE, ...) {
 
 	datName <- deparse(substitute(dat))
-	if (class(dat)[1]=="data.frame") dat <- data.table(dat)
-
-
+	p <- dat
+	if (!inherits(dat, "prepared")){
+		p <- prepare(dat)
+	}
+	dat <- p$data
+	
 	
 	## discourage colNames and filter arguments
 	if (!missing(colNames)) {
@@ -62,55 +65,55 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	## Filter data: subset(string)
 	#####################################
 	# complement subset and subset_string
-	if (!missing(subset)) {
-		subset_string <- deparse(substitute(subset))
-	} else if (!missing(subset_string)) {
-		subset <- parse(text=subset_string)
-	}
-
-	
-	if (!is.null(subset_string)) {
-
-		# split by one variable
-		if (subset_string %in% names(dat)) {
-			lvls <- levels(dat[[subset_string]])
-			
-			if ((class(dat[[subset_string]])[1]=="logical") || (class(dat)[1]=="ffdf" &&
-				vmode(dat[[subset_string]]) %in% c("boolean", "logical"))) {
-				isLogical <- TRUE
-				lvls <- c("TRUE", "FALSE")
-			} else {
-				isLogical <- FALSE
-			}
-			if (is.null(lvls)) stop("subset variable is not categorical")
-			
-			subsets_string <- paste(subset_string, " == ", ifelse(isLogical, "", "\""), lvls,
-									ifelse(isLogical, "", "\""), sep="")
-			tabs <- lapply(subsets_string, FUN=function(subs_string){
-				tab <- tableplot(dat, select_string=select_string, sortCol=sortCol, 
-								 decreasing=decreasing, scales=scales, pals=pals, nBins=nBins,
-								 from=from, to=to, subset_string=subs_string, 
-								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
-				tab
-			})
-			return(invisible(tabs))
-		}
-		e <- substitute(subset)
-		# other filters
-		if (class(dat)[1]=="ffdf") {
-			r <- bit(nrow(dat))
-			for (i in chunk(dat)) {
-				r[i] <- eval(e, dat[i,])
-				r <- r & !is.na(r)
-			}
-			dat <- subset(dat, r)
-		} else {
-			r <- eval(e, dat, parent.frame())
-			r <- r & !is.na(r)
-			dat <- dat[r, ]
-		}
-		
-	}
+# 	if (!missing(subset)) {
+# 		subset_string <- deparse(substitute(subset))
+# 	} else if (!missing(subset_string)) {
+# 		subset <- parse(text=subset_string)
+# 	}
+# 
+# 	
+# 	if (!is.null(subset_string)) {
+# 
+# 		# split by one variable
+# 		if (subset_string %in% names(dat)) {
+# 			lvls <- levels(dat[[subset_string]])
+# 			
+# 			if ((class(dat[[subset_string]])[1]=="logical") || (class(dat)[1]=="ffdf" &&
+# 				vmode(dat[[subset_string]]) %in% c("boolean", "logical"))) {
+# 				isLogical <- TRUE
+# 				lvls <- c("TRUE", "FALSE")
+# 			} else {
+# 				isLogical <- FALSE
+# 			}
+# 			if (is.null(lvls)) stop("subset variable is not categorical")
+# 			
+# 			subsets_string <- paste(subset_string, " == ", ifelse(isLogical, "", "\""), lvls,
+# 									ifelse(isLogical, "", "\""), sep="")
+# 			tabs <- lapply(subsets_string, FUN=function(subs_string){
+# 				tab <- tableplot(dat, select_string=select_string, sortCol=sortCol, 
+# 								 decreasing=decreasing, scales=scales, pals=pals, nBins=nBins,
+# 								 from=from, to=to, subset_string=subs_string, 
+# 								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
+# 				tab
+# 			})
+# 			return(invisible(tabs))
+# 		}
+# 		e <- substitute(subset)
+# 		# other filters
+# 		if (class(dat)[1]=="ffdf") {
+# 			r <- bit(nrow(dat))
+# 			for (i in chunk(dat)) {
+# 				r[i] <- eval(e, dat[i,])
+# 				r <- r & !is.na(r)
+# 			}
+# 			dat <- subset(dat, r)
+# 		} else {
+# 			r <- eval(e, dat, parent.frame())
+# 			r <- r & !is.na(r)
+# 			dat <- dat[r, ]
+# 		}
+# 		
+# 	}
 	
 	#####################################
 	## Check arguments and cast dat-columns to numeric or factor
@@ -120,36 +123,36 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
 	if (nrow(dat)==1) stop("<dat> has only one row")
 	
-	## Check select(_string)
-	if (!missing(select)) {
-		nl <- as.list(seq_along(dat))
-		names(nl) <- names(dat)
-		colNames <- eval(substitute(select), nl, parent.frame())
-		colNames <- names(dat)[colNames]
-	} else if (!is.null(select_string)) {
-		if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
-		colNames <- select_string
-	} else {
-		colNames <- names(dat)
-	}
-	
-	## Only select the columns of colNames
-	if (class(dat)[1]=="data.table") {
-		
-		ignoreNames <- setdiff(names(dat), colNames)
-		if (length(ignoreNames)!=0) 
-			dat[, ignoreNames:=NULL, with=FALSE]
-		if (!identical(colNames, names(dat)))
-			setcolorder(dat, colNames)
-			#dat <- subset(dat, select=colNames)
-	} else {
-		dat <- dat[colNames]
-	}
-	
-	n <- length(colNames)
+# 	## Check select(_string)
+# 	if (!missing(select)) {
+# 		nl <- as.list(seq_along(dat))
+# 		names(nl) <- names(dat)
+# 		colNames <- eval(substitute(select), nl, parent.frame())
+# 		colNames <- names(dat)[colNames]
+# 	} else if (!is.null(select_string)) {
+# 		if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
+# 		colNames <- select_string
+# 	} else {
+# 		colNames <- names(dat)
+# 	}
+# 	
+# 	## Only select the columns of colNames
+# 	if (class(dat)[1]=="data.table") {
+# 		
+# 		ignoreNames <- setdiff(names(dat), colNames)
+# 		if (length(ignoreNames)!=0) 
+# 			dat[, ignoreNames:=NULL, with=FALSE]
+# 		if (!identical(colNames, names(dat)))
+# 			setcolorder(dat, colNames)
+# 			#dat <- subset(dat, select=colNames)
+# 	} else {
+# 		dat <- dat[colNames]
+# 	}
+# 	
+# 	n <- length(colNames)
 
 	## Check sortCol, and (if necessary) cast it to indices
-
+    colNames = colnames(dat)
 	sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
 
 	## Check decreasing vector
@@ -190,15 +193,16 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	#### Preprocess
 	##########################
 
+    bd <- bin_data( p, sortCol=sortCol, cols=select, from=from/100, to=to/100
+    			  , nbins=nBins, decreasing=decreasing
+    			  )
+	#print(bd)
+	tab <- columnTable( bd, datName, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals
+					  , colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, to=to)
+# 	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
+# 					  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
 	
-	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
-					  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
 	
-	#dat[, agg Index:=NULL]
-	
-	# delete cloned ffdf (those with filter)
-	if (!missing(subset_string) && class(dat)[1]=="ffdf") delete(dat)
-
 	isNumber <- tab$isNumber
 	
 	###########################

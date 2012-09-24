@@ -24,10 +24,10 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
     width = par("din")[1], height = par("din")[2], dpi = 300, 
 	fontsize = 8, legend.lines = 8, title = tab$dataset, showTitle = FALSE, ...) 
 {
-    if (is.list(tab)) {
+    if (is.list(tab) && !inherits(tab, "tabplot")) {
         if (!all(sapply(tab, class)=="tabplot")) stop(paste(deparse(substitute(tab)), "is not a list of tabplot-objects"))
     } else {
-        if (class(tab)[1]!="tabplot") stop(paste(deparse(substitute(tab)), "is not a tabplot-object"))
+        if (!inherits(tab, "tabplot")) stop(paste(deparse(substitute(tab)), "is not a tabplot-object"))
     }
         
     pdf <- function(..., version = "1.4") grDevices::pdf(..., 
@@ -66,7 +66,7 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
         filename <- file.path(path, filename)
     }
     device(file = filename, width = width, height = height, ...)
-    if (is.list(tab)) {
+    if (is.list(tab) && !inherits(tab, "tabplot")) {
         stackvp <- function(x) viewport(layout.pos.row=x,layout.pos.col=1)
         nl <- length(tab)
         grid.newpage()

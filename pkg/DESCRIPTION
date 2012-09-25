@@ -16,7 +16,7 @@ Description: A tableplot is a visualisation of a (large)
 Version: 0.12-1
 URL: http://code.google.com/p/tableplot/
 Date: 2012-07-11
-Depends:
+Imports:
     data.table (>= 1.8.0),
     grid
 Suggests:

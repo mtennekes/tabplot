@@ -62,12 +62,33 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		subset_string <- filter
 	}
 	
+    
+	#####################################
+	## Check select(_string) argument
+	#####################################
+
+    ## Check dat
+	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
+	if (nrow(dat)==1) stop("<dat> has only one row")
+	
+	## Check select(_string)
+	if (!missing(select)) {
+	    nl <- as.list(seq_along(dat))
+	    names(nl) <- names(dat)
+	    colNames <- eval(substitute(select), nl, parent.frame())
+	    colNames <- names(dat)[colNames]
+	} else if (!is.null(select_string)) {
+	    if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
+	    colNames <- select_string
+	} else {
+	    colNames <- names(dat)
+	}    
 	
 	#####################################
 	## Filter data: subset(string)
 	#####################################
 	# complement subset and subset_string
-	if (!missing(subset)) {
+    if (!missing(subset)) {
 		subset_string <- deparse(substitute(subset))
 	} else if (!missing(subset_string)) {
 		subset <- parse(text=subset_string)
@@ -91,13 +112,17 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 			
 			subsets_string <- paste(subset_string, " == ", ifelse(isLogical, "", "\""), lvls,
 									ifelse(isLogical, "", "\""), sep="")
+			sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
 			tabs <- lapply(subsets_string, FUN=function(subs_string){
-				tab <- tableplot(dat, select_string=select_string, sortCol=sortCol, 
+                tab <- tableplot(dat, select_string=select_string, sortCol=sortCol, 
 								 decreasing=decreasing, scales=scales, max_levels=max_levels, 
 								 pals=pals, nBins=nBins,
 								 from=from, to=to, subset_string=subs_string, 
 								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
-				tab
+                lapply(tab, function(x){
+                    x$dataset <- datName
+                    x
+                })
 			})
 			return(invisible(tabs))
 		}
@@ -118,26 +143,10 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		
 	}
 	
+    
 	#####################################
-	## Check arguments and cast dat-columns to numeric or factor
+	## Check other arguments and cast dat-columns to numeric or factor
 	#####################################
-	
-	## Check dat
-	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
-	if (nrow(dat)==1) stop("<dat> has only one row")
-	
-	## Check select(_string)
-	if (!missing(select)) {
-		nl <- as.list(seq_along(dat))
-		names(nl) <- names(dat)
-		colNames <- eval(substitute(select), nl, parent.frame())
-		colNames <- names(dat)[colNames]
-	} else if (!is.null(select_string)) {
-		if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
-		colNames <- select_string
-	} else {
-		colNames <- names(dat)
-	}
 	
 	## Only select the columns of colNames
 	if (class(dat)[1]=="data.table") {
@@ -155,7 +164,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	n <- length(colNames)
 
 	## Check sortCol, and (if necessary) cast it to indices
-
 	sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
 
 	## Check decreasing vector

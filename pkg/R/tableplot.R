@@ -1,4 +1,4 @@
-  #' Create a tableplot
+#' Create a tableplot
 #'
 #' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff:ff]{ff}} package.
 #'
@@ -12,12 +12,14 @@
 #' @param to percentage to which the data is shown
 #' @param nCols the maximum number of columns per tableplot. If this number is smaller than the number of columns selected in \code{datNames}, multiple tableplots are generated, where each of them contains the sorted column(s).
 #' @param scales determines the horizontal axes of the numeric variables in \code{colNames}, options: "lin", "log", and "auto" for automatic detection. If necessary, \code{scales} is recycled.
+#' @param max_levels maximum number of levels for categorical variables. Categorical variables with more levels will be rebinned into \code{max_levels} levels. Either a positive number or -1, which means that categorical variables are never rebinned.
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
 #' \item a palette name in \code{\link{tablePalettes}}, optionally with the starting color between brackets.
 #' \item a palette vector
 #' }
 #' The items of \code{pals} are applied to the categorical variables of \code{colNames}. If necessary, \code{pals} is recycled.
+#' @param change_palette_type_at number at which the type of categorical palettes is changed. For categorical variables with less than \code{change_palette_type_at} levels, the palette is recycled if necessary. For categorical variables with \code{change_palette_type_at} levels or more, a new palette of interpolated colors is derived (like a rainbow palette).
 #' @param colorNA color for missing values
 #' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
@@ -34,8 +36,11 @@
 #' @example ../examples/tableplot.R
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
 					  nBins=100, from=0, to=100, nCols=ncol(dat), 
-					  scales="auto", pals=list("Set1", "Set2", "Set3", "Set4"), colorNA = "#FF1414", 
-					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, select_string = NULL,
+					  scales="auto", max_levels=50, 
+					  pals=list("Set1", "Set2", "Set3", "Set4"), change_palette_type_at = 20,
+					  colorNA = "#FF1414", 
+					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, 
+					  select_string = NULL,
 					  subset_string=NULL, colNames=NULL, filter=NULL, 
 					  plot=TRUE, ...) {
 
@@ -60,99 +65,126 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		subset_string <- filter
 	}
 	
+    
+	#####################################
+	## Check select(_string) argument
+	#####################################
+
+    ## Check dat
+	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
+	if (nrow(dat)==1) stop("<dat> has only one row")
+	
+	## Check select(_string)
+	if (!missing(select)) {
+	    nl <- as.list(seq_along(dat))
+	    names(nl) <- names(dat)
+	    colNames <- eval(substitute(select), nl, parent.frame())
+	    colNames <- names(dat)[colNames]
+	} else if (!is.null(select_string)) {
+	    if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
+	    colNames <- select_string
+	} else {
+	    colNames <- names(dat)
+	}    
 	
 	#####################################
 	## Filter data: subset(string)
 	#####################################
 	# complement subset and subset_string
-# 	if (!missing(subset)) {
-# 		subset_string <- deparse(substitute(subset))
-# 	} else if (!missing(subset_string)) {
-# 		subset <- parse(text=subset_string)
-# 	}
-# 
-# 	
-# 	if (!is.null(subset_string)) {
-# 
-# 		# split by one variable
-# 		if (subset_string %in% names(dat)) {
-# 			lvls <- levels(dat[[subset_string]])
-# 			
-# 			if ((class(dat[[subset_string]])[1]=="logical") || (class(dat)[1]=="ffdf" &&
-# 				vmode(dat[[subset_string]]) %in% c("boolean", "logical"))) {
-# 				isLogical <- TRUE
-# 				lvls <- c("TRUE", "FALSE")
-# 			} else {
-# 				isLogical <- FALSE
-# 			}
-# 			if (is.null(lvls)) stop("subset variable is not categorical")
-# 			
-# 			subsets_string <- paste(subset_string, " == ", ifelse(isLogical, "", "\""), lvls,
-# 									ifelse(isLogical, "", "\""), sep="")
-# 			tabs <- lapply(subsets_string, FUN=function(subs_string){
-# 				tab <- tableplot(dat, select_string=select_string, sortCol=sortCol, 
-# 								 decreasing=decreasing, scales=scales, pals=pals, nBins=nBins,
-# 								 from=from, to=to, subset_string=subs_string, 
-# 								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
-# 				tab
-# 			})
-# 			return(invisible(tabs))
-# 		}
-# 		e <- substitute(subset)
-# 		# other filters
-# 		if (class(dat)[1]=="ffdf") {
-# 			r <- bit(nrow(dat))
-# 			for (i in chunk(dat)) {
-# 				r[i] <- eval(e, dat[i,])
-# 				r <- r & !is.na(r)
-# 			}
-# 			dat <- subset(dat, r)
-# 		} else {
-# 			r <- eval(e, dat, parent.frame())
-# 			r <- r & !is.na(r)
-# 			dat <- dat[r, ]
-# 		}
-# 		
-# 	}
+	#     if (!missing(subset)) {
+	# 		subset_string <- deparse(substitute(subset))
+	# 	} else if (!missing(subset_string)) {
+	# 		subset <- parse(text=subset_string)
+	# 	}
+	# 
+	# 	
+	# 	if (!is.null(subset_string)) {
+	# 
+	# 		# split by one variable
+	# 		if (subset_string %in% names(dat)) {
+	# 			lvls <- levels(dat[[subset_string]])
+	# 			
+	# 			if ((class(dat[[subset_string]])[1]=="logical") || (class(dat)[1]=="ffdf" &&
+	# 				vmode(dat[[subset_string]]) %in% c("boolean", "logical"))) {
+	# 				isLogical <- TRUE
+	# 				lvls <- c("TRUE", "FALSE")
+	# 			} else {
+	# 				isLogical <- FALSE
+	# 			}
+	# 			if (is.null(lvls)) stop("subset variable is not categorical")
+	# 			
+	# 			subsets_string <- paste(subset_string, " == ", ifelse(isLogical, "", "\""), lvls,
+	# 									ifelse(isLogical, "", "\""), sep="")
+	# 			sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
+	# 			tabs <- lapply(subsets_string, FUN=function(subs_string){
+	#                 tab <- tableplot(dat, select_string=select_string, sortCol=sortCol, 
+	# 								 decreasing=decreasing, scales=scales, max_levels=max_levels, 
+	# 								 pals=pals, nBins=nBins,
+	# 								 from=from, to=to, subset_string=subs_string, 
+	# 								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
+	#                 lapply(tab, function(x){
+	#                     x$dataset <- datName
+	#                     x
+	#                 })
+	# 			})
+	# 			return(invisible(tabs))
+	# 		}
+	# 		e <- substitute(subset)
+	# 		# other filters
+	# 		if (class(dat)[1]=="ffdf") {
+	# 			r <- bit(nrow(dat))
+	# 			for (i in chunk(dat)) {
+	# 				r[i] <- eval(e, dat[i,])
+	# 				r <- r & !is.na(r)
+	# 			}
+	# 			dat <- subset(dat, r)
+	# 		} else {
+	# 			r <- eval(e, dat, parent.frame())
+	# 			r <- r & !is.na(r)
+	# 			dat <- dat[r, ]
+	# 		}
+	# 		
+	# 	}
 	
+		
+	    
 	#####################################
-	## Check arguments and cast dat-columns to numeric or factor
+	## Check other arguments and cast dat-columns to numeric or factor
 	#####################################
 	
 	## Check dat
 	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
 	if (nrow(dat)==1) stop("<dat> has only one row")
 	
-# 	## Check select(_string)
-# 	if (!missing(select)) {
-# 		nl <- as.list(seq_along(dat))
-# 		names(nl) <- names(dat)
-# 		colNames <- eval(substitute(select), nl, parent.frame())
-# 		colNames <- names(dat)[colNames]
-# 	} else if (!is.null(select_string)) {
-# 		if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
-# 		colNames <- select_string
-# 	} else {
-# 		colNames <- names(dat)
-# 	}
-# 	
-# 	## Only select the columns of colNames
-# 	if (class(dat)[1]=="data.table") {
-# 		
-# 		ignoreNames <- setdiff(names(dat), colNames)
-# 		if (length(ignoreNames)!=0) 
-# 			dat[, ignoreNames:=NULL, with=FALSE]
-# 		if (!identical(colNames, names(dat)))
-# 			setcolorder(dat, colNames)
-# 			#dat <- subset(dat, select=colNames)
-# 	} else {
-# 		dat <- dat[colNames]
-# 	}
-# 	
-# 	n <- length(colNames)
+	# 	## Check select(_string)
+	# 	if (!missing(select)) {
+	# 		nl <- as.list(seq_along(dat))
+	# 		names(nl) <- names(dat)
+	# 		colNames <- eval(substitute(select), nl, parent.frame())
+	# 		colNames <- names(dat)[colNames]
+	# 	} else if (!is.null(select_string)) {
+	# 		if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
+	# 		colNames <- select_string
+	# 	} else {
+	# 		colNames <- names(dat)
+	# 	}
+	# 	
+	# 	## Only select the columns of colNames
+	# 	if (class(dat)[1]=="data.table") {
+	# 		
+	# 		ignoreNames <- setdiff(names(dat), colNames)
+	# 		if (length(ignoreNames)!=0) 
+	# 			dat[, ignoreNames:=NULL, with=FALSE]
+	# 		if (!identical(colNames, names(dat)))
+	# 			setcolorder(dat, colNames)
+	# 			#dat <- subset(dat, select=colNames)
+	# 	} else {
+	# 		dat <- dat[colNames]
+	# 	}
+	# 	
+	# 	n <- length(colNames)
 
 	## Check sortCol, and (if necessary) cast it to indices
-    colNames = colnames(dat)
 	sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
 
 	## Check decreasing vector
@@ -172,6 +204,10 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 
 	## Check palet indices
 	pals <- tableplot_checkPals(pals)
+	
+	## Check change_palette_type_at
+	if (length(change_palette_type_at)!=1 || !is.numeric(change_palette_type_at)) stop("<change_palette_type_at> is not correct")
+	if (change_palette_type_at < max(sapply(pals$palette, length))) warning("<change_palette_type_at> is less than the number of colors in the largest palette")
 	
 	## Check colorNA
 	if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") {
@@ -199,9 +235,9 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	#print(bd)
 	tab <- columnTable( bd, datName, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals
 					  , colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, to=to)
-# 	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
-# 					  decreasing, scales, pals, colorNA, numPals, nBins, from,to)
-	
+#	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
+					  decreasing, scales, max_levels, pals, change_palette_type_at, 
+					  colorNA, numPals, nBins, from,to)
 	
 	isNumber <- tab$isNumber
 	
@@ -265,11 +301,11 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	#############################
 	## determine widths and x positions of the categorical variables
 	for (i in which(!isNumber)) {
-		categories <- tab$columns[[i]]$categories
-		widths <- tab$columns[[i]]$freq / rep(tab$binSizes, length(categories))
+		ncategories <- ncol(tab$columns[[i]]$freq)
+		widths <- tab$columns[[i]]$freq / rep(tab$binSizes, ncategories)
 	
-		x <- cbind(0,(matrix(apply(widths, 1, cumsum), nrow=nBins,byrow=TRUE)[, -length(categories)]))
-		tab$columns[[i]]$categories <- categories
+		x <- cbind(0,(matrix(apply(widths, 1, cumsum), nrow=nBins,byrow=TRUE)[, -ncategories]))
+		#tab$columns[[i]]$categories <- categories
 		tab$columns[[i]]$x <- x
 		tab$columns[[i]]$widths <- widths
 	}

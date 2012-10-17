@@ -4,14 +4,28 @@
 #' @param x \link{tabplot-object}
 #' @param fontsize the (maximum) fontsize
 #' @param legend.lines the number of lines preserved for the legend
+#' @param max_print_levels maximum number of printed category labels in the legend
+#' @param text_NA text printed for the missing values category in the legend
 #' @param title title of the plot (shown if \code{showTitle==TRUE})
 #' @param showTitle show the title. By default \code{FALSE}, unless a \code{title} is given.
 #' @param fontsize.title the fontsize of the title
-#' @param ... arguments passed to other methods
+#' @param vp \code{\link[grid:viewport]{viewport}} to draw plot in (for instance useful to stack multiple tableplots)
+#' @param ... other arguments are not used
 #' @export
 #' @method plot tabplot
 plot.tabplot <-
-function(x, fontsize = 10, legend.lines = 8, title = NULL, showTitle = NULL, fontsize.title = 14, ...) {
+function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, vp=NULL, ...) {
+	
+	if (class(x)[1]!="tabplot") p(paste(deparse(substitute(x)), "is not a tabplot-object"))
+	
+	if (length(fontsize)!=1 || !is.numeric(fontsize)) stop("invalid fontsize")
+
+	if (length(legend.lines)!=1 || !is.numeric(legend.lines)) stop("invalid legend.lines")
+	if (length(max_print_levels)!=1 || !is.numeric(max_print_levels)) stop("invalid max_print_levels")
+	
+	if (max_print_levels < legend.lines) warning("max_print_levels is less than legend.lines")
+	
+	if (length(text_NA)!=1) stop("invalid text_NA")
 	
 	if (missing(showTitle)) showTitle <- !missing(title)
 	
@@ -78,8 +92,15 @@ function(x, fontsize = 10, legend.lines = 8, title = NULL, showTitle = NULL, fon
 					   , gp=gpar(fontsize=fontsize)
 	)
 	
+	  
 	## set grid layout
-	grid.newpage()
+	if (is.null(vp)) {
+	  grid.newpage()
+	} else {
+	  if (is.character(vp)) 
+	    seekViewport(vp)
+	  else pushViewport(vp)
+	}
 	
 	pushViewport(vpBody)
 	
@@ -167,10 +188,12 @@ function(x, fontsize = 10, legend.lines = 8, title = NULL, showTitle = NULL, fon
 					plotNumCol(tCol, x, vpTitle, vpGraph, vpLegend)
 				}
 				else {
-					plotCatCol(tCol, x, vpTitle, vpGraph, vpLegend)
+					plotCatCol(tCol, x, vpTitle, vpGraph, vpLegend, max_print_levels,
+							   text_NA, legend.lines)
 				}
 			})
 		}
 	})
-
+  
+	upViewport(1 + !is.null(vp))
 }

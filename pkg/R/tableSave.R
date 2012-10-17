@@ -3,7 +3,7 @@
 #' Save a tableplot in pdf, eps, svg, wmf, png, jpg, bmp, or tiff format.
 #'
 #' @aliases tableSave
-#' @param tab a \link{tabplot-object}
+#' @param tab a \link{tabplot-object}, or a list of \link{tabplot-object}s, which are either stacked horizontally or put on multiple pages (for pdf only)
 #' @param filename filename with extention (pdf, eps, svg, wmf, png, jpg, bmp, or tiff)
 #' @param device device, automatically extracted from filename extension 
 #' @param path path to save to
@@ -15,6 +15,7 @@
 #' @param legend.lines the number of lines preserved for the legend
 #' @param title title of the plot (shown if \code{showTitle==TRUE})
 #' @param showTitle show the title
+#' @param onePage if true, multiple tab objects are stacked horizontally, else they are printed on multiple pages
 #' @param ... other arguments passed to graphics device
 #' @export
 #' @keywords save tableplot
@@ -22,11 +23,14 @@
 tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""), 
     device = default_device(filename), path = NULL, scale = 1, 
     width = par("din")[1], height = par("din")[2], dpi = 300, 
-	fontsize = 8, legend.lines = 8, title = tab$dataset, showTitle = FALSE, ...) 
+	fontsize = 8, legend.lines = 8, title = tab$dataset, showTitle = FALSE, onePage = TRUE,...) 
 {
-    if (class(tab) != "tabplot") 
-        stop("plot should be a tabplot object")
-    
+    if (is.list(tab) && !inherits(tab, "tabplot")) {
+        if (!all(sapply(tab, class)=="tabplot")) stop(paste(deparse(substitute(tab)), "is not a list of tabplot-objects"))
+    } else {
+        if (!inherits(tab, "tabplot")) stop(paste(deparse(substitute(tab)), "is not a tabplot-object"))
+    }
+        
     pdf <- function(..., version = "1.4") grDevices::pdf(..., 
     													 version = version)
     eps <- ps <- function(..., width, height) grDevices::postscript(..., 
@@ -63,7 +67,24 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
         filename <- file.path(path, filename)
     }
     device(file = filename, width = width, height = height, ...)
-    plot(tab, fontsize = fontsize, legend.lines = legend.lines, title = title, showTitle = showTitle)
+    if (is.list(tab) && !inherits(tab, "tabplot")) {
+        nl <- length(tab)
+        if (onePage) {
+            stackvp <- function(x) viewport(layout.pos.row=x,layout.pos.col=1)
+            grid.newpage()
+            pushViewport(viewport(layout=grid.layout(nl, 1)))
+            
+            lapply(1:nl, FUN=function(i){
+                plot(tab[[i]], fontsize = fontsize, legend.lines = legend.lines, title = title, 
+                     showTitle = showTitle, vp=stackvp(i))
+            })
+        } else {
+            lapply(1:nl, FUN=function(i){
+                plot(tab[[i]], fontsize = fontsize, legend.lines = legend.lines, title = title, showTitle = showTitle)
+            })
+        }
+    } else plot(tab, fontsize = fontsize, legend.lines = legend.lines, title = title, showTitle = showTitle)
+    
     on.exit(capture.output(dev.off()))
     invisible()
 }

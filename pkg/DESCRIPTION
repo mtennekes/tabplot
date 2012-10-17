@@ -16,7 +16,7 @@ Description: A tableplot is a visualisation of a (large)
 Version: 0.100
 URL: http://code.google.com/p/tableplot/
 Date: 2012-07-11
-Depends:
+Imports:
     ffbase (>= 0.5),
     grid
 Suggests:

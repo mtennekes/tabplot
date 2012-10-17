@@ -8,37 +8,34 @@ library(tabplotGTK)
 ### test
 library(ggplot2)
 data(diamonds)
+str(diamonds)
+
+diamonds$carat[sample.int(nrow(diamonds),1000)] <- NA
+diamonds$cut[sample.int(nrow(diamonds),2000)] <- NA
+
+diamonds$carat2 <- factor(diamonds$carat)
+diamonds$price2 <- factor(diamonds$price)
+
+diamonds$expensive <- diamonds$price >= 10000
+
+tab <- tableplot(diamonds)
+tab <- tableplot(diamonds, max_levels=50, change_palette_type_at=15, max_print_levels=15) # default values
+
+tab <- tableplot(diamonds, max_levels=50, change_palette_type_at=10, max_print_levels=12, legend.lines=12)
+
+max_print_levels > legend.lines
+n
+
+if (max_print_levels < legend.lines) warning
+
+if ncat 
+
+
+library(ff)
+dFF <- as.ffdf(diamonds)
+tableplot(dFF)
 
 
 Rprof(tmp <- tempfile())
-
-depth="table"
-tab <- tableplot(diamonds, select=c(1, 3), subset_string="cut=='Fair'", sortCol=1, showTitle=TRUE)
-
-plot(tab)
-
-tableplot(diamonds, sortCol=price, colorNA="blue", numPals="Greens")
-
-
-tableplot(diamonds, select=c(carat, depth), subset=price > 5000)
-
-tableplot(diamonds, select=c(1,6))
-tableplot(diamonds, select=c(TRUE, FALSE))
-
-
 Rprof(); summaryRprof(tmp); unlink(tmp)
 
-dt1 <- data.table(x=factor(1), y=1:10, c=factor(c("a", "b")))
-tab <- tableplot(dt1)
-
-
-
-dDT <- as.data.table(diamonds)
-dDT <- dDT[sample.int(nrow(dDT), 1e6, replace=TRUE),]
-
-
-
-
-system.time({
-	tab <- tableplot(dDT, plot=FALSE)
-})

@@ -38,7 +38,7 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	
 	# do the actual binning
 	lapply(physical(x), function(v){
-		if (is.factor(v)){
+		if (is.factor.ff(v)){
 			bt <- binned_tabulate.ff(v, bin, nbins, nlevels(v))
 			cbind(bt[,-1], "<NA>"=bt[,1]) / rowSums(bt)
 		} else {

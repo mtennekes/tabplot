@@ -19,7 +19,7 @@ prepare <- function(x, path = NULL, ...){
 	}
 	
 	N <- nrow(x)
-	isFactor <- sapply(physical(x), is.factor)
+	isFactor <- sapply(physical(x), is.factor.ff)
 	
 	#TODO randomize initial ordering
 	ordered <- physical(x)

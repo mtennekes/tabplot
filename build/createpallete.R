@@ -37,6 +37,10 @@ tabplotPalettes <- list(
 		Set5=brewer$Set2[c(1:6,8,7)],
 		Set6=brewer$Set3[c(1:4, 9, 5:8, 12, 9:11)],
 		Set7=colorschemes$Categorical.12[c(5, 2, 7, 4, 9, 6, 11, 8, 1, 10, 3)],
+		Set8= rgb(red=c(92, 92, 255, 170, 255, 255, 145, 193, 92, 201, 255, 173, 227, 226, 204, 87),
+				  green=c(107, 203, 177, 97, 255, 137, 101, 193, 229, 255, 224, 45, 196, 212, 241, 142),
+				  blue=c(247, 92, 17, 187, 95, 235, 62, 193, 214, 135, 204, 92, 239, 149, 255, 82),
+				  maxColorValue=255), # second color (255, 89, 89) left out because of NA color
 		Paired=brewer$Paired[c(1:4, 7:12)],
 		HCL1 = getHcl(n=8, start=10)[c(1, 4, 7, 2, 5, 8, 3, 6)],
 		HCL2 = getHcl(n=8, start=17)[c(1, 4, 7, 2, 5, 8, 3, 6)],

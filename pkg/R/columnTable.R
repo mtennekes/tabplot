@@ -1,5 +1,5 @@
 columnTable <-
-function(bd, datName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to) {
+function(bd, datName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to, N) {
 	
 	n <- length(bd)
 	nr <- nBins
@@ -16,7 +16,7 @@ function(bd, datName, colNames, sortCol,  decreasing, scales, pals, colorNA, num
 	if (nBins > vp$m) nBins <- vp$m
 
 	## Calculate bin sizes
-	binSizes <-	getBinSizes(vp$m, nBins)
+	binSizes <-	getBinSizes(N, nBins, decreasing)
 	print(list(binSizes=binSizes, bd=bd[[1]][,1]))
 
 

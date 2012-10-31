@@ -58,11 +58,11 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 }
 
 binRanges <- function(from, to, nbins){
-	t <- as.integer(seq(from, to, length.out=nbins+1))
-	f <- t+1L
+	r <- as.integer(seq(from, (to+1), length.out=nbins+1))
 	
-	f <- f[-(nbins+1)]
-	t <- t[-1]
+	f <- r[-(nbins+1)]
+	t <- r[-1] - 1L
+	
 	mapply(ri, f, t, SIMPLIFY=FALSE)
 }
 

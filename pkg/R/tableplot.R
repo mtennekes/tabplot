@@ -228,13 +228,12 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##########################
 	#### Preprocess
 	##########################
-
     bd <- bin_data( p, sortCol=sortCol, cols=select, from=from/100, to=to/100
     			  , nbins=nBins, decreasing=decreasing
     			  )
 	#print(bd)
 	tab <- columnTable( bd, datName, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals
-					  , colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, to=to)
+					  , colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, to=to, N=nrow(dat))
 #	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
 #					  decreasing, scales, max_levels, pals, change_palette_type_at, 
 #					  colorNA, numPals, nBins, from,to)

@@ -236,8 +236,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	tab <- columnTable( bd, datName, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals
 					  , colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, to=to)
 #	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
-					  decreasing, scales, max_levels, pals, change_palette_type_at, 
-					  colorNA, numPals, nBins, from,to)
+#					  decreasing, scales, max_levels, pals, change_palette_type_at, 
+#					  colorNA, numPals, nBins, from,to)
 	
 	isNumber <- tab$isNumber
 	

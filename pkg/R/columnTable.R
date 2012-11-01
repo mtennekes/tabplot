@@ -1,5 +1,5 @@
 columnTable <-
-function(bd, datName, colNames, sortCol,  decreasing, scales, pals, colorNA, numPals, nBins, from, to, N) {
+function(bd, datName, colNames, sortCol,  decreasing, scales, pals, change_palette_type_at, colorNA, numPals, nBins, from, to, N) {
 	
 	n <- length(bd)
 	nr <- nBins
@@ -53,7 +53,7 @@ function(bd, datName, colNames, sortCol,  decreasing, scales, pals, colorNA, num
 		sortc <- ifelse(i %in% sortCol, ifelse(decreasing[which(i==sortCol)], "decreasing", "increasing"), "")
 		col <- list(name = colNames[i], isnumeric = isNumber[i], sort=sortc)
 		agg <- bd[[col$name]]
-		col$agg <- agg
+		#col$agg <- agg
 		
 		if (isNumber[i]) {
 			col$mean <- agg[,2]
@@ -66,6 +66,7 @@ function(bd, datName, colNames, sortCol,  decreasing, scales, pals, colorNA, num
 			col$categories <- colnames(agg)
 			col$categories[ncol(agg)] <- "missing"
 			col$paletname <- pals$name[paletNr]
+			col$palettype <- ifelse(ncol(agg)-1 > change_palette_type_at, "interpolate", "recycled")
 			col$palet <- pals$palette[[paletNr]]
 			col$colorNA <- colorNA
 			paletNr <- ifelse(paletNr==length(pals$name), 1, paletNr + 1)

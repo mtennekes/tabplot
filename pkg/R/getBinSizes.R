@@ -1,4 +1,4 @@
-getBinSizes <- function(n, nBins, decreasing) {
+getBinSizes <- function(n, nBins, decreasing = FALSE) {
 
 # 	normalBinSize <- n %/% nBins
 # 	binSizes <- rep(normalBinSize, nBins)

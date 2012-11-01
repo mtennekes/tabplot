@@ -1,5 +1,8 @@
 if (require("devtools")){
-   load_all("../ffbase/pkg")
-   pkg <- as.package("pkg")
-   cat("use 'load_all()' to load tabplot sources\n")
+   la <- function() {
+	require(ff)
+	load_all("../ffbase/pkg")
+	load_all("./pkg")
+   }
+   cat("use 'la()' to load tabplot sources\n")
 }

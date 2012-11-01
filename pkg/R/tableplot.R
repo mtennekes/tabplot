@@ -231,8 +231,14 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
     bd <- bin_data( p, sortCol=sortCol, cols=select, from=from/100, to=to/100
     			  , nbins=nBins, decreasing=decreasing
     			  )
+	
+	bd <- bin_hcc_data(bd, max_levels)
+	
+
+	
 	#print(bd)
 	tab <- columnTable( bd, datName, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals
+						, change_palette_type_at=change_palette_type_at
 					  , colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, to=to, N=nrow(dat))
 #	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
 #					  decreasing, scales, max_levels, pals, change_palette_type_at, 

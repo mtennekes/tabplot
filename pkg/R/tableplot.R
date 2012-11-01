@@ -307,7 +307,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	## determine widths and x positions of the categorical variables
 	for (i in which(!isNumber)) {
 		ncategories <- ncol(tab$columns[[i]]$freq)
-		widths <- tab$columns[[i]]$freq / rep(tab$binSizes, ncategories)
+		widths <- tab$columns[[i]]$freq# / rep(tab$binSizes, ncategories)
 	
 		x <- cbind(0,(matrix(apply(widths, 1, cumsum), nrow=nBins,byrow=TRUE)[, -ncategories]))
 		#tab$columns[[i]]$categories <- categories

@@ -35,8 +35,8 @@ function(bd, datName, colNames, sortCol,  decreasing, scales, pals, change_palet
 	tab$binSizes <- binSizes
 	tab$isNumber <- isNumber
 	## tab$row contains info about bins/y-axis
-	tab$rows <- list( heights = -(binSizes/vp$m)
-	                , y = 1- c(0,cumsum(binSizes/vp$m)[-nBins])
+	tab$rows <- list( heights = -(binSizes/N)
+	                , y = 1- c(0,cumsum(binSizes/N)[-nBins])
 	                , m = vp$m
 	                , from = from
 	                , to = to

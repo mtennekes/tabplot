@@ -49,8 +49,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	if (!inherits(dat, "prepared")){
 		p <- prepare(dat)
 	}
-	dat <- p$data
 	
+	dat <- p$data
 	
 	## discourage colNames and filter arguments
 	if (!missing(colNames)) {
@@ -58,44 +58,58 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 				of tabplot. Use select or select_string instead")
 		select_string <- colNames
 	}
-
+	
 	if (!missing(filter)) {
 		warning("The argument filter will not be supported anymore in the future versions of tabplot. 
 				Use subset or subset_string instead")  
 		subset_string <- filter
 	}
 	
-    
-	#####################################
-	## Check select(_string) argument
-	#####################################
-
-    ## Check dat
-	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
-	if (nrow(dat)==1) stop("<dat> has only one row")
-	
-	## Check select(_string)
-	if (!missing(select)) {
-	    nl <- as.list(seq_along(dat))
-	    names(nl) <- names(dat)
-	    colNames <- eval(substitute(select), nl, parent.frame())
-	    colNames <- names(dat)[colNames]
-	} else if (!is.null(select_string)) {
-	    if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
-	    colNames <- select_string
-	} else {
-	    colNames <- names(dat)
-	}    
-	
 	#####################################
 	## Filter data: subset(string)
 	#####################################
-	# complement subset and subset_string
-	#     if (!missing(subset)) {
-	# 		subset_string <- deparse(substitute(subset))
-	# 	} else if (!missing(subset_string)) {
-	# 		subset <- parse(text=subset_string)
-	# 	}
+	#complement subset and subset_string
+	if (!missing(subset)) {
+		subset_string <- deparse(substitute(subset))
+	} else if (!missing(subset_string)) {
+		subset <- parse(text=subset_string)
+	}
+	
+	#####################################
+	## Check select(_string) argument
+	#####################################
+	
+	
+	## Check select(_string)
+	if (!missing(select)) {
+		nl <- as.list(seq_along(dat))
+		names(nl) <- names(dat)
+		colNames <- eval(substitute(select), nl, parent.frame())
+		colNames <- names(dat)[colNames]
+	} else if (!is.null(select_string)) {
+		if (!all(select_string %in% names(dat))) stop("select_string contains wrong column names")
+		colNames <- select_string
+	} else {
+		colNames <- names(dat)
+	}
+
+	
+	
+
+
+	if (!missing(subset_string)) {
+		p <- subset_data(p, cols=colNames, subset_string=subset_string, sortCol=sortCol)
+		dat <- p$data
+	}
+	
+	
+	
+	
+    
+   
+	
+	
+	
 	# 
 	# 	
 	# 	if (!is.null(subset_string)) {
@@ -237,9 +251,11 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 
 	
 	#print(bd)
-	tab <- columnTable( bd, datName, sortCol=sortCol, decreasing=decreasing, scales=scales, pals=pals
-						, change_palette_type_at=change_palette_type_at
-					  , colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, to=to, N=nrow(dat))
+	tab <- columnTable( bd, datName, colNames=colNames, subset_string=subset_string, 
+						sortCol=sortCol, decreasing=decreasing, scales=scales, 
+						pals=pals, change_palette_type_at=change_palette_type_at,
+						colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, 
+						to=to, N=nrow(dat))
 #	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
 #					  decreasing, scales, max_levels, pals, change_palette_type_at, 
 #					  colorNA, numPals, nBins, from,to)
@@ -251,8 +267,10 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	###########################
 	getLog <- function(x) {
 		logx <- numeric(length(x))
-		neg <- x < 0		
-		logx[!neg] <- log10(x[!neg]+1)
+		logx[is.na(x)] <- NA
+		neg <- x < 0 & !is.na(x)
+		notneg <- x >= 0 & !is.na(x)
+		logx[notneg] <- log10(x[notneg]+1)
 		logx[neg] <- -log10(abs(x[neg])+1)
 		return(logx)
 	}

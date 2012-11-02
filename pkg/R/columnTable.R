@@ -1,5 +1,5 @@
 columnTable <-
-function(bd, datName, colNames, sortCol,  decreasing, scales, pals, change_palette_type_at, colorNA, numPals, nBins, from, to, N) {
+function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pals, change_palette_type_at, colorNA, numPals, nBins, from, to, N) {
 	
 	n <- length(bd)
 	nr <- nBins
@@ -29,7 +29,7 @@ function(bd, datName, colNames, sortCol,  decreasing, scales, pals, change_palet
 	
 	tab <- list()
 	tab$dataset <- datName
-	tab$filter <- "Not used"
+	tab$filter <- subset_string
 	tab$n <- n
 	tab$nBins <- nBins
 	tab$binSizes <- binSizes
@@ -37,7 +37,7 @@ function(bd, datName, colNames, sortCol,  decreasing, scales, pals, change_palet
 	## tab$row contains info about bins/y-axis
 	tab$rows <- list( heights = -(binSizes/N)
 	                , y = 1- c(0,cumsum(binSizes/N)[-nBins])
-	                , m = vp$m
+	                , m = N
 	                , from = from
 	                , to = to
 	                , marks = pretty(c(from, to), 10)

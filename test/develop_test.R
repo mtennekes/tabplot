@@ -23,12 +23,12 @@ tab <- tableplot(diamonds, max_levels=20, change_palette_type_at=15, max_print_l
 
 tab <- tableplot(diamonds, max_levels=50, change_palette_type_at=10, max_print_levels=12, legend.lines=12)
 
-max_print_levels > legend.lines
-n
 
-if (max_print_levels < legend.lines) warning
+diamonds30 <- diamonds[1:30,]
+tab30 <- tableplot(diamonds30, sortCol=1, subset=cut=="Premium", nbins=3)
 
-if ncat 
+tab <- tableplot(diamonds, sortCol=3, subset=cut=="Fair")
+
 
 
 library(ff)

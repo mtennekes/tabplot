@@ -3,7 +3,6 @@ subset_data <- function(p, cols, subset_string, sortCol) {
 	s_data <- p$data[cols]
 	s_ordered <- p$ordered[cols]
 	if (!missing(subset_string)) {
-		print(subset_string)
 		i <- ffwhich(p$data, parse(text=subset_string))
 		s_data <- s_data[i,]
 		

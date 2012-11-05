@@ -1,24 +1,21 @@
 subset_data <- function(p, cols, subset_string, sortCol) {
-	x <- p$data[cols]
-	o <- p$ordered[[sortCol]]
+	# can be made a lot shorter
+	s_data <- p$data[cols]
+	s_ordered <- p$ordered[cols]
 	if (!missing(subset_string)) {
-		e <- parse(text=subset_string)
-		r <- bit(nrow(x))
-		for (i in chunk(x)) {
-			log <- eval(e, x[i,])
-			r[i] <- log & !is.na(log)
-		}
-		x <- subset.ffdf(x, r)
-		o <- fforder(x[[sortCol]])
+		print(subset_string)
+		i <- ffwhich(p$data, parse(text=subset_string))
+		s_data <- s_data[i,]
+		
+		# HACK for the moment (other ordered indices are not ok)
+		nrow(s_ordered) <- length(i)
+		s_ordered[[sortCol]] <- fforder(s_data[[sortCol]])
 	}
 	
-	listo <- lapply(p$ordered, function(o) NULL)
-	listo[[sortCol]] <- o
-	
 	structure(
-		list( data = x
-			  , ordered = listo
-		)
+		list( data = s_data
+			, ordered = s_ordered
+		    )
 		, class="prepared"
 	)
 }

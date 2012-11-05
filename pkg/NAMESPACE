@@ -1,4 +1,3 @@
-import(ffbase)
 S3method(plot,tabplot)
 S3method(print,tabplot)
 S3method(summary,tabplot)

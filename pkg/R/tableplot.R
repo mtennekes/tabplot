@@ -93,22 +93,10 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		colNames <- names(dat)
 	}
 
-	
-	
-
-
 	if (!missing(subset_string)) {
 		p <- subset_data(p, cols=colNames, subset_string=subset_string, sortCol=sortCol)
 		dat <- p$data
-	}
-	
-	
-	
-	
-    
-   
-	
-	
+	}	
 	
 	# 
 	# 	

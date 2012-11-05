@@ -26,6 +26,7 @@ prepare <- function(x, path = NULL, ...){
 	
 	ordered[isFactor] <- lapply(ordered[isFactor], function(f) { levels(f) <- NULL; f})
 	ordered <- lapply(ordered, fforder)
+	ordered <- do.call(ffdf, ordered)
 	
 	#ranked <- lapply(ordered, fforder)
 	

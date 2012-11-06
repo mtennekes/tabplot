@@ -32,6 +32,7 @@
 #' @param ... arguments passed to \code{\link{plot.tabplot}}
 #' @return \code{\link{tabplot-object}} (silent output). If multiple tableplots are generated (which can be done by either setting \code{subset} to a categorical column name, or by restricting the number of columns with \code{nCols}), then a list of \code{\link{tabplot-object}s} is silently returned.
 #' @export
+#' @import ffbase
 #' @keywords visualization
 #' @example ../examples/tableplot.R
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
@@ -45,12 +46,22 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 					  plot=TRUE, ...) {
 
 	datName <- deparse(substitute(dat))
+
+	##################################
+	## prepare data if necessary
+	##################################
+	
 	p <- dat
 	if (!inherits(dat, "prepared")){
 		p <- prepare(dat)
 	}
 	
 	dat <- p$data
+	
+	
+	##################################
+	## check select and subset arguments
+	##################################
 	
 	## discourage colNames and filter arguments
 	if (!missing(colNames)) {
@@ -65,22 +76,14 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		subset_string <- filter
 	}
 	
-	#####################################
-	## Filter data: subset(string)
-	#####################################
-	#complement subset and subset_string
+	## argument subset(string): complement subset and subset_string
 	if (!missing(subset)) {
 		subset_string <- deparse(substitute(subset))
 	} else if (!missing(subset_string)) {
 		subset <- parse(text=subset_string)
 	}
 	
-	#####################################
-	## Check select(_string) argument
-	#####################################
-	
-	
-	## Check select(_string)
+	## argument select(_string) argument
 	if (!missing(select)) {
 		nl <- as.list(seq_along(dat))
 		names(nl) <- names(dat)
@@ -93,6 +96,10 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		colNames <- names(dat)
 	}
 
+	
+	##################################
+	## subset data
+	##################################
 	if (!missing(subset_string)) {
 		p <- subset_data(p, cols=colNames, subset_string=subset_string, sortCol=sortCol)
 		dat <- p$data
@@ -154,9 +161,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	## Check other arguments and cast dat-columns to numeric or factor
 	#####################################
 	
-	## Check dat
-	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
-	if (nrow(dat)==1) stop("<dat> has only one row")
 	
 	# 	## Check select(_string)
 	# 	if (!missing(select)) {
@@ -186,73 +190,45 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	# 	
 	# 	n <- length(colNames)
 
-	## Check sortCol, and (if necessary) cast it to indices
+	
+	##################################
+	## other checks
+	##################################
+	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
+	if (nrow(dat)==1) stop("<dat> has only one row")
 	sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
-
-	## Check decreasing vector
 	decreasing <- tableplot_checkDecreasing(decreasing, sortCol)
-
-	
-	## Check number of columns
-	if (!is.numeric(nCols)) stop("<ncolums> is not numeric")
-	if (nCols < length(sortCol)) stop("<nCols> less than number of sorted columns")
-	if (nCols == length(sortCol) && length(sortCol) < length(colNames)) 
-		stop("<nCols> equal to number of sorted columns while number of selected columns is larger")
-	
-	if (nCols > length(colNames)) nCols <- length(colNames)
-	
-	## Check scales
+	nCols <- tableplot_checkNcols(nCols, colNames, sortCol)
 	scales <- tableplot_checkScales(scales)
-
-	## Check palet indices
 	pals <- tableplot_checkPals(pals)
-	
-	## Check change_palette_type_at
-	if (length(change_palette_type_at)!=1 || !is.numeric(change_palette_type_at)) stop("<change_palette_type_at> is not correct")
-	if (change_palette_type_at < max(sapply(pals$palette, length))) warning("<change_palette_type_at> is less than the number of colors in the largest palette")
-	
-	## Check colorNA
-	if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") {
+	change_palette_type_at <- tableplot_checkChangePalType(change_palette_type_at, pals$palette)
+	if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") 
 		stop("<colorNA> is not correct")
-	}
-	
-	## Check numPals
-	if ((class(numPals)!="character") || !all(numPals %in% c("Blues", "Greens", "Greys")))
-		stop("<numPals> is not correct")
-	
-	## Check nBins
+	if ((class(numPals)!="character") || !all(numPals %in% c("Blues", "Greens", "Greys")))		stop("<numPals> is not correct")
 	nBins <- tableplot_checkBins(nBins, nrow(dat))
-	
-	## Check from and to
 	tableplot_checkFromTo(from, to)
 	
-
-	##########################
-	#### Preprocess
-	##########################
-    bd <- bin_data( p, sortCol=sortCol, cols=select, from=from/100, to=to/100
+	##################################
+	## bin data
+	##################################
+	bd <- bin_data( p, sortCol=sortCol, cols=select, from=from/100, to=to/100
     			  , nbins=nBins, decreasing=decreasing
     			  )
-	
 	bd <- bin_hcc_data(bd, max_levels)
 	
-
-	
-	#print(bd)
 	tab <- columnTable( bd, datName, colNames=colNames, subset_string=subset_string, 
 						sortCol=sortCol, decreasing=decreasing, scales=scales, 
 						pals=pals, change_palette_type_at=change_palette_type_at,
 						colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, 
 						to=to, N=nrow(dat))
-#	tab <- preprocess(dat, datName, subset_string, colNames, sortCol,  
-#					  decreasing, scales, max_levels, pals, change_palette_type_at, 
-#					  colorNA, numPals, nBins, from,to)
 	
-	isNumber <- tab$isNumber
 	
-	###########################
-	##### Function to determine logarithmic scale
-	###########################
+														   
+	##################################
+	## Grammar of Graphics: Scales
+	##################################
+														   
+	## function to apply logaritmhic transformation
 	getLog <- function(x) {
 		logx <- numeric(length(x))
 		logx[is.na(x)] <- NA
@@ -263,83 +239,54 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		return(logx)
 	}
 
-	#####################################
-	#####################################
-	## Grammar of Graphics: Scales
-	##
-	## Scale operations
-	#####################################
-	#####################################
-	
-	## Determine scales of numeric variables in case they are set to "auto". IQR is used.
-	for (i in which(isNumber)) {
-		if (tab$columns[[i]]$scale_init=="auto") {
-			quant <- quantile(tab$columns[[i]]$mean, na.rm=TRUE)
+														   
+	## apply scale transformation
+	isNumber <- tab$isNumber
+	tab$columns[isNumber] <- lapply(tab$columns[isNumber], function(tabCol) {
+		## for "auto" scales, choose between "lin" and "log" based on IQR_bias
+		if (tabCol$scale_init=="auto") {
+			quant <- quantile(tabCol$mean, na.rm=TRUE)
 			IQR <- quant[4] - quant[2]
 			
-			## Simple test to determine whether scale is lin or log
-			if ((quant[5] > quant[4] + IQR_bias * IQR) || 
-				(quant[1] < quant[2] - IQR_bias * IQR)) {
-				tab$columns[[i]]$scale_final <- "log" 
-			} else {
-				tab$columns[[i]]$scale_final <- "lin" 
-			}
+			## simple test to determine whether scale is lin or log
+			tabCol$scale_final <- ifelse(((quant[5] > quant[4] + IQR_bias * IQR) || 
+				(quant[1] < quant[2] - IQR_bias * IQR)), "log", "lin")
 		} else {
-			tab$columns[[i]]$scale_final <- tab$columns[[i]]$scale_init
-			
+			tabCol$scale_final <- tabCol$scale_init
 		}
-	}
-	
-	## Apply scale transformation
-	for (i in which(isNumber)) {
-		if (tab$columns[[i]]$scale_final=="log") {
-			tab$columns[[i]]$mean.scaled <- getLog(tab$columns[[i]]$mean)
+		
+		## apply transformation
+		if (tabCol$scale_final=="log") {
+			tabCol$mean.scaled <- getLog(tabCol$mean)
 		} else {
-			tab$columns[[i]]$mean.scaled <- tab$columns[[i]]$mean
+			tabCol$mean.scaled <- tabCol$mean
 		}
-	}
+		tabCol
+	})
+	
 	
 	#####################################
-	#####################################
-	## Grammar of Graphics: Coordinates
-	##
-	## Coordinate transformations
-	#####################################
+	## Grammar of Graphics: coordinates transformations
 	#####################################
 
-	#############################
-	## Categorical variables
-	#############################
-	## determine widths and x positions of the categorical variables
-	for (i in which(!isNumber)) {
-		ncategories <- ncol(tab$columns[[i]]$freq)
-		widths <- tab$columns[[i]]$freq# / rep(tab$binSizes, ncategories)
+	## categorical variables
+	tab$columns[!isNumber] <- lapply(tab$columns[!isNumber], function(tabCol) {
+		ncategories <- ncol(tabCol$freq)
+		widths <- tabCol$freq
 	
-		x <- cbind(0,(matrix(apply(widths, 1, cumsum), nrow=nBins,byrow=TRUE)[, -ncategories]))
-		#tab$columns[[i]]$categories <- categories
-		tab$columns[[i]]$x <- x
-		tab$columns[[i]]$widths <- widths
-	}
-
+		tabCol$x <- cbind(0,(matrix(apply(widths, 1, cumsum), 
+									nrow=nBins,byrow=TRUE)[, -ncategories]))
+		#tabCol$categories <- categories
+		tabCol$widths <- widths
+		tabCol
+	})
 	
-	#############################
-	## Numeric variables
-	#############################
-
-	#### Broken X-axis
-	temp <- lapply(tab$columns[isNumber], FUN=function(x){brokenX(x$mean.scaled, bias_brokenX)})
-	j <- 1
-	for (i in which(isNumber)) {
-		tab$columns[[i]]$brokenX <- temp[[j]]$brokenX
-		tab$columns[[i]]$mean.brokenX <- temp[[j]]$values
-		j <- j + 1
-	}
-	## make this code prettier
-	
-	#### Normalization
-	for (i in which(isNumber)) {
-		brokenX <- tab$columns[[i]]$brokenX
-		values <- tab$columns[[i]]$mean.brokenX
+	## numeric variables
+	tab$columns[isNumber] <- lapply(tab$columns[isNumber], function(tabCol) {
+		tabCol[c("brokenX", "mean.brokenX")] <- 
+			brokenX(tabCol$mean.scaled, bias_brokenX)
+		brokenX <- tabCol$brokenX
+		values <- tabCol$mean.brokenX
 		## scale values to 0-1, and determine 0-1 value of the y-axis
 		minV <- min(values, na.rm=TRUE)
 		maxV <- max(values, na.rm=TRUE)
@@ -357,10 +304,13 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 			widths <- (values) / max(abs(minV), abs(maxV))
 		}
 		widths[is.nan(widths)] <- minV
-		## assign to tab object
-		tab$columns[[i]]$xline <- xline
-		tab$columns[[i]]$widths <- widths
-	}
+		tabCol$xline <- xline
+		tabCol$widths <- widths
+		tabCol
+	})
+														   
+	
+
 
 	### multiple tableplots if nCols < length(colNames)
 	if (nCols < length(colNames)) {

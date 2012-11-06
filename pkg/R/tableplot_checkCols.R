@@ -20,5 +20,5 @@ tableplot_checkCols <- function(sortCol, colNames) {
 	})
 	
 	
-	return(sortCol)
+	sortCol
 }

@@ -16,5 +16,5 @@ brokenX <- function(num, bias_brokenX) {
 		brokenX <- 0
 		values <- num
 	}
-	return(list(brokenX=brokenX, values=values))
+	list(brokenX=brokenX, values=values)
 }

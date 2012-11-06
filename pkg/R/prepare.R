@@ -10,7 +10,9 @@
 #' @param ... at the moment not used
 #' @return a prepared object, including the data and order of each of the columns
 #' @export
+#' @import ffbase
 prepare <- function(x, path = NULL, ...){
+	require(ffbase)
 	# TODO set path where prepared data set should be stored
 	# TODO make it possible to sort on multiple columns
 	cat("Preparing data for tableplotting, storing this result increases tableplotting speed (see `prepare`)...")

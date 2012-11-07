@@ -16,6 +16,7 @@ subset_data <- function(p, cols, subset_string, sortCol) {
 		list( data = s_data
 			, ordered = s_ordered
 		    )
+		, name=attr(p, "name")
 		, class="prepared"
 	)
 }

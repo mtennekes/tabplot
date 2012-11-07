@@ -17,7 +17,7 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 
 	## Calculate bin sizes
 	binSizes <-	getBinSizes(N, nBins, decreasing)
-	print(list(binSizes=binSizes, bd=bd[[1]][,1]))
+	#print(list(binSizes=binSizes, bd=bd[[1]][,1]))
 
 
 	#############################

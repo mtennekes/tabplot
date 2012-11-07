@@ -28,6 +28,11 @@ diamonds30 <- diamonds[1:30,]
 tab30 <- tableplot(diamonds30, sortCol=1, subset=cut=="Premium", nbins=3)
 
 tab <- tableplot(diamonds, sortCol=3, subset=cut=="Fair")
+tab <- tableplot(diamonds, sortCol=3, subset_string="cut=='Fair'")
+
+tab <- tableplot(diamonds, sortCol=3, subset=cut, plot=FALSE)
+
+test <- data.frame(x=1:1000, y=)
 
 
 

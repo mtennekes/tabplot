@@ -3,14 +3,15 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 
 	anyNA <- tail(tCol$categories, 1)=="missing"
 	
-	categories <- colnames(tCol$freq)
+	categories <- tCol$categories
+	if (anyNA) categories <- categories[-length(categories)]
 	
-	nCategories <- ncol(tCol$freq) - anyNA
-	nOrigCategories <- length(tCol$categories) - anyNA
+	
+	nCategories <- length(categories)
 	spread <- (nCategories > max_print_levels)
 	
 	## determine color indices for categories
-	palet <- if (tCol$palettype=="recycled") {
+	palet <- if (tCol$palet_recycled) {
 		rep(tCol$palet, length.out = nCategories)
 	} else {
 		colorRampPalette(tCol$palet)(nCategories)
@@ -72,7 +73,7 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 				)
 			})
 			labels <- rep("...", nLegendSpreadRows)
-			labels[seq(1, nLegendSpreadRows, by=2)] <- tCol$categories[seq(1, nOrigCategories, length.out=nLegendSpread)]
+			labels[seq(1, nLegendSpreadRows, by=2)] <- tCol$categories[seq(1, nCategories - anyNA, length.out=nLegendSpread)]
 				
 			for (j in 1:nLegendSpreadRows) {
 				cellplot(j,2, NULL, {

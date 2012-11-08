@@ -41,7 +41,9 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 					  pals=list("Set1", "Set2", "Set3", "Set4"), 
 					  change_palette_type_at = 20,
 					  colorNA = "#FF1414", 
-					  numPals = "Blues", bias_brokenX=0.8, IQR_bias=5, 
+					  numPals = "Blues", 
+					  limitsX = NULL,
+					  bias_brokenX=0.8, IQR_bias=5, 
 					  select_string = NULL,
 					  subset_string=NULL, colNames=NULL, filter=NULL, 
 					  plot=TRUE, ...) {
@@ -98,7 +100,10 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	} else {
 		colNames <- names(dat)
 	}
-
+	
+	## argument sortCol
+	sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
+	
 	
 	##################################
 	## subset data
@@ -120,7 +125,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 			subsets_string <- paste(subset_string, " == ", 
 									ifelse(isLogical, "", "\""), lvls,
 									ifelse(isLogical, "", "\""), sep="")
-			sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
 			tabs <- lapply(subsets_string, FUN=function(subs_string){
                 tableplot(p, select_string=select_string, sortCol=sortCol, 
 								 decreasing=decreasing, scales=scales, max_levels=max_levels, 
@@ -140,7 +144,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
 	if (nrow(dat)==1) stop("<dat> has only one row")
-	sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
 	decreasing <- tableplot_checkDecreasing(decreasing, sortCol)
 	nCols <- tableplot_checkNcols(nCols, colNames, sortCol)
 	scales <- tableplot_checkScales(scales)
@@ -149,6 +152,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") 
 		stop("<colorNA> is not correct")
 	if ((class(numPals)!="character") || !all(numPals %in% c("Blues", "Greens", "Greys")))		stop("<numPals> is not correct")
+	limitsX <-if (missing(limitsX)) list() else tableplot_checkLimitsX(limitsX, colNames)
 	nBins <- tableplot_checkBins(nBins, nrow(dat))
 	tableplot_checkFromTo(from, to)
 	
@@ -180,7 +184,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	## coordinates
 	tab$columns[!isNumber] <- lapply(tab$columns[!isNumber], coorCatCol, nBins)
-	tab$columns[isNumber] <- lapply(tab$columns[isNumber], coorNumCol, bias_brokenX)
+	tab$columns[isNumber] <- mapply(coorNumCol, tab$columns[isNumber], limitsX[isNumber], MoreArgs=list(bias_brokenX=bias_brokenX), SIMPLIFY=FALSE)
 	
 	
 	##################################
@@ -189,31 +193,10 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	### multiple tableplots if nCols < length(colNames)
 	if (nCols < length(colNames)) {
-		nOtherCol <- nCols - length(sortCol)
-		
-		otherCols <- setdiff(seq.int(length(colNames)), sortCol)
-		
-		nOtherCols <- length(otherCols)
-		
-		ntab <- ceiling(nOtherCols / nOtherCol)
-		tabs <- list()
-		j <- 1
-		for (i in seq.int(ntab))	{
-			id <- unique(c(sortCol,
-				otherCols[j:(min(j-1+nOtherCol, nOtherCols))]))
-			tab_sec <- tab
-			tab_sec$n <- length(id)
-			tab_sec$isNumber <- tab$isNumber[id]
-			tab_sec$columns <- tab$columns[id]
-			class(tab_sec) <- "tabplot"
-			tabs[[i]] <- tab_sec
-			if (plot) plot(tab_sec, ...)
-			j <- j + nOtherCol
-		}
+		tabs <- splitTab(tab, nCols)
+		if (plot) sapply(tabs, plot, ...)
 		invisible(tabs)
-	} else {		
-		## plot
-		class(tab) <- "tabplot"
+	} else {
 		if (plot) plot(tab, ...)
 		invisible(tab)
 	}

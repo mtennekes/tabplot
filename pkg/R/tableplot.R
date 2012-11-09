@@ -18,10 +18,13 @@
 #' \item a palette name in \code{\link{tablePalettes}}, optionally with the starting color between brackets.
 #' \item a palette vector
 #' }
-#' The items of \code{pals} are applied to the categorical variables of \code{colNames}. If necessary, \code{pals} is recycled.
+#' If the list items are unnamed, they are applied to all selected categorical variables (recycled if necessary). The list items can be assigned to specific categorical variables,
+#' by naming them accordingly.
 #' @param change_palette_type_at number at which the type of categorical palettes is changed. For categorical variables with less than \code{change_palette_type_at} levels, the palette is recycled if necessary. For categorical variables with \code{change_palette_type_at} levels or more, a new palette of interpolated colors is derived (like a rainbow palette).
 #' @param colorNA color for missing values
 #' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
+#' @param limitsX a list of vectors of length two, where each vector contains a lower and an upper limit value. If the list items are unnamed they are applied to all selected numerical variables (recycled if necessary).
+#' To assign limit vectors to specific numerical variables, name them accordingly.
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
 #' @param select_string character equivalent of the \code{select} argument (particularly useful for programming purposes)
@@ -141,18 +144,21 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##################################
 	## other checks
 	##################################
+
+	isNumber <- sapply(physical(dat)[colNames], function(col)!is.factor.ff(col) && !vmode(col)=="logical")
 	
 	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
 	if (nrow(dat)==1) stop("<dat> has only one row")
 	decreasing <- tableplot_checkDecreasing(decreasing, sortCol)
 	nCols <- tableplot_checkNcols(nCols, colNames, sortCol)
-	scales <- tableplot_checkScales(scales)
-	pals <- tableplot_checkPals(pals)
-	change_palette_type_at <- tableplot_checkChangePalType(change_palette_type_at, pals$palette)
+	scales <- tableplot_checkScales(scales, colNames, isNumber)
+	pals <- tableplot_checkPals(pals, colNames, !isNumber)
+	change_palette_type_at <- tableplot_checkChangePalType(change_palette_type_at, 
+														   max(sapply(pals[!isNumber], function(pal)length(pal$palette))))
 	if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") 
 		stop("<colorNA> is not correct")
-	if ((class(numPals)!="character") || !all(numPals %in% c("Blues", "Greens", "Greys")))		stop("<numPals> is not correct")
-	limitsX <-if (missing(limitsX)) list() else tableplot_checkLimitsX(limitsX, colNames)
+	numPals <- tableplot_checkNumPals(numPals, colNames, isNumber)
+	limitsX <- if (missing(limitsX)) list() else tableplot_checkLimitsX(limitsX, colNames, isNumber)
 	nBins <- tableplot_checkBins(nBins, nrow(dat))
 	tableplot_checkFromTo(from, to)
 	
@@ -161,7 +167,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	## bin data
 	##################################
 	
-	bd <- bin_data( p, sortCol=sortCol, cols=select, from=from/100, to=to/100
+	bd <- bin_data( p, sortCol=sortCol, cols=colNames, from=from/100, to=to/100
     			  , nbins=nBins, decreasing=decreasing
     			  )
 	bd <- bin_hcc_data(bd, max_levels)
@@ -179,7 +185,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##################################
 
 	## scales
-	isNumber <- tab$isNumber
 	tab$columns[isNumber] <- lapply(tab$columns[isNumber], scaleNumCol, IQR_bias)
 	
 	## coordinates

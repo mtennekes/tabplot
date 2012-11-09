@@ -50,38 +50,27 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	                , to = to
 	                , marks = pretty(c(from, to), 10)
 	                )
-	
-	## create column list
-	tab$columns <- list()
-	paletNr <- 1
-	scales <- rep(scales, length.out=sum(isNumber))
-	numP <- rep(numPals, length.out=sum(isNumber))
-	scalesNr <- 1
-	for (i in 1:n) {
-		col <- list(name = colNames[i], isnumeric = isNumber[i], sort_decreasing=sort_decreasing[i])
-		agg <- bd[[col$name]]
+
+	# create column list
+	tab$columns <- mapply(function(agg, name, isnum, sort, pal, numscale, numpal) {
+		col <- list(name=name, isnumeric=isnum, sort_decreasing=sort)
 		categories <- colnames(agg)
 		dimnames(agg) <- NULL
-		#col$agg <- agg
-		
-		if (isNumber[i]) {
+		if (isnum) {
 			col$mean <- agg[,2]
 			col$compl <- 100*agg[,3]
-			col$scale_init <- scales[scalesNr]
-			col$paletname <- numP[scalesNr]
-			scalesNr <- scalesNr + 1
+			col$scale_init <- numscale
+			col$paletname <- numpal
 		} else {
 			col$freq <- agg
 			col$categories <- categories
 			col$categories[ncol(agg)] <- "missing"
-			col$paletname <- pals$name[paletNr]
+			col$paletname <- pal$name
 			col$palet_recycled <- (ncol(agg)-1 <= change_palette_type_at)
-			col$palet <- pals$palette[[paletNr]]
+			col$palet <- pal$palette
 			col$colorNA <- colorNA
-			paletNr <- ifelse(paletNr==length(pals$name), 1, paletNr + 1)
 		}
- 		tab$columns[[i]] <- col
-	}
-
+		col
+	}, bd, colNames, isNumber, sort_decreasing, pals, scales, numPals, SIMPLIFY=FALSE)
 	tab
 }

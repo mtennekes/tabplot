@@ -4,46 +4,47 @@
 #' @param pals pals
 #' @return object with palette information
 #' @export 
-tableplot_checkPals <- function(pals) {
-
+tableplot_checkPals <- function(pals, colNames, isCat) {
 	if (class(pals)!="list") stop("<pals> is not a list")
 
-	#tabplotPalettes <- NULL; rm(tabplotPalettes); #trick R CMD check
-	#data("tabplotPalettes")
+	catCols <- colNames[isCat]
 	
-	palNames <- names(tabplotPalettes$qual)
-	palLengths <- nchar(palNames)
-	
-	getPal <- function(palName, startCol=1) {
-		originalPal <- tabplotPalettes$qual[[palName]]
-		pal <- originalPal[startCol:length(originalPal)]
-		if (startCol!=1) pal <- c(pal, originalPal[1:(startCol-1)])
-		palList <- list(palette=pal, name=paste(palName, "(", startCol, ")", sep=""))
-		return(palList)
+	if (is.null(names(pals))) {
+		pals2 <- if (length(pals) != length(catCols)) {
+			rep(pals, length.out=length(catCols))} else pals2
+		names(pals2) <- catCols
+	} else {
+		if (!all(names(pals) %in% catCols)) stop("<pals> is not correct")
+		pals2 <- structure(as.list(rep("Set1", length(catCols))), names=catCols)
+		pals2[names(pals)] <- pals
 	}
-
 	
-	palList <- lapply(pals, FUN=function(x, palN, palL){
-		if (class(x)=="character" && length(x)==1) {
-			checkPals <- mapply(palN, palL, FUN=function(palN, palL, x)substr(x, 1, palL)==palN, MoreArgs=list(x))
-			if (sum(checkPals)==1) {
-				whichPal <- which(checkPals)
-				maxCol <- length(tabplotPalettes$qual[[whichPal]])
-				startCol <- as.integer(substr(x, palL[whichPal]+2, nchar(x)-1))
-				if (is.na(startCol) || startCol<1 || startCol>maxCol) startCol <- 1
-				return(getPal(palN[whichPal], startCol))
+	allpals <- c(tabplotPalettes$qual, tabplotPalettes$seq)
+	
+	getPal <- function(name, s) {
+		pal <- allpals[[name]]
+		list(palette=if (s==1) pal else rep(pal, length.out=length(pal)+s-1)[-(1:(s-1))],
+			 name=paste(name, "(", s, ")", sep=""))
+	}
+	
+	palList <- lapply(pals2, function(p){
+		if (class(p)=="character" && length(p)==1) {
+			s <- ifelse(substr(p, nchar(p),nchar(p))==")", 
+						as.integer(substr(p, nchar(p)-1,nchar(p)-1)), NA)
+			name <- ifelse(is.na(s), p, substr(p, 1, nchar(p)-3))
+			if (is.na(s)) s <- 1
+			if (!name %in% names(allpals)) stop("<pals> is not correct")
+			getPal(name, s)
+		} else {
+			if (class(try(col2rgb(p), silent=TRUE))=="try-error") {
+				stop("<pals> color palette(s) are not correct")
 			}
+			list(palette=p, name="custom")
 		}
+	})
 	
-		if (class(try(col2rgb(x), silent=TRUE))=="try-error") {
-			stop("<pals> color palette(s) are not correct")
-		}
-		return(list(palette=x, name="custom"))
-		
-	}, palNames, palLengths)
-	
-	palN <- sapply(palList, FUN=function(x)x$name)
-	palP <- lapply(palList, FUN=function(x)x$palette)
-	
-	return(list(name=palN, palette=palP))
+	l <- as.list(rep(NA, length(colNames)))
+	names(l) <- colNames
+	l[isCat] <- palList
+	l
 }

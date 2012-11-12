@@ -17,7 +17,7 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 
 	## Calculate bin sizes
 	binSizes <-	getBinSizes(N, nBins, decreasing)
-	print(list(binSizes=binSizes, bd=bd[[1]][,1]))
+	#print(list(binSizes=binSizes, bd=bd[[1]][,1]))
 
 
 	#############################
@@ -25,15 +25,23 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	## Create list object that contains all data needed to plot
 	##
 	#############################
-	isNumber <- sapply(bd, function(agg) colnames(agg)[2] == "mean")
+	isNumber <- as.vector(sapply(bd, function(agg) colnames(agg)[2] == "mean"))
 	
-	tab <- list()
-	tab$dataset <- datName
-	tab$filter <- subset_string
-	tab$n <- n
-	tab$nBins <- nBins
-	tab$binSizes <- binSizes
-	tab$isNumber <- isNumber
+	tab <- structure(list(
+		dataset = datName,
+		filter = subset_string,
+		nBins = nBins,
+		binSizes = binSizes,
+		n = n,
+		colNames = colNames,
+		isNumber = isNumber),
+		class="tabplot")
+	
+	sort_decreasing <- rep(NA, n)
+	sort_decreasing[sortCol] <- decreasing
+
+	tab$sort_decreasing <- sort_decreasing
+		
 	## tab$row contains info about bins/y-axis
 	tab$rows <- list( heights = -(binSizes/N)
 	                , y = 1- c(0,cumsum(binSizes/N)[-nBins])
@@ -42,37 +50,27 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	                , to = to
 	                , marks = pretty(c(from, to), 10)
 	                )
-	
-	## create column list
-	tab$columns <- list()
-	paletNr <- 1
-	scales <- rep(scales, length.out=sum(isNumber))
-	numP <- rep(numPals, length.out=sum(isNumber))
-	scalesNr <- 1
-	for (i in 1:n) {
-		sortc <- ifelse(i %in% sortCol, ifelse(decreasing[which(i==sortCol)], "decreasing", "increasing"), "")
-		col <- list(name = colNames[i], isnumeric = isNumber[i], sort=sortc)
-		agg <- bd[[col$name]]
-		#col$agg <- agg
-		
-		if (isNumber[i]) {
+
+	# create column list
+	tab$columns <- mapply(function(agg, name, isnum, sort, pal, numscale, numpal) {
+		col <- list(name=name, isnumeric=isnum, sort_decreasing=sort)
+		categories <- colnames(agg)
+		dimnames(agg) <- NULL
+		if (isnum) {
 			col$mean <- agg[,2]
 			col$compl <- 100*agg[,3]
-			col$scale_init <- scales[scalesNr]
-			col$paletname <- numP[scalesNr]
-			scalesNr <- scalesNr + 1
+			col$scale_init <- numscale
+			col$paletname <- numpal
 		} else {
 			col$freq <- agg
-			col$categories <- colnames(agg)
+			col$categories <- categories
 			col$categories[ncol(agg)] <- "missing"
-			col$paletname <- pals$name[paletNr]
-			col$palettype <- ifelse(ncol(agg)-1 > change_palette_type_at, "interpolate", "recycled")
-			col$palet <- pals$palette[[paletNr]]
+			col$paletname <- pal$name
+			col$palet_recycled <- (ncol(agg)-1 <= change_palette_type_at)
+			col$palet <- pal$palette
 			col$colorNA <- colorNA
-			paletNr <- ifelse(paletNr==length(pals$name), 1, paletNr + 1)
 		}
- 		tab$columns[[i]] <- col
-	}
-
-	return(tab)
+		col
+	}, bd, colNames, isNumber, sort_decreasing, pals, scales, numPals, SIMPLIFY=FALSE)
+	tab
 }

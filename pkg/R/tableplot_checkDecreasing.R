@@ -10,5 +10,5 @@ tableplot_checkDecreasing <- function(decreasing, sortCol){
 	if (length(decreasing)==1) {
 		decreasing <- rep(decreasing, length(sortCol))
 	} else if (length(decreasing) != length(sortCol)) stop("<sortCol> and <decreasing> have different lengths")
-	return(decreasing)
+	decreasing
 }

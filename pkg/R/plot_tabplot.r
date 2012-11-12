@@ -15,6 +15,7 @@
 #' @method plot tabplot
 plot.tabplot <-
 function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, vp=NULL, ...) {
+	require(grid)
 	
 	if (class(x)[1]!="tabplot") p(paste(deparse(substitute(x)), "is not a tabplot-object"))
 	
@@ -172,9 +173,9 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 					grid.text(columnName, gp=gpar(cex=cex))
 					
 					## Place sorting arrow before name
-					if (tCol$sort!="") {
+					if (!is.na(tCol$sort_decreasing)) {
 						grid.polygon( x = c(0.1, 0.4, 0.7)
-						            , y = if (tCol$sort=="decreasing") 
+						            , y = if (tCol$sort_decreasing) 
 										     c(0.6, 0.2, 0.6)
 									      else
 							                 c(0.2, 0.6, 0.2)

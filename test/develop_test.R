@@ -21,13 +21,25 @@ diamonds$expensive <- diamonds$price >= 10000
 tab <- tableplot(diamonds)
 tab <- tableplot(diamonds, max_levels=20, change_palette_type_at=15, max_print_levels=15) # default values
 
-tab <- tableplot(diamonds, max_levels=50, change_palette_type_at=10, max_print_levels=12, legend.lines=12)
+tab <- tableplot(diamonds, max_levels=100, change_palette_type_at=15, max_print_levels=12, legend.lines=12)
 
 
-diamonds30 <- diamonds[1:30,]
-tab30 <- tableplot(diamonds30, sortCol=1, subset=cut=="Premium", nbins=3)
+tab <- tableplot(diamonds, subset=cut)
+tab <- tableplot(diamonds, subset=cut, limitsX=list(price=c(0,20000)))
 
-tab <- tableplot(diamonds, sortCol=3, subset=cut=="Fair")
+
+tab <- tableplot(diamonds, sortCol=depth, nCols=6, li mitsX=list(price=c(0,20000)))
+tab <- tableplot(diamonds, sortCol=3, subset_string="cut=='Fair'")
+
+tab <- tableplot(diamonds, sortCol=3, subset=cut, plot=FALSE)
+
+test <- data.frame(x=1:1000, y=)
+
+tableplot(diamonds, select=c(price,carat,color,cut,clarity,table,z,y,x), 
+		  pals=list(cut="Set3(4)", color="Greens", clarity="Paired(4)"),
+		  numPals=c(x="Greys", y="Greens"),
+		  limitsX=list(carat=c(0, 5), table=c(50,60)),
+		  scales=c(carat="lin", price="log"))
 
 
 

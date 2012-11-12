@@ -7,13 +7,18 @@
 #' step so it can be wise to call prepare before making a tableplot.
 #' @param x data.frame or ffdf, will be transformed into a ffdf
 #' @param path where the resulting prepared dataset should be stored, at the moment not working.
+#' @param name name of the dataset
 #' @param ... at the moment not used
 #' @return a prepared object, including the data and order of each of the columns
 #' @export
-prepare <- function(x, path = NULL, ...){
+#' @import ffbase
+prepare <- function(x, path = NULL, name=deparse(substitute(x)), ...){
 	# TODO set path where prepared data set should be stored
 	# TODO make it possible to sort on multiple columns
 	cat("Preparing data for tableplotting, storing this result increases tableplotting speed (see `prepare`)...")
+	
+	require(ffbase)
+	
 	if (is.data.frame(x)){
 		x <- as.ffdf(x)
 	}
@@ -21,9 +26,20 @@ prepare <- function(x, path = NULL, ...){
 	N <- nrow(x)
 	isFactor <- sapply(physical(x), is.factor.ff)
 	
-	#TODO randomize initial ordering
 	ordered <- physical(x)
 	
+	# initial randomization
+	# Question: is there a function ffsample?
+	rand <- ff(vmode="double", length=N)
+	for (i in chunk(rand)){
+		rand[i] <- runif(sum(i))
+	}
+	rand_order <- fforder(rand)
+
+	ordered <- lapply(ordered, function(o)o[rand_order])
+	x <- x[rand_order, ]
+	
+	# create ordered ffdf
 	ordered[isFactor] <- lapply(ordered[isFactor], function(f) { levels(f) <- NULL; f})
 	ordered <- lapply(ordered, fforder)
 	ordered <- do.call(ffdf, ordered)
@@ -37,6 +53,7 @@ prepare <- function(x, path = NULL, ...){
 			, ordered = ordered
 #			, ranked = ranked
 		)
+		, name = name
 		, class="prepared"
 	)
 }

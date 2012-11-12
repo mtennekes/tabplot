@@ -4,7 +4,7 @@ tableplot_checkNumPals <- function(numPals, colNames, isNumber) {
 	if (is.null(names(numPals))) {
 		if (length(numPals) != length(colNames)) {
 			numPals2 <- structure(rep(NA, length.out=length(colNames)), names=colNames)
-			numPals2[isNumber] <- structure(rep(numPals, length.out=sum(isNumber)), names=colNames)
+			numPals2[isNumber] <- rep(numPals, length.out=sum(isNumber))
 		} else {
 			numPals2 <- structure(numPals, names=colNames)
 		}

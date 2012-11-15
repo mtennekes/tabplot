@@ -1,10 +1,11 @@
 library(shiny)
 library(tabplot)
+p <- prepare(diamonds)
 
 shinyServer(function(input, output) {
 	
 	dataset <- reactive(function(){
-		diamonds
+		p
 	})
 	
 	output$plot <- reactivePlot(function() {

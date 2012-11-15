@@ -24,7 +24,6 @@ Suggests:
     ggplot2
 Collate:
     'bin_data.R'
-    'brokenX.R'
     'cellplot.R'
     'columnTable.R'
     'datetime2fac.R'
@@ -50,6 +49,13 @@ Collate:
     'tableplot_checkPals.R'
     'tableplot_checkScales.R'
     'tabplot_object.R'
-    'aggCatCols.R'
     'bin_hcc_data.R'
     'subset_data.R'
+    'coorCatCol.R'
+    'coorNumCol.R'
+    'scaleNumCol.R'
+    'splitTab.R'
+    'tableplot_checkChangePalType.R'
+    'tableplot_checkLimitsX.R'
+    'tableplot_checkNcols.R'
+    'tableplot_checkNumPals.R'

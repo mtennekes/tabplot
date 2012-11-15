@@ -12,8 +12,8 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	#####################################
 	
 	## Determine viewport, and check if nBins is at least number of items
-	vp <- tableViewport(nr, from, to)
-	if (nBins > vp$m) nBins <- vp$m
+	#vp <- tableViewport(nr, from, to)
+	#if (nBins > vp$m) nBins <- vp$m
 
 	## Calculate bin sizes
 	binSizes <-	getBinSizes(N, nBins, decreasing)
@@ -26,6 +26,8 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	##
 	#############################
 	isNumber <- as.vector(sapply(bd, function(agg) colnames(agg)[2] == "mean"))
+	
+	binSizes <- if (isNumber[1]) bd[[1]][,1] else as.integer(rowSums(bd[[1]]))
 	
 	tab <- structure(list(
 		dataset = datName,

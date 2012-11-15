@@ -17,7 +17,7 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	
 	# create bin vector
 	N <- length(o)
-	nbins <- min(nbins, as.integer(N*(to-from)))
+	nbins <- max(min(nbins, as.integer(N*(to-from))), 2)
 	bin <- ff(0L, vmode="integer", length = N)
 	
 	if (decreasing){

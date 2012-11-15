@@ -27,8 +27,6 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	#############################
 	isNumber <- as.vector(sapply(bd, function(agg) colnames(agg)[2] == "mean"))
 	
-	binSizes <- if (isNumber[1]) bd[[1]][,1] else as.integer(rowSums(bd[[1]]))
-	
 	tab <- structure(list(
 		dataset = datName,
 		filter = subset_string,

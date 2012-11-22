@@ -11,6 +11,7 @@ tableplot_checkCols <- function(sortCol, colNames) {
 		names(nl) <- colNames
 		sortCol <- eval(sortCol, nl, parent.frame())
 		if (is.character(sortCol)) sortCol <- which(sortCol==colNames)
+		if (!length(sortCol)) stop("Incorrect sortCol argument")
 	}
 	
 	tryCatch({

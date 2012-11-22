@@ -33,7 +33,6 @@ tab <- tableplot(diamonds, sortCol=3, subset_string="cut=='Fair'")
 
 tab <- tableplot(diamonds, sortCol=3, subset=cut, plot=FALSE)
 
-test <- data.frame(x=1:1000, y=)
 
 tableplot(diamonds, select=c(price,carat,color,cut,clarity,table,z,y,x), 
 		  pals=list(cut="Set3(4)", color="Greens", clarity="Paired(4)"),
@@ -41,7 +40,13 @@ tableplot(diamonds, select=c(price,carat,color,cut,clarity,table,z,y,x),
 		  limitsX=list(carat=c(0, 5), table=c(50,60)),
 		  scales=c(carat="lin", price="log"))
 
+tableplot(diamonds, select=c(carat, price))
 
+
+
+library(shiny)
+runExample("01_hello")
+runApp("./inst/shinyapp/")
 
 library(ff)
 dFF <- as.ffdf(diamonds)

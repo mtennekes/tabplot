@@ -1,21 +1,19 @@
 library(shiny)
 data(diamonds, package="ggplot2")
 
-dataset <- diamonds
-vars <- names(dataset)
+vars <- names(diamonds)
 
 shinyUI(pageWithSidebar(
 	
 	# Application title
-	headerPanel("Diamonds tableplot"),
+	headerPanel("Shiny Tableplot"),
 	
 	sidebarPanel(
+		uiOutput("df"),
 		uiOutput("sortOn"),
-		#selectInput("sortCol", label="Sort on:", choices=vars),
-		checkboxInput("decreasing", label="Descending", value=FALSE),
+		checkboxInput("decreasing", label="Descending", value=TRUE),
 		sliderInput("fromto", label="Range:", min=0, max=1, value=c(0,1), format="#0.0%"),
-		#uiOutput("selected"),
-		checkboxGroupInput("select", label="Select columns:", choices=vars, selected=vars),
+		uiOutput("selected"),
 		numericInput("nBins", label="# bins", value=100, min=2, max=500, step=1)    
 	),
 	

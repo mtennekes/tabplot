@@ -153,7 +153,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	nCols <- tableplot_checkNcols(nCols, colNames, sortCol)
 	scales <- tableplot_checkScales(scales, colNames, isNumber)
 	pals <- tableplot_checkPals(pals, colNames, !isNumber)
-	change_palette_type_at <- tableplot_checkChangePalType(change_palette_type_at, 
+	if (any(!isNumber))
+		change_palette_type_at <- tableplot_checkChangePalType(change_palette_type_at, 
 														   max(sapply(pals[!isNumber], function(pal)length(pal$palette))))
 	if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") 
 		stop("<colorNA> is not correct")

@@ -7,6 +7,12 @@ dfs <- obs[sapply(obs, function(x)inherits(get(x, envir=.GlobalEnv), "data.frame
 ps <- lapply(dfs, function(d)prepare(get(d)))
 names(ps) <- dfs
 
+isNumber <- lapply(ps, function(p){
+	sapply(physical(p$data), function(col){
+		vmode(col)!="logical" && !is.factor.ff(col)
+	})
+})
+
 
 shinyServer(function(input, output) {
 	
@@ -25,7 +31,7 @@ shinyServer(function(input, output) {
 	output$selected <- reactiveUI(function(){
 		p <- dataset()
 		vars <- colnames(p$data)
-		checkboxGroupInput("select", label="Select columns:", choices=vars, selected=vars)
+		checkboxGroupInput("select", label="Columns:", choices=vars, selected=vars)
 	})
 
 	output$sortOn <- reactiveUI(function(){
@@ -35,12 +41,20 @@ shinyServer(function(input, output) {
 		selectInput("sortCol", label="Sort on:", choices=choices)
 	})
 	
+	output$logscale <-  reactiveUI(function(){
+		if (length(input$select) && length(input$dataset)) {
+			vars <- input$select[isNumber[[input$dataset]][input$select]]
+			checkboxGroupInput("logscale", label="Log scale:", choices=vars)
+		}
+	})
+	
 	
 	output$plot <- reactivePlot(function() {
 		p <- dataset()
 		vars <- colnames(p$data)
 		select <- input$select
 		sortCol <- input$sortCol
+		logscale <- input$logscale
 		if (length(select) && length(sortCol)) {
 			if (sortCol %in% select && all(select %in% vars)) {
 				decreasing <- input$decreasing
@@ -48,9 +62,16 @@ shinyServer(function(input, output) {
 		 		from <- fromto[1]
 		 		to <- fromto[2]
 				nBins <- max(2,as.numeric(input$nBins), na.rm=TRUE)
-				tableplot( p, from=from, to=to
-						 , sortCol = sortCol, select_string = select
-						 , decreasing = decreasing, nBins=nBins
+				scales <- rep("lin", length(select))
+				names(scales) <- select
+				if (length(logscale)) {
+					scales[logscale] <- "log"
+				}
+				tableplot( p, from=from, to=to,
+						   sortCol = sortCol, select_string = select,
+						   decreasing = decreasing, 
+						   scales = as.list(scales),
+						   nBins=nBins
 						 )
 			}
 		}

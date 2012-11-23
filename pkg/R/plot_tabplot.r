@@ -129,16 +129,25 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 							 , id=rep(1:(x$nBins+2),each=2)
 							 )
 	
-				## percentages ticks
-				rests <- formatC(x$rows$marks - floor(x$rows$marks))	
-				digits <- max(0,(max(sapply(rests, FUN=nchar))-2))
-				marksChar <- paste(formatC(x$rows$marks, format="f", digits=digits),"%", sep="")
 				
-				ticks <- seq(1, 0, length.out=length(x$rows$marks))
-				grid.polyline(x=c(0.80,0.80,rep(c(0.75,0.80),length(ticks))),y=c(0,1,rep(ticks,each=2)),id=rep(1:(length(ticks)+1),each=2))
+				## percentages ticks
+				marks <- x$rows$marks
+				from <- x$rows$from
+				to <- x$rows$to
+
+				marksPos <- 1 - (marks - from) / (to - from)
+				marksVis <- marksPos >=0 & marksPos <=1
+				
+				rests <- formatC(marks - floor(marks))	
+				digits <- max(0,(max(sapply(rests, FUN=nchar))-2))
+				marksChar <- paste(formatC(marks, format="f", digits=digits),"%", sep="")
+				
+				grid.polyline(x=c(0.80,0.80,rep(c(0.75,0.80),sum(marksVis))),
+							  y=c(0,1,rep(marksPos[marksVis],each=2)),
+							  id=rep(1:(sum(marksVis)+1),each=2))
 				
 				## percentages labels
-				grid.text(marksChar,x=0.75, y=ticks, just="right")
+				grid.text(marksChar[marksVis],x=0.75, y=marksPos[marksVis], just="right")
 			
 			})
 			#############################

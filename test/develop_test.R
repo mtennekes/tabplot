@@ -43,6 +43,11 @@ tableplot(diamonds, select=c(price,carat,color,cut,clarity,table,z,y,x),
 tableplot(diamonds, select=c(carat, price))
 
 
+p <- prepare(diamonds)
+tableplot(p, from=0, to=75)
+tableplot(p, from=0, to=77)
+
+
 
 library(shiny)
 runExample("01_hello")

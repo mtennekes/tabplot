@@ -85,7 +85,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 						, gp=gpar(fontsize=fontsize.title)
 	)
 	
-	vpBodyCols <- viewport(name="BodyCols",
+	vpBodyCols <- viewport(name="BodyCols"
 						 , layout = grid.layout( nrow = 1
 						 						, ncol = x$n+1
 						 						, widths = unit(c(3,rep(1,x$n)), c("lines",rep("null",x$n)))

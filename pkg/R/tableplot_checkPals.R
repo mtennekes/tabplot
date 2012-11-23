@@ -10,8 +10,7 @@ tableplot_checkPals <- function(pals, colNames, isCat) {
 	catCols <- colNames[isCat]
 	
 	if (is.null(names(pals))) {
-		pals2 <- if (length(pals) != length(catCols)) {
-			rep(pals, length.out=length(catCols))} else pals2
+		pals2 <- rep(pals, length.out=length(catCols))
 		names(pals2) <- catCols
 	} else {
 		if (!all(names(pals) %in% catCols)) stop("<pals> is not correct")

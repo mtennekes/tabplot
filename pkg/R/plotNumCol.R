@@ -3,6 +3,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 	drawContours <- TRUE
 
 	lgrey <- "#F0F0F0"	#brewer.pal(9,"Greys")[2]
+	mgrey <- "#D0D0D0"
 	lred <- "#FEE0D2"	#brewer.pal(9,"Reds")[2]
 
 	colors <- c(NA, colorRampPalette(tabplotPalettes$seq[[tCol$paletname]],space="rgb")(100))
@@ -20,6 +21,8 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 		} else {
 			cols <- NA
 		}
+		
+		
 		
 		## plot bins
 		grid.rect( x = rep(tCol$xline,tab$nBins)
@@ -56,7 +59,14 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 					 , gp = gpar(fill = lred, col=cols, linejoin="mitre", lwd=0.01)
 					 )
 		}
-	 
+
+		## plot grid lines
+		grid.polyline(x=rep(tCol$marks.x,each=2),
+					  y=rep(c(0,1),length(tCol$marks.x)),
+					  id=rep(1:length(tCol$marks.x),each=2),
+					  gp=gpar(col=mgrey))
+		
+		
 		## plot broken x-axis
 		if (tCol$brokenX != 0) {
 			blX <- ifelse(tCol$brokenX==1, 0.15, 0.85)
@@ -69,5 +79,20 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 				y = c(rep(c(-0.01, 0.01), 2), rep(c(0.99, 1.01), 2)), 
 				id = rep(1:4,each=2), gp=gpar(lwd=1))
 		}
+	})
+	cellplot(3,1,vpLegend, {
+		
+		grid.polyline(x=c(0,1,rep(tCol$marks.x,each=2)),
+					  y=c(1,1,rep(c(0.98,1),length(tCol$marks.x))),
+					  id=rep(1:(length(tCol$marks.x)+1),each=2))
+		marks <- tCol$marks.labels
+		marksLabels <- format(marks, trim=TRUE)
+		marksLarge <- abs(marks)>=10000
+		marksLabels[marksLarge] <- formatC(marks[marksLarge])
+		
+		grid.text(marksLabels,x=tCol$marks.x, y=0.93, 
+				  just="center",
+				  gp=gpar(cex=0.8))
+		
 	})
 }

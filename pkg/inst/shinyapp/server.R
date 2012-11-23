@@ -21,6 +21,12 @@ shinyServer(function(input, output) {
 		ps[[dfname]]
 	})
 	
+	numvars <- reactive(function(){
+		if (length(input$select) && length(input$dataset)) {
+			input$select[isNumber[[input$dataset]][input$select]]
+		} else character(0)
+	})
+	
 
 	output$df <- reactiveUI(function(){
 		p <- dataset()
@@ -42,12 +48,10 @@ shinyServer(function(input, output) {
 	})
 	
 	output$logscale <-  reactiveUI(function(){
-		if (length(input$select) && length(input$dataset)) {
-			vars <- input$select[isNumber[[input$dataset]][input$select]]
-			checkboxGroupInput("logscale", label="Log scale:", choices=vars)
+		if (length(numvars)) {
+			checkboxGroupInput("logscale", label="Log scale:", choices=numvars())
 		}
 	})
-	
 	
 	output$plot <- reactivePlot(function() {
 		p <- dataset()
@@ -62,17 +66,21 @@ shinyServer(function(input, output) {
 		 		from <- fromto[1]
 		 		to <- fromto[2]
 				nBins <- max(2,as.numeric(input$nBins), na.rm=TRUE)
-				scales <- rep("lin", length(select))
-				names(scales) <- select
+				scales <- rep("lin", length(numvars()))
+				names(scales) <- numvars()
 				if (length(logscale)) {
 					scales[logscale] <- "log"
 				}
+				cat("tableplot(", input$dataset, ", from=", from, ", to=", to, ", sortCol=",
+					sortCol, ",select_string=c(", paste(paste("\"", select, "\"", sep=""), collapse=","), "), decreasing=", decreasing, ", scales=c(", paste(paste(names(scales),"=", paste("\"", scales, "\"", sep="")), collapse=", "), "), nBins=", nBins, ")\n")
+				
 				tableplot( p, from=from, to=to,
 						   sortCol = sortCol, select_string = select,
 						   decreasing = decreasing, 
-						   scales = as.list(scales),
+						   scales = scales,
 						   nBins=nBins
 						 )
+				
 			}
 		}
 	})

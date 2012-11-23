@@ -1,7 +1,4 @@
 library(shiny)
-data(diamonds, package="ggplot2")
-
-vars <- names(diamonds)
 
 shinyUI(pageWithSidebar(
 	

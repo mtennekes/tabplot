@@ -18,22 +18,30 @@ coorNumCol <- function(tabCol, limitsX, bias_brokenX) {
 		minmax <-  range(num, na.rm=TRUE)	
 	}
 	
+	
+	
 	if ((minmax[2]) > 0 && minmax[1] > (bias_brokenX * minmax[2])) {
 		## broken x-axis has positive values
 		brokenX <- 1
 		values <- num - minmax[1]
+		marks <- unique(c(0, pretty(minmax, 3)))
+		marks_coor <- marks - minmax[1]
 		minV <- 0
 		maxV <- minmax[2] - minmax[1]
 	} else if ((minmax[1]) < 0 && minmax[2] < (bias_brokenX * minmax[1])) {
 		## broken x-axis has negative values
 		brokenX <- -1
 		values <- num - minmax[2]
+		marks <- unique(c(pretty(minmax, 3), 0))
+		marks_coor <- marks - minmax[2]
 		minV <- minmax[1] - minmax[2]
 		maxV <- 0
 	} else {
 		## x-axis not broken
 		brokenX <- 0
 		values <- num
+		marks <- pretty(c(0, minmax), 4)
+		marks_coor <- marks
 		minV <- minmax[1]
 		maxV <- minmax[2]
 	}
@@ -42,20 +50,32 @@ coorNumCol <- function(tabCol, limitsX, bias_brokenX) {
 	if (minV < 0 && maxV > 0) {
 		xline <- -minV / (maxV - minV)
 		widths <- (values) / (maxV - minV)
+		marks_x <- (marks_coor) / (maxV - minV)
 	} else if (brokenX==1) {
 		xline <- 0
 		widths <- 0.3 + (values) * 0.7 / (maxV - minV)
+		marks_x <- 0.3 + (marks_coor) * 0.7 / (maxV - minV)
 	} else if (brokenX==-1) {
 		xline <- 1
 		widths <- -0.3 + (values) * 0.7 / (maxV - minV)
+		marks_x <- -0.3 + (marks_coor) * 0.7 / (maxV - minV)
 	} else {
 		xline <- ifelse(maxV > 0, 0, 1)
 		widths <- (values) / max(abs(minV), abs(maxV))
+		marks_x <- (marks_coor) / max(abs(minV), abs(maxV))
 	}
 	widths[is.nan(widths)] <- minV
 	
+	marksVis <- marks_x >= ifelse(brokenX==1, 0.15, 0) &
+				marks_x <= ifelse(brokenX==-1, 0.85, 1)
+	
+	marks_x[marks==0] <- 0
+	marksVis[marks==0] <- TRUE
+	
 	tabCol$brokenX <- brokenX
 	tabCol$mean.coor <- values
+	tabCol$marks.labels <- marks[marksVis]
+	tabCol$marks.x <- marks_x[marksVis]
 	tabCol$xline <- xline
 	tabCol$widths <- widths
 	

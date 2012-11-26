@@ -129,7 +129,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 									ifelse(isLogical, "", "\""), lvls,
 									ifelse(isLogical, "", "\""), sep="")
 			tabs <- lapply(subsets_string, FUN=function(subs_string){
-                tableplot(p, select_string=select_string, sortCol=sortCol, 
+                tableplot(p, select_string=colNames, sortCol=sortCol, 
 								 decreasing=decreasing, scales=scales, max_levels=max_levels, 
 								 pals=pals, nBins=nBins,
 								 from=from, to=to, subset_string=subs_string, 

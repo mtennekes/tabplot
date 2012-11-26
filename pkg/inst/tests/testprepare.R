@@ -9,12 +9,14 @@ test_that("prepare works",{
 	data(iris)
 	p <- prepare(iris)
 	iris_data <- p$data[,]
+	iris_ordered <- p$ordered[,]
 	
 	# sort both iris and iris_data
-	x <- iris[do.call(order, iris),]
+	ordered <- lapply(iris, order)
+	x <- mapply("[", iris, ordered, SIMPLIFY=FALSE)
 	rownames(x) <- NULL
 	
-	y <- iris_data[do.call(order, iris_data),]
+	y <- mapply("[", iris_data, iris_ordered, SIMPLIFY=FALSE)
 	rownames(y) <- NULL
 	
 	expect_identical(x, y)

@@ -44,6 +44,8 @@ tableplot(diamonds, select=c(carat, price))
 
 
 p <- prepare(diamonds)
+tableplot(p, select=c(y,x), sortCol=x)
+
 tableplot(p, from=0, to=75)
 tableplot(p, from=0, to=77)
 

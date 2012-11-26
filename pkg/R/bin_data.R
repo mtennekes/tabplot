@@ -13,7 +13,7 @@
 bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE){
 	stopifnot(inherits(p, what="prepared"))
 	x <- p$data[cols]
-	o <- p$ordered[[sortCol]]
+	o <- p$ordered[[cols[sortCol]]]
 	
 	# create bin vector
 	N <- length(o)

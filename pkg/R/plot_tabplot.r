@@ -14,7 +14,7 @@
 #' @export
 #' @method plot tabplot
 plot.tabplot <-
-function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, vp=NULL, ...) {
+function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, vp=NULL, showNumAxes=TRUE, ...) {
 	require(grid)
 	
 	if (class(x)[1]!="tabplot") p(paste(deparse(substitute(x)), "is not a tabplot-object"))
@@ -195,7 +195,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 				})
 			
 				if (tCol$isnumeric){
-					plotNumCol(tCol, x, vpTitle, vpGraph, vpLegend)
+					plotNumCol(tCol, x, vpTitle, vpGraph, vpLegend, showNumAxes)
 				}
 				else {
 					plotCatCol(tCol, x, vpTitle, vpGraph, vpLegend, max_print_levels,

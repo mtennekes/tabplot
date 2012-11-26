@@ -1,4 +1,4 @@
-plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
+plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes){
 	## checks if device is Cario {cairoDevice}
 	drawContours <- TRUE
 
@@ -61,7 +61,8 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 		}
 
 		## plot grid lines
-		grid.polyline(x=rep(tCol$marks.x,each=2),
+		if (showNumAxes) 
+			grid.polyline(x=rep(tCol$marks.x,each=2),
 					  y=rep(c(0,1),length(tCol$marks.x)),
 					  id=rep(1:length(tCol$marks.x),each=2),
 					  gp=gpar(col=mgrey))
@@ -80,7 +81,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend){
 				id = rep(1:4,each=2), gp=gpar(lwd=1))
 		}
 	})
-	cellplot(3,1,vpLegend, {
+	if (showNumAxes) cellplot(3,1,vpLegend, {
 		
 		grid.polyline(x=c(0,1,rep(tCol$marks.x,each=2)),
 					  y=c(1,1,rep(c(0.98,1),length(tCol$marks.x))),

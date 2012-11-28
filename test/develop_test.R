@@ -1,4 +1,3 @@
-load_all()
 
 ### test installed package
 library(tabplot)
@@ -38,7 +37,7 @@ tableplot(diamonds, select=c(price,carat,color,cut,clarity,table,z,y,x),
 		  pals=list(cut="Set3(4)", color="Greens", clarity="Paired(4)"),
 		  numPals=c(x="Greys", y="Greens"),
 		  limitsX=list(carat=c(0, 5), table=c(50,60)),
-		  scales=c(carat="lin", price="log"))
+		  scales=c(carat="lin", price="lin"))
 
 tableplot(diamonds, select=c(carat, price))
 
@@ -48,6 +47,12 @@ tableplot(p, select=c(y,x), sortCol=x)
 
 tableplot(p, from=0, to=75)
 tableplot(p, from=0, to=77)
+
+
+diamonds$price <- diamonds$price * 1e6
+diamonds$table <- diamonds$table + 1e4
+diamonds$x <- diamonds$x / 1e4
+tableplot(diamonds)
 
 
 

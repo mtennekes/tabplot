@@ -82,16 +82,36 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes){
 		}
 	})
 	if (showNumAxes) cellplot(3,1,vpLegend, {
+		brokenX <- tCol$brokenX
 		
 		grid.polyline(x=c(0,1,rep(tCol$marks.x,each=2)),
 					  y=c(1,1,rep(c(0.98,1),length(tCol$marks.x))),
 					  id=rep(1:(length(tCol$marks.x)+1),each=2))
 		marks <- tCol$marks.labels
-		marksLabels <- format(marks, trim=TRUE)
-		marksLarge <- abs(marks)>=10000
-		marksLabels[marksLarge] <- formatC(marks[marksLarge])
 		
-		grid.text(marksLabels,x=tCol$marks.x, y=0.93, 
+		#browser()
+		marksLab <- markLabels(marks, brokenX=brokenX)
+		
+		
+		## plot broken x-axis
+		if (brokenX != 0) {
+			blX <- ifelse(brokenX==1, 0.15, 0.85)
+			blW <- 0.05
+			grid.polyline(x= blX + c(-.5 * blW + c(-0.01, 0.01), .5 * blW + c(-0.01, 0.01)), 
+						  y = rep(c(0.95, 1.05), 2), 
+						  id = rep(1:2,each=2), gp=gpar(lwd=1))
+		}
+		
+		grid.text(marksLab$markLabels,x=tCol$marks.x, y=0.93, 
+				  just="center",
+				  gp=gpar(cex=0.8))
+		
+		stepLabel <- marksLab$stepLabel
+		interceptLabel <- marksLab$interceptLabel
+		
+		add <- paste(stepLabel, interceptLabel)
+		
+		grid.text(add,x=0.5, y=0.83, 
 				  just="center",
 				  gp=gpar(cex=0.8))
 		

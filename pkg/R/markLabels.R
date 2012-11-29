@@ -27,7 +27,7 @@ markLabels <- function(marks, brokenX) {
 	} else step <- 1
 	
 	stepLabel <- formatC(step, digits=0,format="e")
-	stepLabel <- substr(stepLabel, 2, nchar(stepLabel))
+	stepLabel <- paste("x", stepLabel)
 	
 	interceptLabel <- format(intercept)
 	

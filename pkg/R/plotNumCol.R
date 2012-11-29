@@ -109,10 +109,13 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes){
 		stepLabel <- marksLab$stepLabel
 		interceptLabel <- marksLab$interceptLabel
 		
-		add <- paste(stepLabel, interceptLabel)
+		
+		add <- paste(stepLabel, interceptLabel, 
+					 sep=ifelse(stepLabel=="" || 
+					 		   	interceptLabel=="","", "\n"))
 		
 		grid.text(add,x=0.5, y=0.83, 
-				  just="center",
+				  just=c("center", "top"),
 				  gp=gpar(cex=0.8))
 		
 	})

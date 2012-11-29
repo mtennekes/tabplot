@@ -41,7 +41,7 @@ prepare <- function(x, path = NULL, name=deparse(substitute(x)), ...){
 	
 	# create ordered ffdf
 	ordered[isFactor] <- lapply(ordered[isFactor], function(f) { levels(f) <- NULL; f})
-	ordered <- lapply(ordered, fforder)
+	ordered <- lapply(ordered, fforder, na.last=FALSE)
 	ordered <- do.call(ffdf, ordered)
 	
 	#ranked <- lapply(ordered, fforder)

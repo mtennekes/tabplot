@@ -52,7 +52,9 @@ tableplot(p, from=0, to=77)
 diamonds$price <- diamonds$price * 1e6
 diamonds$table <- diamonds$table + 1e4
 diamonds$x <- diamonds$x / 1e4
-tableplot(diamonds)
+diamonds$y <- diamonds$y / 1e4
+diamonds$z <- diamonds$z * -1e7 -1e8
+tableplot(diamonds, scales=c(price="lin"))
 
 
 

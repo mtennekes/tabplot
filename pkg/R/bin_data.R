@@ -2,7 +2,7 @@
 # working horse for tableplot, does the actual binning
 #' binning data
 #' 
-#' @param p prepared data.frame or ffdf (see \code{\link{prepare}})
+#' @param p prepared data.frame or ffdf (see \code{\link{tablePrepare}})
 #' @param sortCol column on which the table will be sorted
 #' @param cols columns of the data that will be used.
 #' @param from lower boundary in quantiles

@@ -4,7 +4,7 @@ library(tabplot)
 obs <- ls(envir=.GlobalEnv)
 dfs <- obs[sapply(obs, function(x)inherits(get(x, envir=.GlobalEnv), "data.frame"))]
 
-ps <- lapply(dfs, function(d)prepare(get(d)))
+ps <- lapply(dfs, function(d)tablePrepare(get(d)))
 names(ps) <- dfs
 
 isNumber <- lapply(ps, function(p){

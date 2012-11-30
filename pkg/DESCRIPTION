@@ -16,13 +16,13 @@ Description: A tableplot is a visualisation of a (large)
 Version: 1.0
 URL: http://code.google.com/p/tableplot/
 Date: 2012-07-11
-Imports:
+Depends:
     ffbase (>= 0.6),
     grid
 Suggests:
     classInt,
-	shiny,
-	testthat,
+    shiny,
+    testthat,
     ggplot2
 Collate:
     'bin_data.R'
@@ -30,15 +30,17 @@ Collate:
     'columnTable.R'
     'datetime2fac.R'
     'getBinSizes.R'
+    'markLabels.R'
     'num2fac.R'
     'onLoad.R'
     'pkg.R'
     'plotCatCol.R'
     'plotNumCol.R'
     'plot_tabplot.r'
-    'prepare.R'
+    'tablePrepare.R'
     'print_tabplot.R'
     'summary_tabplot.R'
+    'tableApp.R'
     'tableChange.R'
     'tablePalettes.R'
     'tableSave.R'

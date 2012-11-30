@@ -12,12 +12,13 @@
 #' @return a prepared object, including the data and order of each of the columns
 #' @export
 #' @import ffbase
-prepare <- function(x, path = NULL, name=deparse(substitute(x)), ...){
+tablePrepare <- function(x, path = NULL, name=deparse(substitute(x)), ...){
 	# TODO set path where prepared data set should be stored
 	# TODO make it possible to sort on multiple columns
 	cat("Preparing data for tableplotting, storing this result increases tableplotting speed (see `prepare`)...")
 	
-	require(ffbase)
+	
+	require(ffbase) # only needed for devtools::load_all(), not for package building
 	
 	if (is.data.frame(x)){
 		x <- as.ffdf(x)

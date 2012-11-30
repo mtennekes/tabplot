@@ -9,13 +9,15 @@
 #' @param title title of the plot (shown if \code{showTitle==TRUE})
 #' @param showTitle show the title. By default \code{FALSE}, unless a \code{title} is given.
 #' @param fontsize.title the fontsize of the title
+#' @param showNumAxes plots an x-axis for each numerical variable, along with grid lines (\code{TRUE} by default).
 #' @param vp \code{\link[grid:viewport]{viewport}} to draw plot in (for instance useful to stack multiple tableplots)
 #' @param ... other arguments are not used
 #' @export
 #' @method plot tabplot
 plot.tabplot <-
-function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, vp=NULL, showNumAxes=TRUE, ...) {
-	require(grid)
+function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, showNumAxes=TRUE, vp=NULL, ...) {
+
+	require(grid) # only needed for devtools::load_all(), not for package building
 	
 	if (class(x)[1]!="tabplot") p(paste(deparse(substitute(x)), "is not a tabplot-object"))
 	

@@ -12,6 +12,8 @@
 #' \item a palette name in \code{\link{tablePalettes}}, optionally with the starting color between brackets.
 #' \item a palette vector
 #' }
+#' If the list items are unnamed, they are applied to all selected categorical variables (recycled if necessary). The list items can be assigned to specific categorical variables,
+#' by naming them accordingly.
 #' @param colorNA color for missing values
 #' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
 #' @return \link{tabplot-object}
@@ -66,16 +68,14 @@ tableChange <- function(tab, select=NULL, select_string=tab$colNames, flip=FALSE
 	
 	## change palettes
 	if (length(pals)) {
-		pals <- tableplot_checkPals(pals)
+		isCat <- !tab2$isNumber
+		pals <- tableplot_checkPals(pals, colNames=tab2$colNames, isCat=isCat)
 
-		whichCategorical <- which(sapply(tab2$columns, FUN=function(col)!col$isnumeric))
-
-		paletNr <- 1
-		for (i in whichCategorical) {
-			tab2$columns[[i]]$paletname <- pals$name[paletNr]
-			tab2$columns[[i]]$palet <- pals$palette[[paletNr]]
-			paletNr <- ifelse(paletNr==length(pals$name), 1, paletNr + 1)
-		}
+		tab2$columns[isCat] <- mapply(function(col, pal){
+			col$paletname <- pal$name
+			col$palet <- pal$palette
+			col
+		}, tab2$columns[isCat], pals[isCat], SIMPLIFY=FALSE)
 	}
 
 	## change colorNA

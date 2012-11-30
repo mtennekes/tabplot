@@ -2,6 +2,8 @@
 #'
 #' @aliases tableplot_checkScales
 #' @param scales scales
+#' @param colNames column names
+#' @param isNumber boolean vector indicating whether columns are numeric
 #' @return scales
 #' @export
 tableplot_checkScales <- function(scales, colNames, isNumber) {

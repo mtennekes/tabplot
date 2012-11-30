@@ -1,6 +1,26 @@
 markLabels <- function(marks, brokenX) {
 	nonzero <- marks!=0
 	
+	showLabels <- !nonzero		
+	if (length(marks)>5) {
+		mL <- format(marks[nonzero])
+		lastdigit <- as.numeric(substr(mL, nchar(mL),nchar(mL)))
+		step <- lastdigit[2] - lastdigit[1]
+		if (step==1) {
+			showLabels[nonzero] <- lastdigit %% 2 ==0
+		} else if (step==2) {
+			zero <- which(lastdigit==0)[1]
+			lastdigit[zero:length(lastdigit)] <- 
+				lastdigit[zero:length(lastdigit)] + 10
+			if (zero > 3) lastdigit <- lastdigit + 2
+			showLabels[nonzero] <- lastdigit %% 4 ==0
+		} else {
+			showLabels[nonzero] <- lastdigit == 0
+		}
+	} else showLabels <- rep.int(TRUE, length(marks))
+	
+	
+	
 	diff <- min(marks[nonzero][-1] - marks[nonzero][-sum(nonzero)])
 	(minID <- floor(round(log10(diff), digits=5)))
 	(maxID <- floor(log10(max(abs(marks)))))
@@ -17,7 +37,7 @@ markLabels <- function(marks, brokenX) {
 	if (add_intercept && brokenX!=0) {
 		smallest <- min(abs(marks[nonzero]))
 		intercept <- sign(min(marks[nonzero])) * floor(smallest / 10^(minID+1)) * 10^(minID+1)
-		marks[nonzero] <- marks[nonzero] - intercept
+		marks[nonzero] <- round(marks[nonzero] - intercept, digits=10)
 	} else intercept <- 0
 	
 	if (scientific) {
@@ -37,7 +57,8 @@ markLabels <- function(marks, brokenX) {
 	
 	list(markLabels = format(marks, trim=TRUE),
 		 stepLabel = ifelse(step==1, "", stepLabel),
-		 interceptLabel = ifelse(intercept==0, "", interceptLabel))
+		 interceptLabel = ifelse(intercept==0, "", interceptLabel),
+		 showLabels = showLabels)
 }
 # markLabels(marks=c(0, 5000, 10000, 15000), brokenX=0)
 # markLabels(marks=c(0, 0.00995, 0.01000, 0.01005), brokenX=1)

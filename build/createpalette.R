@@ -48,5 +48,5 @@ tabplotPalettes <- list(
 
 	
 	
-save("tabplotPalettes", file="./pkg/R/sysdata.rda")
+save("tabplotPalettes", file="../pkg/R/sysdata.rda")
 

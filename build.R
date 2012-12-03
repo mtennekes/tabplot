@@ -1,13 +1,12 @@
 require(devtools)
 
-## Create palletes and vignette...
-setwd("../")
-source("./build/createpalette.R")
-source("./build/vignette.R")
-setwd("./pkg")
+## Create palletes, vignette and documentation...
+setwd("../build")
+source("createpalette.R")
+source("vignette.R")
+source("roxygen.R")
+setwd("../pkg")
 
-## documentation
-source("../roxygen.R")
 
 ## check
 if (check()) {

@@ -11,7 +11,7 @@ echo Build vignette...
 R -q -f build/vignette.R
 
 echo Generate documentation...
-Rscript roxygen.R
+R -q -f build/roxygen.R
 
 md output
 cd output

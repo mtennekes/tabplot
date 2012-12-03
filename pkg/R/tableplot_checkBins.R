@@ -6,7 +6,7 @@
 #' @return the (possibly corrected) number of bins
 #' @export
 tableplot_checkBins <- function(nBins, nDat) {
-	if (class(nBins)[1]!="numeric") stop("<nBins> is not numeric")
+	if (!is.numeric(nBins)) stop("<nBins> is not numeric")
 	if (nBins > nDat) { 
 		if (nDat > 1000) {
 			warning("Setting nBins (",nBins,") to 1000")

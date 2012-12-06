@@ -43,14 +43,12 @@
 \maketitle
 \begin{abstract}
 
-The tableplot is a powerful visualization method to explore and analyse large multivariate datasets. In this vignette, the implementation of tableplots in R is described. 
+The tableplot is a powerful visualization method to explore and analyse large multivariate datasets. In this vignette, the implementation of tableplots in R is described, and illustrated with the diamonds dataset from the {\tt ggplot2} package. 
 
 
 \end{abstract}
 
 <<echo=FALSE, results='hide', message=FALSE>>=
-#library(tabplot)
-#getwd()
 library(devtools)
 load_all("../pkg")
 @
@@ -68,13 +66,11 @@ A tableplot applied to the diamonds dataset of the {\tt ggplot2} package (where 
 
 Tableplots are aimed to visualize multivariate datasets with several variabels (up tot a dozen) and a large number of records, say at least one thousand. Tableplots can also be generated for datasets with less records, but they may be less useful. The maximum number of rows that can be visualized with the {\tt tabplot} package depends on the R's memory, or, when using the {\tt ff} package, on the limitations of that package.
 
-A graphical user interface for generating tableplots is implemented in the package {\tt tabplotGTK}.
-
 \section{Getting started with the {\tt tableplot} function}
 
 The diamonds dataset is very suitable to demonstrate the {\tt tabplot} package. To illustrate the visualization of missing values, we add several {\tt NA}'s.
 
-<<chunk1,  results='hide'>>=
+<<chunk1,  message=FALSE,  results='hide'>>=
 require(ggplot2)
 data(diamonds)
 ## add some NA's
@@ -85,7 +81,7 @@ is.na(diamonds$cut) <- (runif(nrow(diamonds)) > 0.8)
 A tableplot is simply created by the function {\tt tableplot}. The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt select}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first column. With the argument {\tt sortCol}, we can specify on which column(s) the data is sorted.
 
 \begin{figure}[htp]
-<<chunk2, fig.height=6.5, fig.width=10, dev='pdf'>>=
+<<chunk2,  message=FALSE, results='hide', fig.height=6.5, fig.width=10, dev='pdf'>>=
 tableplot(diamonds)
 @
 \vspace{-2em}
@@ -96,7 +92,7 @@ tableplot(diamonds)
 The resulting tableplot in Figure~\ref{fig:tp2} consists of five columns, where the data is sorted on price. Notice that the missing values that we have added are placed at the bottom and (by default) shown in a bright red color.
 
 \begin{figure}[!htp]
-<<chunk3, fig.height=6.5, fig.width=10, tidy=FALSE>>=
+<<chunk3,  results='hide', fig.height=6.5, fig.width=10, tidy=FALSE>>=
 tableplot(diamonds, select = c(carat, price, cut, color, clarity), sortCol = price)
 @
 \vspace{-2em}
@@ -116,7 +112,7 @@ We can focus our attention to the 5\% most expensive diamonds by setting the {\t
 
 
 \begin{figure}[!htp]
-<<chunk4, fig.height=6.5, fig.width=10, tidy=FALSE>>=
+<<chunk4,  results='hide', fig.height=6.5, fig.width=10, tidy=FALSE>>=
 tableplot(diamonds, select = c(carat, price, cut, color, clarity), sortCol = price, from = 0, to = 5)
 @
 \vspace{-2em}
@@ -124,14 +120,14 @@ tableplot(diamonds, select = c(carat, price, cut, color, clarity), sortCol = pri
 \label{fig:tp3}
 \end{figure}
 
-The vertical axis contains two sets of tick marks. The small tick marks correspond with the row bins and the large tick marks correspond with the percentages between {\tt from} and {\tt to}. The latter are determined by R's base function {\tt pretty}.
+The vertical axis contains two sets of tick marks. The small tick marks correspond with the row bins and the large tick marks correspond with the percentages between {\tt from} and {\tt to}.
 
 
 \subsection{Filtering}\label{secfilt}
 The argument {\tt subset} serves as a data filter. The tableplot in Figure~\ref{fig:tp4} shows that data of premium cut diamonds that cost less than 5000\$.
 
 \begin{figure}[!htp]
-<<chunk5, fig.height=6.5, fig.width=10>>=
+<<chunk5,  results='hide', fig.height=6.5, fig.width=10>>=
 tableplot(diamonds, subset = price < 5000 & cut == "Premium")
 @
 \vspace{-2em}
@@ -139,7 +135,7 @@ tableplot(diamonds, subset = price < 5000 & cut == "Premium")
 \label{fig:tp4}
 \end{figure}
 
-It is also possible to create a tableplot of each category of a categorical variable in one call. For instance, by setting {\tt subset=color}, we create a tableplot for each color class.
+It is also possible to create a tableplot for each category of a categorical variable in one call. For instance, by setting {\tt subset=color} we create a tableplot for each color class.
 
 \clearpage
 
@@ -150,7 +146,7 @@ For each bin of a continuous variable, the mean value is calculated (see Algorit
 When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation. The argument {\tt scales} can be set to linear mode {\tt "lin"}, logarithmic mode {\tt "log"}, or the default value {\tt "auto"}, which automatically determines which of the former two modes is used.
 
 \subsection{Used colors}
-The colors of the bins indicate the fraction of missing values. By default, a sequential color palette of blues is used. If a bin does not contain any missing values, the corresponding bar is depicted in dark blue. The more missing values, the brighter the color. (Alternatively, a grey or a green palette can be used by setting the argument {\tt numPals}; see Figure~\ref{fig:pals}.) Bars of which all values are missing are depicted in light red.
+The colors of the bins indicate the fraction of missing values. By default, a sequential color palette of blues is used. If a bin does not contain any missing values, the corresponding bar is depicted in dark blue. The more missing values, the brighter the color. (Alternatively, other quantitative palettes can be used by setting the argument {\tt numPals}; see Figure~\ref{fig:pals}.) Bars of which all values are missing are depicted in light red.
 
 \begin{figure}[htp]
 <<chunk6, fig.height=3.5, fig.width=10>>=
@@ -161,10 +157,14 @@ tablePalettes()
 \label{fig:pals}
 \end{figure}
 
-\subsection{Broken x-axes}
 
-Observe that the x-axes of the variables depth and table in Figure~\ref{fig:tp1} are broken. The reason is that otherwise the lengths of the bars are hard to tell apart. For instance, the mean values of the variable depth in Figure~\ref{fig:tp1} range between $61.36$ and $62.33$. The argument {\tt bias\_brokenX} can be set to determine when a broken x-axis is applied. See Appendix~\ref{secbrokenx} for details.
+\subsection{X-axes}
 
+The x-axes a plotted as compact as possible. This is illustrated in the x-axis for the variable price.
+
+Observe that the x-axes of the variables depth and table in Figure~\ref{fig:tp1} are broken. The reason is that otherwise the lengths of the bars are hard to tell apart. The argument {\tt bias\_brokenX} can be set to determine when a broken x-axis is applied. See Appendix~\ref{secbrokenx} for details.
+
+ For each numerical variable, the limits of the x-axes can be determined manually with the argument {\tt limitsX}
 
 
 \section{Categorical variables}
@@ -177,7 +177,7 @@ Suppose we want a to use the default palette for the variable {\tt cut}, but sta
 
 
 \begin{figure}[htp]
-<<chunk7, fig.height=6.5, fig.width=10, tidy=FALSE>>=
+<<chunk7,  results='hide', fig.height=6.5, fig.width=10, tidy=FALSE>>=
 tableplot(diamonds, pals = list("Set1(7)", "Set5", rainbow(8)))
 @
 \vspace{-2em}
@@ -193,7 +193,7 @@ There are several arguments that determine the layout of the plot:
 {\tt fontsize}, {\tt legend.lines}, {\tt title}, {\tt showTitle}, and {\tt fontsize.title}. An example of the use of these arguments is given in Figure~\ref{fig:tp6}.
 
 \begin{figure}[htp]
-<<chunk8, fig.height=6.5, fig.width=10, tidy=FALSE>>=
+<<chunk8,  results='hide', fig.height=6.5, fig.width=10, tidy=FALSE>>=
 tableplot(diamonds, select = 1:7, fontsize = 14, legend.lines = 8, title = "Shine on you crazy Diamond", fontsize.title = 18)
 @
 \vspace{-2em}
@@ -212,7 +212,7 @@ The function {\tt tableplot} returns a tabplot-object, that can be used to make 
 
 The output of the {\tt tableplot} function can be assigned to a variable. The graphical output can be omitted by setting the argument {\tt plot} to {\tt FALSE}.
 
-<<chunk9>>=
+<<chunk9,  results='hide'>>=
 tab <- tableplot(diamonds, plot = FALSE)
 @
 

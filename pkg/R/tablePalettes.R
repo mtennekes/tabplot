@@ -44,7 +44,7 @@
 #' @export
 #' @keywords color palettes
 tablePalettes <- function(plot = TRUE) {
-	
+	require(grid)
 	if (plot) {
 		tpal <- c(list(sequential=NA), tabplotPalettes$seq, list(qualitative=NA), tabplotPalettes$qual)
 		

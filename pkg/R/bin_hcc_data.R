@@ -6,7 +6,7 @@ function(bd, max_levels) {
 		nCol <- ncol(col)
 		# check whether nCol, the number is categories ('na' excluded), exceeds max_levels
 		# numerical variables are out of scope since nCol = 3 << max_levels
-		if (nCol > max_levels - 1) {
+		if (nCol > max_levels) {
 			mapping <- as.numeric(cut(seq.int(nCol-1), breaks=max_levels))
 			mapping_na <- c(mapping, nlev)
 			

@@ -91,14 +91,26 @@
 \author{Martijn Tennekes and Edwin de Jonge}
 \date{\today\\ (A later version may be available on \href{http://cran.r-project.org/package=tabplot}{CRAN})}
 
+
+
+
 \begin{document}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+opts_knit$\hlfunctioncall{set}(concordance = TRUE)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
 
 \setkeys{Gin}{width=1\textwidth}
 
 \maketitle
 \begin{abstract}
 
-The tableplot is a powerful visualization method to explore and analyse large multivariate datasets. In this vignette, the implementation of tableplots in R is described. 
+The tableplot is a powerful visualization method to explore and analyse large multivariate datasets. In this vignette, the implementation of tableplots in R is described, and illustrated with the diamonds dataset from the {\tt ggplot2} package. 
 
 
 \end{abstract}
@@ -118,8 +130,6 @@ The tableplot is a visualization method that is used to explore and analyse larg
 A tableplot applied to the diamonds dataset of the {\tt ggplot2} package (where some missing values were added) is illustrated in Figure~\ref{fig:tp1}. Each column represents a variable. The whole data set is sorted according to one column (in this case, carat), and then grouped into row bins. Algorithm~\ref{alg} in Appendix~\ref{secalg} describes the creation of a tableplot into detail.
 
 Tableplots are aimed to visualize multivariate datasets with several variabels (up tot a dozen) and a large number of records, say at least one thousand. Tableplots can also be generated for datasets with less records, but they may be less useful. The maximum number of rows that can be visualized with the {\tt tabplot} package depends on the R's memory, or, when using the {\tt ff} package, on the limitations of that package.
-
-A graphical user interface for generating tableplots is implemented in the package {\tt tabplotGTK}.
 
 \section{Getting started with the {\tt tableplot} function}
 
@@ -146,10 +156,11 @@ A tableplot is simply created by the function {\tt tableplot}. The result is dep
 \begin{alltt}
 \hlfunctioncall{tableplot}(diamonds)
 \end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk2} 
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/chunk2} 
+
 \end{knitrout}
 
-\vspace{-2em}
 \caption{Tableplot of the diamonds dataset}
 \label{fig:tp1}
 \end{figure}
@@ -160,12 +171,14 @@ The resulting tableplot in Figure~\ref{fig:tp2} consists of five columns, where 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlfunctioncall{tableplot}(diamonds, select = \hlfunctioncall{c}(carat, price, cut, color, clarity), sortCol = price)
+\hlfunctioncall{tableplot}(diamonds, select = \hlfunctioncall{c}(carat, price, 
+    cut, color, clarity), sortCol = price)
 \end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk3} 
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/chunk3} 
+
 \end{knitrout}
 
-\vspace{-2em}
 \caption{Tableplot sorted by price}
 \label{fig:tp2}
 \end{figure}
@@ -185,17 +198,20 @@ We can focus our attention to the 5\% most expensive diamonds by setting the {\t
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlfunctioncall{tableplot}(diamonds, select = \hlfunctioncall{c}(carat, price, cut, color, clarity), sortCol = price, from = 0, to = 5)
+\hlfunctioncall{tableplot}(diamonds, select = \hlfunctioncall{c}(carat, price, 
+    cut, color, clarity), sortCol = price, 
+    from = 0, to = 5)
 \end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk4} 
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/chunk4} 
+
 \end{knitrout}
 
-\vspace{-2em}
 \caption{Zooming in}
 \label{fig:tp3}
 \end{figure}
 
-The vertical axis contains two sets of tick marks. The small tick marks correspond with the row bins and the large tick marks correspond with the percentages between {\tt from} and {\tt to}. The latter are determined by R's base function {\tt pretty}.
+The vertical axis contains two sets of tick marks. The small tick marks correspond with the row bins and the large tick marks correspond with the percentages between {\tt from} and {\tt to}.
 
 
 \subsection{Filtering}\label{secfilt}
@@ -207,15 +223,16 @@ The argument {\tt subset} serves as a data filter. The tableplot in Figure~\ref{
 \begin{alltt}
 \hlfunctioncall{tableplot}(diamonds, subset = price < 5000 & cut == \hlstring{"Premium"})
 \end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk5} 
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/chunk5} 
+
 \end{knitrout}
 
-\vspace{-2em}
 \caption{Tableplot of filtered diamonds data}
 \label{fig:tp4}
 \end{figure}
 
-It is also possible to create a tableplot of each category of a categorical variable in one call. For instance, by setting {\tt subset=color}, we create a tableplot for each color class.
+It is also possible to create a tableplot for each category of a categorical variable in one call. For instance, by setting {\tt subset=color} we create a tableplot for each color class.
 
 \clearpage
 
@@ -226,7 +243,7 @@ For each bin of a continuous variable, the mean value is calculated (see Algorit
 When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation. The argument {\tt scales} can be set to linear mode {\tt "lin"}, logarithmic mode {\tt "log"}, or the default value {\tt "auto"}, which automatically determines which of the former two modes is used.
 
 \subsection{Used colors}
-The colors of the bins indicate the fraction of missing values. By default, a sequential color palette of blues is used. If a bin does not contain any missing values, the corresponding bar is depicted in dark blue. The more missing values, the brighter the color. (Alternatively, a grey or a green palette can be used by setting the argument {\tt numPals}; see Figure~\ref{fig:pals}.) Bars of which all values are missing are depicted in light red.
+The colors of the bins indicate the fraction of missing values. By default, a sequential color palette of blues is used. If a bin does not contain any missing values, the corresponding bar is depicted in dark blue. The more missing values, the brighter the color. (Alternatively, other quantitative palettes can be used by setting the argument {\tt numPals}; see Figure~\ref{fig:pals}.) Bars of which all values are missing are depicted in light red.
 
 \begin{figure}[htp]
 \begin{knitrout}
@@ -234,45 +251,85 @@ The colors of the bins indicate the fraction of missing values. By default, a se
 \begin{alltt}
 \hlfunctioncall{tablePalettes}()
 \end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk6} 
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/chunk6} 
+
 \end{knitrout}
 
-\vspace{-2em}
 \caption{Color palettes}
 \label{fig:pals}
 \end{figure}
 
-\subsection{Broken x-axes}
 
-Observe that the x-axes of the variables depth and table in Figure~\ref{fig:tp1} are broken. The reason is that otherwise the lengths of the bars are hard to tell apart. For instance, the mean values of the variable depth in Figure~\ref{fig:tp1} range between $61.36$ and $62.33$. The argument {\tt bias\_brokenX} can be set to determine when a broken x-axis is applied. See Appendix~\ref{secbrokenx} for details.
+\subsection{X-axes}
 
+The x-axes a plotted as compact as possible. This is illustrated in the x-axis for the variable price.
+
+Observe that the x-axes of the variables depth and table in Figure~\ref{fig:tp1} are broken. In this way the bars are easier to differentiate. The argument {\tt bias\_brokenX} can be set to determine when a broken x-axis is applied. See Appendix~\ref{secbrokenx} for details.
+
+For each numerical variable, the limits of the x-axes can be determined manually with the argument {\tt limitsX}.
 
 
 \section{Categorical variables}
 \subsection{Color palettes}
-Several qualitative palettes are implemented. See Figure~\ref{fig:pals}. Most palettes are based on palettes from the {\tt RColorBrewer} package. Palettes {\tt "Set1"} and {\tt "Set7"} are colorblind-friendly palettes.
+The implemented palettes are depicted in Figure~\ref{fig:pals}. These palettes, as well as own palettes, can be assigned to the categorical variables with the argument {\tt pals}.
 
-The argument {\tt pals} is used to assign color palettes to the categorical variables. All qualitative palettes listed in Figure~\ref{fig:pals} can be used as well as custom palettes.  
-
-Suppose we want a to use the default palette for the variable {\tt cut}, but starting with the seventh color, pink. Further we want the fifth palette for the variable {\tt color}, and a custom palette, say a rainbow palette, for the variable {\tt clarity}. The resulting tableplot is depicted in Figure~\ref{fig:tp5}.
+Suppose we want a to use the default palette for the variable {\tt cut}, but starting with the sixth color, blue. Further we want the fifth palette for the variable {\tt color}, and a custom palette, say a rainbow palette, for the variable {\tt clarity}. The resulting tableplot is depicted in Figure~\ref{fig:tp5}.
 
 
 \begin{figure}[htp]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlfunctioncall{tableplot}(diamonds, pals = \hlfunctioncall{list}(\hlstring{"\hlfunctioncall{Set1}(7)"}, \hlstring{"Set5"}, \hlfunctioncall{rainbow}(8)))
+\hlfunctioncall{tableplot}(diamonds, pals = \hlfunctioncall{list}(cut = \hlstring{"\hlfunctioncall{Set1}(6)"}, 
+    color = \hlstring{"Set5"}, clarity = \hlfunctioncall{rainbow}(8)))
 \end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk7} 
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/chunk7} 
+
 \end{knitrout}
 
-\vspace{-2em}
 \caption{Tableplot with other color palettes}
 \label{fig:tp5}
 \end{figure}
 
+Also quantitative palettes can be used (for instance by setting {\tt clarity="Greens"}. Missing values are by default depicted in red. This can be changed with the argument {\tt colorNA}.
 
-Missing values are by default depicted in red. This can be changed with the argument {\tt colorNA}.
+\subsection{High cardinality data}
+To illustrate how tableplots deal with high cardinality data, we extend the diamonds dataset:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+diamonds$carat_class <- \hlfunctioncall{cut}(diamonds$carat, 
+    breaks = \hlfunctioncall{pretty}(diamonds$carat, n = 20))
+diamonds$price_class <- \hlfunctioncall{cut}(diamonds$price, 
+    breaks = \hlfunctioncall{pretty}(diamonds$price, n = 100))
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+For variables with over {\tt change\_palette\_type\_at} (by default 20) categories, color palettes are constructed by using interpolated colors. This creates a rainbow effect (see Figure~\ref{fig:tphc}). If the number of categories is than {\tt change\_palette\_type\_at}, the assigned palette is recycled in order to obtain the number of categories.
+
+\begin{figure}[htp]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{tableplot}(diamonds, select = \hlfunctioncall{c}(carat, price, 
+    carat_class, price_class))
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/chunk9} 
+
+\end{knitrout}
+
+\caption{Tableplot with other color palettes}
+\label{fig:tphc}
+\end{figure}
+
+If the number of categories exceeds {\tt max\_level} (by default 50), the categories are rebinned into {\tt max\_level} category groups. This is illustrated by the variable price\_class in Figure~\ref{fig:tphc}.
+
 
 \section{Layout options}
 There are several arguments that determine the layout of the plot:
@@ -282,17 +339,22 @@ There are several arguments that determine the layout of the plot:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlfunctioncall{tableplot}(diamonds, select = 1:7, fontsize = 14, legend.lines = 8, title = \hlstring{"Shine on you crazy Diamond"}, fontsize.title = 18)
+\hlfunctioncall{tableplot}(diamonds, select = 1:7, fontsize = 14, 
+    legend.lines = 8, title = \hlstring{"Shine on you crazy Diamond"}, 
+    fontsize.title = 18)
 \end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk8} 
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/chunk10} 
+
 \end{knitrout}
 
-\vspace{-2em}
 \caption{Tableplot with other color palettes}
 \label{fig:tp6}
 \end{figure}
 
 These layout arguments are not handled by the {\tt tableplot} function directly, but they are on to {\tt plot.tabplot}. This function plots a {\tt tabplot} object, which is explained in Section~\ref{sectab}. The layout arguments will be especially important when saving a tableplot (see Section~\ref{secsave}).
+
+\section{Preprocessing of big data}
 
 
 \section{Advanced tableplot features}
@@ -322,7 +384,7 @@ The tabplot-object is a list that contains all information to depict a tableplot
 \begin{verbatim}
 ##       general               variable1            variable2          
 ##  dataset  :diamonds   name       :carat     name      :cut          
-##  variables:10         type       :numeric   type      :categorical  
+##  variables:12         type       :numeric   type      :categorical  
 ##  objects  :53940      sort       :TRUE      sort      :NA           
 ##  bins     :100        scale_init :auto      categories:6            
 ##  from     :0%         scale_final:lin                               
@@ -341,12 +403,20 @@ The tabplot-object is a list that contains all information to depict a tableplot
 ##  scale_init :auto      scale_init :auto      scale_init :auto     
 ##  scale_final:lin       scale_final:lin       scale_final:lin      
 ##                                                                   
-##        variable9             variable10     
-##  name       :y         name       :z        
-##  type       :numeric   type       :numeric  
-##  sort       :NA        sort       :NA       
-##  scale_init :auto      scale_init :auto     
-##  scale_final:lin       scale_final:lin
+##        variable9             variable10           variable11         
+##  name       :y         name       :z         name      :carat_class  
+##  type       :numeric   type       :numeric   type      :categorical  
+##  sort       :NA        sort       :NA        sort      :NA           
+##  scale_init :auto      scale_init :auto      categories:26           
+##  scale_final:lin       scale_final:lin                               
+##                                                                      
+##       variable12         
+##  name      :price_class  
+##  type      :categorical  
+##  sort      :NA           
+##  categories:51           
+##                          
+## 
 \end{verbatim}
 \begin{alltt}
 \hlfunctioncall{plot}(tab)
@@ -370,13 +440,16 @@ The function {\tt tableChange} is used to make minor changes to a tabplot-object
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-tab2 <- \hlfunctioncall{tableChange}(tab, select_string = \hlfunctioncall{c}(\hlstring{"carat"}, \hlstring{"price"}, \hlstring{"cut"}, \hlstring{"color"}, \hlstring{"clarity"}), pals = \hlfunctioncall{list}(\hlstring{"\hlfunctioncall{Set1}(2)"}))
+tab2 <- \hlfunctioncall{tableChange}(tab, select_string = \hlfunctioncall{c}(\hlstring{"carat"}, 
+    \hlstring{"price"}, \hlstring{"cut"}, \hlstring{"color"}, \hlstring{"clarity"}), 
+    pals = \hlfunctioncall{list}(\hlstring{"\hlfunctioncall{Set1}(2)"}))
 \hlfunctioncall{plot}(tab2)
 \end{alltt}
-\end{kframe}\includegraphics[width=\maxwidth]{figure/chunk11} 
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/chunk13} 
+
 \end{knitrout}
 
-\vspace{-2em}
 \caption{Plot of a {\tt tabplot} object}
 \label{fig:tp7}
 \end{figure}
@@ -388,7 +461,9 @@ With the function {\tt tableSave}, tableplots can be saved to a desired grahical
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlfunctioncall{tableSave}(tab, filename = \hlstring{"diamonds.png"}, width = 5, height = 3, fontsize = 6, legend.lines = 6)
+\hlfunctioncall{tableSave}(tab, filename = \hlstring{"diamonds.png"}, 
+    width = 5, height = 3, fontsize = 6, 
+    legend.lines = 6)
 \end{alltt}
 \end{kframe}
 \end{knitrout}

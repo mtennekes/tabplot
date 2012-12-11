@@ -223,6 +223,63 @@ These layout arguments are not handled by the {\tt tableplot} function directly,
 
 \section{Preprocessing of big data}
 
+For large datasets it is recommended to preprocess the data:
+<<chunk_pre,  message=FALSE,  results='hide', tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+# create large dataset
+large_diamonds <- diamonds[rep(seq.int(nrow(diamonds)), 10),]
+
+system.time({
+	# preprocess the data
+	p <- tablePrepare(large_diamonds)
+})
+@
+The function {\tt tablePrepare} determines the sorting order of each data column. The result can be used to create a tableplot:
+
+<<chunk_pre2,  message=FALSE,  results='hide', tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+# create tableplot
+system.time({
+	tableplot(large_diamonds, plot=FALSE)
+})
+
+# create tableplot in the fast way
+system.time({
+	tableplot(p, plot=FALSE)
+})
+@
+
+The main advantage of this approach is that sorting all columns is done only once.
+
+
+
+
+Since this is the most computational time consuming task in creating a tableplot, is 
+
+
+
+
+is function
+
+
+The object {\tt p} contains all the necessary information
+
+
+Sorting the data may take a lot of computational time, especially for large datasets. 
+
+
+This is very annoying when you want to experiment with certain settings such as the sorting column, and the number of row bins. However, it is possible to do all the 
+
+
+
+Therefore, we let the sorting process take place in 
+
+To avoid these problems, we developped the function {\tt tablePrepare}.
+
+Therefore, we tablePrepare
+
+
+To optimize the 
+
+The function {\tt tableplot} returns 
 
 \section{Advanced tableplot features}
 

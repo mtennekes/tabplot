@@ -96,13 +96,7 @@
 
 \begin{document}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-opts_knit$\hlfunctioncall{set}(concordance = TRUE)
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+
 
 
 \setkeys{Gin}{width=1\textwidth}
@@ -331,33 +325,88 @@ For variables with over {\tt change\_palette\_type\_at} (by default 20) categori
 If the number of categories exceeds {\tt max\_level} (by default 50), the categories are rebinned into {\tt max\_level} category groups. This is illustrated by the variable price\_class in Figure~\ref{fig:tphc}.
 
 
-\section{Layout options}
-There are several arguments that determine the layout of the plot:
-{\tt fontsize}, {\tt legend.lines}, {\tt title}, {\tt showTitle}, and {\tt fontsize.title}. An example of the use of these arguments is given in Figure~\ref{fig:tp6}.
 
-\begin{figure}[htp]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlfunctioncall{tableplot}(diamonds, select = 1:7, fontsize = 14, 
-    legend.lines = 8, title = \hlstring{"Shine on you crazy Diamond"}, 
-    fontsize.title = 18)
-\end{alltt}
-\end{kframe}
-\includegraphics[width=\maxwidth]{figure/chunk10} 
-
-\end{knitrout}
-
-\caption{Tableplot with other color palettes}
-\label{fig:tp6}
-\end{figure}
-
-These layout arguments are not handled by the {\tt tableplot} function directly, but they are on to {\tt plot.tabplot}. This function plots a {\tt tabplot} object, which is explained in Section~\ref{sectab}. The layout arguments will be especially important when saving a tableplot (see Section~\ref{secsave}).
 
 \section{Preprocessing of big data}
 
+For large datasets it is recommended to preprocess the data with the function {\tt tablePrepare}. This function determines to sorting order of each data column, the most computational time consuming task to create tableplots. The advantage of using {\tt tablePrepare} as an intermediate step, is that the processing time to create tabelplots is reduced big time. This is especially useful when experimenting with arguments such as the number the row bins ({\tt nBins}) and the sorting column ({\tt sortCol}), or when using tableplots interactively.
 
-\section{Advanced tableplot features}
+The following example illustrated the tablePrepare function for big data:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcomment{# create large dataset}
+large_diamonds <- diamonds[\hlfunctioncall{rep}(\hlfunctioncall{seq.int}(\hlfunctioncall{nrow}(diamonds)), 
+    10), ]
+
+\hlfunctioncall{system.time}(\{
+    p <- \hlfunctioncall{tablePrepare}(large_diamonds)
+\})
+\end{alltt}
+\end{kframe}
+\begin{kframe}\begin{verbatim}
+##    user  system elapsed 
+##    5.57    0.83    9.32
+\end{verbatim}
+\begin{alltt}
+
+\hlfunctioncall{system.time}(\{
+    \hlfunctioncall{tableplot}(p, plot = FALSE)
+\})
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.61    0.18    1.75
+\end{verbatim}
+\begin{alltt}
+
+\hlfunctioncall{system.time}(\{
+    \hlfunctioncall{tableplot}(p, sortCol = price, nBins = 200, 
+        plot = FALSE)
+\})
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.73    0.17    1.15
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Although the first step takes a couple of seconds on a moderate desktop computer, the processing time to create a tableplot from the intermediate result, object {\tt p}, is very short in comparison to the direct approach:
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{system.time}(\{
+    \hlfunctioncall{tableplot}(large_diamonds, plot = FALSE)
+\})
+\end{alltt}
+\end{kframe}
+\begin{kframe}\begin{verbatim}
+##    user  system elapsed 
+##    4.39    1.18   10.81
+\end{verbatim}
+\begin{alltt}
+
+\hlfunctioncall{system.time}(\{
+    \hlfunctioncall{tableplot}(large_diamonds, sortCol = price, 
+        nBins = 200, plot = FALSE)
+\})
+\end{alltt}
+\end{kframe}
+\begin{kframe}\begin{verbatim}
+##    user  system elapsed 
+##    4.56    1.49    9.69
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+
+\section{Miscellaneous}
 
 \subsection{The tabplot object}\label{sectab}
 
@@ -425,12 +474,37 @@ The tabplot-object is a list that contains all information to depict a tableplot
 \end{knitrout}
 
 
-\subsection{Multiple tableplots}
+\subsection{Multiple tableplots}\label{secmult}
 
 When a dataset contains more variables than can be plotted, multiple tableplots can be generated with the argument {\tt nCols}. This argument determines the maximum number of columns per tableplot. When the number of selected columns is larger than {\tt nCols}, multiple tableplots are generated. In each of them, the sorted columns are plotted on the lefthand side. 
 
 When multiple tableplots are created, the (silent) output is a list of {\tt tabplot} objects. This is also the case when the dataset is filtered by a categorical variable, e.~g. {\tt subset = color}
 (see Section~\ref{secfilt}).
+
+\subsection{Layout options}\label{seclay}
+There are several arguments that determine the layout of the plot:
+{\tt fontsize}, {\tt legend.lines}, {\tt max_print_levels}, {\tt text_NA}, {\tt title}, {\tt showTitle}, {\tt fontsize.title}, {\tt showNumAxes}, and {\tt vp}. The following code illustrates this.
+
+\begin{figure}[htp]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{tableplot}(diamonds, select = 1:7, fontsize = 14, 
+    legend.lines = 8, title = \hlstring{"Shine on you crazy Diamond"}, 
+    fontsize.title = 18)
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/chunk10} 
+
+\end{knitrout}
+
+\caption{Tableplot with other color palettes}
+\label{fig:tp6}
+\end{figure}
+
+The layout arguments named above are passed on from {\tt tableplot} to {\tt plot.tabplot}. These arguments will be especially important when saving a tableplot (see Section~\ref{secsave}).
+
+
 
 \subsection{Minor changes}
 
@@ -442,7 +516,7 @@ The function {\tt tableChange} is used to make minor changes to a tabplot-object
 \begin{alltt}
 tab2 <- \hlfunctioncall{tableChange}(tab, select_string = \hlfunctioncall{c}(\hlstring{"carat"}, 
     \hlstring{"price"}, \hlstring{"cut"}, \hlstring{"color"}, \hlstring{"clarity"}), 
-    pals = \hlfunctioncall{list}(\hlstring{"\hlfunctioncall{Set1}(2)"}))
+    pals = \hlfunctioncall{list}(cut = \hlstring{"\hlfunctioncall{Set1}(2)"}))
 \hlfunctioncall{plot}(tab2)
 \end{alltt}
 \end{kframe}
@@ -465,10 +539,13 @@ With the function {\tt tableSave}, tableplots can be saved to a desired grahical
     width = 5, height = 3, fontsize = 6, 
     legend.lines = 6)
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\textcolor{errorcolor}{\#\# Error: unused argument(s) (fontsize = 6, legend.lines = 6)}}\end{kframe}
 \end{knitrout}
 
 
+All layout options named in Section~\ref{seclay} can be used here, such as {\fontsize} and {\tt legend.lines}. When {\tt tab} is a list of tabplot-objects (see Section~\ref{secmult}), the argument {\tt onePage} determines whether the tableplots are stacked on one page or printed on seperate pages.
 
 \newpage
 
@@ -481,10 +558,7 @@ With the function {\tt tableSave}, tableplots can be saved to a desired grahical
 \item Project site: \url{http://code.google.com/p/tableplot/}
 \item References:
 \begin{itemize}
-\item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2011) Visual profiling of large statistical datasets. Paper presented at the 2011 New Techniques and Technologies for Statistics conference, Brussels, Belgium. (
-\href{http://www.von-tijn.nl/tijn/research/publications/Tableplots.pdf}{paper}, 
-\href{http://www.von-tijn.nl/tijn/research/presentations/NTTS_tableplots.pdf}{presentation}
-)
+\item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2013) Visualizing and Inspecting Large Datasets with Tableplots, Forthcoming in Journal of Data Science. (\href{http://www.jds-online.com/file_download/379/JDS-1108.pdf}{paper})
 \end{itemize}
 \end{itemize}
 

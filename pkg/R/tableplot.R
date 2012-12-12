@@ -1,8 +1,14 @@
 #' Create a tableplot
 #'
-#' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff:ff]{ff}} package.
+#' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff]{ff}} package.
 #'
-#' @param dat a \code{\link{data.frame}}, an \code{\link[ff:ffdf]{ffdf}} object, or an object created by \code{\link{tablePrepare}} (required). 
+#' For fast tableplot creation, we make use of the \code{\link[ffbase]{ffbase}} package for its sorting and aggregation functions, which are written in C.
+#' First, data is (if needed) converted to an \code{\link[ff:ffdf]{ffdf}} object. 
+#' Then the function \code{\link{tablePrepare}} is called for sorting the data, 
+#' which is the most computational time consuming step.
+#' For large datasets, it is recommended to store the results of \code{\link{tablePrepare}}.
+#' The resulting object can be given to \code{tableplot} as parameter \code{dat}.
+#' @param dat a \code{\link{data.frame}}, an \code{\link[ff:ffdf]{ffdf}} object, or an object created by \code{\link{tablePrepare}} (see details below). Required.
 #' @param select expression indicating the columns of \code{dat} that are visualized in the tablelplot Also column indices are supported. By default, all columns are visualized. Use \code{select_string} for character strings instead of expressions. 
 #' @param subset logical expression indicing which rows to select in \code{dat} (as in \code{\link{subset}}). It is also possible to provide the name of a categorical variable: then, a tableplot for each category is generated. Use \code{subset_string} for character strings instead of an expressions.
 #' @param sortCol expression indication the column(s) that is(are) sorted. Also supports indices. Also character strings can be used, but this is discouraged for programming purposes (use indices instead).

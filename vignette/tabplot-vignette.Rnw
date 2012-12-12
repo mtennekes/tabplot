@@ -41,7 +41,7 @@
 
 \begin{document}
 
-<<setup, cache = FALSE>>=
+<<setup, echo=FALSE,cache = FALSE>>=
 opts_knit$set(concordance = TRUE)
 @
 
@@ -207,81 +207,46 @@ tableplot(diamonds, select=c(carat, price, carat_class, price_class))
 If the number of categories exceeds {\tt max\_level} (by default 50), the categories are rebinned into {\tt max\_level} category groups. This is illustrated by the variable price\_class in Figure~\ref{fig:tphc}.
 
 
-\section{Layout options}
-There are several arguments that determine the layout of the plot:
-{\tt fontsize}, {\tt legend.lines}, {\tt title}, {\tt showTitle}, and {\tt fontsize.title}. An example of the use of these arguments is given in Figure~\ref{fig:tp6}.
 
-\begin{figure}[htp]
-<<chunk10,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
-tableplot(diamonds, select = 1:7, fontsize = 14, legend.lines = 8, title = "Shine on you crazy Diamond", fontsize.title = 18)
-@
-\caption{Tableplot with other color palettes}
-\label{fig:tp6}
-\end{figure}
-
-These layout arguments are not handled by the {\tt tableplot} function directly, but they are on to {\tt plot.tabplot}. This function plots a {\tt tabplot} object, which is explained in Section~\ref{sectab}. The layout arguments will be especially important when saving a tableplot (see Section~\ref{secsave}).
 
 \section{Preprocessing of big data}
 
-For large datasets it is recommended to preprocess the data:
-<<chunk_pre,  message=FALSE,  results='hide', tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+For large datasets it is recommended to preprocess the data with the function {\tt tablePrepare}. This function determines to sorting order of each data column, the most computational time consuming task to create tableplots. The advantage of using {\tt tablePrepare} as an intermediate step, is that the processing time to create tabelplots is reduced big time. This is especially useful when experimenting with arguments such as the number the row bins ({\tt nBins}) and the sorting column ({\tt sortCol}), or when using tableplots interactively.
+
+The following example illustrated the tablePrepare function for big data:
+
+<<chunk_pre, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
 # create large dataset
 large_diamonds <- diamonds[rep(seq.int(nrow(diamonds)), 10),]
 
 system.time({
-	# preprocess the data
 	p <- tablePrepare(large_diamonds)
 })
-@
-The function {\tt tablePrepare} determines the sorting order of each data column. The result can be used to create a tableplot:
 
-<<chunk_pre2,  message=FALSE,  results='hide', tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
-# create tableplot
+system.time({
+	tableplot(p, plot=FALSE)
+})
+
+system.time({
+	tableplot(p, sortCol=price, nBins=200, plot=FALSE)
+})
+@
+
+Although the first step takes a couple of seconds on a moderate desktop computer, the processing time to create a tableplot from the intermediate result, object {\tt p}, is very short in comparison to the direct approach:
+
+
+<<chunk_pre2, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
 system.time({
 	tableplot(large_diamonds, plot=FALSE)
 })
 
-# create tableplot in the fast way
 system.time({
-	tableplot(p, plot=FALSE)
+	tableplot(large_diamonds, sortCol=price, nBins=200, plot=FALSE)
 })
 @
 
-The main advantage of this approach is that sorting all columns is done only once.
 
-
-
-
-Since this is the most computational time consuming task in creating a tableplot, is 
-
-
-
-
-is function
-
-
-The object {\tt p} contains all the necessary information
-
-
-Sorting the data may take a lot of computational time, especially for large datasets. 
-
-
-This is very annoying when you want to experiment with certain settings such as the sorting column, and the number of row bins. However, it is possible to do all the 
-
-
-
-Therefore, we let the sorting process take place in 
-
-To avoid these problems, we developped the function {\tt tablePrepare}.
-
-Therefore, we tablePrepare
-
-
-To optimize the 
-
-The function {\tt tableplot} returns 
-
-\section{Advanced tableplot features}
+\section{Miscellaneous}
 
 \subsection{The tabplot object}\label{sectab}
 
@@ -300,12 +265,28 @@ summary(tab)
 plot(tab)
 @
 
-\subsection{Multiple tableplots}
+\subsection{Multiple tableplots}\label{secmult}
 
 When a dataset contains more variables than can be plotted, multiple tableplots can be generated with the argument {\tt nCols}. This argument determines the maximum number of columns per tableplot. When the number of selected columns is larger than {\tt nCols}, multiple tableplots are generated. In each of them, the sorted columns are plotted on the lefthand side. 
 
 When multiple tableplots are created, the (silent) output is a list of {\tt tabplot} objects. This is also the case when the dataset is filtered by a categorical variable, e.~g. {\tt subset = color}
 (see Section~\ref{secfilt}).
+
+\subsection{Layout options}\label{seclay}
+There are several arguments that determine the layout of the plot:
+{\tt fontsize}, {\tt legend.lines}, {\tt max_print_levels}, {\tt text_NA}, {\tt title}, {\tt showTitle}, {\tt fontsize.title}, {\tt showNumAxes}, and {\tt vp}. The following code illustrates this.
+
+\begin{figure}[htp]
+<<chunk10,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+tableplot(diamonds, select = 1:7, fontsize = 14, legend.lines = 8, title = "Shine on you crazy Diamond", fontsize.title = 18)
+@
+\caption{Tableplot with other color palettes}
+\label{fig:tp6}
+\end{figure}
+
+The layout arguments named above are passed on from {\tt tableplot} to {\tt plot.tabplot}. These arguments will be especially important when saving a tableplot (see Section~\ref{secsave}).
+
+
 
 \subsection{Minor changes}
 
@@ -313,7 +294,7 @@ The function {\tt tableChange} is used to make minor changes to a tabplot-object
 
 \begin{figure}[htp]
 <<chunk13, fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
-tab2 <- tableChange(tab, select_string = c("carat", "price", "cut", "color", "clarity"), pals = list("Set1(2)"))
+tab2 <- tableChange(tab, select_string = c("carat", "price", "cut", "color", "clarity"), pals = list(cut="Set1(2)"))
 plot(tab2)
 @
 \caption{Plot of a {\tt tabplot} object}
@@ -328,6 +309,7 @@ With the function {\tt tableSave}, tableplots can be saved to a desired grahical
 tableSave(tab, filename = "diamonds.png", width = 5, height = 3, fontsize = 6, legend.lines = 6)
 @
 
+All layout options named in Section~\ref{seclay} can be used here, such as {\fontsize} and {\tt legend.lines}. When {\tt tab} is a list of tabplot-objects (see Section~\ref{secmult}), the argument {\tt onePage} determines whether the tableplots are stacked on one page or printed on seperate pages.
 
 \newpage
 
@@ -340,10 +322,7 @@ tableSave(tab, filename = "diamonds.png", width = 5, height = 3, fontsize = 6, l
 \item Project site: \url{http://code.google.com/p/tableplot/}
 \item References:
 \begin{itemize}
-\item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2011) Visual profiling of large statistical datasets. Paper presented at the 2011 New Techniques and Technologies for Statistics conference, Brussels, Belgium. (
-\href{http://www.von-tijn.nl/tijn/research/publications/Tableplots.pdf}{paper}, 
-\href{http://www.von-tijn.nl/tijn/research/presentations/NTTS_tableplots.pdf}{presentation}
-)
+\item Tennekes, M., Jonge, E. de, Daas, P.J.H. (2013) Visualizing and Inspecting Large Datasets with Tableplots, Forthcoming in Journal of Data Science. (\href{http://www.jds-online.com/file_download/379/JDS-1108.pdf}{paper})
 \end{itemize}
 \end{itemize}
 

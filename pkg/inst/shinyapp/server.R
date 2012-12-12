@@ -2,9 +2,12 @@ library(shiny)
 library(tabplot)
 
 obs <- ls(envir=.GlobalEnv)
-dfs <- obs[sapply(obs, function(x)inherits(get(x, envir=.GlobalEnv), "data.frame"))]
+dfs <- obs[sapply(obs, function(x)inherits(get(x, envir=.GlobalEnv), c("data.frame", "ffdf", "prepared")))]
 
-ps <- lapply(dfs, function(d)tablePrepare(get(d)))
+ps <- lapply(dfs, function(d){
+	dat <- get(d)
+	if (inherits(dat, "prepared")) dat else tablePrepare(dat)
+})
 names(ps) <- dfs
 
 isNumber <- lapply(ps, function(p){
@@ -71,7 +74,8 @@ shinyServer(function(input, output) {
 				if (length(logscale)) {
 					scales[logscale] <- "log"
 				}
-				cat("tableplot(", input$dataset, ", from=", from, ", to=", to, ", sortCol=",
+				if (input$showCode)
+					cat("tableplot(", input$dataset, ", from=", from, ", to=", to, ", sortCol=",
 					sortCol, ",select_string=c(", paste(paste("\"", select, "\"", sep=""), collapse=","), "), decreasing=", decreasing, ", scales=c(", paste(paste(names(scales),"=", paste("\"", scales, "\"", sep="")), collapse=", "), "), nBins=", nBins, ")\n")
 				
 				tableplot( p, from=from, to=to,

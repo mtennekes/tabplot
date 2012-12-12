@@ -11,10 +11,6 @@
 #' @param width width (in inches)
 #' @param height height (in inches)
 #' @param dpi dpi to use for raster graphics
-#' @param fontsize the (maximum) fontsize
-#' @param legend.lines the number of lines preserved for the legend
-#' @param title title of the plot (shown if \code{showTitle==TRUE})
-#' @param showTitle show the title
 #' @param onePage if true, multiple tab objects are stacked horizontally, else they are printed on multiple pages
 #' @param ... other arguments passed to graphics device
 #' @export
@@ -23,7 +19,7 @@
 tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""), 
     device = default_device(filename), path = NULL, scale = 1, 
     width = par("din")[1], height = par("din")[2], dpi = 300, 
-	fontsize = 8, legend.lines = 8, title = tab$dataset, showTitle = FALSE, onePage = TRUE,...) 
+	onePage = TRUE,...) 
 {
     if (is.list(tab) && !inherits(tab, "tabplot")) {
         if (!all(sapply(tab, class)=="tabplot")) stop(paste(deparse(substitute(tab)), "is not a list of tabplot-objects"))
@@ -75,15 +71,14 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
             pushViewport(viewport(layout=grid.layout(nl, 1)))
             
             lapply(1:nl, FUN=function(i){
-                plot(tab[[i]], fontsize = fontsize, legend.lines = legend.lines, title = title, 
-                     showTitle = showTitle, vp=stackvp(i))
+                plot(tab[[i]], vp=stackvp(i), ...)
             })
         } else {
             lapply(1:nl, FUN=function(i){
-                plot(tab[[i]], fontsize = fontsize, legend.lines = legend.lines, title = title, showTitle = showTitle)
+                plot(tab[[i]], ...)
             })
         }
-    } else plot(tab, fontsize = fontsize, legend.lines = legend.lines, title = title, showTitle = showTitle)
+    } else plot(tab, ...)
     
     on.exit(capture.output(dev.off()))
     invisible()

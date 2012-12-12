@@ -15,7 +15,7 @@
 tablePrepare <- function(x, path = NULL, name=deparse(substitute(x)), ...){
 	# TODO set path where prepared data set should be stored
 	# TODO make it possible to sort on multiple columns
-	cat("Preparing data for tableplotting, storing this result increases tableplotting speed (see `prepare`)...")
+	# cat("Preparing data for tableplotting, storing this result increases tableplotting speed (see `prepare`)...")
 	require(ffbase) # only needed for devtools::load_all(), not for package building
 	
 	if (is.data.frame(x)){

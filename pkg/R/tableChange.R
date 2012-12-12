@@ -68,14 +68,15 @@ tableChange <- function(tab, select=NULL, select_string=tab$colNames, flip=FALSE
 	
 	## change palettes
 	if (length(pals)) {
-		isCat <- !tab2$isNumber
-		pals <- tableplot_checkPals(pals, colNames=tab2$colNames, isCat=isCat)
+		isChanged <- !tab2$isNumber
+		if (length(pnames <- names(pals))) isChanged <- isChanged & (tab2$colNames %in% pnames)
+		pals <- tableplot_checkPals(pals, colNames=tab2$colNames, isCat=isChanged)
 
-		tab2$columns[isCat] <- mapply(function(col, pal){
+		tab2$columns[isChanged] <- mapply(function(col, pal){
 			col$paletname <- pal$name
 			col$palet <- pal$palette
 			col
-		}, tab2$columns[isCat], pals[isCat], SIMPLIFY=FALSE)
+		}, tab2$columns[isChanged], pals[isChanged], SIMPLIFY=FALSE)
 	}
 
 	## change colorNA

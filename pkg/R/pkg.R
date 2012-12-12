@@ -3,8 +3,8 @@
 #' \tabular{ll}{
 #' Package: \tab tabplot\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.12-1\cr
-#' Date: \tab 2012-08-14\cr
+#' Version: \tab 1.0\cr
+#' Date: \tab 2012-12-18\cr
 #' License: \tab GPL-3\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -13,11 +13,11 @@
 #'
 #' The function \code{\link{tableplot}} is used to create a tableplot. Other useful functions are
 #' \itemize{
+#' \item \code{\link{tableApp}} to start a graphical user interface (made with the \code{\link[shiny:shiny]{shiny}} package)
 #' \item \code{\link{tablePalettes}} to show all quantitative and qualitative palettes that are included
 #' \item \code{\link{tableSave}} to save a tableplot
 #' \item \code{\link{tableChange}} to make layout changes to a tableplot
 #' }
-#' Further, a graphical user interface has been implemented in the package \code{\link[tabplotGTK:tabplotGTK]{tabplotGTK}}
 #'
 #' @name tabplot-package
 #' @aliases tabplot

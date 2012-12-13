@@ -19,6 +19,6 @@ tableplot_checkCols <- function(sortCol, colNames) {
 		if (getOption("show.error.messages")) cat("Incorrect sortCol argument\n")
 	})
 	
-	
-	sortCol
+	if (length(sortCol)>1) warning("Sorting on multiple columns not supported anymore. Only first column is taken.")
+	sortCol[1]
 }

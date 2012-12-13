@@ -211,7 +211,7 @@ If the number of categories exceeds {\tt max\_level} (by default 50), the catego
 
 \section{Preprocessing of big data}
 
-For large datasets it is recommended to preprocess the data with the function {\tt tablePrepare}. This function determines to sorting order of each data column, the most computational time consuming task to create tableplots. The advantage of using {\tt tablePrepare} as an intermediate step, is that the processing time to create tabelplots is reduced big time. This is especially useful when experimenting with arguments such as the number the row bins ({\tt nBins}) and the sorting column ({\tt sortCol}), or when using tableplots interactively.
+For large datasets it is recommended to preprocess the data with the function {\tt tablePrepare}. This function determines to sorting order of each data column, the most time consuming task to create tableplots. The advantage of using {\tt tablePrepare} as an intermediate step, is that the processing time to create tabelplots is reduced big time. This is especially useful when experimenting with arguments such as the number the row bins ({\tt nBins}) and the sorting column ({\tt sortCol}), or when using tableplots interactively.
 
 The following example illustrated the tablePrepare function for big data:
 

@@ -19,7 +19,7 @@
 #' @param brks breaks that determine the levels (only required when \code{method="fixed"})
 #' @return A factor vector
 #' @export
-#' @note \code{ff} vectors are not implemented yet
+#' @note This function is still in development stage, and can be improved and optimized. \code{ff} vectors are not implemented yet
 num2fac <-
 function(num, method="pretty", num_scale="auto", n=0, brks=NA) {
     if (!require(classInt)){

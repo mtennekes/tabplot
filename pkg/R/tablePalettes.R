@@ -2,30 +2,13 @@
 #'
 #' All color palettes are shown and/or returned that can be used for tableplots.
 #'
-#' Sequential palettes (for numeric variables):
-#' \itemize{
-#' \item Blues
-#' \item Greens
-#' \item Greys
-#' }
+#' Sequential palettes (for numeric variables): \code{Blues}, \code{Greens}, \code{Greys}, \code{Oranges}, and \code{Purples}
 #' These palettes are taken from ColorBrewer (Brewer et al., 2003).
 #' 
-#' Qualitative palattes (for categorical variables):
-#' \itemize{
-#' \item Set1
-#' \item Set2
-#' \item Set3
-#' \item Set4
-#' \item Set5
-#' \item Set6
-#' \item Set7
-#' \item Set8
-#' \item Paired
-#' \item HCL1
-#' \item HCL2
-#' \item HCL3
-#' }
-#' The default palette, "Set1", is a colorblind-friendly palette (see Okabe and Ito, 2002). Palettes "Set2" to "Set6" and "Paired" are based on ColorBrewer palettes (Brewer et al., 2003). Palette "Set7", is a colorblind-friedly palette from the dichromat package (see Thomas Lumley , 2012). Palette "Set8" is a palette created by Wijffelaars (2008). The HCL Palettes are based on the Hue-Chroma-Luminance color space model (see Zeileis et al., 2009). The color red has been removed from the orignal palettes, since it is occupied by missing values.
+#' Qualitative palattes (for categorical variables): \code{Set1}, \code{Set2}, \code{Set3},
+#' \code{Set4}, \code{Set5}, \code{Set6}, \code{Set7}, \code{Set8}, \code{Paired},
+#' \code{HCL1}, \code{HCL2}, and \code{HCL3}.
+#' The default palette, \code{"Set1"}, is a colorblind-friendly palette (see Okabe and Ito, 2002). Palettes \code{"Set2"} to \code{"Set6"} and \code{"Paired"} are based on ColorBrewer palettes (Brewer et al., 2003). Palette \code{"Set7"}, is a colorblind-friedly palette from the dichromat package (see Thomas Lumley , 2012). Palette \code{"Set8"} is a palette created by Wijffelaars (2008). The \code{"HCL"} Palettes are based on the Hue-Chroma-Luminance color space model (see Zeileis et al., 2009). The color red has been removed from the orignal palettes, since it is occupied by missing values.
 #'
 #' @param plot Boolean that determines whether the palettes are plot.
 #' @return list with palettes (silent output)

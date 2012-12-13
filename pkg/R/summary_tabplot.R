@@ -2,7 +2,7 @@
 #'
 #' @aliases summary.tabplot
 #' @param object tabplot object
-#' @param digits integer, used for number formatting with \code{\link{format}()}
+#' @param digits integer, used for number formatting with \code{\link{format}}
 #' @param ... arguments passed to other methods
 #' @export
 #' @method summary tabplot

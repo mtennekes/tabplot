@@ -12,7 +12,7 @@
 #' @param height height (in inches)
 #' @param dpi dpi to use for raster graphics
 #' @param onePage if true, multiple tab objects are stacked horizontally, else they are printed on multiple pages
-#' @param ... other arguments passed to graphics device
+#' @param ... other arguments passed to \code{\link[=plot.tabplot]{plot}} or the used graphics device
 #' @export
 #' @keywords save tableplot
 #' @example ../examples/tableSave.R

@@ -329,7 +329,7 @@ If the number of categories exceeds {\tt max\_level} (by default 50), the catego
 
 \section{Preprocessing of big data}
 
-For large datasets it is recommended to preprocess the data with the function {\tt tablePrepare}. This function determines to sorting order of each data column, the most computational time consuming task to create tableplots. The advantage of using {\tt tablePrepare} as an intermediate step, is that the processing time to create tabelplots is reduced big time. This is especially useful when experimenting with arguments such as the number the row bins ({\tt nBins}) and the sorting column ({\tt sortCol}), or when using tableplots interactively.
+For large datasets it is recommended to preprocess the data with the function {\tt tablePrepare}. This function determines to sorting order of each data column, the most time consuming task to create tableplots. The advantage of using {\tt tablePrepare} as an intermediate step, is that the processing time to create tabelplots is reduced big time. This is especially useful when experimenting with arguments such as the number the row bins ({\tt nBins}) and the sorting column ({\tt sortCol}), or when using tableplots interactively.
 
 The following example illustrated the tablePrepare function for big data:
 
@@ -344,10 +344,9 @@ large_diamonds <- diamonds[\hlfunctioncall{rep}(\hlfunctioncall{seq.int}(\hlfunc
     p <- \hlfunctioncall{tablePrepare}(large_diamonds)
 \})
 \end{alltt}
-\end{kframe}
-\begin{kframe}\begin{verbatim}
+\begin{verbatim}
 ##    user  system elapsed 
-##    5.57    0.83    9.32
+##    5.24    0.64    5.95
 \end{verbatim}
 \begin{alltt}
 
@@ -357,7 +356,7 @@ large_diamonds <- diamonds[\hlfunctioncall{rep}(\hlfunctioncall{seq.int}(\hlfunc
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    0.61    0.18    1.75
+##    0.48    0.18    0.67
 \end{verbatim}
 \begin{alltt}
 
@@ -368,7 +367,7 @@ large_diamonds <- diamonds[\hlfunctioncall{rep}(\hlfunctioncall{seq.int}(\hlfunc
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    0.73    0.17    1.15
+##    0.88    0.09    0.96
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -384,10 +383,9 @@ Although the first step takes a couple of seconds on a moderate desktop computer
     \hlfunctioncall{tableplot}(large_diamonds, plot = FALSE)
 \})
 \end{alltt}
-\end{kframe}
-\begin{kframe}\begin{verbatim}
+\begin{verbatim}
 ##    user  system elapsed 
-##    4.39    1.18   10.81
+##    4.38    0.64    5.07
 \end{verbatim}
 \begin{alltt}
 
@@ -396,10 +394,9 @@ Although the first step takes a couple of seconds on a moderate desktop computer
         nBins = 200, plot = FALSE)
 \})
 \end{alltt}
-\end{kframe}
-\begin{kframe}\begin{verbatim}
+\begin{verbatim}
 ##    user  system elapsed 
-##    4.56    1.49    9.69
+##    4.55    0.81    5.39
 \end{verbatim}
 \end{kframe}
 \end{knitrout}

@@ -1,3 +1,8 @@
+#' Bin high cardinality data
+#' 
+#' @param bd binned dataset (result of \code{\link{bin_data}})
+#' @param max_levels maximum number of levels. Each column in \code{bd} that has more than \code{max_levels} categories is rebinned to \code{max_levels} categories.
+#' @export
 bin_hcc_data <- 
 function(bd, max_levels) {
 	nlev <- max_levels + 1 #including NA

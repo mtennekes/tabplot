@@ -5,7 +5,6 @@
 #' @param colNames column names
 #' @param isCat boolean vector indicating whether columns are categorical
 #' @return object with palette information
-#' @export 
 tableplot_checkPals <- function(pals, colNames, isCat) {
 	if (class(pals)!="list") stop("<pals> is not a list")
 

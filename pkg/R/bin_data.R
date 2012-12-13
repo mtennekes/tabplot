@@ -1,8 +1,8 @@
 #TODO currently one sortcolumn supported
 # working horse for tableplot, does the actual binning
-#' binning data
+#' Bin data
 #' 
-#' @param p prepared data.frame or ffdf (see \code{\link{tablePrepare}})
+#' @param p prepared dataset (see \code{\link{tablePrepare}})
 #' @param sortCol column on which the table will be sorted
 #' @param cols columns of the data that will be used.
 #' @param from lower boundary in quantiles

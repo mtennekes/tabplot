@@ -1,12 +1,12 @@
 #' Change a \link{tabplot-object}
 #'
-#' Change the order of columns, flip, and change the palettes of a \link{tabplot-object}.
+#' Make layout changes in a \link{tabplot-object}, such as the order of columns, and color palettes.
 #'
 #' @aliases tableChange
 #' @param tab \link{tabplot-object}
-#' @param select index vector of the desired columns
+#' @param select index vector of the desired columns (column names are not supported)
 #' @param select_string vector of names of the desired columns
-#' @param flip logical, if TRUE then the plot is flipped vertically, i.e.\ the row bins are reversed
+#' @param decreasing determines whether the dataset is sorted decreasingly (\code{TRUE}) of increasingly (\code{FALSE}).
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
 #' \item a palette name in \code{\link{tablePalettes}}, optionally with the starting color between brackets.
@@ -20,7 +20,7 @@
 #' @export
 #' @example ../examples/tableChange.R
 
-tableChange <- function(tab, select=NULL, select_string=tab$colNames, flip=FALSE, pals=list(), colorNA = NULL, numPals = NULL) {
+tableChange <- function(tab, select=NULL, select_string=tab$colNames, decreasing=NULL, pals=list(), colorNA = NULL, numPals = NULL) {
 
 	## change order of columns
 	currentColNames <- tab$colNames
@@ -39,31 +39,33 @@ tableChange <- function(tab, select=NULL, select_string=tab$colNames, flip=FALSE
 	tab2$columns <- tab2$columns[colID]
 	
 	## flip tabplot
-	if (flip) {
-		tab2$binSizes <- rev(tab$binSizes)
-		tab2$rows$heights <- tab$binSizes/tab$rows$m
-	    tab2$rows$y <- 1- c(0,cumsum(tab$binSizes/tab$rows$m)[-tab$nBins])
-		tab2$rows$marks <- rev(tab$rows$marks)
-		
-		tab2$sort_decreasing <- !tab2$sort_decreasing
-		
-		tab2$columns <- lapply(tab2$columns, function(col) {
-			col$sort_decreasing <- !col$sort_decreasing
-			if (col$isnumeric) {
-				col$mean <- rev(col$mean)
-				col$compl <- rev(col$compl)
-				#col$lower <- rev(col$lower)
-				#col$upper <- rev(col$upper)
-				col$mean.scaled <- rev(col$mean.scaled)
-				col$mean.brokenX <- rev(col$mean.brokenX)
-				col$widths <- rev(col$widths)
-			} else {
-				col$freq <- col$freq[nrow(col$freq):1,]		
-				col$x <- col$x[nrow(col$x):1,]		
-				col$widths <- col$widths[nrow(col$widths):1,]		
-			}
-			col
-		})
+	if (!missing(decreasing)) {
+		if (decreasing!=na.omit(tab2$sort_decreasing)[1]) {
+			tab2$binSizes <- rev(tab$binSizes)
+			tab2$rows$heights <- tab$binSizes/tab$rows$m
+		    tab2$rows$y <- 1- c(0,cumsum(tab$binSizes/tab$rows$m)[-tab$nBins])
+			tab2$rows$marks <- rev(tab$rows$marks)
+			
+			tab2$sort_decreasing <- !tab2$sort_decreasing
+			
+			tab2$columns <- lapply(tab2$columns, function(col) {
+				col$sort_decreasing <- !col$sort_decreasing
+				if (col$isnumeric) {
+					col$mean <- rev(col$mean)
+					col$compl <- rev(col$compl)
+					#col$lower <- rev(col$lower)
+					#col$upper <- rev(col$upper)
+					col$mean.scaled <- rev(col$mean.scaled)
+					col$mean.brokenX <- rev(col$mean.brokenX)
+					col$widths <- rev(col$widths)
+				} else {
+					col$freq <- col$freq[nrow(col$freq):1,]		
+					col$x <- col$x[nrow(col$x):1,]		
+					col$widths <- col$widths[nrow(col$widths):1,]		
+				}
+				col
+			})
+		}
 	}
 	
 	## change palettes

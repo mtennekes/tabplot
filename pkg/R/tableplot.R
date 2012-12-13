@@ -5,14 +5,14 @@
 #' For fast tableplot creation, we make use of the \code{\link[ffbase]{ffbase}} package for its sorting and aggregation functions, which are written in C.
 #' First, data is (if needed) converted to an \code{\link[ff:ffdf]{ffdf}} object. 
 #' Then the function \code{\link{tablePrepare}} is called for sorting the data, 
-#' which is the most computational time consuming step.
+#' which is the most time consuming step.
 #' For large datasets, it is recommended to store the results of \code{\link{tablePrepare}}.
 #' The resulting object can be given to \code{tableplot} as parameter \code{dat}.
 #' @param dat a \code{\link{data.frame}}, an \code{\link[ff:ffdf]{ffdf}} object, or an object created by \code{\link{tablePrepare}} (see details below). Required.
 #' @param select expression indicating the columns of \code{dat} that are visualized in the tablelplot Also column indices are supported. By default, all columns are visualized. Use \code{select_string} for character strings instead of expressions. 
 #' @param subset logical expression indicing which rows to select in \code{dat} (as in \code{\link{subset}}). It is also possible to provide the name of a categorical variable: then, a tableplot for each category is generated. Use \code{subset_string} for character strings instead of an expressions.
-#' @param sortCol expression indication the column(s) that is(are) sorted. Also supports indices. Also character strings can be used, but this is discouraged for programming purposes (use indices instead).
-#' @param decreasing determines whether the columns are sorted decreasingly (\code{TRUE}) of increasingly (\code{FALSE}). \code{decreasing} can be either a single value that applies to all sorted columns, or a vector of the same length as \code{sortCol}.
+#' @param sortCol column name on which the dataset is sorted. It can be eiter an index or an expression name. Also a character string can be used, but this is discouraged for programming purposes (use indices instead).
+#' @param decreasing determines whether the dataset is sorted decreasingly (\code{TRUE}) of increasingly (\code{FALSE}).
 #' @param nBins number of row bins
 #' @param from percentage from which the data is shown
 #' @param to percentage to which the data is shown
@@ -44,6 +44,7 @@
 #' @import ffbase
 #' @keywords visualization
 #' @example ../examples/tableplot.R
+#' @note In early development versions of \code{tabplot} (prior to version 1.0) it was possible to sort datasets on multiple columns. To increase to tableplot creation speed, this feature is dropped. For multiple sorting purposes, we recommend to use the \code{subset} parameter instead.
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
 					  nBins=100, from=0, to=100, nCols=ncol(dat), 
 					  scales="auto", max_levels=50, 

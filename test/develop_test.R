@@ -1,7 +1,7 @@
 
 ### test installed package
 library(tabplot)
-library(tabplotGTK)
+library(tabplotd3)
 
 
 ### test

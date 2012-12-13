@@ -1,18 +1,19 @@
-#' Prepares a data.frame or ffdf for tableplotting
+#' Prepares a dataset for tableplotting
 #' 
-#' The function \code{\link{bin_data}} needs a prepared data.frame
-#' Prepare transforms the supplied data into a ffdf data.frame and calculates
+#' Tableplots from a large dataset can be generated very fast when the preprocessing stage is done only once. This function preprocesses the dataset, and returns an object that can be passed to \code{\link{tableplot}}. From this stage, tableplots are generated very fast, no matter on which column the data is sorted or how many row bins are chosen.
+#' 
+#' The function \code{\link{bin_data}} needs a prepared \code{\link{data.frame}}
+#' Prepare transforms the supplied data into an \code{\link[ff:ffdf]{ffdf}} object and calculates
 #' the order of each of its columns. Knowing the order of the columns speeds up
-#' the binning process consideratly, For large ffdf this may be a time consuming
+#' the binning process consideratly, For large \code{\link[ff:ffdf]{ffdf}} objects this may be a time consuming
 #' step so it can be wise to call prepare before making a tableplot.
-#' @param x data.frame or ffdf, will be transformed into a ffdf
-#' @param path where the resulting prepared dataset should be stored, at the moment not working.
+#' @param x \code{\link{data.frame}} or \code{\link[ff:ffdf]{ffdf}}, will be transformed into an \code{\link[ff:ffdf]{ffdf}} object.
 #' @param name name of the dataset
 #' @param ... at the moment not used
 #' @return a prepared object, including the data and order of each of the columns
 #' @export
 #' @import ffbase
-tablePrepare <- function(x, path = NULL, name=deparse(substitute(x)), ...){
+tablePrepare <- function(x, name=deparse(substitute(x)), ...){
 	# TODO set path where prepared data set should be stored
 	# TODO make it possible to sort on multiple columns
 	# cat("Preparing data for tableplotting, storing this result increases tableplotting speed (see `prepare`)...")
@@ -47,7 +48,7 @@ tablePrepare <- function(x, path = NULL, name=deparse(substitute(x)), ...){
 	#ranked <- lapply(ordered, fforder)
 	
 	
-	cat("\r\n")
+	#cat("\r\n")
 	structure(
 		list( data = x
 			, ordered = ordered

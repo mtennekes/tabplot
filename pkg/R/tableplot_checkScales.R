@@ -5,7 +5,6 @@
 #' @param colNames column names
 #' @param isNumber boolean vector indicating whether columns are numeric
 #' @return scales
-#' @export
 tableplot_checkScales <- function(scales, colNames, isNumber) {
 	if (length(setdiff(scales, c("auto", "lin", "log")))>0) stop("<scales> should consist of auto, lin and log")
 

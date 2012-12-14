@@ -4,9 +4,15 @@ scaleNumCol <- function(tabCol, IQR_bias) {
 		quant <- quantile(tabCol$mean, na.rm=TRUE)
 		IQR <- quant[4] - quant[2]
 		
-		## simple test to determine whether scale is lin or log
-		tabCol$scale_final <- ifelse(((quant[5] > quant[4] + IQR_bias * IQR) || 
-									  	(quant[1] < quant[2] - IQR_bias * IQR)), "log", "lin")
+		if (all(is.na(quant))) {
+			tabCol$scale_final <- "lin"
+		} else {
+			IQR <- quant[4] - quant[2]
+			
+			## simple test to determine whether scale is lin or log
+			tabCol$scale_final <- ifelse(((quant[5] > quant[4] + IQR_bias * IQR) || 
+										  	(quant[1] < quant[2] - IQR_bias * IQR)), "log", "lin")
+		}
 	} else {
 		tabCol$scale_final <- tabCol$scale_init
 	}

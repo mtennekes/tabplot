@@ -1,19 +1,24 @@
 coorNumCol <- function(tabCol, limitsX, bias_brokenX) {
+	
 	num <- tabCol$mean.scaled
+	ignoreMarks <- all(is.na(num))
+
 	## determine whether broken X-axis are applied, and transform values accordingly
 	
 	if (is.numeric(limitsX)) {
 		minmax <- limitsX
-		if (min(num, na.rm=TRUE)<limitsX[1]) {
-			warning("some mean values fall outside the given limits and are therefore truncated")
+		if (!ignoreMarks && min(num, na.rm=TRUE)<limitsX[1]) {
+			warning(paste("some mean values in", tabCol$name, "fall outside the given limits and are therefore truncated"))
 			num[num<limitsX[1]] <- limitsX[1]
 		}
-		if (max(num, na.rm=TRUE)>limitsX[2]) {
-			warning("some mean values fall outside the given limits and are therefore truncated")
+		if (!ignoreMarks && max(num, na.rm=TRUE)>limitsX[2]) {
+			warning(paste("some mean values in", tabCol$name, "fall outside the given limits and are therefore truncated"))
 			num[num>limitsX[2]] <- limitsX[2]
 		}
 		bias_brokenX <- 0
-		
+		ignoreMarks <- FALSE
+	} else if (ignoreMarks) {
+		minmax <- c(0, 1)
 	} else {
 		minmax <-  range(num, na.rm=TRUE)	
 	}
@@ -63,17 +68,23 @@ coorNumCol <- function(tabCol, limitsX, bias_brokenX) {
 		marks_x <- (marks_coor) / max(abs(minV), abs(maxV))
 	}
 	widths[is.nan(widths)] <- minV
-	
-	marksVis <- marks_x >= ifelse(brokenX==1, 0.15, 0) &
-				marks_x <= ifelse(brokenX==-1, 0.85, 1)
-	
-	marks_x[marks==0] <- xline
-	marksVis[marks==0] <- TRUE
-	
+
 	tabCol$brokenX <- brokenX
 	tabCol$mean.coor <- values
-	tabCol$marks.labels <- marks[marksVis]
-	tabCol$marks.x <- marks_x[marksVis]
+	
+	if (ignoreMarks) {
+		tabCol$marks.labels <- integer(0)
+		tabCol$marks.x <- integer(0)
+	} else {
+		marksVis <- marks_x >= ifelse(brokenX==1, 0.15, 0) &
+					marks_x <= ifelse(brokenX==-1, 0.85, 1)
+		
+		marks_x[marks==0] <- xline
+		marksVis[marks==0] <- TRUE
+		tabCol$marks.labels <- marks[marksVis]
+		tabCol$marks.x <- marks_x[marksVis]
+	}
+	
 	tabCol$xline <- xline
 	tabCol$widths <- widths
 	

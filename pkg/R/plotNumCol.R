@@ -61,7 +61,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes){
 		}
 
 		## plot grid lines
-		if (showNumAxes) 
+		if (showNumAxes && length(tCol$marks.x)) 
 			grid.rect(x=tCol$marks.x,
 					  width=0,
 					  gp=gpar(col="black", alpha=0.3))
@@ -80,7 +80,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes){
 				id = rep(1:4,each=2), gp=gpar(lwd=1))
 		}
 	})
-	if (showNumAxes) cellplot(3,1,vpLegend, {
+	if (showNumAxes && length(tCol$marks.x)) cellplot(3,1,vpLegend, {
 		brokenX <- tCol$brokenX
 		
 		marks <- tCol$marks.labels

@@ -1,14 +1,14 @@
-#TODO currently one sortcolumn supported
-# working horse for tableplot, does the actual binning
 #' Bin data
 #' 
+#' Working horse for tableplot, does the actual binning
+#'
 #' @param p prepared dataset (see \code{\link{tablePrepare}})
 #' @param sortCol column on which the table will be sorted
 #' @param cols columns of the data that will be used.
 #' @param from lower boundary in quantiles
 #' @param to upper boundary in quantiles
 #' @param nbins number of bins
-#' @param decreasing should the variable 
+#' @param decreasing sort decreasingly
 #' @export
 bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE){
 	stopifnot(inherits(p, what="prepared"))

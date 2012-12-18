@@ -12,6 +12,7 @@
 #' @param showNumAxes plots an x-axis for each numerical variable, along with grid lines (\code{TRUE} by default).
 #' @param vp \code{\link[grid:viewport]{viewport}} to draw plot in (for instance useful to stack multiple tableplots)
 #' @param ... other arguments are not used
+#' @example ../examples/plot_tabplot.R
 #' @export
 #' @method plot tabplot
 plot.tabplot <-

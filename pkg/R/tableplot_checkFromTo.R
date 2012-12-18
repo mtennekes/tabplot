@@ -1,8 +1,3 @@
-#' Function to check the tableplot arguments: from and to.
-#'
-#' @aliases tableplot_checkFromTo
-#' @param from from
-#' @param to to
 tableplot_checkFromTo <- function(from, to)
 {
 	if (class(from)[1]!="numeric") stop("<from> is not numeric")

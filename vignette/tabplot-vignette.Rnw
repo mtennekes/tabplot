@@ -184,14 +184,14 @@ tableplot(diamonds, pals = list(cut="Set1(6)", color="Set5", clarity=rainbow(8))
 \label{fig:tp5}
 \end{figure}
 
-Also quantitative palettes can be used (for instance by setting {\tt clarity="Greens"}. Missing values are by default depicted in red. This can be changed with the argument {\tt colorNA}.
+Also quantitative palettes can be used (for instance by setting {\tt clarity=} {\tt "Greens"}. Missing values are by default depicted in red. This can be changed with the argument {\tt colorNA}.
 
 \subsection{High cardinality data}
-To illustrate how tableplots deal with high cardinality data, we extend the diamonds dataset:
+To illustrate how tableplots deal with high cardinality data, we extend the diamonds dataset with a convenient wrapper function {\tt num2fac}:
 
 <<chunk8,  message=FALSE,  results='hide', tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
-diamonds$carat_class <- cut(diamonds$carat, breaks=pretty(diamonds$carat, n=20))
-diamonds$price_class <- cut(diamonds$price, breaks=pretty(diamonds$price, n=100))
+diamonds$carat_class <- num2fac(diamonds$carat, n=20)
+diamonds$price_class <- num2fac(diamonds$price, n=100)
 @
 
 For variables with over {\tt change\_palette\_type\_at} (by default 20) categories, color palettes are constructed by using interpolated colors. This creates a rainbow effect (see Figure~\ref{fig:tphc}). If the number of categories is than {\tt change\_palette\_type\_at}, the assigned palette is recycled in order to obtain the number of categories.
@@ -274,7 +274,7 @@ When multiple tableplots are created, the (silent) output is a list of {\tt tabp
 
 \subsection{Layout options}\label{seclay}
 There are several arguments that determine the layout of the plot:
-{\tt fontsize}, {\tt legend.lines}, {\tt max_print_levels}, {\tt text_NA}, {\tt title}, {\tt showTitle}, {\tt fontsize.title}, {\tt showNumAxes}, and {\tt vp}. The following code illustrates this.
+{\tt fontsize}, {\tt legend.lines}, {\tt max\_print\_levels}, {\tt text\_NA}, {\tt title}, {\tt showTitle}, {\tt fontsize.} {\tt title}, {\tt showNumAxes}, and {\tt vp}. The following code illustrates this.
 
 \begin{figure}[htp]
 <<chunk10,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
@@ -309,7 +309,7 @@ With the function {\tt tableSave}, tableplots can be saved to a desired grahical
 tableSave(tab, filename = "diamonds.png", width = 5, height = 3, fontsize = 6, legend.lines = 6)
 @
 
-All layout options named in Section~\ref{seclay} can be used here, such as {\fontsize} and {\tt legend.lines}. When {\tt tab} is a list of tabplot-objects (see Section~\ref{secmult}), the argument {\tt onePage} determines whether the tableplots are stacked on one page or printed on seperate pages.
+All layout options named in Section~\ref{seclay} can be used here, such as {\tt fontsize} and {\tt legend.lines}. When {\tt tab} is a list of tabplot-objects (see Section~\ref{secmult}), the argument {\tt onePage} determines whether the tableplots are stacked on one page or printed on seperate pages.
 
 \newpage
 

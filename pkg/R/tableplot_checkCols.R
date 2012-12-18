@@ -1,9 +1,3 @@
-#' Function to check the tableplot argument: sortCol
-#'
-#' @aliases tableplot_checkCols
-#' @param sortCol sortCol
-#' @param colNames colNames
-#' @return (possibly corrected) sortCol
 tableplot_checkCols <- function(sortCol, colNames) {	
 	if (!missing(sortCol)) {
 		nl <- as.list(seq_along(colNames))

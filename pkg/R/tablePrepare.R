@@ -11,6 +11,7 @@
 #' @param name name of the dataset
 #' @param ... at the moment not used
 #' @return a prepared object, including the data and order of each of the columns
+#' @example ../examples/tablePrepare.R
 #' @export
 #' @import ffbase
 tablePrepare <- function(x, name=deparse(substitute(x)), ...){

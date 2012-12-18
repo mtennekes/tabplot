@@ -8,7 +8,7 @@ source("roxygen.R")
 setwd("../pkg")
 
 
-## check
+++++++## check
 if (check()) {
 	unlink( '../output', TRUE)
 	dir.create("../output", showWarnings=FALSE)

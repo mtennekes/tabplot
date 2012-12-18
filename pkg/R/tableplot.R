@@ -1,49 +1,45 @@
 #' Create a tableplot
 #'
-#' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff]{ff}} package.
+#' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff]{ff}} package. For a quick intro, see \href{../doc/tabplot-vignette.pdf}{\code{vignette("tabplot-vignette")}}.
 #'
-#' For fast tableplot creation, we make use of the \code{\link[ffbase]{ffbase}} package for its sorting and aggregation functions, which are written in C.
-#' First, data is (if needed) converted to an \code{\link[ff:ffdf]{ffdf}} object. 
-#' Then the function \code{\link{tablePrepare}} is called for sorting the data, 
-#' which is the most time consuming step.
-#' For large datasets, it is recommended to store the results of \code{\link{tablePrepare}}.
-#' The resulting object can be given to \code{tableplot} as parameter \code{dat}.
+#' For large dataset, we recommend to use \code{\link{tablePrepare}}. Tableplotting is much faster
+#' when the resulting object of \code{\link{tablePrepare}} is passed on to \code{tableplot} (argument \code{dat}) rather than the dataset itself.
 #' @param dat a \code{\link{data.frame}}, an \code{\link[ff:ffdf]{ffdf}} object, or an object created by \code{\link{tablePrepare}} (see details below). Required.
 #' @param select expression indicating the columns of \code{dat} that are visualized in the tablelplot Also column indices are supported. By default, all columns are visualized. Use \code{select_string} for character strings instead of expressions. 
 #' @param subset logical expression indicing which rows to select in \code{dat} (as in \code{\link{subset}}). It is also possible to provide the name of a categorical variable: then, a tableplot for each category is generated. Use \code{subset_string} for character strings instead of an expressions.
-#' @param sortCol column name on which the dataset is sorted. It can be eiter an index or an expression name. Also a character string can be used, but this is discouraged for programming purposes (use indices instead).
+#' @param sortCol column name on which the dataset is sorted. It can be eiter an index or an expression name. Also a character string can be used, but this is discouraged for programming purposes (use an index instead).
 #' @param decreasing determines whether the dataset is sorted decreasingly (\code{TRUE}) of increasingly (\code{FALSE}).
 #' @param nBins number of row bins
-#' @param from percentage from which the data is shown
-#' @param to percentage to which the data is shown
+#' @param from percentage from which the sorted data is shown
+#' @param to percentage to which the sorted data is shown
 #' @param nCols the maximum number of columns per tableplot. If this number is smaller than the number of columns selected in \code{datNames}, multiple tableplots are generated, where each of them contains the sorted column(s).
-#' @param scales determines the horizontal axes of the numeric variables in \code{colNames}, options: "lin", "log", and "auto" for automatic detection. If necessary, \code{scales} is recycled.
+#' @param scales determines the horizontal axes of the numeric variables in \code{colNames}. Options: "lin", "log", and "auto" for automatic detection. Either \code{scale} is a named vector, where the names correspond to numerical variable names, or \code{scale} is unnamed, where the values are applied to all numeric variables (recycled if necessary).
 #' @param max_levels maximum number of levels for categorical variables. Categorical variables with more levels will be rebinned into \code{max_levels} levels. Either a positive number or -1, which means that categorical variables are never rebinned.
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
-#' \item a palette name in \code{\link{tablePalettes}}, optionally with the starting color between brackets.
-#' \item a palette vector
+#' \item a palette name of \code{\link{tablePalettes}}, optionally with the starting color between brackets.
+#' \item a color vector
 #' }
 #' If the list items are unnamed, they are applied to all selected categorical variables (recycled if necessary). The list items can be assigned to specific categorical variables,
 #' by naming them accordingly.
 #' @param change_palette_type_at number at which the type of categorical palettes is changed. For categorical variables with less than \code{change_palette_type_at} levels, the palette is recycled if necessary. For categorical variables with \code{change_palette_type_at} levels or more, a new palette of interpolated colors is derived (like a rainbow palette).
 #' @param colorNA color for missing values
-#' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
-#' @param limitsX a list of vectors of length two, where each vector contains a lower and an upper limit value. If the list items are unnamed they are applied to all selected numerical variables (recycled if necessary).
-#' To assign limit vectors to specific numerical variables, name them accordingly.
+#' @param numPals vector of palette names that are used for numeric variables. These names are chosen from the sequential palette names in \code{\link{tablePalettes}}. Either \code{numPals} is a named vector, where the names correspond to the numerical variable names, or an unnamed vector (recycled if necessary).
+#' @param limitsX a list of vectors of length two, where each vector contains a lower and an upper limit value. Either the names of \code{limitsX} correspond to numerical variable names, or \code{limitsX} is an unnamed list (recycled if necessary).
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
 #' @param select_string character equivalent of the \code{select} argument (particularly useful for programming purposes)
 #' @param subset_string character equivalent of the \code{subset} argument (particularly useful for programming purposes) 
-#' @param colNames deprecated; used in older versions of tabplot (prior to 0.12): use \code{select_string)} instead
-#' @param filter deprecated; used in older versions of tabplot (prior to 0.12): use \code{subset_string)} instead
+#' @param colNames deprecated; used in older versions of tabplot (prior to 0.12): use \code{select_string} instead
+#' @param filter deprecated; used in older versions of tabplot (prior to 0.12): use \code{subset_string} instead
 #' @param plot boolean, to plot or not to plot a tableplot
-#' @param ... arguments passed to \code{\link{plot.tabplot}}
+#' @param ... layout arguments, such as \code{fontsize} and \code{title}, are passed on to \code{\link{plot.tabplot}}
 #' @return \code{\link{tabplot-object}} (silent output). If multiple tableplots are generated (which can be done by either setting \code{subset} to a categorical column name, or by restricting the number of columns with \code{nCols}), then a list of \code{\link{tabplot-object}s} is silently returned.
 #' @export
 #' @import ffbase
 #' @keywords visualization
 #' @example ../examples/tableplot.R
+#' @seealso \code{\link{itableplot}}
 #' @note In early development versions of \code{tabplot} (prior to version 1.0) it was possible to sort datasets on multiple columns. To increase to tableplot creation speed, this feature is dropped. For multiple sorting purposes, we recommend to use the \code{subset} parameter instead.
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
 					  nBins=100, from=0, to=100, nCols=ncol(dat), 
@@ -140,6 +136,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 								 decreasing=decreasing, scales=scales, max_levels=max_levels, 
 								 pals=pals, nBins=nBins,
 								 from=from, to=to, subset_string=subs_string, 
+                		  		 colorNA = colorNA, numPals = numPals, limitsX=limitsX,
 								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
 			})
 			return(invisible(tabs))

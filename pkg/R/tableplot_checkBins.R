@@ -1,9 +1,3 @@
-#' Function to check the tableplot argument: number of bins.
-#'
-#' @aliases tableplot_checkBins
-#' @param nBins the number of bins
-#' @param nDat the number of data observations
-#' @return the (possibly corrected) number of bins
 tableplot_checkBins <- function(nBins, nDat) {
 	if (!is.numeric(nBins)) stop("<nBins> is not numeric")
 	if (nBins > nDat) { 

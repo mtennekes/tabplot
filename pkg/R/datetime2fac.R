@@ -1,12 +1,14 @@
-#' Create a factor vector out of a date-time vector
+#' Transform a date-time vector to a factor
 #'
-#' Create a factor vector out of a date-time vector from class \code{\link{POSIXt}} or \code{\link{Date}}.
+#' Transform a date-time vector from class \code{\link{POSIXt}} or \code{\link{Date}} to a factor.
 #'
 #' The range \code{rng} is cut according to different pretty rounded time periods. The cut with the number of levels that is closest to 6 is chosen. Vector \code{p} is cut accordingly. Values of \code{p} outside \code{rng} are translated to \code{NA}.
 #' @param p date-time vector
 #' @param rng range of the factor. 
 #' @return A factor vector. 
+#' @example ../examples/datetime2fac.R
 #' @export
+#' @seealso \code{\link{num2fac}}
 #' @note This function is still in development stage, and can be improved and optimized. \code{ff} vectors are not implemented yet
 datetime2fac <- function(p, rng=range(p, na.rm=TRUE)) {
 

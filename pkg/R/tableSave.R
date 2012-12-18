@@ -15,12 +15,30 @@
 #' @param ... other arguments passed to \code{\link[=plot.tabplot]{plot}} or the used graphics device
 #' @export
 #' @keywords save tableplot
-#' @example ../examples/tableSave.R
+#' @examples
+#' \dontrun{
+#' 	require(ggplot2)
+#' 	data(diamonds)
+#' 	
+#' 	# default tableplot
+#' 	tab <- tableplot(diamonds)
+#' 		
+#' 	# save tableplot
+#' 	tableSave(tab, filename="diamonds.png", title="Shine on you Crazy Diamond!!!")
+#' 	}
 tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""), 
     device = default_device(filename), path = NULL, scale = 1, 
     width = par("din")[1], height = par("din")[2], dpi = 300, 
 	onePage = TRUE,...) 
 {
+
+	items <- list(...)
+	isPlotItem <- names(items) %in% c("fontsize", "legend.lines", "max_print_levels", "text_NA", "title", "showTitle", "fontsize.title", "showNumAxes")
+	
+	items.plot <- items[isPlotItem]
+	items.dev <-  items[!isPlotItem]
+	
+	
     if (is.list(tab) && !inherits(tab, "tabplot")) {
         if (!all(sapply(tab, class)=="tabplot")) stop(paste(deparse(substitute(tab)), "is not a list of tabplot-objects"))
     } else {
@@ -62,7 +80,8 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
     if (!is.null(path)) {
         filename <- file.path(path, filename)
     }
-    device(file = filename, width = width, height = height, ...)
+	do.call(device, c(list(file = filename, width = width, height = height), items.dev))
+    #device(file = filename, width = width, height = height, ...)
     if (is.list(tab) && !inherits(tab, "tabplot")) {
         nl <- length(tab)
         if (onePage) {
@@ -71,14 +90,14 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
             pushViewport(viewport(layout=grid.layout(nl, 1)))
             
             lapply(1:nl, FUN=function(i){
-                plot(tab[[i]], vp=stackvp(i), ...)
+                do.call(plot, c(list(x=tab[[i]], vp=stackvp(i)), items.plot))
             })
         } else {
             lapply(1:nl, FUN=function(i){
-                plot(tab[[i]], ...)
+            	do.call(plot, c(list(x=tab[[i]]), items.plot))
             })
         }
-    } else plot(tab, ...)
+    } else do.call(plot, c(list(x=tab), items.plot))
     
     on.exit(capture.output(dev.off()))
     invisible()

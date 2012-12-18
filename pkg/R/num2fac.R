@@ -1,6 +1,6 @@
-#' Create a factor vector out of a numerical vector
+#' Transform a numerical vector to a factor
 #'
-#' Create a factor vector out of a numerical vector. The levels can be determined by several methods.
+#' Transform a numerical vector from class \code{\link{POSIXt}} or \code{\link{Date}} to a factor.
 #'
 #' @aliases num2fac
 #' @param num numeric vector
@@ -18,7 +18,9 @@
 #' @param n the (desired) number of levels. \code{n=0} means automatic
 #' @param brks breaks that determine the levels (only required when \code{method="fixed"})
 #' @return A factor vector
+#' @example ../examples/num2fac.R
 #' @export
+#' @seealso \code{\link{datetime2fac}}
 #' @note This function is still in development stage, and can be improved and optimized. \code{ff} vectors are not implemented yet
 num2fac <-
 function(num, method="pretty", num_scale="auto", n=0, brks=NA) {

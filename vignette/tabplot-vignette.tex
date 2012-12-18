@@ -287,20 +287,22 @@ Suppose we want a to use the default palette for the variable {\tt cut}, but sta
 \label{fig:tp5}
 \end{figure}
 
-Also quantitative palettes can be used (for instance by setting {\tt clarity="Greens"}. Missing values are by default depicted in red. This can be changed with the argument {\tt colorNA}.
+Also quantitative palettes can be used (for instance by setting {\tt clarity=} {\tt "Greens"}. Missing values are by default depicted in red. This can be changed with the argument {\tt colorNA}.
 
 \subsection{High cardinality data}
-To illustrate how tableplots deal with high cardinality data, we extend the diamonds dataset:
+To illustrate how tableplots deal with high cardinality data, we extend the diamonds dataset with a convenient wrapper function {\tt num2fac}:
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-diamonds$carat_class <- \hlfunctioncall{cut}(diamonds$carat, 
-    breaks = \hlfunctioncall{pretty}(diamonds$carat, n = 20))
-diamonds$price_class <- \hlfunctioncall{cut}(diamonds$price, 
-    breaks = \hlfunctioncall{pretty}(diamonds$price, n = 100))
+diamonds$carat_class <- \hlfunctioncall{num2fac}(diamonds$carat, 
+    n = 20)
+diamonds$price_class <- \hlfunctioncall{num2fac}(diamonds$price, 
+    n = 100)
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\textcolor{warningcolor}{\#\# Warning: var has missing values, omitted in finding classes}}\end{kframe}
 \end{knitrout}
 
 
@@ -346,7 +348,7 @@ large_diamonds <- diamonds[\hlfunctioncall{rep}(\hlfunctioncall{seq.int}(\hlfunc
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    5.24    0.64    5.95
+##    5.34    0.50    5.86
 \end{verbatim}
 \begin{alltt}
 
@@ -356,7 +358,7 @@ large_diamonds <- diamonds[\hlfunctioncall{rep}(\hlfunctioncall{seq.int}(\hlfunc
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    0.48    0.18    0.67
+##    0.64    0.04    0.68
 \end{verbatim}
 \begin{alltt}
 
@@ -367,7 +369,7 @@ large_diamonds <- diamonds[\hlfunctioncall{rep}(\hlfunctioncall{seq.int}(\hlfunc
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    0.88    0.09    0.96
+##    0.92    0.06    0.98
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -385,7 +387,7 @@ Although the first step takes a couple of seconds on a moderate desktop computer
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    4.38    0.64    5.07
+##    4.26    0.74    5.07
 \end{verbatim}
 \begin{alltt}
 
@@ -396,7 +398,7 @@ Although the first step takes a couple of seconds on a moderate desktop computer
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    4.55    0.81    5.39
+##    4.42    0.90    5.41
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -480,7 +482,7 @@ When multiple tableplots are created, the (silent) output is a list of {\tt tabp
 
 \subsection{Layout options}\label{seclay}
 There are several arguments that determine the layout of the plot:
-{\tt fontsize}, {\tt legend.lines}, {\tt max_print_levels}, {\tt text_NA}, {\tt title}, {\tt showTitle}, {\tt fontsize.title}, {\tt showNumAxes}, and {\tt vp}. The following code illustrates this.
+{\tt fontsize}, {\tt legend.lines}, {\tt max\_print\_levels}, {\tt text\_NA}, {\tt title}, {\tt showTitle}, {\tt fontsize.} {\tt title}, {\tt showNumAxes}, and {\tt vp}. The following code illustrates this.
 
 \begin{figure}[htp]
 \begin{knitrout}
@@ -536,13 +538,11 @@ With the function {\tt tableSave}, tableplots can be saved to a desired grahical
     width = 5, height = 3, fontsize = 6, 
     legend.lines = 6)
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\textcolor{errorcolor}{\#\# Error: unused argument(s) (fontsize = 6, legend.lines = 6)}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 
 
-All layout options named in Section~\ref{seclay} can be used here, such as {\fontsize} and {\tt legend.lines}. When {\tt tab} is a list of tabplot-objects (see Section~\ref{secmult}), the argument {\tt onePage} determines whether the tableplots are stacked on one page or printed on seperate pages.
+All layout options named in Section~\ref{seclay} can be used here, such as {\tt fontsize} and {\tt legend.lines}. When {\tt tab} is a list of tabplot-objects (see Section~\ref{secmult}), the argument {\tt onePage} determines whether the tableplots are stacked on one page or printed on seperate pages.
 
 \newpage
 

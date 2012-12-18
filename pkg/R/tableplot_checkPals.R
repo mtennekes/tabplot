@@ -1,10 +1,3 @@
-#' Function to check the tableplot argument: pals
-#'
-#' @aliases tableplot_checkPals
-#' @param pals pals
-#' @param colNames column names
-#' @param isCat boolean vector indicating whether columns are categorical
-#' @return object with palette information
 tableplot_checkPals <- function(pals, colNames, isCat) {
 	if (class(pals)!="list") stop("<pals> is not a list")
 

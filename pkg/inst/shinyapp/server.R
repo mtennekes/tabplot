@@ -55,7 +55,7 @@ shinyServer(function(input, output) {
 			checkboxGroupInput("logscale", label="Log scale:", choices=numvars())
 		}
 	})
-	
+		
 	output$plot <- reactivePlot(function() {
 		p <- dataset()
 		vars <- colnames(p$data)

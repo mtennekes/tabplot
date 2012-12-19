@@ -13,7 +13,7 @@ Description: A tableplot is a visualisation of a (large)
     categorical variables as stacked bar charts. Missing
     values are taken into account. Also supports large ffdf
     datasets from the ff package.
-Version: 1.0
+Version: 1.0-1
 URL: http://code.google.com/p/tableplot/
 Date: 2012-12-18
 Depends:

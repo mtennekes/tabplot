@@ -164,8 +164,9 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		stop("<colorNA> is not correct")
 	numPals <- tableplot_checkNumPals(numPals, colNames, isNumber)
 	limitsX <- if (missing(limitsX)) list() else tableplot_checkLimitsX(limitsX, colNames, isNumber)
-	nBins <- tableplot_checkBins(nBins, nrow(dat))
 	tableplot_checkFromTo(from, to)
+	N <- as.integer(nrow(dat) * (to-from)/100)
+	nBins <- tableplot_checkBins(nBins, max(N,2))
 	
 	
 	##################################
@@ -182,7 +183,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 						sortCol=sortCol, decreasing=decreasing, scales=scales, 
 						pals=pals, change_palette_type_at=change_palette_type_at,
 						colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, 
-						to=to, N=nrow(dat))
+						to=to, N=N)
 	
 	
 														   

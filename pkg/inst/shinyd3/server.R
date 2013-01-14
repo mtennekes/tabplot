@@ -19,8 +19,9 @@ isNumber <- lapply(ps, function(p){
 
 reactiveTablePlot <- function(func){
 	reactive(function(){
-		val <- func()$columns
-		names(val) <- NULL
+		val <- func()
+		names(val$columns) <- NULL
+		val$dataset <- NULL
 		val
 	})
 }

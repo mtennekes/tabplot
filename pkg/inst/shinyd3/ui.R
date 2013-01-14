@@ -1,6 +1,6 @@
 library(shiny)
 
-tablePlotOutput <- function(outputId, width=400, height=400){
+tablePlotOutput <- function(outputId, width=800, height=600){
 	tagList(
 		singleton(tags$script(src="http://d3js.org/d3.v3.js", type="text/javascript")),
 		singleton(tags$script(src="js/tableplot.js", type="text/javascript")),

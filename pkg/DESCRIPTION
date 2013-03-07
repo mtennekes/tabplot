@@ -14,7 +14,7 @@ Description: A tableplot is a visualisation of a (large)
     values are taken into account. Also supports large ffdf
     datasets from the ff package.
 Version: 1.0-1
-URL: http://code.google.com/p/tableplot/
+URL: https://github.com/mtennekes/tabplot
 Date: 2012-12-18
 Imports:
     ffbase (>= 0.6-3),

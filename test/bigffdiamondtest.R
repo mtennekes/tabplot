@@ -1,4 +1,4 @@
-library(ff)
+library(ffbase)
 options(fftempdir = "d:/temp")
 
 library(ggplot2); data(diamonds)
@@ -18,5 +18,9 @@ for (i in chunk(from=1, to=N, by=n)){
 
 # and timing
 system.time(
-  tab <- tableplot(diamondsff)
+  tab <- tablePrepare(diamondsff)
+)
+
+system.time(
+	tableplot(tab)
 )

@@ -1,9 +1,16 @@
 version 1.0-1
 - fixed bug when nBins > number of rows
 
+version 1.0
+- fast preprocessing with ffbase, which uses C code
+- tick marks applied on x-ases for numeric variables 
+- flexilibity to plot high cardinality categorical variables
+- fixed a bug: if nBins was an integer the tableplot function reported that it was not numeric (thanks to Gabor Grothendieck).
+- updated vignette
+- added shiny interface 
+
 version 0.12-1
 - fixed bug with one-level-factors
-- fixed a bug: if nBins was an integer the tableplot function reported that it was not numeric (thanks to Gabor Grothendieck).
 
 version 0.12
 - added more flexibility to select columns and to subset the data. The new argument select allows both column indices and expressions while the new argument select_string allows character strings. The new argument subset allows logical expressions to indicate which rows to select, while subset_string allows character strings. The subset(_string) can also be used to select a categorical variable to split the data.

@@ -18,7 +18,7 @@
 plot.tabplot <-
 function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, showNumAxes=TRUE, vp=NULL, ...) {
 
-	require(grid) # only needed for devtools::load_all(), not for package building
+	require(grid)
 	
 	if (class(x)[1]!="tabplot") p(paste(deparse(substitute(x)), "is not a tabplot-object"))
 	

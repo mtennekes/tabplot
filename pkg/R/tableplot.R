@@ -55,6 +55,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 					  plot=TRUE, ...) {
 
 
+	require(ffbase)
+
 	##################################
 	## prepare data if necessary
 	##################################

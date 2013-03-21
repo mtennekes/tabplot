@@ -14,7 +14,7 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	stopifnot(inherits(p, what="prepared"))
 	x <- p$data[cols]
 	o <- p$ordered[[cols[sortCol]]]
-	
+
 	# create bin vector
 	N <- length(o)
 	nbins <- max(min(nbins, as.integer(N*(to-from))), 2)
@@ -31,9 +31,21 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	}
 
 	# assign bin numbers
-	for (i in seq_along(chunks)){
-		b <- o[chunks[[i]]]
-		bin[b] <- i
+	if (N==nrow(x)) {
+		# full method
+		cat("full dataset\n")
+		for (i in seq_along(chunks)){
+			b <- o[chunks[[i]]]
+			bin[b] <- i
+		}
+	} else {
+		# sample method (workaround solution)
+		cat("sampling\n")
+		x <- x[o,]
+		for (i in seq_along(chunks)){
+			bin[chunks[[i]]] <- i
+		}
+		
 	}
 
 	# do the actual binning

@@ -43,7 +43,7 @@
 #' @note In early development versions of \code{tabplot} (prior to version 1.0) it was possible to sort datasets on multiple columns. To increase to tableplot creation speed, this feature is dropped. For multiple sorting purposes, we recommend to use the \code{subset} parameter instead.
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
 					  nBins=100, from=0, to=100, nCols=ncol(dat),
-					  maxN=1e4,
+					  maxN=1e6,
 					  scales="auto", max_levels=50, 
 					  pals=list("Set1", "Set2", "Set3", "Set4"), 
 					  change_palette_type_at = 20,
@@ -169,6 +169,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	numPals <- tableplot_checkNumPals(numPals, colNames, isNumber)
 	limitsX <- if (missing(limitsX)) list() else tableplot_checkLimitsX(limitsX, colNames, isNumber)
 	tableplot_checkFromTo(from, to)
+	
 	N <- as.integer(length(p$ordered[[1]]) * (to-from)/100)
 	if (maxN==0 && maxN > N) maxN <- N else N <- maxN
 	nBins <- tableplot_checkBins(nBins, max(N,2))

@@ -22,6 +22,8 @@ p <- tablePrepare(diamonds)
 
 tableplot(p, maxN=1e2)
 
+tableplot(p, maxN=1e2, from=40, to=45)
+
 
 tab <- tableplot(diamonds)
 tab <- tableplot(diamonds, max_levels=20, change_palette_type_at=15, max_print_levels=15) # default values

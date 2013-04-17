@@ -15,16 +15,9 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	x <- p$data[cols]
 	o <- p$ordered[[cols[sortCol]]]
 	
-	N <- length(o)
-	
-	if (maxN!=N) {
-		# sample
-		sample_ids <- round(seq(1, N, length.out=maxN))
-		o <- as.ff(o[sample_ids])
-		N <- maxN
-	}
 	
 	# create bin vector
+	N <- length(o)
 	nbins <- max(min(nbins, as.integer(N*(to-from))), 2)
 	bin <- ff(0L, vmode="integer", length = N)
 	
@@ -39,22 +32,26 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	}
 
 	# assign bin numbers
-	if (N==nrow(x)) {
-		# full method
-		cat("full dataset\n")
+	
+	if (maxN!=N) {
+ 		cat("sample\n")
+ 		sample_ids <- round(seq(from_r, to_r, length.out=maxN))
+ 		
+ 		sel <- bit(N)
+ 		sel[sample_ids] <- TRUE
+ 		
+ 		for (i in seq_along(chunks)){
+ 			b <- o[chunks[[i]]][sel[chunks[[i]]]]
+ 			bin[b] <- i
+ 		}
+ 	} else {
+ 		cat("full dataset\n")
 		for (i in seq_along(chunks)){
 			b <- o[chunks[[i]]]
 			bin[b] <- i
 		}
-	} else {
-		# sample method (workaround solution)
-		cat("sampling\n")
-		x <- x[o,]
-		for (i in seq_along(chunks)){
-			bin[chunks[[i]]] <- i
-		}
-		
-	}
+ 	}
+
 
 	# do the actual binning
 	lapply(physical(x), function(v){

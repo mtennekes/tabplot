@@ -14,7 +14,7 @@
 #' @example ../examples/tablePrepare.R
 #' @export
 #' @import ffbase
-tablePrepare <- function(x, name=deparse(substitute(x)), maxN=1e4, ...){
+tablePrepare <- function(x, name=deparse(substitute(x)), ...){
 	# TODO set path where prepared data set should be stored
 	# TODO make it possible to sort on multiple columns
 	# cat("Preparing data for tableplotting, storing this result increases tableplotting speed (see `prepare`)...")
@@ -28,7 +28,6 @@ tablePrepare <- function(x, name=deparse(substitute(x)), maxN=1e4, ...){
 	
 	row.names(x) <- NULL
 	N <- nrow(x)
-	if (maxN==0) maxN <- N
 	isFactor <- sapply(physical(x), is.factor.ff)
 	
 	ordered <- physical(x)
@@ -48,11 +47,7 @@ tablePrepare <- function(x, name=deparse(substitute(x)), maxN=1e4, ...){
 	ordered[isFactor] <- lapply(ordered[isFactor], function(f) { levels(f) <- NULL; f})
 	ordered <- lapply(ordered, fforder, na.last=FALSE)
 	
-	# sample
-	sample_ids <- round(seq(1, N, length.out=maxN))
-	ordered <- lapply(ordered, function(o){
-		as.ff(o[sample_ids])
-	})
+
 	
 	ordered <- do.call(ffdf, ordered)
 	

@@ -66,7 +66,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	p <- dat
 	if (!inherits(dat, "prepared")){
 		datName <- deparse(substitute(dat))
-		p <- tablePrepare(dat, name=datName, maxN=maxN)
+		p <- tablePrepare(dat, name=datName)
 	} else datName <- attr(p, "name")
 	
 	dat <- p$data
@@ -170,6 +170,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	limitsX <- if (missing(limitsX)) list() else tableplot_checkLimitsX(limitsX, colNames, isNumber)
 	tableplot_checkFromTo(from, to)
 	N <- as.integer(length(p$ordered[[1]]) * (to-from)/100)
+	if (maxN==0 && maxN > N) maxN <- N else N <- maxN
 	nBins <- tableplot_checkBins(nBins, max(N,2))
 	
 	
@@ -178,8 +179,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##################################
 	
 	bd <- bin_data( p, sortCol=sortCol, cols=colNames, from=from/100, to=to/100
-    			  , nbins=nBins, decreasing=decreasing
-    			  )
+    			  , nbins=nBins, decreasing=decreasing, maxN=maxN)
 		
 	bd <- bin_hcc_data(bd, max_levels)
 	

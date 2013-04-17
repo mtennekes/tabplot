@@ -10,13 +10,21 @@
 #' @param nbins number of bins
 #' @param decreasing sort decreasingly
 #' @export
-bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE){
+bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE, maxN=1e4){
 	stopifnot(inherits(p, what="prepared"))
 	x <- p$data[cols]
 	o <- p$ordered[[cols[sortCol]]]
-
-	# create bin vector
+	
 	N <- length(o)
+	
+	if (maxN!=N) {
+		# sample
+		sample_ids <- round(seq(1, N, length.out=maxN))
+		o <- as.ff(o[sample_ids])
+		N <- maxN
+	}
+	
+	# create bin vector
 	nbins <- max(min(nbins, as.integer(N*(to-from))), 2)
 	bin <- ff(0L, vmode="integer", length = N)
 	

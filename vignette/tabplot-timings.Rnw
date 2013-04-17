@@ -1,0 +1,115 @@
+%\VignetteIndexEntry{tabplot}
+\documentclass[11pt, fleqn, a4paper]{article}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{hyperref}
+\usepackage{alltt}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage{threeparttable}
+\usepackage{enumitem}
+
+% stimulate latex to put multiple floats on a page.
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{3}
+\setcounter{dbltopnumber}{2}
+\renewcommand{\topfraction}{.9}
+\renewcommand{\textfraction}{.1}
+\renewcommand{\bottomfraction}{.75}
+\renewcommand{\floatpagefraction}{.9}
+\renewcommand{\dblfloatpagefraction}{.9}
+\renewcommand{\dbltopfraction}{.9}
+\hyphenation{time-stamp}
+\hypersetup{colorlinks, urlcolor=blue, linkcolor=blue}
+\newenvironment{myindentpar}[1]%
+{\begin{list}{}%
+         {\setlength{\leftmargin}{#1}}%
+         \item[]%
+}
+{\end{list}}
+
+\title{Timings of BIG data visualization with the {\tt tabplot} package}
+\author{Martijn Tennekes and Edwin de Jonge}
+\date{\today\\ (A later version may be available on \href{http://cran.r-project.org/package=tabplot}{CRAN})}
+
+
+
+
+\begin{document}
+
+<<setup, echo=FALSE,cache = FALSE>>=
+opts_knit$set(concordance = TRUE)
+@
+
+\setkeys{Gin}{width=1\textwidth}
+
+\maketitle
+\begin{abstract}
+
+We test the speed of {\tt tabplot} package with datasets over $1,000,000,000$ records.
+For this purpose we multiply the diamonds dataset from the {\tt ggplot2} package 20,000 times.
+
+\end{abstract}
+
+<<echo=FALSE, results='hide', message=FALSE>>=
+library(devtools)
+load_all("../pkg")
+@
+\maketitle
+
+\newpage
+
+\tableofcontents
+%\listofalgorithms
+\newpage
+\section{Introduction}
+This dataset contains 53940 records and 10 variables.
+
+\section{Create testdata}
+
+<<chunk1,  message=FALSE>>=
+require(ggplot2)
+data(diamonds)
+## add some NA's
+is.na(diamonds$price) <- diamonds$cut == "Ideal"
+is.na(diamonds$cut) <- (runif(nrow(diamonds)) > 0.8)
+@
+
+<<chunk2,  message=FALSE>>=
+n <- nrow(diamonds)
+N <- 200L * n
+
+## convert to ff format (not enough memory otherwise)
+require(ffbase)
+diamondsff <- as.ffdf(diamonds)
+nrow(diamondsff) <- N
+
+# fill with identical data
+for (i in chunk(from=1, to=N, by=n)){
+  diamondsff[i,] <- diamonds
+}
+
+@
+
+\section{Create testdata}
+
+<<chunk3,  message=FALSE>>=
+system.time(
+	p <- tablePrepare(diamondsff)
+)
+@
+
+
+<<chunk4,  message=FALSE>>=
+system.time(
+	tab <- tableplot(p, maxN=1e4, plot=FALSE)
+)
+@
+
+
+
+\end{document}

@@ -2,7 +2,6 @@ scaleNumCol <- function(tabCol, IQR_bias) {
 	## for "auto" scales, choose between "lin" and "log" based on IQR_bias
 	if (tabCol$scale_init=="auto") {
 		quant <- quantile(tabCol$mean, na.rm=TRUE)
-		IQR <- quant[4] - quant[2]
 		
 		if (all(is.na(quant))) {
 			tabCol$scale_final <- "lin"
@@ -10,8 +9,10 @@ scaleNumCol <- function(tabCol, IQR_bias) {
 			IQR <- quant[4] - quant[2]
 			
 			## simple test to determine whether scale is lin or log
-			tabCol$scale_final <- ifelse(((quant[5] > quant[4] + IQR_bias * IQR) || 
-										  	(quant[1] < quant[2] - IQR_bias * IQR)), "log", "lin")
+			tabCol$scale_final <- 
+				ifelse(((quant[5]>0 && quant[5] > quant[4] + IQR_bias * IQR) || 
+							(quant[1]<0 && quant[1] < quant[2] - IQR_bias * IQR)), 
+										 "log", "lin")
 		}
 	} else {
 		tabCol$scale_final <- tabCol$scale_init

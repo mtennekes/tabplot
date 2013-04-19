@@ -1,5 +1,4 @@
 coorNumCol <- function(tabCol, limitsX, bias_brokenX) {
-	
 	num <- tabCol$mean.scaled
 	ignoreMarks <- all(is.na(num))
 
@@ -23,7 +22,8 @@ coorNumCol <- function(tabCol, limitsX, bias_brokenX) {
 		minmax <-  range(num, na.rm=TRUE)	
 	}
 	
-	if ((minmax[2]) > 0 && minmax[1] > (bias_brokenX * minmax[2])) {
+	isConstant <- minmax[1]==minmax[2]
+	if (!isConstant && minmax[2] > 0 && minmax[1] > (bias_brokenX * minmax[2])) {
 		## broken x-axis has positive values
 		brokenX <- 1
 		values <- num - minmax[1]
@@ -31,7 +31,7 @@ coorNumCol <- function(tabCol, limitsX, bias_brokenX) {
 		marks_coor <- marks - minmax[1]
 		minV <- 0
 		maxV <- minmax[2] - minmax[1]
-	} else if ((minmax[1]) < 0 && minmax[2] < (bias_brokenX * minmax[1])) {
+	} else if (!isConstant && minmax[1] < 0 && minmax[2] < (bias_brokenX * minmax[1])) {
 		## broken x-axis has negative values
 		brokenX <- -1
 		values <- num - minmax[2]

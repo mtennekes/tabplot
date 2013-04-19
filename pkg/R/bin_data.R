@@ -10,7 +10,7 @@
 #' @param nbins number of bins
 #' @param decreasing sort decreasingly
 #' @export
-bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE, maxN=1e4){
+bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE, maxN=1e6){
 	stopifnot(inherits(p, what="prepared"))
 	x <- p$data[cols]
 	o <- p$ordered[[cols[sortCol]]]

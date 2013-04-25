@@ -172,44 +172,44 @@ bin_data2 <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins
 
 
 # # quick testing
-require(ggplot2)
-x <- diamonds
-#x <- iris
-
-px <- tablePrepare(x)
-
-system.time(
-	agg <- bin_data(px, sortCol=1, nbins=100)
-)
-
-system.time(
-	agg2 <- bin_data2(px, sortCol=1, nbins=100)
-)
-
-agg3 <- cbind(agg$carat, agg2$carat)
-# binRanges(2, 100, nbins=3)
-
-
-# x.big <- NULL
-# for (i in 1:100){
-# 	x.big <- ffdfappend(x.big, x)
-# 	cat("\r", i)
-# }
-# save.ffdf(x.big)
-
-load.ffdf("ffdb/")
-px.big <- tablePrepare(x.big)
-py.big <- tablePrepare(y.big)
-pz.big <- tablePrepare(z.big)
-
-system.time(
-	agg <- bin_data(py.big, sortCol=1, nbins=100, maxN=1e4)
-)
-
-system.time(
-	agg2 <- bin_data2(py.big, sortCol=1, from=0, to=0.0001, nbins=100, maxN=1e4)
-)
-
+# require(ggplot2)
+# x <- diamonds
+# #x <- iris
+# 
+# px <- tablePrepare(x)
+# 
+# system.time(
+# 	agg <- bin_data(px, sortCol=1, nbins=100)
+# )
+# 
+# system.time(
+# 	agg2 <- bin_data2(px, sortCol=1, nbins=100)
+# )
+# 
+# agg3 <- cbind(agg$carat, agg2$carat)
+# # binRanges(2, 100, nbins=3)
+# 
+# 
+# # x.big <- NULL
+# # for (i in 1:100){
+# # 	x.big <- ffdfappend(x.big, x)
+# # 	cat("\r", i)
+# # }
+# # save.ffdf(x.big)
+# 
+# load.ffdf("ffdb/")
+# px.big <- tablePrepare(x.big)
+# py.big <- tablePrepare(y.big)
+# pz.big <- tablePrepare(z.big)
+# 
+# system.time(
+# 	agg <- bin_data(py.big, sortCol=1, nbins=100, maxN=1e4)
+# )
+# 
+# system.time(
+# 	agg2 <- bin_data2(py.big, sortCol=1, from=0, to=0.1, nbins=100, maxN=1e4)
+# )
+# 
 # x <- ff(1:10)
 # index <- ff(10:1, vmode="integer")
 # nbins <- 3

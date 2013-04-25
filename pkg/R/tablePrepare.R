@@ -47,8 +47,6 @@ tablePrepare <- function(x, name=deparse(substitute(x)), ...){
 	ordered[isFactor] <- lapply(ordered[isFactor], function(f) { levels(f) <- NULL; f})
 	ordered <- lapply(ordered, fforder, na.last=FALSE)
 	
-
-	
 	ordered <- do.call(ffdf, ordered)
 	
 	#ranked <- lapply(ordered, fforder)

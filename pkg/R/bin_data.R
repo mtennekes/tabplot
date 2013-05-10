@@ -17,28 +17,30 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	bin <- NULL
 	
 	N <- nrow(x)
-	n <- floor(N*(to-from))
+	n <- ceiling(N*(to-from))
 	
 	# first check how large from*N:to*N is. 
 	# if this is larger then maxN sample otherwise don't
 	
 	nbins <- max(min(nbins, n), 2)
-	if (decreasing){
-		from_r <- max(floor(N-N*to), 1L)
-		to_r <- min(ceiling(N-N*from), N)
-	} else {
-		from_r <- max(floor(from*N), 1L)
-		to_r <- min(ceiling(to*N), N)
-	}
+	from_r <- max(floor(from*N), 1L)
+	to_r <- min(ceiling(to*N), N)
 	if (maxN < n){
 		cat("sample")
 		n <- maxN
-		o <- as.ff(o[round(seq(from_r, to_r, length.out=n))])
+		index <- as.integer(seq(from_r, to_r, length.out=n)) 
+		if (decreasing){
+			index <- (N+1L) - index
+		}
+		o <- as.ff(o[index])
 	} else if (n < N){
 		#TODO check if n is big, if this is the case choose for bin method 
 		# instead of o method.
 		o2 <- NULL
 		for (i in chunk(o, from=from_r, to=to_r)){
+			if (decreasing){
+				i <- (N+1L) - i
+			}
 			o2 <- ffappend(o2, o[i])
 		}
 		o <- o2
@@ -47,7 +49,9 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 		cat("full data set")
 		bin <- ff(0L, length=nrow(x))
 		for (i in chunk(o)){
-			bin[o[i]] <- as.integer(seq.int(i[1], i[2]) / ((N+1)/nbins) + 1)
+			b <- as.integer(seq.int(i[1], i[2]) / ((N+1)/nbins) + 1)
+			if (decreasing){ b <- (nbins+1L) - b}
+			bin[o[i]] <- b
 		}
 		o <- NULL
 	}

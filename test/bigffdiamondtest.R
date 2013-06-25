@@ -3,7 +3,6 @@ options(fftempdir = "d:/temp")
 
 library(ggplot2); data(diamonds)
 
-
 ## create missings, and high cardinality categorical variables
 diamonds$carat[sample.int(nrow(diamonds),4000)] <- NA
 diamonds$cut[sample.int(nrow(diamonds),20000)] <- NA
@@ -14,7 +13,6 @@ diamonds$price2 <- factor(diamonds$price)
 diamonds$expensive <- diamonds$price >= 10000
 
 # multiply x times and store as ffdf
-
 n <- nrow(diamonds)
 N <- 100L * n
 

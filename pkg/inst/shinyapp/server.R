@@ -39,7 +39,7 @@ tablePlot <- function(p, numvars, input, plot=TRUE) {
 					sortCol = sortCol, select_string = select,
 					decreasing = decreasing, 
 					scales = scales,
-					nBins=nBins)
+					nBins=nBins, maxN=1e5)
 			} else {
 				paste("tableplot(", input$dataset, 
 					  ", from=", from, ", to=", to, 

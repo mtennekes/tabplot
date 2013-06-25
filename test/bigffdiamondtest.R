@@ -29,17 +29,21 @@ system.time(
 
 
 system.time(
-	tableplot(tab, maxN=1e4, plot=FALSE)
+	t <- tableplot(tab, maxN=1e4, plot=FALSE)
 )
+plot(t)
 
 system.time(
-	tableplot(tab, maxN=1e5, plot=FALSE)
+	t <- tableplot(tab, maxN=1e5, plot=FALSE)
 )
+plot(t)
 
 system.time(
-	tableplot(tab, maxN=1e6, plot=FALSE)
+	t <- tableplot(tab, maxN=1e6, plot=FALSE)
 )
+plot(t)
 
 system.time(
-	tableplot(tab, maxN=0, plot=FALSE)
+	t <- tableplot(tab, maxN=0, plot=FALSE)
 )
+plot(t)

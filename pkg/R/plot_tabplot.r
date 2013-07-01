@@ -90,8 +90,8 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 	
 	vpBodyCols <- viewport(name="BodyCols"
 						 , layout = grid.layout( nrow = 1
-						 						, ncol = x$n+1
-						 						, widths = unit(c(3,rep(1,x$n)), c("lines",rep("null",x$n)))
+						 						, ncol = x$m+1
+						 						, widths = unit(c(3,rep(1,x$m)), c("lines",rep("null",x$m)))
 						   )
 					   , gp=gpar(fontsize=fontsize)
 	)
@@ -161,7 +161,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 				grid.text("row bins:", x=0.1, y=unit(5, units="lines"), just="left")
 				grid.text(paste("  ", x$nBins), x=0.1, y=unit(4, units="lines"), just="left")
 				grid.text("objects:", x=0.1, y=unit(2, units="lines"), just="left")
-				grid.text(paste("  ", x$rows$m), x=0.1, y=unit(1, units="lines"), just="left")
+				grid.text(paste("  ", x$n), x=0.1, y=unit(1, units="lines"), just="left")
 			})
 		})
 		
@@ -169,7 +169,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 		## Draw columns from left to right. Per column, check whether it is numeric or categorial.
 		#############################
 	
-		for (i in 1:x$n) {
+		for (i in 1:x$m) {
 			cellplot(1,i+1, vpColumn, {
 				tCol <- x$columns[[i]]
 				cellplot(1, 1, vpTitle, {

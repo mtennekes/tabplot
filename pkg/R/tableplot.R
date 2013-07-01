@@ -62,7 +62,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	## prepare data if necessary
 	##################################
 	
-	
 	p <- dat
 	if (!inherits(dat, "prepared")){
 		datName <- deparse(substitute(dat))
@@ -172,6 +171,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	#browser()
 	N <- as.integer(length(p$ordered[[1]]) * (to-from)/100)
+	N.original <- N
 	if (maxN==0 || maxN > N) maxN <- N else N <- maxN
 	nBins <- tableplot_checkBins(nBins, max(N,2))
 	
@@ -189,7 +189,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 						sortCol=sortCol, decreasing=decreasing, scales=scales, 
 						pals=pals, change_palette_type_at=change_palette_type_at,
 						colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, 
-						to=to, N=N)
+						to=to, N=N, N.original=N.original)
 	
 	
 														   

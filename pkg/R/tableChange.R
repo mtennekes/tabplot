@@ -32,7 +32,7 @@ tableChange <- function(tab, select=NULL, select_string=tab$colNames, decreasing
 	if (any(is.na(colID))) stop("Unknown columns selected")
 
 	tab2 <- tab
-	tab2$n <- length(colID)
+	tab2$m <- length(colID)
 	tab2$colNames <- tab2$colNames[colID]
 	tab2$isNumber <- tab2$isNumber[colID]
 	tab2$sort_decreasing <- tab2$sort_decreasing[colID]

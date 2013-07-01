@@ -14,11 +14,13 @@
 #' @example ../examples/tablePrepare.R
 #' @export
 #' @import ffbase
-tablePrepare <- function(x, name=deparse(substitute(x)), ...){
+tablePrepare <- function(x, name=NULL, ...){
 	# TODO set path where prepared data set should be stored
 	# TODO make it possible to sort on multiple columns
 	# cat("Preparing data for tableplotting, storing this result increases tableplotting speed (see `prepare`)...")
 	require(ffbase)
+	
+	if (missing(name)) name <- deparse(substitute(x))
 	
 	if (is.data.frame(x)){
 		x <- as.data.frame(lapply(x, as.vector)) # workaround for otherwise data.frames with dimnamed columns will crash in the next line

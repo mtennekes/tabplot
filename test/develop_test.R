@@ -1,8 +1,6 @@
 
 ### test installed package
 library(tabplot)
-library(tabplotd3)
-
 
 ### test
 library(ggplot2)
@@ -19,8 +17,13 @@ diamonds$expensive <- diamonds$price >= 10000
 
 
 p <- tablePrepare(diamonds)
+tableplot(p, decreasing=TRUE)
 
-tableplot(p, maxN=1e2)
+dFF <- as.ffdf(diamonds)
+pFF <- tablePrepare(dFF)
+tableplot(pFF, decreasing=TRUE)
+
+
 
 tableplot(p, maxN=1e2, from=40, to=45)
 
@@ -64,17 +67,4 @@ diamonds$y <- diamonds$y / 1e4
 diamonds$z <- diamonds$z * -1e7 -1e8
 tableplot(diamonds, scales=c(price="lin"))
 
-
-
-library(shiny)
-runExample("01_hello")
-runApp("./inst/shinyapp/")
-
-library(ff)
-dFF <- as.ffdf(diamonds)
-tableplot(dFF)
-
-
-Rprof(tmp <- tempfile())
-Rprof(); summaryRprof(tmp); unlink(tmp)
 

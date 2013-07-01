@@ -32,7 +32,7 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	# set window
 	vw(o) <- v_w
 	
-	if (maxN < n){
+	if (maxN < n && n <= 1e5){
 		cat("sample")
 		index <- as.integer(seq(1, n, length.out=maxN)) 
 		n <- maxN
@@ -40,8 +40,8 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 			index <- rev(index)
 		}
 		o <- as.ff(o[index])
-	} else if (n > 1e5){
-		cat("full data set/subset")
+	} else {
+		cat("full data set/large sample")
 		bin <- ff(0L, length=N)
 		for (i in chunk(o)){
 			b <- as.integer(seq.int(i[1], i[2]) / ((n+1)/nbins) + 1)

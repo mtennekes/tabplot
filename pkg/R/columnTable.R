@@ -1,7 +1,7 @@
 columnTable <-
-function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pals, change_palette_type_at, colorNA, numPals, nBins, from, to, N) {
+function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pals, change_palette_type_at, colorNA, numPals, nBins, from, to, N, N.original) {
 	
-	n <- length(bd)
+	m <- length(bd)
 	nr <- nBins
 	colNames <- names(bd)
 	
@@ -32,12 +32,13 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 		filter = subset_string,
 		nBins = nBins,
 		binSizes = binSizes,
-		n = n,
+		n=N,
+		m = m,
 		colNames = colNames,
 		isNumber = isNumber),
 		class="tabplot")
 	
-	sort_decreasing <- rep(NA, n)
+	sort_decreasing <- rep(NA, m)
 	sort_decreasing[sortCol] <- decreasing
 
 	tab$sort_decreasing <- sort_decreasing
@@ -45,7 +46,8 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	## tab$row contains info about bins/y-axis
 	tab$rows <- list( heights = -(binSizes/N)
 	                , y = 1- c(0,cumsum(binSizes/N)[-nBins])
-	                , m = N
+	                , n = N
+					  , N = N.original
 	                , from = from
 	                , to = to
 	                , marks = pretty(c(from, to), 10)

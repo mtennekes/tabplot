@@ -21,6 +21,7 @@ tablePlot <- function(p, numvars, input, plot=TRUE) {
 	select <- input$select
 	sortCol <- input$sortCol
 	logscale <- input$logscale
+	
 	if (length(select) && length(sortCol)) {
 		if (sortCol %in% select && all(select %in% vars)) {
 			decreasing <- input$decreasing
@@ -30,6 +31,7 @@ tablePlot <- function(p, numvars, input, plot=TRUE) {
 			nBins <- max(2,as.numeric(input$nBins), na.rm=TRUE)
 			scales <- rep("lin", length(numvars))
 			names(scales) <- numvars
+			logscale <- logscale[logscale %in% select]
 			if (length(logscale)) {
 				scales[logscale] <- "log"
 			}
@@ -41,15 +43,17 @@ tablePlot <- function(p, numvars, input, plot=TRUE) {
 					scales = scales,
 					nBins=nBins, maxN=1e5)
 			} else {
-				paste("tableplot(", input$dataset, 
-					  ", from=", from, ", to=", to, 
-					  ", sortCol=",	sortCol, 
-					  ",select_string=c(", paste(paste("\"", select, "\"", sep=""), collapse=","),
-					  "), decreasing=", decreasing, 
-					  ", scales=c(", 
-					  paste(paste(names(scales),"=", paste("\"", scales, "\"", sep="")), 
-					  	  collapse=", "), 
-					  "), nBins=", nBins, ")\n")
+				fromtoString <- ifelse(from==0 && to==100, "", paste0(", from=", from, ", to=", to))
+				selectString <- ifelse(identical(select, vars), "", paste0(", select=c(", paste(select, collapse=","), ")"))
+				scalesString <- ifelse(all(scales==scales[1]), paste0(", scales=\"", scales[1], "\""), paste0(", scales=c(", paste(paste(names(scales),"=", paste0("\"", scales, "\"")), collapse=", "), ")"))
+				
+				paste0("tableplot(", input$dataset, 
+					   ", sortCol=",	sortCol,
+					  fromtoString, 
+					  selectString,
+					  ", decreasing=", decreasing, 
+					  scalesString,
+					  ", nBins=", nBins, ")\n")
 			}
 		}
 	}

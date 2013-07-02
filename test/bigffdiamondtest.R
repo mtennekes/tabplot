@@ -46,7 +46,7 @@ system.time(
 plot(t)
 
 system.time(
-	t <- tableplot(tab, maxN=1e6, plot=FALSE)
+	t <- tableplot(tab, maxN=1e5, plot=FALSE)
 )
 plot(t)
 

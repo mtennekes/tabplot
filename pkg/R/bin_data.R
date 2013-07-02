@@ -33,7 +33,7 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	vw(o) <- v_w
 	
 	if (maxN < n && n <= 1e5){
-		cat("sample")
+		#cat("sample")
 		index <- as.integer(seq(1, n, length.out=maxN)) 
 		n <- maxN
 		if (decreasing){
@@ -41,7 +41,7 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 		}
 		o <- as.ff(o[index])
 	} else {
-		cat("full data set/large sample")
+		#cat("full data set/large sample")
 		bin <- ff(0L, length=N)
 		for (i in chunk(o)){
 			b <- as.integer(seq.int(i[1], i[2]) / ((n+1)/nbins) + 1)
@@ -76,77 +76,6 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	})
 }
 
-bin_data_old <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE, maxN=1e4){
-	stopifnot(inherits(p, what="prepared"))
-	x <- p$data[cols]
-	o <- p$ordered[[cols[sortCol]]]
-		
-	# create bin vector
-	N <- length(o)
-	
-	# first check how large from*N:to*N is. 
-	# if this is larger then maxN sample otherwise don't
-	
-	nbins <- max(min(nbins, as.integer(N*(to-from))), 2)
-	bin <- ff(0L, vmode="integer", length = N)
-	
-	if (decreasing){
-		from_r <- max(floor(N-N*to), 1L)
-		to_r <- min(ceiling(N-N*from), N)
-		chunks <- rev(binRanges(from=from_r, to=to_r, nbins=nbins))
-	} else {
-		from_r <- max(floor(from*N), 1L)
-		to_r <- min(ceiling(to*N), N)
-		chunks <- binRanges(from=from_r, to=to_r, nbins=nbins)
-	}
-	
-	
-	# assign bin numbers
-	
-	if (maxN!=N) {
- 		cat("sample\n")
- 		sample_ids <- round(seq(from_r, to_r, length.out=maxN))
- 		
- 		sel <- bit(N)
- 		sel[sample_ids] <- TRUE
- 		
- 		for (i in seq_along(chunks)){
- 			b <- o[chunks[[i]]][sel[chunks[[i]]]]
- 			bin[b] <- i
- 		}
- 	} else {
- 		cat("full dataset\n")
-		for (i in seq_along(chunks)){
-			b <- o[chunks[[i]]]
-			bin[b] <- i
-		}
- 	}
-
-
-	# do the actual binning
-	lapply(physical(x), function(v){
-		if (vmode(v)=="logical") {
-			bs <- binned_sum.ff(v, bin, nbins)
-			cbind("TRUE"=bs[,2], "FALSE"=bs[,1]-bs[,2], "<NA>"=bs[,3])
-		}
-		else if (is.factor.ff(v)){
-			bt <- binned_tabulate.ff(v, bin, nbins, nlevels(v))
-			cbind(bt[,-1], "<NA>"=bt[,1]) / rowSums(bt)
-		} else {
-			bs <- binned_sum.ff(v, bin, nbins)
-			
-			count <- bs[,1]
-			mean <- ifelse(count==0, NA, bs[,2] / count)
-			na <- bs[,3] / (count + bs[,3])
-			
-			if (is.logical(v)){
-				cbind(count, "FALSE"=(1-mean), "TRUE"=mean, "<NA>"=na)
-			} else {
-				cbind(count, mean=mean, complete = 1-na)
-			}
-		}
-	})
-}
 
 binRanges <- function(from, to, nbins){
 	r <- as.integer(seq(from, (to+1), length.out=nbins+1))

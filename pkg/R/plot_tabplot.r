@@ -158,10 +158,29 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 			#############################
 	
 			cellplot(3,1, vpLegend, {
-				grid.text("row bins:", x=0.1, y=unit(5, units="lines"), just="left")
-				grid.text(paste("  ", x$nBins), x=0.1, y=unit(4, units="lines"), just="left")
-				grid.text("objects:", x=0.1, y=unit(2, units="lines"), just="left")
-				grid.text(paste("  ", x$n), x=0.1, y=unit(1, units="lines"), just="left")
+				numbers <- c(x$nBins, x$n, x$rows$N)
+				formats <- format(numbers, big.mark=",")
+				widths <- convertWidth(stringWidth(formats), "npc", valueOnly=TRUE)
+				width <- max(widths)
+				spacer <- 0.1 + convertWidth(stringWidth("\t"), "npc", valueOnly=TRUE)
+				xpos <- spacer + width
+				
+				
+				grid.text("row bins:", x=0.1, y=unit(5.5, units="lines"), just="left")
+				grid.text(formats[1], x=xpos, y=unit(4.5, units="lines"), just="right")
+				
+				grid.text("objects:", x=0.1, y=unit(3, units="lines"), just="left")
+			
+				grid.text(formats[2], x=xpos, y=unit(2, units="lines"), just="right")
+				
+				
+				if (numbers[2]!=numbers[3]) {
+					grid.text(" (sample)", x=xpos, y=unit(2, units="lines"), just="left")
+
+					grid.text(formats[3], x=xpos, y=unit(1, units="lines"), just="right")
+
+					grid.text(" (full data)", x=xpos, y=unit(1, units="lines"), just="left")
+				}
 			})
 		})
 		

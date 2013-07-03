@@ -1,0 +1,18 @@
+\name{bin_hcc_data}
+\alias{bin_hcc_data}
+\title{Bin high cardinality data}
+\usage{
+  bin_hcc_data(bd, max_levels)
+}
+\arguments{
+  \item{bd}{binned dataset (result of
+  \code{\link{bin_data}})}
+
+  \item{max_levels}{maximum number of levels. Each column
+  in \code{bd} that has more than \code{max_levels}
+  categories is rebinned to \code{max_levels} categories.}
+}
+\description{
+  Bin high cardinality data
+}
+

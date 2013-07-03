@@ -13,15 +13,16 @@ Description: A tableplot is a visualisation of a (large)
     categorical variables as stacked bar charts. Missing
     values are taken into account. Also supports large ffdf
     datasets from the ff package.
-Version: 1.0-1
+Version: 1.1
 URL: https://github.com/mtennekes/tabplot
-Date: 2012-12-18
+Date: 2012-07-03
+Depends:
+    ffbase (>= 0.9)
 Imports:
-    ffbase (>= 0.9),
     grid
 Suggests:
+    shiny (>= 0.6),
     classInt,
-    shiny,
     testthat,
     ggplot2
 Collate:

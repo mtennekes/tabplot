@@ -13,6 +13,7 @@
 #' @param from percentage from which the sorted data is shown
 #' @param to percentage to which the sorted data is shown
 #' @param nCols the maximum number of columns per tableplot. If this number is smaller than the number of columns selected in \code{datNames}, multiple tableplots are generated, where each of them contains the sorted column(s).
+#' @param maxN the maximum number of objects. For datasets with more than maxN number of objects, a random sample of size maxN is plotted. If \code{maxN==0}, all objects are plotted.
 #' @param scales determines the horizontal axes of the numeric variables in \code{colNames}. Options: "lin", "log", and "auto" for automatic detection. Either \code{scale} is a named vector, where the names correspond to numerical variable names, or \code{scale} is unnamed, where the values are applied to all numeric variables (recycled if necessary).
 #' @param max_levels maximum number of levels for categorical variables. Categorical variables with more levels will be rebinned into \code{max_levels} levels. Either a positive number or -1, which means that categorical variables are never rebinned.
 #' @param pals list of color palettes. Each list item is on of the following:
@@ -36,7 +37,7 @@
 #' @param ... layout arguments, such as \code{fontsize} and \code{title}, are passed on to \code{\link{plot.tabplot}}
 #' @return \code{\link{tabplot-object}} (silent output). If multiple tableplots are generated (which can be done by either setting \code{subset} to a categorical column name, or by restricting the number of columns with \code{nCols}), then a list of \code{\link{tabplot-object}s} is silently returned.
 #' @export
-#' @import ffbase
+#' @import grid
 #' @keywords visualization
 #' @example ../examples/tableplot.R
 #' @seealso \code{\link{itableplot}}
@@ -56,7 +57,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 					  plot=TRUE, ...) {
 
 
-	require(ffbase)
+	#require(ffbase)
 
 	##################################
 	## prepare data if necessary

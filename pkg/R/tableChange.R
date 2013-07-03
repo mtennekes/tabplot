@@ -42,8 +42,8 @@ tableChange <- function(tab, select=NULL, select_string=tab$colNames, decreasing
 	if (!missing(decreasing)) {
 		if (decreasing!=na.omit(tab2$sort_decreasing)[1]) {
 			tab2$binSizes <- rev(tab$binSizes)
-			tab2$rows$heights <- tab$binSizes/tab$rows$m
-		    tab2$rows$y <- 1- c(0,cumsum(tab$binSizes/tab$rows$m)[-tab$nBins])
+			tab2$rows$heights <- tab$binSizes/tab$n
+		    tab2$rows$y <- 1- c(0,cumsum(tab$binSizes/tab$n)[-tab$nBins])
 			tab2$rows$marks <- rev(tab$rows$marks)
 			
 			tab2$sort_decreasing <- !tab2$sort_decreasing

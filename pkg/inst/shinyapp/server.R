@@ -52,8 +52,8 @@ tablePlot <- function(p, numvars, input, plot=TRUE) {
 					  fromtoString, 
 					  selectString,
 					  ", decreasing=", decreasing, 
-					  scalesString,
-					  ", nBins=", nBins, ")\n")
+					  ", nBins=", nBins, 
+					  scalesString, ")\n")
 			}
 		}
 	}

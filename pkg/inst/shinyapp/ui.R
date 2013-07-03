@@ -22,7 +22,7 @@ shinyUI(pageWithSidebar(
 			p(textOutput("rcode"))))),
 	
 	mainPanel(
-		plotOutput("plot", height="500px")
+		plotOutput("plot", height="600px")
 	)
 ))
 

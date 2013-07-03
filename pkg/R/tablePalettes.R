@@ -12,6 +12,7 @@
 #'
 #' @param plot Boolean that determines whether the palettes are plot.
 #' @return list with palettes (silent output)
+#' @import grid
 #' @export
 #' @keywords color palettes
 #' @references 
@@ -27,7 +28,7 @@
 #' @export
 #' @keywords color palettes
 tablePalettes <- function(plot = TRUE) {
-	require(grid)
+	#require(grid)
 	if (plot) {
 		tpal <- c(list(sequential=NA), tabplotPalettes$seq, list(qualitative=NA), tabplotPalettes$qual)
 		

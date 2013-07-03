@@ -9,8 +9,9 @@ setwd("../pkg")
 
 
 ++++++## check
-if (check()) {
-	unlink( '../output', TRUE)
-	dir.create("../output", showWarnings=FALSE)
-	build(path= "../output")
-}
+check(doc_clean=FALSE) 
+
+	
+unlink( '../output', TRUE)
+dir.create("../output", showWarnings=FALSE)
+build(path= "../output")

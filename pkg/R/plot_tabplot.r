@@ -14,11 +14,11 @@
 #' @param ... other arguments are not used
 #' @example ../examples/plot_tabplot.R
 #' @export
+#' @import grid
 #' @method plot tabplot
 plot.tabplot <-
 function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, showNumAxes=TRUE, vp=NULL, ...) {
 
-	require(grid)
 	
 	if (class(x)[1]!="tabplot") p(paste(deparse(substitute(x)), "is not a tabplot-object"))
 	
@@ -34,7 +34,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 	if (missing(showTitle)) showTitle <- !missing(title)
 	
 	if (missing(title)) 
-		title <- ifelse(length(x$filter)==0, x$dataset, paste(x$dataset, " (", x$filter, ")", sep=""))
+		title <- ifelse(length(x$subset)==0, x$dataset, paste(x$dataset, " (", x$subset, ")", sep=""))
 	
 	#############################
 	## Determine colors and color scales
@@ -114,10 +114,6 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 	
 	cellplot(2, 1, vpBodyCols, {
 	
-		#BodyLayout <- grid.layout( nrow = 1, ncol = x$n+1
-		#                     , widths = unit(c(3,rep(1,x$n)), c("lines",rep("null",x$n)))
-	#						 )
-		#pushViewport(viewport(layout = BodyLayout))
 		
 		
 		#############################
@@ -135,8 +131,8 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 				
 				## percentages ticks
 				marks <- x$rows$marks
-				from <- x$rows$from
-				to <- x$rows$to
+				from <- x$from
+				to <- x$to
 
 				marksPos <- 1 - (marks - from) / (to - from)
 				marksVis <- marksPos >=0 & marksPos <=1
@@ -158,7 +154,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 			#############################
 	
 			cellplot(3,1, vpLegend, {
-				numbers <- c(x$nBins, x$n, x$rows$N)
+				numbers <- with(x, c(nBins, n, N))
 				formats <- format(numbers, big.mark=",")
 				widths <- convertWidth(stringWidth(formats), "npc", valueOnly=TRUE)
 				width <- max(widths)

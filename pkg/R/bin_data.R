@@ -9,6 +9,7 @@
 #' @param to upper boundary in quantiles
 #' @param nbins number of bins
 #' @param decreasing sort decreasingly
+#' @param maxN the maximum number of objects
 #' @export
 bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE, maxN=1e6){
 	stopifnot(inherits(p, what="prepared"))

@@ -1,0 +1,58 @@
+\name{tableChange}
+\alias{tableChange}
+\title{Change a \link{tabplot-object}}
+\usage{
+  tableChange(tab, select = NULL,
+    select_string = tab$colNames, decreasing = NULL,
+    pals = list(), colorNA = NULL, numPals = NULL)
+}
+\arguments{
+  \item{tab}{\link{tabplot-object}}
+
+  \item{select}{index vector of the desired columns (column
+  names are not supported)}
+
+  \item{select_string}{vector of names of the desired
+  columns}
+
+  \item{decreasing}{determines whether the dataset is
+  sorted decreasingly (\code{TRUE}) of increasingly
+  (\code{FALSE}).}
+
+  \item{pals}{list of color palettes. Each list item is on
+  of the following: \itemize{ \item a palette name in
+  \code{\link{tablePalettes}}, optionally with the starting
+  color between brackets. \item a palette vector } If the
+  list items are unnamed, they are applied to all selected
+  categorical variables (recycled if necessary). The list
+  items can be assigned to specific categorical variables,
+  by naming them accordingly.}
+
+  \item{colorNA}{color for missing values}
+
+  \item{numPals}{name(s) of the palette(s) that is(are)
+  used for numeric variables ("Blues", "Greys", or
+  "Greens"). Recycled if necessary.}
+}
+\value{
+  \link{tabplot-object}
+}
+\description{
+  Make layout changes in a \link{tabplot-object}, such as
+  the order of columns, and color palettes.
+}
+\examples{
+# load diamonds dataset from ggplot2
+require(ggplot2)
+data(diamonds)
+
+# assign tableplot as tabplot object
+tab <- tableplot(diamonds)
+ 
+# modify the tabplot object: reverse order of columns and customize palette
+tab <- tableChange(tab, select_string=rev(names(diamonds)), pals=list(clarity=gray(seq(0,1,length.out=8))))
+ 
+# plot modified tabplot object
+plot(tab)
+}
+

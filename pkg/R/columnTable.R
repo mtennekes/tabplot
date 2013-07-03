@@ -29,12 +29,15 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	
 	tab <- structure(list(
 		dataset = datName,
-		filter = subset_string,
+		select = colNames,
+		subset = subset_string,
 		nBins = nBins,
 		binSizes = binSizes,
+		from = from,
+		to = to,
 		n=N,
+		N=N.original,
 		m = m,
-		colNames = colNames,
 		isNumber = isNumber),
 		class="tabplot")
 	
@@ -46,10 +49,6 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	## tab$row contains info about bins/y-axis
 	tab$rows <- list( heights = -(binSizes/N)
 	                , y = 1- c(0,cumsum(binSizes/N)[-nBins])
-	                , n = N
-					  , N = N.original
-	                , from = from
-	                , to = to
 	                , marks = pretty(c(from, to), 10)
 	                )
 

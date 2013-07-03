@@ -20,10 +20,10 @@
 #' @export
 #' @example ../examples/tableChange.R
 
-tableChange <- function(tab, select=NULL, select_string=tab$colNames, decreasing=NULL, pals=list(), colorNA = NULL, numPals = NULL) {
+tableChange <- function(tab, select=NULL, select_string=tab$select, decreasing=NULL, pals=list(), colorNA = NULL, numPals = NULL) {
 
 	## change order of columns
-	currentColNames <- tab$colNames
+	currentColNames <- tab$select
 
 	colID <- if (missing(select)) {
 		 match(select_string, currentColNames)
@@ -33,23 +33,21 @@ tableChange <- function(tab, select=NULL, select_string=tab$colNames, decreasing
 
 	tab2 <- tab
 	tab2$m <- length(colID)
-	tab2$colNames <- tab2$colNames[colID]
+	tab2$select <- tab2$select[colID]
 	tab2$isNumber <- tab2$isNumber[colID]
-	tab2$sort_decreasing <- tab2$sort_decreasing[colID]
 	tab2$columns <- tab2$columns[colID]
 	
 	## flip tabplot
 	if (!missing(decreasing)) {
-		if (decreasing!=na.omit(tab2$sort_decreasing)[1]) {
+		if (decreasing!=tab2$decreasing) {
 			tab2$binSizes <- rev(tab$binSizes)
 			tab2$rows$heights <- tab$binSizes/tab$n
 		    tab2$rows$y <- 1- c(0,cumsum(tab$binSizes/tab$n)[-tab$nBins])
 			tab2$rows$marks <- rev(tab$rows$marks)
 			
-			tab2$sort_decreasing <- !tab2$sort_decreasing
+			tab2$decreasing <- !tab2$decreasing
 			
 			tab2$columns <- lapply(tab2$columns, function(col) {
-				col$sort_decreasing <- !col$sort_decreasing
 				if (col$isnumeric) {
 					col$mean <- rev(col$mean)
 					col$compl <- rev(col$compl)
@@ -71,8 +69,8 @@ tableChange <- function(tab, select=NULL, select_string=tab$colNames, decreasing
 	## change palettes
 	if (length(pals)) {
 		isChanged <- !tab2$isNumber
-		if (length(pnames <- names(pals))) isChanged <- isChanged & (tab2$colNames %in% pnames)
-		pals <- tableplot_checkPals(pals, colNames=tab2$colNames, isCat=isChanged)
+		if (length(pnames <- names(pals))) isChanged <- isChanged & (tab2$select %in% pnames)
+		pals <- tableplot_checkPals(pals, colNames=tab2$select, isCat=isChanged)
 
 		tab2$columns[isChanged] <- mapply(function(col, pal){
 			col$paletname <- pal$name

@@ -3,7 +3,7 @@
 \title{Change a \link{tabplot-object}}
 \usage{
   tableChange(tab, select = NULL,
-    select_string = tab$colNames, decreasing = NULL,
+    select_string = tab$select, decreasing = NULL,
     pals = list(), colorNA = NULL, numPals = NULL)
 }
 \arguments{

@@ -14,7 +14,7 @@ diamonds$expensive <- diamonds$price >= 10000
 
 # multiply x times and store as ffdf
 n <- nrow(diamonds)
-N <- 10L * n
+N <- 100L * n
 
 diamondsff <- as.ffdf(diamonds)
 nrow(diamondsff) <- N

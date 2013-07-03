@@ -20,21 +20,24 @@ function(object, digits = max(3, getOption("digits") -
 	
 	general <- list(
 					dataset=object$dataset,
-					variables=object$n,
-					objects=object$rows$m,
-					bins=object$nBins,
-					from=paste(object$rows$from, "%", sep=""),
-					to=paste(object$rows$to, "%", sep=""))
+					variables=object$m,
+					sortCol=object$sortCol,
+					decreasing=object$decreasing,
+					from=paste(object$from, "%", sep=""),
+					to=paste(object$to, "%", sep=""),
+					objects.sample=object$n,
+					objects.full.data=object$N,
+					bins=object$nBins)
 	class(general) <- c("summaryDefault", "table")
 	
 	summary_cat <- function(col){
-		L <- list(name=col$name, type="categorical", sort=ifelse(col$sort=="", "NA", col$sort), categories=length(col$categories))
+		L <- list(name=col$name, type="categorical", categories=length(col$categories))
 		class(L) <- c("summaryDefault", "table")
 		L
 	}
 	
 	summary_num <- function(col) {
-		L <- list(name=col$name, type="numeric", sort=ifelse(col$sort=="", "NA", col$sort), scale_init=col$scale_init, scale_final=col$scale_final)
+		L <- list(name=col$name, type="numeric", scale_init=col$scale_init, scale_final=col$scale_final)
 		class(L) <- c("summaryDefault", "table")
 		L
 	}
@@ -46,7 +49,7 @@ function(object, digits = max(3, getOption("digits") -
 				return(summary_cat(col))
 		}))
 		
-	names(z)[-1] <- paste("variable", 1:object$n, sep="")
+	names(z)[-1] <- paste("variable", 1:object$m, sep="")
 	
 	## code below is borrowed from summary.data.frame
     nv <- length(z)

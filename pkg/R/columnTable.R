@@ -33,6 +33,8 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 		subset = subset_string,
 		nBins = nBins,
 		binSizes = binSizes,
+		sortCol=sortCol,
+		decreasing=decreasing,
 		from = from,
 		to = to,
 		n=N,
@@ -41,11 +43,6 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 		isNumber = isNumber),
 		class="tabplot")
 	
-	sort_decreasing <- rep(NA, m)
-	sort_decreasing[sortCol] <- decreasing
-
-	tab$sort_decreasing <- sort_decreasing
-		
 	## tab$row contains info about bins/y-axis
 	tab$rows <- list( heights = -(binSizes/N)
 	                , y = 1- c(0,cumsum(binSizes/N)[-nBins])
@@ -53,8 +50,8 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	                )
 
 	# create column list
-	tab$columns <- mapply(function(agg, name, isnum, sort, pal, numscale, numpal) {
-		col <- list(name=name, isnumeric=isnum, sort_decreasing=sort)
+	tab$columns <- mapply(function(agg, name, isnum, pal, numscale, numpal) {
+		col <- list(name=name, isnumeric=isnum)
 		categories <- colnames(agg)
 		dimnames(agg) <- NULL
 		if (isnum) {
@@ -72,6 +69,6 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 			col$colorNA <- colorNA
 		}
 		col
-	}, bd, colNames, isNumber, sort_decreasing, pals, scales, numPals, SIMPLIFY=FALSE)
+	}, bd, colNames, isNumber, pals, scales, numPals, SIMPLIFY=FALSE)
 	tab
 }

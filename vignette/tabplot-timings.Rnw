@@ -58,7 +58,6 @@ For this purpose we multiply the diamonds dataset from the {\tt ggplot2} package
 <<echo=FALSE, results='hide', message=FALSE>>=
 library(devtools)
 load_all("../pkg")
-options(fftempdir = "d:/temp")
 @
 \maketitle
 
@@ -82,7 +81,7 @@ is.na(diamonds$cut) <- (runif(nrow(diamonds)) > 0.8)
 
 <<chunk2,  message=FALSE>>=
 n <- nrow(diamonds)
-N <- 2000L * n
+N <- 200L * n
 
 ## convert to ff format (not enough memory otherwise)
 require(ffbase)
@@ -107,23 +106,35 @@ system.time(
 
 <<chunk4,  message=FALSE>>=
 system.time(
-	tab <- tableplot(p, maxN=1e4, plot=FALSE)
+	tab <- tableplot(p, maxN=1e2, plot=FALSE)
 )
 @
 
 <<chunk5,  message=FALSE>>=
 system.time(
-	tab <- tableplot(p, maxN=1e6, plot=FALSE)
+	tab <- tableplot(p, maxN=1e3, plot=FALSE)
 )
 @
 
 <<chunk6,  message=FALSE>>=
 system.time(
-	tab <- tableplot(p, maxN=1e7, plot=FALSE)
+	tab <- tableplot(p, maxN=1e4, plot=FALSE)
 )
 @
 
 <<chunk7,  message=FALSE>>=
+system.time(
+	tab <- tableplot(p, maxN=1e5, plot=FALSE)
+)
+@
+
+<<chunk8,  message=FALSE>>=
+system.time(
+	tab <- tableplot(p, maxN=1e6, plot=FALSE)
+)
+@
+
+<<chunk9,  message=FALSE>>=
 system.time(
 	tab <- tableplot(p, maxN=0, plot=FALSE)
 )

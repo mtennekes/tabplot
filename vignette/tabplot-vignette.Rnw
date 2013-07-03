@@ -41,7 +41,7 @@
 
 \begin{document}
 
-<<setup, echo=FALSE,cache = FALSE>>=
+<<setup, echo=FALSE,cache = FALSE, warning=FALSE>>=
 opts_knit$set(concordance = TRUE)
 @
 
@@ -55,7 +55,7 @@ The tableplot is a powerful visualization method to explore and analyse large mu
 
 \end{abstract}
 
-<<echo=FALSE, results='hide', message=FALSE>>=
+<<echo=FALSE, results='hide', message=FALSE, warning=FALSE>>=
 library(devtools)
 load_all("../pkg")
 @
@@ -77,7 +77,7 @@ Tableplots are aimed to visualize multivariate datasets with several variabels (
 
 The diamonds dataset is very suitable to demonstrate the {\tt tabplot} package. To illustrate the visualization of missing values, we add several {\tt NA}'s.
 
-<<chunk1,  message=FALSE,  results='hide'>>=
+<<chunk1,  message=FALSE,  results='hide', warning=FALSE>>=
 require(ggplot2)
 data(diamonds)
 ## add some NA's
@@ -88,7 +88,7 @@ is.na(diamonds$cut) <- (runif(nrow(diamonds)) > 0.8)
 A tableplot is simply created by the function {\tt tableplot}. The result is depicted in Figure~\ref{fig:tp1}. By default, all variables of the dataset are depicted. With the argument {\tt select}, we can specify which variables are plotted. The dataset is by default sorted according to the values of the first column. With the argument {\tt sortCol}, we can specify on which column(s) the data is sorted.
 
 \begin{figure}[htp]
-<<chunk2,  message=FALSE, results='hide', fig.height=6.5, fig.width=10, dev='pdf'>>=
+<<chunk2,  message=FALSE, results='hide', fig.height=6.5, fig.width=10, dev='pdf', warning=FALSE>>=
 tableplot(diamonds)
 @
 \caption{Tableplot of the diamonds dataset}
@@ -98,7 +98,7 @@ tableplot(diamonds)
 The resulting tableplot in Figure~\ref{fig:tp2} consists of five columns, where the data is sorted on price. Notice that the missing values that we have added are placed at the bottom and (by default) shown in a bright red color.
 
 \begin{figure}[!htp]
-<<chunk3,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+<<chunk3,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40), warning=FALSE>>=
 tableplot(diamonds, select = c(carat, price, cut, color, clarity), sortCol = price)
 @
 \caption{Tableplot sorted by price}
@@ -117,7 +117,7 @@ We can focus our attention to the 5\% most expensive diamonds by setting the {\t
 
 
 \begin{figure}[!htp]
-<<chunk4,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+<<chunk4,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40), warning=FALSE>>=
 tableplot(diamonds, select = c(carat, price, cut, color, clarity), sortCol = price, from = 0, to = 5)
 @
 \caption{Zooming in}
@@ -131,7 +131,7 @@ The vertical axis contains two sets of tick marks. The small tick marks correspo
 The argument {\tt subset} serves as a data filter. The tableplot in Figure~\ref{fig:tp4} shows that data of premium cut diamonds that cost less than 5000\$.
 
 \begin{figure}[!htp]
-<<chunk5,  results='hide', fig.height=6.5, fig.width=10>>=
+<<chunk5,  results='hide', fig.height=6.5, fig.width=10, warning=FALSE>>=
 tableplot(diamonds, subset = price < 5000 & cut == "Premium")
 @
 \caption{Tableplot of filtered diamonds data}
@@ -152,7 +152,7 @@ When the distribution of these mean values is exponential, it is useful to apply
 The colors of the bins indicate the fraction of missing values. By default, a sequential color palette of blues is used. If a bin does not contain any missing values, the corresponding bar is depicted in dark blue. The more missing values, the brighter the color. (Alternatively, other quantitative palettes can be used by setting the argument {\tt numPals}; see Figure~\ref{fig:pals}.) Bars of which all values are missing are depicted in light red.
 
 \begin{figure}[htp]
-<<chunk6, fig.height=3.5, fig.width=10>>=
+<<chunk6, fig.height=3.5, fig.width=10, warning=FALSE>>=
 tablePalettes()
 @
 \caption{Color palettes}
@@ -177,7 +177,7 @@ Suppose we want a to use the default palette for the variable {\tt cut}, but sta
 
 
 \begin{figure}[htp]
-<<chunk7,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+<<chunk7,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40), warning=FALSE>>=
 tableplot(diamonds, pals = list(cut="Set1(6)", color="Set5", clarity=rainbow(8)))
 @
 \caption{Tableplot with other color palettes}
@@ -189,7 +189,7 @@ Also quantitative palettes can be used (for instance by setting {\tt clarity=} {
 \subsection{High cardinality data}
 To illustrate how tableplots deal with high cardinality data, we extend the diamonds dataset with a convenient wrapper function {\tt num2fac}:
 
-<<chunk8,  message=FALSE,  results='hide', tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+<<chunk8,  message=FALSE,  results='hide', tidy=TRUE, tidy.opts=list(width.cutoff=40), warning=FALSE>>=
 diamonds$carat_class <- num2fac(diamonds$carat, n=20)
 diamonds$price_class <- num2fac(diamonds$price, n=100)
 @
@@ -197,7 +197,7 @@ diamonds$price_class <- num2fac(diamonds$price, n=100)
 For variables with over {\tt change\_palette\_type\_at} (by default 20) categories, color palettes are constructed by using interpolated colors. This creates a rainbow effect (see Figure~\ref{fig:tphc}). If the number of categories is than {\tt change\_palette\_type\_at}, the assigned palette is recycled in order to obtain the number of categories.
 
 \begin{figure}[htp]
-<<chunk9,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+<<chunk9,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40), warning=FALSE>>=
 tableplot(diamonds, select=c(carat, price, carat_class, price_class))
 @
 \caption{Tableplot with other color palettes}
@@ -215,7 +215,7 @@ For large datasets it is recommended to preprocess the data with the function {\
 
 The following example illustrated the tablePrepare function for big data:
 
-<<chunk_pre, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+<<chunk_pre, tidy=TRUE, tidy.opts=list(width.cutoff=40), warning=FALSE>>=
 # create large dataset
 large_diamonds <- diamonds[rep(seq.int(nrow(diamonds)), 10),]
 
@@ -235,7 +235,7 @@ system.time({
 Although the first step takes a couple of seconds on a moderate desktop computer, the processing time to create a tableplot from the intermediate result, object {\tt p}, is very short in comparison to the direct approach:
 
 
-<<chunk_pre2, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+<<chunk_pre2, tidy=TRUE, tidy.opts=list(width.cutoff=40), warning=FALSE>>=
 system.time({
 	tableplot(large_diamonds, plot=FALSE)
 })
@@ -254,13 +254,13 @@ The function {\tt tableplot} returns a tabplot-object, that can be used to make 
 
 The output of the {\tt tableplot} function can be assigned to a variable. The graphical output can be omitted by setting the argument {\tt plot} to {\tt FALSE}.
 
-<<chunk11,  results='hide'>>=
+<<chunk11,  results='hide', warning=FALSE>>=
 tab <- tableplot(diamonds, plot = FALSE)
 @
 
 The tabplot-object is a list that contains all information to depict a tableplot. The generic functions {\tt summary} and {\tt plot} can be applied to the {\tt tabplot} object.
 
-<<chunk12, size="scriptsize", fig.keep='none'>>=
+<<chunk12, size="scriptsize", fig.keep='none', warning=FALSE>>=
 summary(tab)
 plot(tab)
 @
@@ -277,7 +277,7 @@ There are several arguments that determine the layout of the plot:
 {\tt fontsize}, {\tt legend.lines}, {\tt max\_print\_levels}, {\tt text\_NA}, {\tt title}, {\tt showTitle}, {\tt fontsize.} {\tt title}, {\tt showNumAxes}, and {\tt vp}. The following code illustrates this.
 
 \begin{figure}[htp]
-<<chunk10,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+<<chunk10,  results='hide', fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40), warning=FALSE>>=
 tableplot(diamonds, select = 1:7, fontsize = 14, legend.lines = 8, title = "Shine on you crazy Diamond", fontsize.title = 18)
 @
 \caption{Tableplot with other color palettes}
@@ -293,7 +293,7 @@ The layout arguments named above are passed on from {\tt tableplot} to {\tt plot
 The function {\tt tableChange} is used to make minor changes to a tabplot-object. Suppose we want the columns in the order of \ref{fig:tp1}, and we want to change all color palettes to default starting with the second color. The code and the resulting tableplot are given in Figure~\ref{fig:tp7}.
 
 \begin{figure}[htp]
-<<chunk13, fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+<<chunk13, fig.height=6.5, fig.width=10, tidy=TRUE, tidy.opts=list(width.cutoff=40), warning=FALSE>>=
 tab2 <- tableChange(tab, select_string = c("carat", "price", "cut", "color", "clarity"), pals = list(cut="Set1(2)"))
 plot(tab2)
 @
@@ -305,7 +305,7 @@ plot(tab2)
 
 With the function {\tt tableSave}, tableplots can be saved to a desired grahical output format: pdf, eps, svg, wmf, png, jpg, bmp, or tiff.
 
-<<chunk14, tidy=TRUE, tidy.opts=list(width.cutoff=40)>>=
+<<chunk14, tidy=TRUE, tidy.opts=list(width.cutoff=40), warning=FALSE>>=
 tableSave(tab, filename = "diamonds.png", width = 5, height = 3, fontsize = 6, legend.lines = 6)
 @
 

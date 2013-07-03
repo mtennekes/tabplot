@@ -4,17 +4,17 @@ options(fftempdir = "d:/temp")
 library(ggplot2); data(diamonds)
 
 ## create missings, and high cardinality categorical variables
-diamonds$carat[sample.int(nrow(diamonds),4000)] <- NA
-diamonds$cut[sample.int(nrow(diamonds),20000)] <- NA
-
-diamonds$carat2 <- factor(diamonds$carat)
-diamonds$price2 <- factor(diamonds$price)
-
-diamonds$expensive <- diamonds$price >= 10000
+# diamonds$carat[sample.int(nrow(diamonds),4000)] <- NA
+# diamonds$cut[sample.int(nrow(diamonds),20000)] <- NA
+# 
+# diamonds$carat2 <- factor(diamonds$carat)
+# diamonds$price2 <- factor(diamonds$price)
+# 
+# diamonds$expensive <- diamonds$price >= 10000
 
 # multiply x times and store as ffdf
 n <- nrow(diamonds)
-N <- 100L * n
+N <- 2000L * n
 
 diamondsff <- as.ffdf(diamonds)
 nrow(diamondsff) <- N
@@ -26,13 +26,6 @@ for (i in chunk(from=1, to=N, by=n)) diamondsff[i,] <- diamonds
 system.time(
   tab <- tablePrepare(diamondsff)
 )
-tableplot(tab, decreasing=T)
-tableplot(tab, decreasing=F)
-
-tab2 <- tablePrepare(diamonds)
-tableplot(tab2, decreasing=T)
-tableplot(tab2, decreasing=F)
-
 
 
 system.time(
@@ -46,7 +39,7 @@ system.time(
 plot(t)
 
 system.time(
-	t <- tableplot(tab, maxN=1e5, plot=FALSE)
+	t <- tableplot(tab, maxN=1e6, plot=FALSE)
 )
 plot(t)
 

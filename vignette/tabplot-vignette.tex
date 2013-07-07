@@ -12,7 +12,6 @@
 }
 \makeatother
 
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \definecolor{fgcolor}{rgb}{0.2, 0.2, 0.2}
 \newcommand{\hlnumber}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlfunctioncall}[1]{\textcolor[rgb]{0.501960784313725,0,0.329411764705882}{\textbf{#1}}}%
@@ -90,6 +89,7 @@
 \title{Visualization of large multivariate datasets with the {\tt tabplot} package}
 \author{Martijn Tennekes and Edwin de Jonge}
 \date{\today\\ (A later version may be available on \href{http://cran.r-project.org/package=tabplot}{CRAN})}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 
 
 
@@ -300,9 +300,7 @@ diamonds$carat_class <- \hlfunctioncall{num2fac}(diamonds$carat,
 diamonds$price_class <- \hlfunctioncall{num2fac}(diamonds$price, 
     n = 100)
 \end{alltt}
-
-
-{\ttfamily\noindent\textcolor{warningcolor}{\#\# Warning: var has missing values, omitted in finding classes}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 
 
@@ -348,7 +346,7 @@ large_diamonds <- diamonds[\hlfunctioncall{rep}(\hlfunctioncall{seq.int}(\hlfunc
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    5.34    0.50    5.86
+##    3.40    0.26    3.71
 \end{verbatim}
 \begin{alltt}
 
@@ -358,7 +356,7 @@ large_diamonds <- diamonds[\hlfunctioncall{rep}(\hlfunctioncall{seq.int}(\hlfunc
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    0.64    0.04    0.68
+##    0.21    0.06    0.28
 \end{verbatim}
 \begin{alltt}
 
@@ -369,7 +367,7 @@ large_diamonds <- diamonds[\hlfunctioncall{rep}(\hlfunctioncall{seq.int}(\hlfunc
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    0.92    0.06    0.98
+##    0.22    0.01    0.24
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -387,7 +385,7 @@ Although the first step takes a couple of seconds on a moderate desktop computer
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    4.26    0.74    5.07
+##    2.46    0.33    2.98
 \end{verbatim}
 \begin{alltt}
 
@@ -398,7 +396,7 @@ Although the first step takes a couple of seconds on a moderate desktop computer
 \end{alltt}
 \begin{verbatim}
 ##    user  system elapsed 
-##    4.42    0.90    5.41
+##    1.95    0.36    2.40
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -430,40 +428,55 @@ The tabplot-object is a list that contains all information to depict a tableplot
 \hlfunctioncall{summary}(tab)
 \end{alltt}
 \begin{verbatim}
-##       general               variable1            variable2          
-##  dataset  :diamonds   name       :carat     name      :cut          
-##  variables:12         type       :numeric   type      :categorical  
-##  objects  :53940      sort       :TRUE      sort      :NA           
-##  bins     :100        scale_init :auto      categories:6            
-##  from     :0%         scale_final:lin                               
-##  to       :100%                                                     
-##       variable3                variable4                 variable5      
-##  name      :color         name      :clarity       name       :depth    
-##  type      :categorical   type      :categorical   type       :numeric  
-##  sort      :NA            sort      :NA            sort       :NA       
-##  categories:8             categories:9             scale_init :auto     
-##                                                    scale_final:lin      
-##                                                                         
-##        variable6             variable7             variable8      
-##  name       :table     name       :price     name       :x        
+##               general               variable1      
+##  dataset          :diamonds   name       :carat    
+##  variables        :12         type       :numeric  
+##  sortCol          :1          scale_init :auto     
+##  decreasing       :TRUE       scale_final:lin      
+##  from             :0%                              
+##  to               :100%                            
+##  objects.sample   :53940                           
+##  objects.full.data:53940                           
+##  bins             :100                             
+##       variable2                variable3          
+##  name      :cut           name      :color        
+##  type      :categorical   type      :categorical  
+##  categories:6             categories:8            
+##                                                   
+##                                                   
+##                                                   
+##                                                   
+##                                                   
+##                                                   
+##       variable4                 variable5             variable6      
+##  name      :clarity       name       :depth     name       :table    
+##  type      :categorical   type       :numeric   type       :numeric  
+##  categories:9             scale_init :auto      scale_init :auto     
+##                           scale_final:lin       scale_final:lin      
+##                                                                      
+##                                                                      
+##                                                                      
+##                                                                      
+##                                                                      
+##        variable7             variable8             variable9      
+##  name       :price     name       :x         name       :y        
 ##  type       :numeric   type       :numeric   type       :numeric  
-##  sort       :NA        sort       :NA        sort       :NA       
 ##  scale_init :auto      scale_init :auto      scale_init :auto     
 ##  scale_final:lin       scale_final:lin       scale_final:lin      
 ##                                                                   
-##        variable9             variable10           variable11         
-##  name       :y         name       :z         name      :carat_class  
-##  type       :numeric   type       :numeric   type      :categorical  
-##  sort       :NA        sort       :NA        sort      :NA           
-##  scale_init :auto      scale_init :auto      categories:26           
-##  scale_final:lin       scale_final:lin                               
-##                                                                      
-##       variable12         
-##  name      :price_class  
-##  type      :categorical  
-##  sort      :NA           
-##  categories:51           
-##                          
+##                                                                   
+##                                                                   
+##                                                                   
+##                                                                   
+##        variable10           variable11               variable12         
+##  name       :z         name      :carat_class   name      :price_class  
+##  type       :numeric   type      :categorical   type      :categorical  
+##  scale_init :auto      categories:22            categories:51           
+##  scale_final:lin                                                        
+##                                                                         
+##                                                                         
+##                                                                         
+##                                                                         
 ## 
 \end{verbatim}
 \begin{alltt}

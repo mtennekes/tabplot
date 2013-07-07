@@ -50,14 +50,15 @@ opts_knit$set(concordance = TRUE)
 \maketitle
 \begin{abstract}
 
-We test the speed of {\tt tabplot} package with datasets over $1,000,000,000$ records.
-For this purpose we multiply the diamonds dataset from the {\tt ggplot2} package 20,000 times.
+We test the speed of {\tt tabplot} package with datasets over $1,00,000,000$ records.
+For this purpose we multiply the diamonds dataset from the {\tt ggplot2} package 2,000 times.
 
 \end{abstract}
 
 <<echo=FALSE, results='hide', message=FALSE>>=
 library(devtools)
 load_all("../pkg")
+options(fftempdir = "d:/temp")
 @
 \maketitle
 
@@ -95,14 +96,18 @@ for (i in chunk(from=1, to=N, by=n)){
 
 @
 
-\section{Create testdata}
+\section{Prepare data}
 
+
+The preparation step is the most time consuming. Per column, the rank order is determined.
 <<chunk3,  message=FALSE>>=
 system.time(
 	p <- tablePrepare(diamondsff)
 )
 @
 
+\section{Create tableplots}
+To focus on the processing time of the tableplot function, the {\tt plot} argument is set to {\tt FALSE}.  
 
 <<chunk4,  message=FALSE>>=
 system.time(

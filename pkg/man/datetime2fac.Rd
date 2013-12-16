@@ -2,7 +2,7 @@
 \alias{datetime2fac}
 \title{Transform a date-time vector to a factor}
 \usage{
-  datetime2fac(p, rng = range(p, na.rm = TRUE))
+datetime2fac(p, rng = range(p, na.rm = TRUE))
 }
 \arguments{
   \item{p}{date-time vector}
@@ -10,23 +10,23 @@
   \item{rng}{range of the factor.}
 }
 \value{
-  A factor vector.
+A factor vector.
 }
 \description{
-  Transform a date-time vector from class
-  \code{\link{POSIXt}} or \code{\link{Date}} to a factor.
+Transform a date-time vector from class
+\code{\link{POSIXt}} or \code{\link{Date}} to a factor.
 }
 \details{
-  The range \code{rng} is cut according to different pretty
-  rounded time periods. The cut with the number of levels
-  that is closest to 6 is chosen. Vector \code{p} is cut
-  accordingly. Values of \code{p} outside \code{rng} are
-  translated to \code{NA}.
+The range \code{rng} is cut according to different pretty
+rounded time periods. The cut with the number of levels
+that is closest to 6 is chosen. Vector \code{p} is cut
+accordingly. Values of \code{p} outside \code{rng} are
+translated to \code{NA}.
 }
 \note{
-  This function is still in development stage, and can be
-  improved and optimized. \code{ff} vectors are not
-  implemented yet
+This function is still in development stage, and can be
+improved and optimized. \code{ff} vectors are not
+implemented yet
 }
 \examples{
 d <- as.Date("2012-12-21") + sample.int(500, 1000, replace=TRUE)
@@ -38,6 +38,6 @@ t2 <- datetime2fac(t)
 levels(t2)
 }
 \seealso{
-  \code{\link{num2fac}}
+\code{\link{num2fac}}
 }
 

@@ -2,8 +2,7 @@
 \alias{num2fac}
 \title{Transform a numerical vector to a factor}
 \usage{
-  num2fac(num, method = "pretty", num_scale = "auto",
-    n = 0, brks = NA)
+num2fac(num, method = "pretty", num_scale = "auto", n = 0, brks = NA)
 }
 \arguments{
   \item{num}{numeric vector}
@@ -31,16 +30,16 @@
   required when \code{method="fixed"})}
 }
 \value{
-  A factor vector
+A factor vector
 }
 \description{
-  Transform a numerical vector from class
-  \code{\link{POSIXt}} or \code{\link{Date}} to a factor.
+Transform a numerical vector from class
+\code{\link{POSIXt}} or \code{\link{Date}} to a factor.
 }
 \note{
-  This function is still in development stage, and can be
-  improved and optimized. \code{ff} vectors are not
-  implemented yet
+This function is still in development stage, and can be
+improved and optimized. \code{ff} vectors are not
+implemented yet
 }
 \examples{
 require(ggplot2)
@@ -51,6 +50,6 @@ diamonds$price2 <- num2fac(diamonds$price)
 tableplot(diamonds)
 }
 \seealso{
-  \code{\link{datetime2fac}}
+\code{\link{datetime2fac}}
 }
 

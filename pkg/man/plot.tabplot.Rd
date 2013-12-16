@@ -2,11 +2,10 @@
 \alias{plot.tabplot}
 \title{Plot a \link{tabplot-object}}
 \usage{
-  \method{plot}{tabplot} (x, fontsize = 10,
-    legend.lines = 8, max_print_levels = 15,
-    text_NA = "missing", title = NULL, showTitle = NULL,
-    fontsize.title = 14, showNumAxes = TRUE, vp = NULL,
-    ...)
+\method{plot}{tabplot}(x, fontsize = 10, legend.lines = 8,
+  max_print_levels = 15, text_NA = "missing", title = NULL,
+  showTitle = NULL, fontsize.title = 14, showNumAxes = TRUE, vp = NULL,
+  ...)
 }
 \arguments{
   \item{x}{\link{tabplot-object}}
@@ -41,7 +40,7 @@
   \item{...}{other arguments are not used}
 }
 \description{
-  Plot a \link{tabplot-object}
+Plot a \link{tabplot-object}
 }
 \examples{
 # load diamonds dataset from ggplot2

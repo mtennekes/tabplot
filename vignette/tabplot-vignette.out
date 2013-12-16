@@ -1,0 +1,22 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Getting started with the tableplot function}{}% 2
+\BOOKMARK [1][-]{section.3}{Zooming and filtering}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Zooming}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Filtering}{section.3}% 5
+\BOOKMARK [1][-]{section.4}{Continuous variables}{}% 6
+\BOOKMARK [2][-]{subsection.4.1}{Scaling}{section.4}% 7
+\BOOKMARK [2][-]{subsection.4.2}{Used colors}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.3}{X-axes}{section.4}% 9
+\BOOKMARK [1][-]{section.5}{Categorical variables}{}% 10
+\BOOKMARK [2][-]{subsection.5.1}{Color palettes}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.2}{High cardinality data}{section.5}% 12
+\BOOKMARK [1][-]{section.6}{Preprocessing of big data}{}% 13
+\BOOKMARK [1][-]{section.7}{Miscellaneous}{}% 14
+\BOOKMARK [2][-]{subsection.7.1}{The tabplot object}{section.7}% 15
+\BOOKMARK [2][-]{subsection.7.2}{Multiple tableplots}{section.7}% 16
+\BOOKMARK [2][-]{subsection.7.3}{Layout options}{section.7}% 17
+\BOOKMARK [2][-]{subsection.7.4}{Minor changes}{section.7}% 18
+\BOOKMARK [2][-]{subsection.7.5}{Save tableplots}{section.7}% 19
+\BOOKMARK [1][-]{section*.2}{Resources}{}% 20
+\BOOKMARK [1][-]{appendix.A}{Tableplot creation algorithm}{}% 21
+\BOOKMARK [1][-]{appendix.B}{Broken x-axes}{}% 22

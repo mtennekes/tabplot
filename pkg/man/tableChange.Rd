@@ -2,9 +2,8 @@
 \alias{tableChange}
 \title{Change a \link{tabplot-object}}
 \usage{
-  tableChange(tab, select = NULL,
-    select_string = tab$select, decreasing = NULL,
-    pals = list(), colorNA = NULL, numPals = NULL)
+tableChange(tab, select = NULL, select_string = tab$select,
+  decreasing = NULL, pals = list(), colorNA = NULL, numPals = NULL)
 }
 \arguments{
   \item{tab}{\link{tabplot-object}}
@@ -35,11 +34,11 @@
   "Greens"). Recycled if necessary.}
 }
 \value{
-  \link{tabplot-object}
+\link{tabplot-object}
 }
 \description{
-  Make layout changes in a \link{tabplot-object}, such as
-  the order of columns, and color palettes.
+Make layout changes in a \link{tabplot-object}, such as the
+order of columns, and color palettes.
 }
 \examples{
 # load diamonds dataset from ggplot2

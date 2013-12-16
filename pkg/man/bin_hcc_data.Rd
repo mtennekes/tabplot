@@ -2,7 +2,7 @@
 \alias{bin_hcc_data}
 \title{Bin high cardinality data}
 \usage{
-  bin_hcc_data(bd, max_levels)
+bin_hcc_data(bd, max_levels)
 }
 \arguments{
   \item{bd}{binned dataset (result of
@@ -13,6 +13,6 @@
   categories is rebinned to \code{max_levels} categories.}
 }
 \description{
-  Bin high cardinality data
+Bin high cardinality data
 }
 

@@ -1,0 +1,253 @@
+%\VignetteIndexEntry{tabplot}
+\documentclass[11pt, fleqn, a4paper]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{hyperref}
+\usepackage{alltt}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage{threeparttable}
+\usepackage{enumitem}
+
+% stimulate latex to put multiple floats on a page.
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{3}
+\setcounter{dbltopnumber}{2}
+\renewcommand{\topfraction}{.9}
+\renewcommand{\textfraction}{.1}
+\renewcommand{\bottomfraction}{.75}
+\renewcommand{\floatpagefraction}{.9}
+\renewcommand{\dblfloatpagefraction}{.9}
+\renewcommand{\dbltopfraction}{.9}
+\hyphenation{time-stamp}
+\hypersetup{colorlinks, urlcolor=blue, linkcolor=blue}
+\newenvironment{myindentpar}[1]%
+{\begin{list}{}%
+         {\setlength{\leftmargin}{#1}}%
+         \item[]%
+}
+{\end{list}}
+
+\title{Timings of BIG data visualization with the {\tt tabplot} package}
+\author{Martijn Tennekes and Edwin de Jonge}
+\date{\today\\ (A later version may be available on \href{http://cran.r-project.org/package=tabplot}{CRAN})}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+
+
+
+\begin{document}
+
+
+
+
+\setkeys{Gin}{width=1\textwidth}
+
+\maketitle
+\begin{abstract}
+
+We test the speed of {\tt tabplot} package with datasets over $1,00,000,000$ records.
+For this purpose we multiply the diamonds dataset from the {\tt ggplot2} package 2,000 times.
+
+\end{abstract}
+
+
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+%\listofalgorithms
+\newpage
+\section{Introduction}
+This dataset contains 53940 records and 10 variables.
+
+\section{Create testdata}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{require}\hlstd{(ggplot2)}
+\hlkwd{data}\hlstd{(diamonds)}
+\hlcom{## add some NA's}
+\hlkwd{is.na}\hlstd{(diamonds}\hlopt{$}\hlstd{price)} \hlkwb{<-} \hlstd{diamonds}\hlopt{$}\hlstd{cut} \hlopt{==} \hlstr{"Ideal"}
+\hlkwd{is.na}\hlstd{(diamonds}\hlopt{$}\hlstd{cut)} \hlkwb{<-} \hlstd{(}\hlkwd{runif}\hlstd{(}\hlkwd{nrow}\hlstd{(diamonds))} \hlopt{>} \hlnum{0.8}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(diamonds)}
+\hlstd{N} \hlkwb{<-} \hlnum{200L} \hlopt{*} \hlstd{n}
+
+\hlcom{## convert to ff format (not enough memory otherwise)}
+\hlkwd{require}\hlstd{(ffbase)}
+\hlstd{diamondsff} \hlkwb{<-} \hlkwd{as.ffdf}\hlstd{(diamonds)}
+\hlkwd{nrow}\hlstd{(diamondsff)} \hlkwb{<-} \hlstd{N}
+
+\hlcom{# fill with identical data}
+\hlkwa{for} \hlstd{(i} \hlkwa{in} \hlkwd{chunk}\hlstd{(}\hlkwc{from} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{to} \hlstd{= N,} \hlkwc{by} \hlstd{= n)) \{}
+    \hlstd{diamondsff[i, ]} \hlkwb{<-} \hlstd{diamonds}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\section{Prepare data}
+
+
+The preparation step is the most time consuming. Per column, the rank order is determined.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{system.time}\hlstd{(p} \hlkwb{<-} \hlkwd{tablePrepare}\hlstd{(diamondsff))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##   43.91    9.71   95.12
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\section{Create tableplots}
+To focus on the processing time of the tableplot function, the {\tt plot} argument is set to {\tt FALSE}.  
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{system.time}\hlstd{(tab} \hlkwb{<-} \hlkwd{tableplot}\hlstd{(p,} \hlkwc{maxN} \hlstd{=} \hlnum{100}\hlstd{,} \hlkwc{plot} \hlstd{=} \hlnum{FALSE}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    5.24    2.46   13.54
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{system.time}\hlstd{(tab} \hlkwb{<-} \hlkwd{tableplot}\hlstd{(p,} \hlkwc{maxN} \hlstd{=} \hlnum{1000}\hlstd{,} \hlkwc{plot} \hlstd{=} \hlnum{FALSE}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    5.61    1.87   11.52
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{system.time}\hlstd{(tab} \hlkwb{<-} \hlkwd{tableplot}\hlstd{(p,} \hlkwc{maxN} \hlstd{=} \hlnum{10000}\hlstd{,} \hlkwc{plot} \hlstd{=} \hlnum{FALSE}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    5.85    1.31    7.61
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{system.time}\hlstd{(tab} \hlkwb{<-} \hlkwd{tableplot}\hlstd{(p,} \hlkwc{maxN} \hlstd{=} \hlnum{1e+05}\hlstd{,} \hlkwc{plot} \hlstd{=} \hlnum{FALSE}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    5.96    1.26    7.65
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{system.time}\hlstd{(tab} \hlkwb{<-} \hlkwd{tableplot}\hlstd{(p,} \hlkwc{maxN} \hlstd{=} \hlnum{1e+06}\hlstd{,} \hlkwc{plot} \hlstd{=} \hlnum{FALSE}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    6.03    1.49    7.66
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{system.time}\hlstd{(tab} \hlkwb{<-} \hlkwd{tableplot}\hlstd{(p,} \hlkwc{maxN} \hlstd{=} \hlnum{0}\hlstd{,} \hlkwc{plot} \hlstd{=} \hlnum{FALSE}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    6.49    1.34    7.99
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+
+\end{document}

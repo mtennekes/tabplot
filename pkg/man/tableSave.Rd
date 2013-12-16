@@ -2,11 +2,10 @@
 \alias{tableSave}
 \title{Save a tableplot}
 \usage{
-  tableSave(tab,
-    filename = paste(tab$dataset, ".pdf", sep = ""),
-    device = default_device(filename), path = NULL,
-    scale = 1, width = par("din")[1],
-    height = par("din")[2], dpi = 300, onePage = TRUE, ...)
+tableSave(tab, filename = paste(tab$dataset, ".pdf", sep = ""),
+  device = default_device(filename), path = NULL, scale = 1,
+  width = par("din")[1], height = par("din")[2], dpi = 300,
+  onePage = TRUE, ...)
 }
 \arguments{
   \item{tab}{a \link{tabplot-object}, or a list of
@@ -37,8 +36,8 @@
   device}
 }
 \description{
-  Save a tableplot in pdf, eps, svg, wmf, png, jpg, bmp, or
-  tiff format.
+Save a tableplot in pdf, eps, svg, wmf, png, jpg, bmp, or
+tiff format.
 }
 \examples{
 \dontrun{

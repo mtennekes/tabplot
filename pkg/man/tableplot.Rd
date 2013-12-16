@@ -2,16 +2,13 @@
 \alias{tableplot}
 \title{Create a tableplot}
 \usage{
-  tableplot(dat, select, subset = NULL, sortCol = 1,
-    decreasing = TRUE, nBins = 100, from = 0, to = 100,
-    nCols = ncol(dat), maxN = 1e+06, scales = "auto",
-    max_levels = 50,
-    pals = list("Set1", "Set2", "Set3", "Set4"),
-    change_palette_type_at = 20, colorNA = "#FF1414",
-    numPals = "Blues", limitsX = NULL, bias_brokenX = 0.8,
-    IQR_bias = 5, select_string = NULL,
-    subset_string = NULL, colNames = NULL, filter = NULL,
-    plot = TRUE, ...)
+tableplot(dat, select, subset = NULL, sortCol = 1, decreasing = TRUE,
+  nBins = 100, from = 0, to = 100, nCols = ncol(dat), maxN = 1e+06,
+  scales = "auto", max_levels = 50, pals = list("Set1", "Set2", "Set3",
+  "Set4"), change_palette_type_at = 20, colorNA = "#FF1414",
+  numPals = "Blues", limitsX = NULL, bias_brokenX = 0.8, IQR_bias = 5,
+  select_string = NULL, subset_string = NULL, colNames = NULL,
+  filter = NULL, plot = TRUE, ...)
 }
 \arguments{
   \item{dat}{a \code{\link{data.frame}}, an
@@ -140,38 +137,38 @@
   \code{\link{plot.tabplot}}}
 }
 \value{
-  \code{\link{tabplot-object}} (silent output). If multiple
-  tableplots are generated (which can be done by either
-  setting \code{subset} to a categorical column name, or by
-  restricting the number of columns with \code{nCols}),
-  then a list of \code{\link{tabplot-object}s} is silently
-  returned.
+\code{\link{tabplot-object}} (silent output). If multiple
+tableplots are generated (which can be done by either
+setting \code{subset} to a categorical column name, or by
+restricting the number of columns with \code{nCols}), then
+a list of \code{\link{tabplot-object}s} is silently
+returned.
 }
 \description{
-  A tableplot is a visualisation of (large) multivariate
-  datasets. Each column represents a variable and each row
-  bin is an aggregate of a certain number of records. For
-  numeric variables, a bar chart of the mean values is
-  depicted. For categorical variables, a stacked bar chart
-  is depicted of the proportions of categories. Missing
-  values are taken into account. Also supports large
-  \code{\link[ff:ffdf]{ffdf}} datasets from the
-  \code{\link[ff]{ff}} package. For a quick intro, see
-  \href{../doc/tabplot-vignette.pdf}{\code{vignette("tabplot-vignette")}}.
+A tableplot is a visualisation of (large) multivariate
+datasets. Each column represents a variable and each row
+bin is an aggregate of a certain number of records. For
+numeric variables, a bar chart of the mean values is
+depicted. For categorical variables, a stacked bar chart is
+depicted of the proportions of categories. Missing values
+are taken into account. Also supports large
+\code{\link[ff:ffdf]{ffdf}} datasets from the
+\code{\link[ff]{ff}} package. For a quick intro, see
+\href{../doc/tabplot-vignette.pdf}{\code{vignette("tabplot-vignette")}}.
 }
 \details{
-  For large dataset, we recommend to use
-  \code{\link{tablePrepare}}. Tableplotting is much faster
-  when the resulting object of \code{\link{tablePrepare}}
-  is passed on to \code{tableplot} (argument \code{dat})
-  rather than the dataset itself.
+For large dataset, we recommend to use
+\code{\link{tablePrepare}}. Tableplotting is much faster
+when the resulting object of \code{\link{tablePrepare}} is
+passed on to \code{tableplot} (argument \code{dat}) rather
+than the dataset itself.
 }
 \note{
-  In early development versions of \code{tabplot} (prior to
-  version 1.0) it was possible to sort datasets on multiple
-  columns. To increase to tableplot creation speed, this
-  feature is dropped. For multiple sorting purposes, we
-  recommend to use the \code{subset} parameter instead.
+In early development versions of \code{tabplot} (prior to
+version 1.0) it was possible to sort datasets on multiple
+columns. To increase to tableplot creation speed, this
+feature is dropped. For multiple sorting purposes, we
+recommend to use the \code{subset} parameter instead.
 }
 \examples{
 # load diamonds dataset from ggplot2
@@ -208,7 +205,7 @@ plot(tabs[[3]], title="Very good cut diamonds")
 
 }
 \seealso{
-  \code{\link{itableplot}}
+\code{\link{itableplot}}
 }
 \keyword{visualization}
 

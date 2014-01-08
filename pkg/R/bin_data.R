@@ -35,8 +35,9 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	
 	if (maxN <= n){
 		cat("sample")
-		M <- sum(chunk(o)[[1]])
-		#print(list(M=M))
+		# TODO adjust size of chunk so that M is big enough to generate a n 
+		# big enough
+		# M <- sum(chunk(x[[1]])[[1]])
 		#browser()
 		sel <- ffwhich(o, o <= maxN)[] + from_r
 		vw(o) <- NULL

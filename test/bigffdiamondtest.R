@@ -14,7 +14,7 @@ library(ggplot2); data(diamonds)
 
 # multiply x times and store as ffdf
 n <- nrow(diamonds)
-N <- 2000L * n
+N <- 200L * n
 
 diamondsff <- as.ffdf(diamonds)
 nrow(diamondsff) <- N
@@ -29,7 +29,7 @@ system.time(
 
 
 system.time(
-	t <- tableplot(tab, maxN=1e4, plot=FALSE)
+	t <- tableplot(tab, maxN=1e3, plot=FALSE)
 )
 plot(t)
 

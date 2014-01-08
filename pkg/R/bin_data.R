@@ -33,14 +33,14 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	# set window
 	vw(o) <- v_w
 	
-	if (maxN < n && n <= 1e5){
-		#cat("sample")
-		index <- as.integer(seq(1, n, length.out=maxN)) 
-		n <- maxN
-		if (decreasing){
-			index <- rev(index)
-		}
-		o <- as.ff(o[index])
+	if (maxN <= n){
+		cat("sample")
+		M <- sum(chunk(o)[[1]])
+		#print(list(M=M))
+		#browser()
+		sel <- ffwhich(o, o <= maxN)[] + from_r
+		vw(o) <- NULL
+		o <- as.ff(o[sel])	
 	} else {
 		#cat("full data set/large sample")
 		bin <- ff(0L, length=N)

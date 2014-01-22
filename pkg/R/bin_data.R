@@ -33,6 +33,26 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	# set window
 	vw(o) <- v_w
 	
+
+	## function to approximate chunk size M such that in 99% of all cases at least maxN elements in one chunk (i.e. the first M elements of vector o) are pointing to the view window (from_r, to_r). So in 99% of the cases, only one chunk is needed.
+	approx.chunk.size <- function(N, n, maxN, alpha=1-.99) {
+		p <- n/N
+		M.candidates <- exp(seq(log(maxN/p), log(N), length.out=10000))
+		solutions <- pbinom(maxN, ceiling(M.candidates), p)-alpha
+		# solutions <- pnorm(maxN, M.candidates*p, sqrt(M.candidates*p*(1-p))) - alpha # alternative approximation
+		M <- ceiling(M.candidates[which.min(abs(solutions))[1]])
+		
+		#sum(rbinom(maxN, M, p)<maxN) # test how many cases need more than one chunk
+		M
+	}
+	
+	M.needed <- approx.chunk.size(N, n, maxN)
+	M.max <- sum(chunk(x[[1]])[[1]]) ## depends on available memory size
+	
+	M <- min(M.max, M.needed)
+
+	cat("chunk size=", M)
+	
 	if (maxN <= n){
 		cat("sample")
 		# TODO adjust size of chunk so that M is big enough to generate a n 

@@ -11,7 +11,7 @@
 #' @param decreasing sort decreasingly
 #' @param maxN the maximum number of objects
 #' @export
-bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE, maxN=1e6){
+bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE, maxN=1e6, minNperBin=100){
 	stopifnot(inherits(p, what="prepared"))
 	x <- p$data[cols]
 	o <- p$ordered[[cols[sortCol]]]
@@ -26,42 +26,50 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	to_r <- ceiling(to*N)
 	n <- to_r - from_r
 	v_w <- c(from_r, n, N - to_r)
-	nbins <- max(min(nbins, n), 2)
+	nbins <- max(min(nbins, n), 2L)
 	if (decreasing){
 		v_w <- rev(v_w)
 	}
 	# set window
 	vw(o) <- v_w
 	
-
-	## function to approximate chunk size M such that in 99% of all cases at least maxN elements in one chunk (i.e. the first M elements of vector o) are pointing to the view window (from_r, to_r). So in 99% of the cases, only one chunk is needed.
-	approx.chunk.size <- function(N, n, maxN, alpha=1-.99) {
-		p <- n/N
-		M.candidates <- exp(seq(log(maxN/p), log(N), length.out=10000))
-		solutions <- pbinom(maxN, ceiling(M.candidates), p)-alpha
-		# solutions <- pnorm(maxN, M.candidates*p, sqrt(M.candidates*p*(1-p))) - alpha # alternative approximation
-		M <- ceiling(M.candidates[which.min(abs(solutions))[1]])
-		
-		#sum(rbinom(maxN, M, p)<maxN) # test how many cases need more than one chunk
-		M
-	}
 	
-	M.needed <- approx.chunk.size(N, n, maxN)
-	M.max <- sum(chunk(x[[1]])[[1]]) ## depends on available memory size
-	
-	M <- min(M.max, M.needed)
-
-	cat("chunk size=", M)
+# 	## function to approximate chunk size M such that in 99% of all cases at least maxN elements in one chunk (i.e. the first M elements of vector o) are pointing to the view window (from_r, to_r). So in 99% of the cases, only one chunk is needed.
+# 	approx.chunk.size <- function(N, n, maxN, alpha=1-.99) {
+# 		p <- n/N
+# 		M.candidates <- exp(seq(log(maxN/p), log(N), length.out=10000))
+# 		solutions <- pbinom(maxN, ceiling(M.candidates), p)-alpha
+# 		# solutions <- pnorm(maxN, M.candidates*p, sqrt(M.candidates*p*(1-p))) - alpha # alternative approximation
+# 		M <- ceiling(M.candidates[which.min(abs(solutions))[1]])
+# 		
+# 		#sum(rbinom(maxN, M, p)<maxN) # test how many cases need more than one chunk
+# 		M
+# 	}
+# 	
+# 	M.needed <- approx.chunk.size(N, n, maxN)
+# 	M.max <- sum(chunk(x[[1]])[[1]]) ## depends on available memory size
+# 	
+# 	M <- min(M.max, M.needed)
+# 
+# 	cat("chunk size=", M)
 	
 	if (maxN <= n){
+		# TODO! not sure if this condition is complete: if n < maxN but N >> n, then 
+		# sampling might be a lot faster!...
+		
 		cat("sample")
-		# TODO adjust size of chunk so that M is big enough to generate a n 
-		# big enough
-		# M <- sum(chunk(x[[1]])[[1]])
-		#browser()
-		sel <- ffwhich(o, o <= maxN)[] + from_r
-		vw(o) <- NULL
-		o <- as.ff(o[sel])	
+		
+		# n_s is wanted number of data points in the sample
+		n_s <- min(nbins * minNperBin, n, maxN)
+		# n_s/n is sample fraction, M = expected number of records in chunk
+		M = N*(n_s/n)
+		
+		# filter out all record numbers < M
+		o_s <- unlist(lapply(chunk(o), function(i){
+			oc <- o[i]
+			oc[oc <= M]
+		}))
+		o <- ff(o_s)
 	} else {
 		#cat("full data set/large sample")
 		bin <- ff(0L, length=N)
@@ -127,16 +135,16 @@ binRanges <- function(from, to, nbins){
 # # binRanges(2, 100, nbins=3)
 # 
 # 
-# # x.big <- NULL
-# # for (i in 1:100){
-# # 	x.big <- ffdfappend(x.big, x)
-# # 	cat("\r", i)
-# # }
-# # save.ffdf(x.big)
+# x.big <- NULL
+# for (i in 1:100){
+# 	x.big <- ffdfappend(x.big, x)
+# 	cat("\r", i)
+# }
+# save.ffdf(x.big)
 # 
 # load.ffdf("ffdb/")
-# px.big <- tablePrepare(x.big)
-# py.big <- tablePrepare(y.big)
+#px.big <- tablePrepare(x.big)
+#py.big <- tablePrepare(y.big)
 # # pz.big <- tablePrepare(z.big)
 # # 
 # system.time(

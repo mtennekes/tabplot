@@ -11,7 +11,7 @@
 #' @param decreasing sort decreasingly
 #' @param maxN the maximum number of objects
 #' @export
-bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE, maxN=1e6, minNperBin=100){
+bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE, maxN=1e6, sampleBinSize=100){
 	stopifnot(inherits(p, what="prepared"))
 	x <- p$data[cols]
 	o <- p$ordered[[cols[sortCol]]]
@@ -55,21 +55,26 @@ bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=
 	
 	if (maxN <= n){
 		# TODO! not sure if this condition is complete: if n < maxN but N >> n, then 
-		# sampling might be a lot faster!...
+		# sampling might be a lot faster!..., change criterion
 		
 		cat("sample")
 		
-		# n_s is wanted number of data points in the sample
-		n_s <- min(nbins * minNperBin, n, maxN)
+		# n_s is wanted total number of data points in the sample
+		n_s <- min(nbins * sampleBinSize, n, maxN)
 		# n_s/n is sample fraction, M = expected number of records in chunk
 		M = N*(n_s/n)
+		
+		#TODO make the following loop smaller. It currently loops over whole
+		# o, but can stop if length o_s if long enough.
+		# so it works like this: M_chunk = 1e6 (larger then M, but smaller than max chuncksize)
+		# loop with oc[oc < M_chunk] until length(o_s) > M
 		
 		# filter out all record numbers < M
 		o_s <- unlist(lapply(chunk(o), function(i){
 			oc <- o[i]
 			oc[oc <= M]
 		}))
-		o <- ff(o_s)
+		o <- ff(o_s, vmode="integer")
 	} else {
 		#cat("full data set/large sample")
 		bin <- ff(0L, length=N)
@@ -142,7 +147,7 @@ binRanges <- function(from, to, nbins){
 # }
 # save.ffdf(x.big)
 # 
-# load.ffdf("ffdb/")
+#load.ffdf("ffdb/")
 #px.big <- tablePrepare(x.big)
 #py.big <- tablePrepare(y.big)
 # # pz.big <- tablePrepare(z.big)

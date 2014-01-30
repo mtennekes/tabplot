@@ -44,8 +44,8 @@
 #' @note In early development versions of \code{tabplot} (prior to version 1.0) it was possible to sort datasets on multiple columns. To increase to tableplot creation speed, this feature is dropped. For multiple sorting purposes, we recommend to use the \code{subset} parameter instead.
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 
 					  nBins=100, from=0, to=100, nCols=ncol(dat),
-					  maxN=1e6, # maybe transform this parameter into logical: sample_if_needed (TRUE/FALSE)
-					  sampleBinSize=1e3, # used during sampling (create bins with around 1e3 points)
+					  sample=FALSE,
+					  sampleBinSize=1e3,
 					  scales="auto", max_levels=50, 
 					  pals=list("Set1", "Set2", "Set3", "Set4"), 
 					  change_palette_type_at = 20,
@@ -173,9 +173,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	#browser()
 	N <- as.integer(length(p$ordered[[1]]) * (to-from)/100)
-	N.original <- N
-	if (maxN==0 || maxN > N) maxN <- N else N <- maxN
 	nBins <- tableplot_checkBins(nBins, max(N,2))
+	n <- ifelse(sample, min(nBins * sampleBinSize, N), N)
 	
 	
 	##################################
@@ -183,7 +182,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##################################
 	
 	bd <- bin_data( p, sortCol=sortCol, cols=colNames, from=from/100, to=to/100
-    			  , nbins=nBins, decreasing=decreasing, maxN=maxN, sampleBinSize=sampleBinSize)
+    			  , nbins=nBins, decreasing=decreasing, sample, sampleBinSize=sampleBinSize)
 		
 	bd <- bin_hcc_data(bd, max_levels)
 	
@@ -191,7 +190,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 						sortCol=sortCol, decreasing=decreasing, scales=scales, 
 						pals=pals, change_palette_type_at=change_palette_type_at,
 						colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, 
-						to=to, N=N, N.original=N.original)
+						to=to, N=N, n=n)
 	
 	
 														   

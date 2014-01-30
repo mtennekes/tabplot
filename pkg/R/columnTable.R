@@ -1,5 +1,5 @@
 columnTable <-
-function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pals, change_palette_type_at, colorNA, numPals, nBins, from, to, N, N.original) {
+function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pals, change_palette_type_at, colorNA, numPals, nBins, from, to, N, n) {
 	
 	m <- length(bd)
 	nr <- nBins
@@ -16,7 +16,7 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	#if (nBins > vp$m) nBins <- vp$m
 
 	## Calculate bin sizes
-	binSizes <-	getBinSizes(N, nBins, decreasing)
+	binSizes <-	getBinSizes(n, nBins, decreasing)
 	#print(list(binSizes=binSizes, bd=bd[[1]][,1]))
 
 
@@ -37,15 +37,15 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 		decreasing=decreasing,
 		from = from,
 		to = to,
-		n=N,
-		N=N.original,
+		n=n,
+		N=N,
 		m = m,
 		isNumber = isNumber),
 		class="tabplot")
 	
 	## tab$row contains info about bins/y-axis
-	tab$rows <- list( heights = -(binSizes/N)
-	                , y = 1- c(0,cumsum(binSizes/N)[-nBins])
+	tab$rows <- list( heights = -(binSizes/n)
+	                , y = 1- c(0,cumsum(binSizes/n)[-nBins])
 	                , marks = pretty(c(from, to), 10)
 	                )
 

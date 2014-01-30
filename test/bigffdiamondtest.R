@@ -14,7 +14,7 @@ library(ggplot2); data(diamonds)
 
 # multiply x times and store as ffdf
 n <- nrow(diamonds)
-N <- 200L * n
+N <- 2000L * n
 
 diamondsff <- as.ffdf(diamonds)
 nrow(diamondsff) <- N
@@ -27,29 +27,22 @@ system.time(
   tab <- tablePrepare(diamondsff)
 )
 
-
+## reference: full dataset
 system.time(
-	t <- tableplot(tab, maxN=1e3, plot=FALSE)
+	t2 <- tableplot(tab, sortCol=depth, sample=FALSE, decreasing=FALSE, sampleBinSize=1e3, plot=FALSE)
 )
-plot(t)
+plot(t2)
 
+## timings of sample
 system.time(
-	t <- tableplot(tab, maxN=1e5, plot=FALSE)
-)
-plot(t)
-
-system.time(
-	t <- tableplot(tab, maxN=1e6, plot=FALSE)
-)
-plot(t)
-
-system.time(
-	t <- tableplot(tab, maxN=nrow(diamondsff)-1, plot=FALSE)
+	t <- tableplot(tab, sortCol=1, sample=TRUE, sampleBinSize=1e3, plot=FALSE)
 )
 plot(t)
 
 
+## test Mchuck_approx
+for (i in 1:10) {
 system.time(
-	t <- tableplot(tab, maxN=0, plot=FALSE)
-)
-plot(t)
+	t <- tableplot(tab, sortCol=i, sample=TRUE, sampleBinSize=1.3e3, plot=FALSE)
+)}
+

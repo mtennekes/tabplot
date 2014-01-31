@@ -9,9 +9,13 @@
 #' @param to upper boundary in quantiles
 #' @param nbins number of bins
 #' @param decreasing sort decreasingly
-#' @param maxN the maximum number of objects
+#' @param sample \code{logical}, should a sa the maximum number of objects
 #' @export
-bin_data <- function(p, sortCol=1L, cols=seq_along(p$data), from=0, to=1, nbins=100L, decreasing = FALSE, sample, sampleBinSize){
+bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
+					, nbins=100L
+					, decreasing = FALSE
+					, sample=FALSE
+					, sampleBinSize=100){
 	stopifnot(inherits(p, what="prepared"))
 	x <- p$data[cols]
 	o <- p$ordered[[cols[sortCol]]]
@@ -117,14 +121,34 @@ binRanges <- function(from, to, nbins){
 
 # # quick testing
 # require(ggplot2)
-# x <- diamonds
-# #x <- iris
+# x <- as.ffdf(diamonds)
+# 
+# # blow the data set 2^10 times up.
+# for (i in 1:8){
+# 	x <- ffdfappend(x, x)
+# 	cat("\rnrow(x): ", nrow(x))
+# }
 # 
 # px <- tablePrepare(x)
 # 
 # system.time(
-# 	agg <- bin_data(px, sortCol=1, nbins=100)
+# 	agg <- bin_data(px, sortCol=1, nbins=100, sample=TRUE, sampleBinSize=1e2)
 # )
+# 
+# system.time(
+# 	agg2 <- bin_data(px, sortCol=1, nbins=100, sample=FALSE)
+# )
+# 
+# for (v in names(agg)){
+# 	if (colnames(agg[[v]])[2] == "mean"){
+# 		d <- 100*(agg2[[v]][,2] - agg[[v]][,2])/agg2[[v]][,2]
+# 		plot(seq_along(d), d,main=v)
+# 	}
+# }
+# carat_diff_p <- 100*(agg2$carat-agg$carat)/agg2$carat
+# plot(1:nrow(carat_diff_p), carat_diff_p[,"mean"])
+# summary(carat_diff_p)
+
 # 
 # system.time(
 # 	agg2 <- bin_data2(px, sortCol=1, nbins=100)

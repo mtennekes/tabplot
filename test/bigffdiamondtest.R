@@ -35,7 +35,7 @@ plot(t2)
 
 ## timings of sample
 system.time(
-	t <- tableplot(tab, sortCol=1, sample=TRUE, sampleBinSize=1e3, plot=FALSE)
+	t <- tableplot(tab, sortCol=depth, sample=TRUE, sampleBinSize=1e2, plot=FALSE)
 )
 plot(t)
 

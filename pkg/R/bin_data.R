@@ -63,14 +63,16 @@ bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 		
 		# We have to loop though o from head to tail in order to sample from the whole distribution.
 		# Solution: sample evenly from o
-		o_s <- o[round(seq(1, n, length.out=Mchunk))]
+		o_s <- o[round(seq(.5+(n/(2*Mchunk)),
+						   .5+n-(n/(2*Mchunk)), 
+						   length.out=Mchunk))]
 		o_s <- o_s[o_s<=Mchunk]
-		
-		cat("length o_s: ", length(o_s), "\n")
+		los <- length(o_s)
+		cat("length o_s: ", los, "\n")
 		cat("needed (M): ", M, "\n")
 		
-		o <- ff(o_s[round(seq(1, length(o_s), length.out=M))], 
-				vmode="integer")
+		o <- ff(o_s[round(
+			seq(.5+(los/(2*M)),.5+los-(los/(2*M)), length.out=M))], vmode="integer")
 	} else {
 		cat("full data set/large sample \n")
 		bin <- ff(0L, length=N)

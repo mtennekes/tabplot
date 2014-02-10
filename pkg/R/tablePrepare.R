@@ -13,6 +13,7 @@
 #' @return a prepared object, including the data and order of each of the columns
 #' @example ../examples/tablePrepare.R
 #' @export
+#' @import ffbase
 tablePrepare <- function(x, name=NULL, ...){
 	# TODO set path where prepared data set should be stored
 	# TODO make it possible to sort on multiple columns

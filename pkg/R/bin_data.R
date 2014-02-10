@@ -9,8 +9,10 @@
 #' @param to upper boundary in quantiles
 #' @param nbins number of bins
 #' @param decreasing sort decreasingly
-#' @param sample \code{logical}, should a sa the maximum number of objects
+#' @param sample sample or use whole dataset?
+#' @param sampleBinSize sample size per bin
 #' @export
+#' @import ffbase
 bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 					, nbins=100L
 					, decreasing = FALSE

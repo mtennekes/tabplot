@@ -7,9 +7,6 @@ rm -rf output
 echo Create palletes...
 R -q -f build/createpalette.R
 
-echo Build vignette...
-R -q -f build/vignette.R
-
 echo Generate documentation...
 R -q -f build/roxygen.R
 

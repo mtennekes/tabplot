@@ -1,4 +1,0 @@
-%\VignetteIndexEntry{tabplot-timings}
-\documentclass{article}
-\begin{document}
-\end{document}

@@ -3,12 +3,13 @@
 \title{Create a tableplot}
 \usage{
 tableplot(dat, select, subset = NULL, sortCol = 1, decreasing = TRUE,
-  nBins = 100, from = 0, to = 100, nCols = ncol(dat), maxN = 1e+06,
-  scales = "auto", max_levels = 50, pals = list("Set1", "Set2", "Set3",
-  "Set4"), change_palette_type_at = 20, colorNA = "#FF1414",
-  numPals = "Blues", limitsX = NULL, bias_brokenX = 0.8, IQR_bias = 5,
-  select_string = NULL, subset_string = NULL, colNames = NULL,
-  filter = NULL, plot = TRUE, ...)
+  nBins = 100, from = 0, to = 100, nCols = ncol(dat), sample = FALSE,
+  sampleBinSize = 1000, scales = "auto", max_levels = 50,
+  pals = list("Set1", "Set2", "Set3", "Set4"), change_palette_type_at = 20,
+  colorNA = "#FF1414", numPals = "Blues", limitsX = NULL,
+  bias_brokenX = 0.8, IQR_bias = 5, select_string = NULL,
+  subset_string = NULL, colNames = NULL, filter = NULL, plot = TRUE,
+  ...)
 }
 \arguments{
   \item{dat}{a \code{\link{data.frame}}, an
@@ -52,10 +53,13 @@ tableplot(dat, select, subset = NULL, sortCol = 1, decreasing = TRUE,
   generated, where each of them contains the sorted
   column(s).}
 
-  \item{maxN}{the maximum number of objects. For datasets
-  with more than maxN number of objects, a random sample of
-  size maxN is plotted. If \code{maxN==0}, all objects are
-  plotted.}
+  \item{sample}{determines whether to sample or use the
+  whole data. Note that this does not involve the
+  preprocessing stage. Therefore, it is only useful for
+  large datasets where \code{\link{tablePrepare}} is used.}
+
+  \item{sampleBinSize}{the number of sampled objects per
+  bin, if \code{sample} is \code{TRUE}.}
 
   \item{scales}{determines the horizontal axes of the
   numeric variables in \code{colNames}. Options: "lin",

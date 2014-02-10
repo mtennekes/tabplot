@@ -1,70 +1,61 @@
-
-### test installed package
-library(tabplot)
-
-### test
 library(ggplot2)
+library(ff)
 data(diamonds)
-str(diamonds)
 
-diamonds$carat[sample.int(nrow(diamonds),4000)] <- NA
-diamonds$cut[sample.int(nrow(diamonds),20000)] <- NA
+bigdiamonds <- as.ffdf(diamonds[rep(1:nrow(diamonds), 1e2), ])
 
-diamonds$carat2 <- factor(diamonds$carat)
-diamonds$price2 <- factor(diamonds$price)
+p1 <- tablePrepare(bigdiamonds)
+tp1 <- tableplot(p1, sample=TRUE, sampleBinSize=1e2)
 
-diamonds$expensive <- diamonds$price >= 10000
+p2 <- tablePrepare(bigdiamonds)
+tp2 <- tableplot(p2, sample=TRUE, sampleBinSize=1e2)
 
+str(tp1)
 
-p <- tablePrepare(diamonds)
-tableplot(p, decreasing=TRUE)
+# tableCompare <- function(tp1, tp2, mode="rel")
+tp <- tp1
 
-dFF <- as.ffdf(diamonds)
-pFF <- tablePrepare(dFF)
-tableplot(pFF, decreasing=TRUE)
+tp$columns <- mapply(function(col1, col2) {
+	col <- col1
+	if (col1$isnumeric) {
+		if (mode=="abs") col$mean <- col2$mean - col1$mean
+		if (mode=="rel") col$mean <- ((col2$mean - col1$mean) / col1$mean)*100
+	} else {
+		
+		col$freq <- col2$freq - col1$freq
+		
+		ispos <- col$freq>0
+		isneg <- col$freq<0
+		
+		freqneg <- col$freq
+		freqneg[!isneg] <- 0
+		xinit <- rowSums(freqneg)
+		
+		xneg <- t(apply(freqneg, MARGIN=1, cumsum))
+		
+		width <- abs(col$freq)
+		
+	}
+	col$scale_init <- "lin"
+	col
+}, tp1$columns, tp2$columns, SIMPLIFY=FALSE)
 
+isNumber <- sapply(tp$columns, function(col) col$isnumeric)
 
-
-tableplot(p, maxN=1e2, from=40, to=45)
-
-
-tab <- tableplot(diamonds)
-tab <- tableplot(diamonds, max_levels=20, change_palette_type_at=15, max_print_levels=15) # default values
-
-tab <- tableplot(diamonds, max_levels=100, change_palette_type_at=15, max_print_levels=12, legend.lines=12)
-
-
-tab <- tableplot(diamonds, subset=cut)
-tab <- tableplot(diamonds, subset=cut, limitsX=list(price=c(0,20000)))
-
-
-tab <- tableplot(diamonds, sortCol=depth, nCols=6, li mitsX=list(price=c(0,20000)))
-tab <- tableplot(diamonds, sortCol=3, subset_string="cut=='Fair'")
-
-tab <- tableplot(diamonds, sortCol=3, subset=cut, plot=FALSE)
-
-
-tableplot(diamonds, select=c(price,carat,color,cut,clarity,table,z,y,x), 
-		  pals=list(cut="Set3(4)", color="Greens", clarity="Paired(4)"),
-		  numPals=c(x="Greys", y="Greens"),
-		  limitsX=list(carat=c(0, 5), table=c(50,60)),
-		  scales=c(carat="lin", price="lin"))
-
-tableplot(diamonds, select=c(carat, price))
+IQR_bias <- 5
+tp$columns[isNumber] <- lapply(tp$columns[isNumber], scaleNumCol, IQR_bias)
 
 
-p <- prepare(diamonds)
-tableplot(p, select=c(y,x), sortCol=x)
+limitsX <- list()
+bias_brokenX <- 0.8
+tp$columns[isNumber] <- mapply(coorNumCol, tp$columns[isNumber], limitsX[isNumber], MoreArgs=list(bias_brokenX=bias_brokenX), SIMPLIFY=FALSE)
 
-tableplot(p, from=0, to=75)
-tableplot(p, from=0, to=77)
-
-
-diamonds$price <- diamonds$price * 1e6
-diamonds$table <- diamonds$table + 1e4
-diamonds$x <- diamonds$x / 1e4
-diamonds$y <- diamonds$y / 1e4
-diamonds$z <- diamonds$z * -1e7 -1e8
-tableplot(diamonds, scales=c(price="lin"))
+plot(tp)
 
 
+
+str(tp)
+
+## coordinates
+tab$columns[!isNumber] <- lapply(tab$columns[!isNumber], coorCatCol, nBins)
+tab$columns[isNumber] <- mapply(coorNumCol, tab$columns[isNumber], limitsX[isNumber], MoreArgs=list(bias_brokenX=bias_brokenX), SIMPLIFY=FALSE)

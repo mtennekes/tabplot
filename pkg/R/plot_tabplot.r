@@ -154,31 +154,31 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 			#############################
 	
 			cellplot(3,1, vpLegend, {
-				numbers <- with(x, c(nBins, n, round(n/nBins), N))
+				numbers <- with(x, c(n, round(n/nBins), N))
 				formats <- format(numbers, big.mark=",")
 				widths <- convertWidth(stringWidth(formats), "npc", valueOnly=TRUE)
 				width <- max(widths)
 				spacer <- 0.1 + convertWidth(stringWidth("\t"), "npc", valueOnly=TRUE)
 				xpos <- spacer + width
 				
-				space.row_bins <- convertWidth(stringWidth("row bins: "), "npc", valueOnly=TRUE)
+				space.row_bins <- convertWidth(stringWidth("row bins:  "), "npc", valueOnly=TRUE)
 				grid.text("row bins:", x=0.1, y=unit(5.5, units="lines"), just="left")
-				grid.text(formats[1], x=max(space.row_bins, xpos), y=unit(5.5, units="lines"), just="right")
+				grid.text(x$nBins, x=space.row_bins, y=unit(5.5, units="lines"), just="left")
 				
 				grid.text("objects:", x=0.1, y=unit(4, units="lines"), just="left")
 			
-				grid.text(formats[2], x=xpos, y=unit(3, units="lines"), just="right")
+				grid.text(formats[1], x=xpos, y=unit(3, units="lines"), just="right")
 				
-				grid.text(formats[3], x=xpos, y=unit(2, units="lines"), just="right")
+				grid.text(formats[2], x=xpos, y=unit(2, units="lines"), just="right")
 				
 				grid.text(" (per bin)", x=xpos, y=unit(2, units="lines"), just="left")
 				
-				if (numbers[2]!=numbers[4]) {
+				if (numbers[1]!=numbers[3]) {
 					grid.text(" (sample)", x=xpos, y=unit(3, units="lines"), just="left")
 
 					
 					
-					grid.text(formats[4], x=xpos, y=unit(1, units="lines"), just="right")
+					grid.text(formats[3], x=xpos, y=unit(1, units="lines"), just="right")
 
 					grid.text(" (full data)", x=xpos, y=unit(1, units="lines"), just="left")
 				}

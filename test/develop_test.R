@@ -3,6 +3,7 @@ library(ff)
 data(diamonds)
 
 bigdiamonds <- as.ffdf(diamonds[rep(1:nrow(diamonds), 1e2), ])
+bigdiamonds <- as.ffdf(diamonds)
 
 p1 <- tablePrepare(bigdiamonds)
 tp1 <- tableplot(p1, sample=TRUE, sampleBinSize=1e2)
@@ -24,7 +25,7 @@ tp$columns <- mapply(function(col1, col2) {
 		
 		col$freq <- col2$freq - col1$freq
 		
-		ispos <- col$freq>0
+		ispos <- col$freq>=0
 		isneg <- col$freq<0
 		
 		freqneg <- col$freq
@@ -34,6 +35,20 @@ tp$columns <- mapply(function(col1, col2) {
 		xneg <- t(apply(freqneg, MARGIN=1, cumsum))
 		
 		width <- abs(col$freq)
+		
+		whichneg <- apply(isneg, MARGIN=1, FUN=which)
+		whichpos <- apply(ispos, MARGIN=1, FUN=which)
+		
+		ids <- mapply(FUN=c, whichneg, whichpos, SIMPLIFY=FALSE)
+		widths <- as.list(data.frame(t(width)))
+		
+		width <- t(mapply("[", widths, ids))
+		
+		
+		x <- xinit + t(apply(width, MARGIN=1, cumsum))
+		
+		
+		
 		
 	}
 	col$scale_init <- "lin"

@@ -1,4 +1,4 @@
-plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes){
+plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, compare=FALSE){
 	## checks if device is Cario {cairoDevice}
 	drawContours <- TRUE
 
@@ -22,7 +22,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes){
 			cols <- NA
 		}
 		
-		
+				
 		
 		## plot bins
 		grid.rect( x = rep(tCol$xline,tab$nBins)

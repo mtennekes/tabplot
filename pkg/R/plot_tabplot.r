@@ -20,7 +20,9 @@ plot.tabplot <-
 function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, showNumAxes=TRUE, vp=NULL, ...) {
 
 	
-	if (class(x)[1]!="tabplot") p(paste(deparse(substitute(x)), "is not a tabplot-object"))
+	if (!(class(x)[1] %in% c("tabplot", "tabplot_compare"))) p(paste(deparse(substitute(x)), "is not a tabplot-object"))
+	compare <- class(x)=="tabplot_compare"
+	
 	
 	if (length(fontsize)!=1 || !is.numeric(fontsize)) stop("invalid fontsize")
 
@@ -154,33 +156,35 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 			#############################
 	
 			cellplot(3,1, vpLegend, {
-				numbers <- with(x, c(n, round(n/nBins), N))
+				if (compare) {
+					numbers <- with(x, c(n1, n2))
+				} else {
+					numbers <- with(x, c(n, round(n/nBins), N))
+				}
 				formats <- format(numbers, big.mark=",")
 				widths <- convertWidth(stringWidth(formats), "npc", valueOnly=TRUE)
 				width <- max(widths)
 				spacer <- 0.1 + convertWidth(stringWidth("\t"), "npc", valueOnly=TRUE)
 				xpos <- spacer + width
-				
 				space.row_bins <- convertWidth(stringWidth("row bins:  "), "npc", valueOnly=TRUE)
 				grid.text("row bins:", x=0.1, y=unit(5.5, units="lines"), just="left")
 				grid.text(x$nBins, x=space.row_bins, y=unit(5.5, units="lines"), just="left")
 				
+				
 				grid.text("objects:", x=0.1, y=unit(4, units="lines"), just="left")
-			
 				grid.text(formats[1], x=xpos, y=unit(3, units="lines"), just="right")
-				
 				grid.text(formats[2], x=xpos, y=unit(2, units="lines"), just="right")
-				
-				grid.text(" (per bin)", x=xpos, y=unit(2, units="lines"), just="left")
-				
-				if (numbers[1]!=numbers[3]) {
-					grid.text(" (sample)", x=xpos, y=unit(3, units="lines"), just="left")
 
-					
-					
-					grid.text(formats[3], x=xpos, y=unit(1, units="lines"), just="right")
-
-					grid.text(" (full data)", x=xpos, y=unit(1, units="lines"), just="left")
+				if (compare) {
+					grid.text(" (dataset 1)", x=xpos, y=unit(3, units="lines"), just="left")
+					grid.text(" (dataset 2)", x=xpos, y=unit(2, units="lines"), just="left")
+				} else {
+					grid.text(" (per bin)", x=xpos, y=unit(2, units="lines"), just="left")
+					if (numbers[1]!=numbers[3]) {
+						grid.text(" (sample)", x=xpos, y=unit(3, units="lines"), just="left")
+						grid.text(formats[3], x=xpos, y=unit(1, units="lines"), just="right")
+						grid.text(" (full data)", x=xpos, y=unit(1, units="lines"), just="left")
+					}
 				}
 			})
 		})
@@ -188,6 +192,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 		#############################
 		## Draw columns from left to right. Per column, check whether it is numeric or categorial.
 		#############################
+		
 	
 		for (i in 1:x$m) {
 			cellplot(1,i+1, vpColumn, {
@@ -219,7 +224,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 				})
 			
 				if (tCol$isnumeric){
-					plotNumCol(tCol, x, vpTitle, vpGraph, vpLegend, showNumAxes)
+					plotNumCol(tCol, x, vpTitle, vpGraph, vpLegend, showNumAxes, compare)
 				}
 				else {
 					plotCatCol(tCol, x, vpTitle, vpGraph, vpLegend, max_print_levels,
@@ -230,4 +235,9 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 	})
   
 	upViewport(1 + !is.null(vp))
+}
+
+
+plot.tabplot_compare <-function(...) {
+	plot.tabplot(...)
 }

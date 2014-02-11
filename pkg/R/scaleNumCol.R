@@ -1,7 +1,11 @@
-scaleNumCol <- function(tabCol, IQR_bias) {
+scaleNumCol <- function(tabCol, IQR_bias, compare=FALSE) {
 	## for "auto" scales, choose between "lin" and "log" based on IQR_bias
 	if (tabCol$scale_init=="auto") {
-		quant <- quantile(tabCol$mean, na.rm=TRUE)
+		if (compare) {
+			quant <- quantile(tabCol$mean.diff, na.rm=TRUE)
+		} else {
+			quant <- quantile(tabCol$mean, na.rm=TRUE)
+		}
 		
 		if (all(is.na(quant))) {
 			tabCol$scale_final <- "lin"
@@ -20,10 +24,19 @@ scaleNumCol <- function(tabCol, IQR_bias) {
 	
 	## apply transformation
 	if (tabCol$scale_final=="log") {
-		tabCol$mean.scaled <- getLog(tabCol$mean)
+		if (compare) {
+			tabCol$mean.diff.scaled <- getLog(tabCol$mean.diff)
+		} else {
+			tabCol$mean.scaled <- getLog(tabCol$mean)
+		}
 	} else {
-		tabCol$mean.scaled <- tabCol$mean
+		if (compare) {
+			tabCol$mean.diff.scaled <- tabCol$mean.diff
+		} else {
+			tabCol$mean.scaled <- tabCol$mean
+		}
 	}
+	if (compare) tabCol$mean.diff.rel.scaled <- tabCol$mean.diff.rel
 	tabCol
 }
 

@@ -1,5 +1,5 @@
-coorNumCol <- function(tabCol, limitsX, bias_brokenX) {
-	num <- tabCol$mean.scaled
+coorNumCol <- function(tabCol, limitsX, bias_brokenX, compare=FALSE) {
+	num <- if (compare) tabCol$mean.diff.scaled else tabCol$mean.scaled
 	ignoreMarks <- all(is.na(num))
 
 	## determine whether broken X-axis are applied, and transform values accordingly
@@ -21,7 +21,6 @@ coorNumCol <- function(tabCol, limitsX, bias_brokenX) {
 	} else {
 		minmax <-  range(num, na.rm=TRUE)	
 	}
-	
 	isConstant <- minmax[1]==minmax[2]
 	if (!isConstant && minmax[2] > 0 && minmax[1] > (bias_brokenX * minmax[2])) {
 		## broken x-axis has positive values
@@ -70,7 +69,12 @@ coorNumCol <- function(tabCol, limitsX, bias_brokenX) {
 	widths[is.nan(widths)] <- minV
 
 	tabCol$brokenX <- brokenX
-	tabCol$mean.coor <- values
+	
+	if (compare) {
+		tabCol$mean.diff.coor <- values
+	} else {
+		tabCol$mean.coor <- values
+	}
 	
 	if (ignoreMarks) {
 		tabCol$marks.labels <- integer(0)

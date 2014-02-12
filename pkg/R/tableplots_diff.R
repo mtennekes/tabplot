@@ -7,13 +7,13 @@
 			col$mean2 <- col2$mean
 			col$mean.diff <- col$mean <- col2$mean - col1$mean
 			col$mean.diff.rel <- col$mean <- ((col2$mean - col1$mean) / col1$mean)*100
-			col$mean <- NULL
 			col$scale_init <- "lin"
+			col[c("mean", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <- NULL
 		} else {
 			
-			col <- tp$columns[[4]]
-			col1 <- tp1$columns[[4]]
-			col2 <- tp2$columns[[4]]
+# 			col <- tp$columns[[4]]
+# 			col1 <- tp1$columns[[4]]
+# 			col2 <- tp2$columns[[4]]
 			
 			col$freq1 <- col1$freq
 			col$freq2 <- col2$freq
@@ -44,13 +44,13 @@
 			col$x <- (col$x * .4807692) + 0.5
 			
 			col$freq <- NULL
-			col
 		}
 		col
 	}, tp1$columns, tp2$columns, SIMPLIFY=FALSE)
 	
 	isNumber <- sapply(tp$columns, function(col) col$isnumeric)
 	
+
 	tp$columns[isNumber] <- lapply(tp$columns[isNumber], scaleNumCol, IQR_bias=5, compare=TRUE)
 	limitsX <- list()
 	tp$columns[isNumber] <- mapply(coorNumCol, tp$columns[isNumber], limitsX[isNumber], MoreArgs=list(bias_brokenX=0.8, compare=TRUE), SIMPLIFY=FALSE)

@@ -17,11 +17,13 @@
 #' @import grid
 #' @method plot tabplot
 plot.tabplot <-
-function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, showNumAxes=TRUE, vp=NULL, ...) {
+function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, showNumAxes=TRUE, relative=FALSE, vp=NULL, ...) {
 
 	
 	if (!(class(x)[1] %in% c("tabplot", "tabplot_compare"))) p(paste(deparse(substitute(x)), "is not a tabplot-object"))
-	compare <- class(x)=="tabplot_compare"
+	
+	compare <- (class(x)=="tabplot_compare")
+	relative <- relative && compare
 	
 	
 	if (length(fontsize)!=1 || !is.numeric(fontsize)) stop("invalid fontsize")
@@ -224,7 +226,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 				})
 			
 				if (tCol$isnumeric){
-					plotNumCol(tCol, x, vpTitle, vpGraph, vpLegend, showNumAxes, compare)
+					plotNumCol(tCol, x, vpTitle, vpGraph, vpLegend, showNumAxes, relative)
 				}
 				else {
 					plotCatCol(tCol, x, vpTitle, vpGraph, vpLegend, max_print_levels,

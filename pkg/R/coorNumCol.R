@@ -1,17 +1,33 @@
 coorNumCol <- function(tabCol, limitsX, bias_brokenX, compare=FALSE) {
-	num <- if (compare) tabCol$mean.diff.scaled else tabCol$mean.scaled
-	ignoreMarks <- all(is.na(num))
+	if (compare) {
+		results <- coorNumVector(tabCol$mean.diff.scaled, limitsX, bias_brokenX, tabCol$name)
+		names(results) <- c("brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")
+		results.rel <- coorNumVector(tabCol$mean.diff.rel.scaled, limitsX, bias_brokenX, tabCol$name)
+		names(results.rel) <- c("brokenX.rel", "mean.diff.coor.rel", "marks.labels.rel", "marks.x.rel", "xline.rel", "widths.rel")
+		tabCol <- c(tabCol, results, results.rel)
+	} else {
+		results <- coorNumVector(tabCol$mean.scaled, limitsX, bias_brokenX, tabCol$name)
+		names(results) <- c("brokenX", "mean.coor", "marks.labels", "marks.x", "xline", "widths")
+		tabCol <- c(tabCol, results)
+	}
+	
+	
+	tabCol
+}
 
+coorNumVector <- function(num, limitsX, bias_brokenX, name) {
+	ignoreMarks <- all(is.na(num))
+	
 	## determine whether broken X-axis are applied, and transform values accordingly
 	
 	if (is.numeric(limitsX)) {
 		minmax <- limitsX
 		if (!ignoreMarks && min(num, na.rm=TRUE)<limitsX[1]) {
-			warning(paste("some mean values in", tabCol$name, "fall outside the given limits and are therefore truncated"))
+			warning(paste("some mean values in", name, "fall outside the given limits and are therefore truncated"))
 			num[num<limitsX[1]] <- limitsX[1]
 		}
 		if (!ignoreMarks && max(num, na.rm=TRUE)>limitsX[2]) {
-			warning(paste("some mean values in", tabCol$name, "fall outside the given limits and are therefore truncated"))
+			warning(paste("some mean values in", name, "fall outside the given limits and are therefore truncated"))
 			num[num>limitsX[2]] <- limitsX[2]
 		}
 		bias_brokenX <- 0
@@ -64,33 +80,22 @@ coorNumCol <- function(tabCol, limitsX, bias_brokenX, compare=FALSE) {
 	} else {
 		xline <- ifelse(maxV > 0, 0, 1)
 		widths <- (values) / max(abs(minV), abs(maxV))
-		marks_x <- (marks_coor) / max(abs(minV), abs(maxV))
+		marks_x <- (marks_coor) / max(abs(minV), abs(maxV)) + xline
 	}
 	widths[is.nan(widths)] <- minV
-
-	tabCol$brokenX <- brokenX
-	
-	if (compare) {
-		tabCol$mean.diff.coor <- values
-	} else {
-		tabCol$mean.coor <- values
-	}
 	
 	if (ignoreMarks) {
-		tabCol$marks.labels <- integer(0)
-		tabCol$marks.x <- integer(0)
+		marks.labels <- integer(0)
+		marks.x <- integer(0)
 	} else {
 		marksVis <- marks_x >= ifelse(brokenX==1, 0.15, 0) &
 					marks_x <= ifelse(brokenX==-1, 0.85, 1)
 		
 		marks_x[marks==0] <- xline
 		marksVis[marks==0] <- TRUE
-		tabCol$marks.labels <- marks[marksVis]
-		tabCol$marks.x <- marks_x[marksVis]
+		marks.labels <- marks[marksVis]
+		marks.x <- marks_x[marksVis]
 	}
 	
-	tabCol$xline <- xline
-	tabCol$widths <- widths
-	
-	tabCol
+	list(brokenX, values, marks.labels, marks.x, xline,	widths)
 }

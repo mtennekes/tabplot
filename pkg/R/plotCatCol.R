@@ -1,4 +1,4 @@
-plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, text_NA, legend.lines){
+plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, text_NA, legend.lines, compare){
 	drawContours <- TRUE
 
 	anyNA <- tail(tCol$categories, 1)=="missing"
@@ -20,7 +20,11 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 	if (anyNA) {
 		palet[nCategories+1] <- tCol$colorNA
 	}
-
+	
+	if (compare) {
+		marks.x <- seq(0, 1, length.out=5)
+	}
+	
 	cellplot(2,1,vpGraph, {
 
 		## create large vector of colors (one color for each bin*category
@@ -44,6 +48,13 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 		## draw white rect at the right to correct for rounding errors during plotting
 		grid.rect(x = 1,  y=-.005, width=0.1, height=1.01, just=c("left", "bottom"), 
 				  gp=gpar(col=NA, fill="white"))
+		
+		
+		## draw grid lines
+		if (compare) 
+			grid.rect(x=marks.x,
+					  width=0,
+					  gp=gpar(col="black", alpha=0.3))
 	})
 
 
@@ -54,8 +65,27 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 		
 		nLegendRows <- ifelse(spread, nLegendSpreadRows, nCategories) + 2 * anyNA
 		
+		if (compare) {
+			# needed for x-axis
+			Layout3 <- grid.layout(nrow = 2, ncol = 1, 
+								   heights=unit(c(1,1), c("lines", "null")))
+			pushViewport(viewport(name="legendsplit", layout = Layout3))
+			cellplot(1,1, e={
+				grid.text(format(marks.x),x=marks.x, y=0.5, 
+						  just="center",
+						  gp=gpar(cex=0.8))
+				grid.lines(y=c(1, 1))
+				grid.polyline(x=rep(marks.x,each=2),
+							  y=rep(c(0.85,1),length(marks.x)),
+							  id=rep(1:length(marks.x),each=2))
+				
+			})
+			pushViewport(viewport(layout.pos.row=2, layout.pos.col=1))
+		}
+			
 		Layout2 <- grid.layout(nrow = nLegendRows, ncol = 1 + spread, 
 							   widths=if(spread) c(0.25, 0.75) else {1})
+		
 	
 		cex <- min(1, 1 / (convertHeight(unit(1,"lines"), "npc", valueOnly=TRUE)
 						   * nLegendRows))
@@ -124,6 +154,6 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 		}
 		
 		
-		popViewport(n = 1)
+		popViewport(1+compare*2)
 	})
 }

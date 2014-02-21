@@ -1,5 +1,16 @@
+#' Compare two tableplots (experimental)
+#'
+#' Two tableplots can be compared by substracting two \link{tabplot-object}s. The result is a \link{tabplot_compare-object} object in which absolute and relative differences of mean values are stored, as well as a comparison of frequency tables for categorical variables. This object can be plotted with \code{\link{plot.tabplot}}. 
+#' 
+#' @aliases tableplot_comparison
+#' @param tp1 the first \link{tabplot-object}
+#' @param tp2 the second \link{tabplot-object}
+#' @return a \link{tabplot_compare-object} that contains information about the comparison \code{tp1-tp2}
+#' @example ../examples/tableplots_diff.R
+#' @export
 "-.tabplot" <- function(tp1, tp2) {
 	tp <- tp1
+	midspace <- .05
 	tp$columns <- mapply(function(col1, col2) {
 		col <- col1
 		if (col1$isnumeric) {
@@ -8,6 +19,7 @@
 			col$mean.diff <- col$mean <- col2$mean - col1$mean
 			col$mean.diff.rel <- col$mean <- ((col2$mean - col1$mean) / col1$mean)*100
 			col$scale_init <- "lin"
+			col$compl <- pmin(col1$compl, col2$compl)
 			col[c("mean", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <- NULL
 		} else {
 			
@@ -34,14 +46,17 @@
 			
 			col$widths <- sortRows(widths, ids2)
 			
-			col$x[col$x<0] <- col$x[col$x<0] - .04
-			col$x[col$x>=0] <- col$x[col$x>=0] + .04
+			col$x <- col$x * (1-midspace) / 2
+			col$widths <- col$widths * (1-midspace) / 2
+			
+			
+			col$x[col$x<0] <- col$x[col$x<0] - (midspace/2)
+			col$x[col$x>=0] <- col$x[col$x>=0] + (midspace/2)
 			
 			col$x[col$widths==0] <- NA
 			col$widths[col$widths==0] <- NA
 			
-			col$widths <- col$widths * .4807692
-			col$x <- (col$x * .4807692) + 0.5
+			col$x <- (col$x) + 0.5
 			
 			col$freq <- NULL
 		}

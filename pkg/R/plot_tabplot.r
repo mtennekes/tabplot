@@ -1,7 +1,7 @@
 #' Plot a \link{tabplot-object}
 #'
 #' @aliases plot.tabplot
-#' @param x \link{tabplot-object}
+#' @param x \link{tabplot-object} or \link{tabplot_compare-object}
 #' @param fontsize the (maximum) fontsize
 #' @param legend.lines the number of lines preserved for the legend
 #' @param max_print_levels maximum number of printed category labels in the legend
@@ -10,6 +10,7 @@
 #' @param showTitle show the title. By default \code{FALSE}, unless a \code{title} is given.
 #' @param fontsize.title the fontsize of the title
 #' @param showNumAxes plots an x-axis for each numerical variable, along with grid lines (\code{TRUE} by default).
+#' @param relative boolean that determines whether relative scales are used for relative tableplots. If \code{TRUE}, then \code{mean.diff.rel<-(mean2-mean1)/mean1*100} are used. If \code{FALSE}, then the absolute diference is taken: \code{mean <- mean2-mean}.
 #' @param vp \code{\link[grid:viewport]{viewport}} to draw plot in (for instance useful to stack multiple tableplots)
 #' @param ... other arguments are not used
 #' @example ../examples/plot_tabplot.R

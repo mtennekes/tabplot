@@ -19,19 +19,24 @@ markLabels <- function(marks, brokenX) {
 		}
 	} else showLabels <- rep.int(TRUE, length(marks))
 	
+	## use scientific notation?
+	if (sum(nonzero)>1) {
 	
-	
-	diff <- min(marks[nonzero][-1] - marks[nonzero][-sum(nonzero)])
-	(minID <- floor(round(log10(diff), digits=5)))
-	(maxID <- floor(log10(max(abs(marks)))))
-	
-	
-	if ((minID==0 && maxID<=3) || (minID>=-2 && maxID<=2 && maxID-minID <=2)) {
+		diff <- min(marks[nonzero][-1] - marks[nonzero][-sum(nonzero)])
+		(minID <- floor(round(log10(diff), digits=5)))
+		(maxID <- floor(log10(max(abs(marks)))))
+		
+		
+		if ((minID==0 && maxID<=3) || (minID>=-2 && maxID<=2 && maxID-minID <=2)) {
+			scientific <- FALSE
+			add_intercept <- FALSE
+		} else {
+			scientific <- TRUE
+			add_intercept <- (maxID - minID > 2) 
+		}
+	} else {
 		scientific <- FALSE
 		add_intercept <- FALSE
-	} else {
-		scientific <- TRUE
-		add_intercept <- (maxID - minID > 2) 
 	}
 	
 	if (add_intercept && brokenX!=0) {

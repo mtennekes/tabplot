@@ -1,9 +1,11 @@
 <!--
-%\VignetteEngine{knitr::knitr`
-%\VignetteIndexEntry{Visualization of large multivariate datasets with the tabplot package`
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Visualization of large datasets with tabplot}
 -->
 
 
+
+# Visualization of large datasets with `tabplot`
 
 The tableplot is a powerful visualization method to explore and analyse large multivariate datasets. In this vignette, the implementation of tableplots in R is described, and illustrated with the diamonds dataset from the `ggplot2` package. 
 
@@ -107,7 +109,7 @@ tablePalettes()
 
 The x-axes a plotted as compact as possible. This is illustrated in the x-axis for the variable price.
 
-Observe that the x-axes of the variables depth and table in the top figure are broken. In this way the bars are easier to differentiate. The argument `bias\_brokenX` can be set to determine when a broken x-axis is applied.
+Observe that the x-axes of the variables depth and table in the top figure are broken. In this way the bars are easier to differentiate. The argument `bias_brokenX` can be set to determine when a broken x-axis is applied.
 
 For each numerical variable, the limits of the x-axes can be determined manually with the argument `limitsX`.
 
@@ -139,7 +141,7 @@ diamonds$price_class <- num2fac(diamonds$price, n = 100)
 ```
 
 
-For variables with over `change\_palette\_type\_at` (by default 20) categories, color palettes are constructed by using interpolated colors. This creates a rainbow effect. If the number of categories is than `change\_palette\_type\_at`, the assigned palette is recycled in order to obtain the number of categories.
+For variables with over `change_palette_type_at` (by default 20) categories, color palettes are constructed by using interpolated colors. This creates a rainbow effect. If the number of categories is than `change_palette_type_at`, the assigned palette is recycled in order to obtain the number of categories.
 
 
 ```r
@@ -149,7 +151,7 @@ tableplot(diamonds, select = c(carat, price, carat_class, price_class))
 ![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9.png) 
 
 
-If the number of categories exceeds `max\_level` (by default 50), the categories are rebinned into `max\_level` category groups. This is illustrated by the variable price\_class.
+If the number of categories exceeds `max_level` (by default 50), the categories are rebinned into `max_level` category groups. This is illustrated by the variable price_class.
 
 
 
@@ -171,7 +173,7 @@ system.time({
 
 ```
 ##    user  system elapsed 
-##    1.57    0.40    1.97
+##    1.59    0.30    1.89
 ```
 
 ```r
@@ -183,7 +185,7 @@ system.time({
 
 ```
 ##    user  system elapsed 
-##    0.19    0.07    0.25
+##    0.13    0.08    0.20
 ```
 
 ```r
@@ -195,7 +197,7 @@ system.time({
 
 ```
 ##    user  system elapsed 
-##    0.29    0.05    0.34
+##    0.15    0.04    0.20
 ```
 
 
@@ -211,7 +213,7 @@ system.time({
 
 ```
 ##    user  system elapsed 
-##    1.28    0.36    1.66
+##    1.29    0.33    1.61
 ```
 
 ```r
@@ -223,7 +225,7 @@ system.time({
 
 ```
 ##    user  system elapsed 
-##    1.25    0.36    1.61
+##    1.34    0.36    1.70
 ```
 
 
@@ -242,9 +244,41 @@ system.time({
 
 ```
 ##    user  system elapsed 
-##    0.40    0.03    0.44
+##    0.41    0.03    0.44
 ```
 
+
+
+## Compare tableplots (experimental)
+
+It is possible to compare two datasets, for instance two samples, two versions of a dataset, or datasets from two different time periods.
+
+
+
+```r
+# calculate normalized carats to be used as sample probabilities
+carat.norm <- with(diamonds, carat/max(diamonds$carat))
+
+# draw samples
+exp.diamonds <- diamonds[sample(1:nrow(diamonds), size = 10000, prob = carat.norm, 
+    replace = TRUE), ]
+chp.diamonds <- diamonds[sample(1:nrow(diamonds), size = 10000, prob = 1 - carat.norm, 
+    replace = TRUE), ]
+
+tp1 <- tableplot(exp.diamonds, plot = FALSE)
+tp2 <- tableplot(chp.diamonds, plot = FALSE)
+
+plot(tp2 - tp1)
+```
+
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13.png) 
+
+
+This comparison tableplot shows per bin the difference in mean value for each numeric variable, and for each categorical variable a two-sided stacked bar chart to indicate the differences in fractions per category: left-side bars indicate that more items are contained in tp1, right-side bars indicate that more items are contained in tp2, and if bars are not plotted, the fraction of items is unchanged. Relative mean values can be plot with `relative=TRUE`.
+
+Note: The objects `tp1` and `tp2` are tabplot-objects (see below). If they are substracted from each other, a tabplot_compare-object is returned.
+
+The comparison treemap is still in development stage, so it may change future updates.
 
 
 ## Miscellaneous
@@ -269,40 +303,55 @@ summary(tab)
 ```
 
 ```
-##       general               variable1            variable2          
-##  dataset  :diamonds   name       :carat     name      :cut          
-##  variables:12         type       :numeric   type      :categorical  
-##  objects  :53940      sort       :TRUE      sort      :NA           
-##  bins     :100        scale_init :auto      categories:6            
-##  from     :0%         scale_final:lin                               
-##  to       :100%                                                     
-##       variable3                variable4                 variable5      
-##  name      :color         name      :clarity       name       :depth    
-##  type      :categorical   type      :categorical   type       :numeric  
-##  sort      :NA            sort      :NA            sort       :NA       
-##  categories:8             categories:9             scale_init :auto     
-##                                                    scale_final:lin      
-##                                                                         
-##        variable6             variable7             variable8      
-##  name       :table     name       :price     name       :x        
+##               general               variable1      
+##  dataset          :diamonds   name       :carat    
+##  variables        :12         type       :numeric  
+##  sortCol          :1          scale_init :auto     
+##  decreasing       :TRUE       scale_final:lin      
+##  from             :0%                              
+##  to               :100%                            
+##  objects.sample   :53940                           
+##  objects.full.data:53940                           
+##  bins             :100                             
+##       variable2                variable3          
+##  name      :cut           name      :color        
+##  type      :categorical   type      :categorical  
+##  categories:6             categories:8            
+##                                                   
+##                                                   
+##                                                   
+##                                                   
+##                                                   
+##                                                   
+##       variable4                 variable5             variable6      
+##  name      :clarity       name       :depth     name       :table    
+##  type      :categorical   type       :numeric   type       :numeric  
+##  categories:9             scale_init :auto      scale_init :auto     
+##                           scale_final:lin       scale_final:lin      
+##                                                                      
+##                                                                      
+##                                                                      
+##                                                                      
+##                                                                      
+##        variable7             variable8             variable9      
+##  name       :price     name       :x         name       :y        
 ##  type       :numeric   type       :numeric   type       :numeric  
-##  sort       :NA        sort       :NA        sort       :NA       
 ##  scale_init :auto      scale_init :auto      scale_init :auto     
 ##  scale_final:lin       scale_final:lin       scale_final:lin      
 ##                                                                   
-##        variable9             variable10           variable11         
-##  name       :y         name       :z         name      :carat_class  
-##  type       :numeric   type       :numeric   type      :categorical  
-##  sort       :NA        sort       :NA        sort      :NA           
-##  scale_init :auto      scale_init :auto      categories:26           
-##  scale_final:lin       scale_final:lin                               
-##                                                                      
-##       variable12         
-##  name      :price_class  
-##  type      :categorical  
-##  sort      :NA           
-##  categories:51           
-##                          
+##                                                                   
+##                                                                   
+##                                                                   
+##                                                                   
+##        variable10           variable11               variable12         
+##  name       :z         name      :carat_class   name      :price_class  
+##  type       :numeric   type      :categorical   type      :categorical  
+##  scale_init :auto      categories:26            categories:51           
+##  scale_final:lin                                                        
+##                                                                         
+##                                                                         
+##                                                                         
+##                                                                         
 ## 
 ```
 
@@ -316,11 +365,11 @@ plot(tab)
 When a dataset contains more variables than can be plotted, multiple tableplots can be generated with the argument `nCols`. This argument determines the maximum number of columns per tableplot. When the number of selected columns is larger than `nCols`, multiple tableplots are generated. In each of them, the sorted columns are plotted on the lefthand side. 
 
 When multiple tableplots are created, the (silent) output is a list of `tabplot` objects. This is also the case when the dataset is filtered by a categorical variable, e.~g. `subset = color`
-([link](#secfilter).
+([Filtering](#secfilter).
 
-### Layout options
+### <a name="seclay"></a>Layout options
 There are several arguments that determine the layout of the plot:
-`fontsize`, `legend.lines`, `max\_print\_levels`, `text\_NA`, `title`, `showTitle`, `fontsize.` `title`, `showNumAxes`, and `vp`. The following code illustrates this.
+`fontsize`, `legend.lines`, `max_print_levels`, `text_NA`, `title`, `showTitle`, `fontsize.` `title`, `showNumAxes`, and `vp`. The following code illustrates this.
 
 
 ```r
@@ -328,10 +377,10 @@ tableplot(diamonds, select = 1:7, fontsize = 14, legend.lines = 8, title = "Shin
     fontsize.title = 18)
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15.png) 
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16.png) 
 
 
-The layout arguments named above are passed on from `tableplot` to `plot.tabplot`. These arguments will be especially important when saving a tableplot (see [link](#secsave#)).
+The layout arguments named above are passed on from `tableplot` to `plot.tabplot`. These arguments will be especially important when saving a tableplot (see [Multiple tableplots](#secsave#)).
 
 
 ### Minor changes
@@ -345,7 +394,7 @@ tab2 <- tableChange(tab, select_string = c("carat", "price", "cut", "color",
 plot(tab2)
 ```
 
-![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16.png) 
+![plot of chunk unnamed-chunk-17](figure/unnamed-chunk-17.png) 
 
 
 ### <a name="secsave"></a>Save tableplots
@@ -359,15 +408,14 @@ tableSave(tab, filename = "diamonds.png", width = 5, height = 3, fontsize = 6,
 ```
 
 
-All layout options named in [link](#seclay) can be used here, such as `fontsize` and `legend.lines`. When `tab` is a list of tabplot-objects (see [link](#secmult)), the argument `onePage` determines whether the tableplots are stacked on one page or printed on seperate pages.
+All layout options named in [Layout options](#seclay) can be used here, such as `fontsize` and `legend.lines`. When `tab` is a list of tabplot-objects (see [Multiple tableplots](#secmult)), the argument `onePage` determines whether the tableplots are stacked on one page or printed on seperate pages.
 
 
 ## Resources
 
-- Summary of the package: `help(package=tabplot)`
-- The main help page: `?tabplot`
-- Project site: [link](http://code.google.com/p/tableplot)
-- Tennekes, M., Jonge, E. de, Daas, P.J.H. (2013) Visualizing and Inspecting Large Datasets with Tableplots, Journal of Data Science 11 (1), 43-58. ([link](http://www.jds-online.com/file_download/379/JDS-1108.pdf))
+- [The main help page](/doc/html/index.html)
+- Project site: [https://github.com/mtennekes/tabplot](https://github.com/mtennekes/tabplot)
+- Tennekes, M., Jonge, E. de, Daas, P.J.H. (2013) Visualizing and Inspecting Large Datasets with Tableplots, Journal of Data Science 11 (1), 43-58. ([paper](http://www.jds-online.com/file_download/379/JDS-1108.pdf))
 
 
 

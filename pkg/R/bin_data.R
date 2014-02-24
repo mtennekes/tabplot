@@ -43,7 +43,7 @@ bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 	if (sample){
 		# if n < maxN(=sampleBinSize*nbins) but N >> n, then N=M, so we still have to loop through whole o vector.
 		
-		cat("sample\n")
+		#cat("sample\n")
 
 		# n_s is wanted total number of data points in the sample
 		n_s <- min(nbins * sampleBinSize, n)
@@ -70,13 +70,15 @@ bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 						   length.out=Mchunk))]
 		o_s <- o_s[o_s<=Mchunk]
 		los <- length(o_s)
-		cat("length o_s: ", los, "\n")
-		cat("needed (M): ", M, "\n")
+		#cat("length o_s: ", los, "\n")
+		#cat("needed (M): ", M, "\n")
 		
-		o <- ff(o_s[round(
-			seq(.5+(los/(2*M)),.5+los-(los/(2*M)), length.out=M))], vmode="integer")
+		selection <- round(seq(.5+(los/(2*M)),.5+los-(los/(2*M)), length.out=M)) 
+		if (decreasing) selection <- rev(selection)
+		
+		o <- ff(o_s[selection], vmode="integer")
 	} else {
-		cat("full data set/large sample \n")
+		#cat("full data set/large sample \n")
 		bin <- ff(0L, length=N)
 		for (i in chunk(o)){
 			b <- as.integer(seq.int(i[1], i[2]) / ((n+1)/nbins) + 1)

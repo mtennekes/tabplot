@@ -1,6 +1,6 @@
 \name{tabplot-object}
 \alias{tabplot-object}
-\title{object that contains the information to plot a tableplot}
+\title{Object that contains the information to plot a tableplot}
 \description{
 An object of class \code{tabplot} contains the information
 to plot a tableplot without the steps that may be

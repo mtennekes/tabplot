@@ -36,9 +36,9 @@ tableplot(dat, select, subset = NULL, sortCol = 1, decreasing = TRUE,
   discouraged for programming purposes (use an index
   instead).}
 
-  \item{decreasing}{determines whether the dataset is
-  sorted decreasingly (\code{TRUE}) of increasingly
-  (\code{FALSE}).}
+  \item{decreasing}{boolean that determines whether the
+  dataset is sorted decreasingly (\code{TRUE}) of
+  increasingly (\code{FALSE}).}
 
   \item{nBins}{number of row bins}
 
@@ -53,10 +53,9 @@ tableplot(dat, select, subset = NULL, sortCol = 1, decreasing = TRUE,
   generated, where each of them contains the sorted
   column(s).}
 
-  \item{sample}{determines whether to sample or use the
-  whole data. Note that this does not involve the
-  preprocessing stage. Therefore, it is only useful for
-  large datasets where \code{\link{tablePrepare}} is used.}
+  \item{sample}{boolean that determines whether to sample
+  or use the whole data. Only useful when
+  \code{\link{tablePrepare}} is used.}
 
   \item{sampleBinSize}{the number of sampled objects per
   bin, if \code{sample} is \code{TRUE}.}
@@ -138,7 +137,7 @@ tableplot(dat, select, subset = NULL, sortCol = 1, decreasing = TRUE,
 
   \item{...}{layout arguments, such as \code{fontsize} and
   \code{title}, are passed on to
-  \code{\link{plot.tabplot}}}
+  \code{\link[=plot.tabplot]{plot}}}
 }
 \value{
 \code{\link{tabplot-object}} (silent output). If multiple
@@ -158,14 +157,16 @@ depicted of the proportions of categories. Missing values
 are taken into account. Also supports large
 \code{\link[ff:ffdf]{ffdf}} datasets from the
 \code{\link[ff]{ff}} package. For a quick intro, see
-\href{../doc/tabplot-vignette.pdf}{\code{vignette("tabplot-vignette")}}.
+\href{../doc/tabplot-vignette.html}{\code{vignette("tabplot-vignette")}}.
 }
 \details{
 For large dataset, we recommend to use
-\code{\link{tablePrepare}}. Tableplotting is much faster
-when the resulting object of \code{\link{tablePrepare}} is
-passed on to \code{tableplot} (argument \code{dat}) rather
-than the dataset itself.
+\code{\link{tablePrepare}} which does all the necessary
+preprocessing that are needed to make any tableplot of the
+particular dataset. The resulting object of this function
+is passed on to \code{tableplot} (argument \code{dat}). Now
+tableplotting is very fast, and even faster with sampling
+enabled (\code{sample=TRUE}).
 }
 \note{
 In early development versions of \code{tabplot} (prior to

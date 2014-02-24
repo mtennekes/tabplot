@@ -9,9 +9,10 @@ shinyUI(pageWithSidebar(
 		tabsetPanel(
 		tabPanel("Data",
 			uiOutput("df"),
+			checkboxInput("sampling", label="Sampling", value=TRUE),
 			uiOutput("selected"),
 			uiOutput("sortOn"),
-			checkboxInput("decreasing", label="Descending", value=TRUE),
+			checkboxInput("decreasing", label="Decreasing", value=TRUE),
 			sliderInput("fromto", label="Range:", min=0, max=1, value=c(0,1), format="#0.0%"),
 			numericInput("nBins", label="Number of bins:", value=100, min=2, max=500, step=1)),
 		tabPanel("Numeric",

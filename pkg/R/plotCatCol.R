@@ -28,7 +28,7 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 	mgrey <- "#D8D8D8"
 	
 	cellplot(2,1,vpGraph, {
-		if (compare) grid.rect(gp = gpar(col=NA,fill = mgrey))
+		if (compare) grid.rect(gp = gpar(col=mgrey,fill = mgrey))
 		
 		
 		## create large vector of colors (one color for each bin*category
@@ -50,9 +50,9 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 				 , gp = gpar(col=cols, fill = colorset, linejoin="mitre", lwd=0))
 		
 		## draw white rect at the right to correct for rounding errors during plotting
-		grid.rect(x = 1,  y=-.005, width=0.1, height=1.01, just=c("left", "bottom"), 
-				  gp=gpar(col=NA, fill="white"))
-		if (compare) grid.rect(width=midspace, gp = gpar(col=NA, fill = "white"))
+# 		grid.rect(x = 1,  y=-.005, width=0.1, height=1.01, just=c("left", "bottom"), 
+# 				  gp=gpar(col=NA, fill="white"))
+		if (compare) grid.rect(width=midspace, gp = gpar(col="white", fill = "white"))
 		
 		
 		

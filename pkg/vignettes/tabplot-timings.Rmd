@@ -9,8 +9,8 @@ library(tabplot)
 
 # Timings of Big Data visualization with `tabplot`
 
-We test the speed of `tabplot` package with datasets over $1,00,000,000$ records.
-For this purpose we multiply the diamonds dataset from the `ggplot2` package $2,000$ times.
+We test the speed of `tabplot` package with datasets over 1,00,000,000 records.
+For this purpose we multiply the diamonds dataset from the `ggplot2` package 2,000 times.
 This dataset contains 53940 records and 10 variables.
 
 ## Create testdata

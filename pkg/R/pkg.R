@@ -4,7 +4,7 @@
 #' Package: \tab tabplot\cr
 #' Type: \tab Package\cr
 #' Version: \tab 1.1\cr
-#' Date: \tab 2013-02-09\cr
+#' Date: \tab 2013-02-24\cr
 #' License: \tab GPL-3\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -20,7 +20,7 @@
 #' \item \code{\link{tableSave}} to save a tableplot;
 #' \item \code{\link{tableChange}} to make layout changes to a tableplot.
 #' }
-#' For a quick intro, see \href{../doc/tabplot-vignette.pdf}{\code{vignette("tabplot-vignette")}}.
+#' For a quick intro, see \href{../doc/tabplot-vignette.html}{\code{vignette("tabplot-vignette")}}.
 #'
 #' @name tabplot-package
 #' @aliases tabplot

@@ -15,7 +15,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 
 	
 	cellplot(2,1,vpGraph, {		
-		grid.rect(gp = gpar(col=NA,fill = lgrey))
+		grid.rect(gp = gpar(col=lgrey,fill = lgrey))
 		
 		## bins with all missings
 		missings <- which(tCol$compl==0)

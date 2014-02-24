@@ -171,6 +171,32 @@ system.time({
 ```
 
 
+## Compare tableplots (experimental)
+
+It is possible to compare two datasets, for instance two samples, two versions of a dataset, or datasets from two different time periods.
+
+
+```{r fig.height=6.5, fig.width=10, warning=FALSE}
+# calculate normalized carats to be used as sample probabilities
+carat.norm <- with(diamonds, carat / max(diamonds$carat))
+
+# draw samples
+exp.diamonds <- diamonds[sample(1:nrow(diamonds), size=10000, prob=carat.norm, replace=TRUE),]
+chp.diamonds <- diamonds[sample(1:nrow(diamonds), size=10000, prob=1-carat.norm, replace=TRUE),]
+
+tp1 <- tableplot(exp.diamonds, plot=FALSE)
+tp2 <- tableplot(chp.diamonds, plot=FALSE)
+
+plot(tp2 - tp1)
+```
+
+This comparison tableplot shows per bin the difference in mean value for each numeric variable, and for each categorical variable a two-sided stacked bar chart to indicate the differences in fractions per category: left-side bars indicate that more items are contained in tp1, right-side bars indicate that more items are contained in tp2, and if bars are not plotted, the fraction of items is unchanged. Relative mean values can be plot with `relative=TRUE`.
+
+Note: The objects `tp1` and `tp2` are tabplot-objects (see below). If they are substracted from each other, a tabplot_compare-object is returned.
+
+The comparison treemap is still in development stage, so it may change future updates.
+
+
 ## Miscellaneous
 
 ### The tabplot object
@@ -230,8 +256,7 @@ All layout options named in [Layout options](#seclay) can be used here, such as 
 
 ## Resources
 
-- Summary of the package: `help(package=tabplot)`
-- The main help page: `?tabplot`
+- [Main help page](/library/tabplot/html/tabplot-package.html)
 - Project site: [https://github.com/mtennekes/tabplot](https://github.com/mtennekes/tabplot)
 - Tennekes, M., Jonge, E. de, Daas, P.J.H. (2013) Visualizing and Inspecting Large Datasets with Tableplots, Journal of Data Science 11 (1), 43-58. ([paper](http://www.jds-online.com/file_download/379/JDS-1108.pdf))
 

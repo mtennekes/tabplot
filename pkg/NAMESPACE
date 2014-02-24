@@ -1,5 +1,6 @@
 S3method("-",tabplot)
 S3method(plot,tabplot)
+S3method(plot,tabplot_compare)
 S3method(print,tabplot)
 S3method(summary,tabplot)
 export(bin_data)

@@ -15,9 +15,9 @@ Description: A tableplot is a visualisation of a (large)
     datasets from the ff package.
 Version: 1.1
 URL: https://github.com/mtennekes/tabplot
-Date: 2013-00-09
+Date: 2014-02-24
 Depends:
-    ffbase (>= 0.9)
+    ffbase (>= 0.11.1)
 Imports:
     grid
 VignetteBuilder: knitr

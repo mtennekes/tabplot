@@ -4,6 +4,7 @@ library(tabplot)
 obs <- ls(envir=.GlobalEnv)
 dfs <- obs[sapply(obs, function(x)inherits(get(x, envir=.GlobalEnv), c("data.frame", "ffdf", "prepared")))]
 
+cat("Preparing datasets...\n")
 ps <- lapply(dfs, function(d){
 	dat <- get(d)
 	if (inherits(dat, "prepared")) dat else tablePrepare(dat)
@@ -21,6 +22,7 @@ tablePlot <- function(p, numvars, input, plot=TRUE) {
 	select <- input$select
 	sortCol <- input$sortCol
 	logscale <- input$logscale
+	sampling <- input$sampling
 	
 	if (length(select) && length(sortCol)) {
 		if (sortCol %in% select && all(select %in% vars)) {
@@ -41,11 +43,12 @@ tablePlot <- function(p, numvars, input, plot=TRUE) {
 					sortCol = sortCol, select_string = select,
 					decreasing = decreasing, 
 					scales = scales,
-					nBins=nBins, maxN=1e5)
+					nBins=nBins, sample=sampling)
 			} else {
 				fromtoString <- ifelse(from==0 && to==100, "", paste0(", from=", from, ", to=", to))
 				selectString <- ifelse(identical(select, vars), "", paste0(", select=c(", paste(select, collapse=","), ")"))
 				scalesString <- ifelse(all(scales==scales[1]), paste0(", scales=\"", scales[1], "\""), paste0(", scales=c(", paste(paste(names(scales),"=", paste0("\"", scales, "\"")), collapse=", "), ")"))
+				samplingString <- ifelse(sampling, ", sample=TRUE", "")
 				
 				paste0("tableplot(", input$dataset, 
 					   ", sortCol=",	sortCol,
@@ -53,7 +56,7 @@ tablePlot <- function(p, numvars, input, plot=TRUE) {
 					  selectString,
 					  ", decreasing=", decreasing, 
 					  ", nBins=", nBins, 
-					  scalesString, ")\n")
+					  scalesString, samplingString, ")\n")
 			}
 		}
 	}

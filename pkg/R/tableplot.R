@@ -1,19 +1,18 @@
 #' Create a tableplot
 #'
-#' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff]{ff}} package. For a quick intro, see \href{../doc/tabplot-vignette.pdf}{\code{vignette("tabplot-vignette")}}.
+#' A tableplot is a visualisation of (large) multivariate datasets. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff]{ff}} package. For a quick intro, see \href{../doc/tabplot-vignette.html}{\code{vignette("tabplot-vignette")}}.
 #'
-#' For large dataset, we recommend to use \code{\link{tablePrepare}}. Tableplotting is much faster
-#' when the resulting object of \code{\link{tablePrepare}} is passed on to \code{tableplot} (argument \code{dat}) rather than the dataset itself.
+#' For large dataset, we recommend to use \code{\link{tablePrepare}} which does all the necessary preprocessing that are needed to make any tableplot of the particular dataset. The resulting object of this function is passed on to \code{tableplot} (argument \code{dat}). Now tableplotting is very fast, and even faster with sampling enabled (\code{sample=TRUE}).
 #' @param dat a \code{\link{data.frame}}, an \code{\link[ff:ffdf]{ffdf}} object, or an object created by \code{\link{tablePrepare}} (see details below). Required.
 #' @param select expression indicating the columns of \code{dat} that are visualized in the tablelplot Also column indices are supported. By default, all columns are visualized. Use \code{select_string} for character strings instead of expressions. 
 #' @param subset logical expression indicing which rows to select in \code{dat} (as in \code{\link{subset}}). It is also possible to provide the name of a categorical variable: then, a tableplot for each category is generated. Use \code{subset_string} for character strings instead of an expressions.
 #' @param sortCol column name on which the dataset is sorted. It can be eiter an index or an expression name. Also a character string can be used, but this is discouraged for programming purposes (use an index instead).
-#' @param decreasing determines whether the dataset is sorted decreasingly (\code{TRUE}) of increasingly (\code{FALSE}).
+#' @param decreasing boolean that determines whether the dataset is sorted decreasingly (\code{TRUE}) of increasingly (\code{FALSE}).
 #' @param nBins number of row bins
 #' @param from percentage from which the sorted data is shown
 #' @param to percentage to which the sorted data is shown
 #' @param nCols the maximum number of columns per tableplot. If this number is smaller than the number of columns selected in \code{datNames}, multiple tableplots are generated, where each of them contains the sorted column(s).
-#' @param sample determines whether to sample or use the whole data. Note that this does not involve the preprocessing stage. Therefore, it is only useful for large datasets where \code{\link{tablePrepare}} is used.
+#' @param sample boolean that determines whether to sample or use the whole data. Only useful when \code{\link{tablePrepare}} is used.
 #' @param sampleBinSize the number of sampled objects per bin, if \code{sample} is \code{TRUE}.
 #' @param scales determines the horizontal axes of the numeric variables in \code{colNames}. Options: "lin", "log", and "auto" for automatic detection. Either \code{scale} is a named vector, where the names correspond to numerical variable names, or \code{scale} is unnamed, where the values are applied to all numeric variables (recycled if necessary).
 #' @param max_levels maximum number of levels for categorical variables. Categorical variables with more levels will be rebinned into \code{max_levels} levels. Either a positive number or -1, which means that categorical variables are never rebinned.
@@ -35,7 +34,7 @@
 #' @param colNames deprecated; used in older versions of tabplot (prior to 0.12): use \code{select_string} instead
 #' @param filter deprecated; used in older versions of tabplot (prior to 0.12): use \code{subset_string} instead
 #' @param plot boolean, to plot or not to plot a tableplot
-#' @param ... layout arguments, such as \code{fontsize} and \code{title}, are passed on to \code{\link{plot.tabplot}}
+#' @param ... layout arguments, such as \code{fontsize} and \code{title}, are passed on to \code{\link[=plot.tabplot]{plot}}
 #' @return \code{\link{tabplot-object}} (silent output). If multiple tableplots are generated (which can be done by either setting \code{subset} to a categorical column name, or by restricting the number of columns with \code{nCols}), then a list of \code{\link{tabplot-object}s} is silently returned.
 #' @export
 #' @import grid

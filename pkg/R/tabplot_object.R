@@ -1,4 +1,4 @@
-#' object that contains the information to plot a tableplot
+#' Object that contains the information to plot a tableplot
 #'
 #' An object of class \code{tabplot} contains the information to plot a tableplot without the steps that may be time-consuming, such as sorting and aggregating.
 #' The function \code{\link{tableplot}} silently returns a tabplot-object (use \code{plot=FALSE} to 
@@ -7,9 +7,9 @@
 #' @name tabplot-object
 {}
 
-#' object that contains the information to plot the difference of two tableplots (experimental)
+#' Object that contains the information to plot the difference of two tableplots (experimental)
 #'
-#' A \code{tabplot_compare} is created by substracting two tableplots (see \link{tableplot_comparison}). For numeric variables, both absolute and relative difference of the mean values are computed. For categorical variables, the freqency tables are compared. 
+#' A \code{tabplot_compare} is created by substracting two tableplots (see \link{-.tabplot}). For numeric variables, both absolute and relative difference of the mean values are computed. For categorical variables, the freqency tables are compared. 
 #'
 #' @name tabplot_compare-object
 {}

@@ -1,6 +1,8 @@
 #' Plot a \link{tabplot-object}
 #'
 #' @aliases plot.tabplot
+#' @name plot.tabplot
+#' @rdname plot.tabplot
 #' @param x \link{tabplot-object} or \link{tabplot_compare-object}
 #' @param fontsize the (maximum) fontsize
 #' @param legend.lines the number of lines preserved for the legend
@@ -38,8 +40,10 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 	
 	if (missing(showTitle)) showTitle <- !missing(title)
 	
-	if (missing(title)) 
-		title <- ifelse(length(x$subset)==0, x$dataset, paste(x$dataset, " (", x$subset, ")", sep=""))
+	if (missing(title)) {
+		dataset <- ifelse(class(x)=="tabplot", x$dataset, paste(x$dataset2, x$dataset1, sep=" - "))
+		title <- ifelse(length(x$subset)==0, dataset, paste(dataset, " (", x$subset, ")", sep=""))
+	}
 	
 	#############################
 	## Determine colors and color scales
@@ -179,8 +183,8 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 				grid.text(formats[2], x=xpos, y=unit(2, units="lines"), just="right")
 
 				if (compare) {
-					grid.text(" (dataset 1)", x=xpos, y=unit(3, units="lines"), just="left")
-					grid.text(" (dataset 2)", x=xpos, y=unit(2, units="lines"), just="left")
+					grid.text(paste(" (", x$dataset1, ")", sep=""), x=xpos, y=unit(3, units="lines"), just="left")
+					grid.text(paste(" (", x$dataset2, ")", sep=""), x=xpos, y=unit(2, units="lines"), just="left")
 				} else {
 					grid.text(" (per bin)", x=xpos, y=unit(2, units="lines"), just="left")
 					if (numbers[1]!=numbers[3]) {
@@ -240,7 +244,9 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 	upViewport(1 + !is.null(vp))
 }
 
-
-plot.tabplot_compare <-function(...) {
-	plot.tabplot(...)
+#' @rdname plot.tabplot
+#' @usage \method{plot}{tabplot_compare}(x, ...)
+#' @export
+plot.tabplot_compare <-function(x, ...) {
+	plot.tabplot(x, ...)
 }

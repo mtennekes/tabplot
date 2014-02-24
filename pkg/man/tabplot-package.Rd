@@ -5,7 +5,7 @@
 \title{Tableplot, a visualization of large datasets}
 \description{
 \tabular{ll}{ Package: \tab tabplot\cr Type: \tab
-Package\cr Version: \tab 1.1\cr Date: \tab 2013-02-09\cr
+Package\cr Version: \tab 1.1\cr Date: \tab 2013-02-24\cr
 License: \tab GPL-3\cr LazyLoad: \tab yes\cr }
 }
 \details{
@@ -33,7 +33,7 @@ qualitative palettes that are included; \item
 \code{\link{tableSave}} to save a tableplot; \item
 \code{\link{tableChange}} to make layout changes to a
 tableplot. } For a quick intro, see
-\href{../doc/tabplot-vignette.pdf}{\code{vignette("tabplot-vignette")}}.
+\href{../doc/tabplot-vignette.html}{\code{vignette("tabplot-vignette")}}.
 }
 \examples{
 # load diamonds dataset from ggplot2

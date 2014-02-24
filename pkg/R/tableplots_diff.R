@@ -1,14 +1,20 @@
 #' Compare two tableplots (experimental)
 #'
-#' Two tableplots can be compared by substracting two \link{tabplot-object}s. The result is a \link{tabplot_compare-object} object in which absolute and relative differences of mean values are stored, as well as a comparison of frequency tables for categorical variables. This object can be plotted with \code{\link{plot.tabplot}}. 
+#' Two tableplots can be compared by substracting two \link{tabplot-object}s. The result is a \link{tabplot_compare-object} object in which absolute and relative differences of mean values are stored, as well as a comparison of frequency tables for categorical variables. This object can be plotted with \code{\link[=plot.tabplot]{plot}}. 
 #' 
-#' @aliases tableplot_comparison
+#' @rdname tableplot_comparison
+#' @aliases -.tabplot
+#' @usage \method{-}{tabplot} (tp1, tp2)
 #' @param tp1 the first \link{tabplot-object}
 #' @param tp2 the second \link{tabplot-object}
 #' @return a \link{tabplot_compare-object} that contains information about the comparison \code{tp1-tp2}
 #' @example ../examples/tableplots_diff.R
 #' @export
 "-.tabplot" <- function(tp1, tp2) {
+	stopifnot(all(tp1$select==tp2$select),
+			  tp1$nBins==tp2$nBins,
+			  tp1$sortCol==tp2$sortCol)
+	
 	tp <- tp1
 	midspace <- .05
 	tp$columns <- mapply(function(col1, col2) {
@@ -77,7 +83,10 @@
 	tp$n <- NULL
 	tp$N <- NULL
 	
-	tp <- tp[c(1:9, 14:17, 10:13)]
+	tp$dataset1 <- tp1$dataset
+	tp$dataset2 <- tp2$dataset
+
+	tp <- tp[c(18:19, 2:9, 14:17, 10:13)]
 	class(tp) <- "tabplot_compare"
 	tp	
 }

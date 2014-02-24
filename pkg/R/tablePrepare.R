@@ -22,7 +22,7 @@ tablePrepare <- function(x, name=NULL, ...){
 	if (missing(name)) name <- deparse(substitute(x))
 	
 	if (is.data.frame(x)){
-		x <- as.data.frame(lapply(x, as.vector)) # workaround for otherwise data.frames with dimnamed columns will crash in the next line
+		#x <- as.data.frame(lapply(x, as.vector)) # workaround for otherwise data.frames with dimnamed columns will crash in the next line
 		x <- as.ffdf(x)
 	}
 

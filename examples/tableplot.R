@@ -27,6 +27,6 @@ tableplot(p,
 
 # create a tableplot cut category, and fix scale limits of carat, table, and price
 tabs <- tableplot(p, subset=cut,
-				  limitsX=list(carat=c(0,4), table=c(55, 65), price=c(0, 20000)), plot=FALSE)
+	limitsX=list(carat=c(0,4), table=c(55, 65), price=c(0, 20000)), plot=FALSE)
 plot(tabs[[3]], title="Very good cut diamonds")
 

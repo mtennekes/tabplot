@@ -21,48 +21,25 @@ nrow(diamondsff) <- N
 
 for (i in chunk(from=1, to=N, by=n)) diamondsff[i,] <- diamonds
 
-save.ffdf(diamondsff, dir="d:/temp2/d")
-load.ffdf()
+save.ffdf(diamondsff, dir="d:/temp2/diamonds", overwrite=TRUE)
 
 
-tp <- tablePrepare(diamondsff)
-
-tableplot(tp)
+save.ffdf(diamondsff, dir="d:/temp2/diamonds2", overwrite=TRUE)
 
 
-savePrepare(tp, dir="d:/temp2/d2",overwrite=TRUE)
+tp <- tablePrepare(diamondsff, dir="d:/temp2/diamonds_prepare")
+savePrepare(tp, dir="d:/temp2/diamonds_prepare", overwrite=T)
+
+
+
+tableplot(tp, subset=cut=='Fair')
+tableplot(tp, subset=price < 5000 & cut=='Ideal')
+
+savePrepare(tp, dir="d:/temp2/diamonds_prepare2", overwrite=TRUE)
 tp2 <- loadPrepare("d:/temp2/d2")
 
 
 load("d:/temp2/diamonds4/tp.Rdata")
 
-loadPrepare <- function(dir) {
-	if (!isTRUE(file.exists(dir))) {
-		stop("directory '", dir, "' does not exist")
-	}
-	load(file.path(dir, "/.Rdata"))
-	tp
-}
 
-savePrepare <- function(tp, dir, overwrite=FALSE) {
-#	tpname <- deparse(substitute(tp))
-
-	dir <- file.path(dir)
-	dir.create(dir, showWarnings = FALSE, recursive = TRUE)
-	
-	if (!isTRUE(overwrite) && file.exists(file.path(dir, ".Rdata"))) {
-		stop("Directory '", dir, "' contains existing '.Rdata' file. \n          To force saving use 'overwrite=TRUE'")
-	}
-	
-	a <- attributes(tp)
-	
-	name <- a$name
-	dirs <- file.path(dir, a$names)
-	
-	data <- tp$data
-	ordered <- tp$ordered
-	save.ffdf(data, dir=dirs[1], overwrite=overwrite) 
-	save.ffdf(ordered, dir=dirs[2], overwrite=overwrite)
-	save(tp, file=file.path(dir, ".Rdata"))
-}
 

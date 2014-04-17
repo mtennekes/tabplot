@@ -1,9 +1,36 @@
+#' Save a tableplot
+#'
+#' Save a tableplot in pdf, eps, svg, wmf, png, jpg, bmp, or tiff format.
+#'
+#' @aliases tableSave
+#' @param tab a \link{tabplot-object}, or a list of \link{tabplot-object}s, which are either stacked horizontally or put on multiple pages (for pdf only)
+#' @param filename filename with extention (pdf, eps, svg, wmf, png, jpg, bmp, or tiff)
+#' @param device device, automatically extracted from filename extension
+#' @param path path to save to
+#' @param scale scaling factor
+#' @param width width (in inches)
+#' @param height height (in inches)
+#' @param dpi dpi to use for raster graphics
+#' @param onePage if true, multiple tab objects are stacked horizontally, else they are printed on multiple pages
+#' @param ... other arguments passed to \code{\link[=plot.tabplot]{plot}} or the used graphics device
+#' @export
+#' @keywords save tableplot
+#' @examples
+#' \dontrun{
+#' require(ggplot2)
+#' data(diamonds)
+#'
+#' # default tableplot
+#' tab <- tableplot(diamonds)
+#'
+#' # save tableplot
+#' tableSave(tab, filename="diamonds.png", title="Shine on you Crazy Diamond!!!")
+#' }
 tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""), 
           device = default_device(filename), path = NULL, scale = 1, 
           width = par("din")[1], height = par("din")[2], dpi = 300, 
           onePage = TRUE, ...) 
 {
-    require(grid)
     items <- list(...)
     isPlotItem <- names(items) %in% c("fontsize", "legend.lines", 
                                       "max_print_levels", "text_NA", "title", "showTitle", 

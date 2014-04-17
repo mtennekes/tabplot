@@ -2,7 +2,7 @@
 \alias{tablePrepare}
 \title{Prepares a dataset for tableplotting}
 \usage{
-tablePrepare(x, name = NULL, ...)
+tablePrepare(x, name = NULL, dir = NULL, ...)
 }
 \arguments{
   \item{x}{\code{\link{data.frame}} or
@@ -11,7 +11,14 @@ tablePrepare(x, name = NULL, ...)
 
   \item{name}{name of the dataset}
 
-  \item{...}{at the moment not used}
+  \item{dir}{directory to store the prepared object. If
+  unspecified, the prepared object will not be saved, and
+  the underlying data will be stored temporarily in
+  \code{options("fftempdir")}.}
+
+  \item{...}{arguments passed to other methods (at the
+  moment only \code{overwrite} from
+  \code{\link{savePrepare}})}
 }
 \value{
 a prepared object, including the data and order of each of

@@ -41,15 +41,15 @@ tiff format.
 }
 \examples{
 \dontrun{
-	require(ggplot2)
-	data(diamonds)
+require(ggplot2)
+data(diamonds)
 
-	# default tableplot
-	tab <- tableplot(diamonds)
+# default tableplot
+tab <- tableplot(diamonds)
 
-	# save tableplot
-	tableSave(tab, filename="diamonds.png", title="Shine on you Crazy Diamond!!!")
-	}
+# save tableplot
+tableSave(tab, filename="diamonds.png", title="Shine on you Crazy Diamond!!!")
+}
 }
 \keyword{save}
 \keyword{tableplot}

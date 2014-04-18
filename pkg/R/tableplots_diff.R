@@ -11,9 +11,10 @@
 #' @example ../examples/tableplots_diff.R
 #' @export
 "-.tabplot" <- function(tp1, tp2) {
-	stopifnot(all(tp1$select==tp2$select),
-			  tp1$nBins==tp2$nBins,
+	stopifnot(tp1$nBins==tp2$nBins,
 			  tp1$sortCol==tp2$sortCol)
+	
+	if (!all(tp1$select==tp2$select)) warning("Column names are not equal")
 	
 	tp <- tp1
 	midspace <- .05

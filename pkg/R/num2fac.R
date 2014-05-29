@@ -76,15 +76,22 @@ function(num, method="pretty", num_scale="auto", n=0, brks=NA) {
 		
 		logbrks <- classIntervals(lognum, n=n, style=method)$brks
 		
-		brks <- integer(length(logbrks))
-		brks[logbrks >= 0] <- round(10^logbrks[logbrks >= 0] - ifelse(method=="kmeans", 1, 0))
-		brks[logbrks < 0] <- -round(10^-logbrks[logbrks < 0] - ifelse(method=="kmeans", 1, 0))
+		brks <- numeric(length(logbrks))
+		brks[logbrks >= 0] <- 10^logbrks[logbrks >= 0] - ifelse(method=="kmeans", 1, 0)
+		brks[logbrks < 0] <- -(10^-logbrks[logbrks < 0] - ifelse(method=="kmeans", 1, 0))
 
 		if (method=="pretty") brks[brks==1] <- 0
 		
-		ivls <- intervalLabels(brks)
-		brks[length(brks)] <- brks[length(brks)]+1
-		fac <- cut(num, breaks = brks, labels = ivls, right=FALSE)
+		digits <- 0
+		brksr <- round(brks, digits=digits)
+		while (any(duplicated(brksr))) {
+			brksr <- round(brks, digits=digits)
+			digits <- digits + 1
+		}
+		
+		ivls <- intervalLabels(brksr)
+		brksr[length(brksr)] <- brksr[length(brksr)]+1
+		fac <- cut(num, breaks = brksr, labels = ivls, right=FALSE)
 	} else if (num_scale=="lin") {
 		# scale is lineair
 		if (method=="pretty") {
@@ -98,19 +105,19 @@ function(num, method="pretty", num_scale="auto", n=0, brks=NA) {
 			if (n==0) n <- 5
 		}
 	
-		brksUnround <- classIntervals(num, n=n, style=method)$brks
+		brks <- classIntervals(num, n=n, style=method)$brks
 		digits <- 0
-		brks <- round(brksUnround, digits=digits)
-		while (any(duplicated(brks))) {
-			brks <- round(brksUnround, digits=digits)
+		brksr <- round(brks, digits=digits)
+		while (any(duplicated(brksr))) {
+			brksr <- round(brks, digits=digits)
 			digits <- digits + 1
 		}
 		
 		
 		
-		ivls <- intervalLabels(brks)
-		brks[length(brks)] <- brks[length(brks)]+1
-		fac <- cut(num, breaks = brks, labels = ivls, right=FALSE)
+		ivls <- intervalLabels(brksr)
+		brksr[length(brksr)] <- brksr[length(brksr)]+1
+		fac <- cut(num, breaks = brksr, labels = ivls, right=FALSE)
 	} else {
 		# levels are discrete categories.
 		fac <- as.factor(num)

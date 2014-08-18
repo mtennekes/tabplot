@@ -1,3 +1,6 @@
+version 1.1-1
+- fixed bug in comparison tableplot
+
 version 1.1
 - improved sampling (now very fast for large datasets!). Arguments sample and sampleBinSize are added.
 - added comparison tableplots (see ?"-.tabplot")

@@ -23,8 +23,8 @@
 		if (col1$isnumeric) {
 			col$mean1 <- col1$mean
 			col$mean2 <- col2$mean
-			col$mean.diff <- col$mean <- col2$mean - col1$mean
-			col$mean.diff.rel <- col$mean <- ((col2$mean - col1$mean) / col1$mean)*100
+			col$mean.diff <- col$mean <- col1$mean - col2$mean
+			col$mean.diff.rel <- col$mean <- ((col1$mean - col2$mean) / col1$mean)*100
 			col$scale_init <- "lin"
 			col$compl <- pmin(col1$compl, col2$compl)
 			col[c("mean", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <- NULL
@@ -37,7 +37,7 @@
 			col$freq1 <- col1$freq
 			col$freq2 <- col2$freq
 			
-			freq <- col$freq.diff <- col2$freq - col1$freq
+			freq <- col$freq.diff <- col1$freq - col2$freq
 			xinit <- apply(freq, MARGIN=1, function(x)sum(x[x<0]))
 			
 			ids <- t(apply(freq, MARGIN=1, orderRow))

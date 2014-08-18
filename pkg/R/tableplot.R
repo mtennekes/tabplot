@@ -49,6 +49,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 					  scales="auto", max_levels=50, 
 					  pals=list("Set1", "Set2", "Set3", "Set4"), 
 					  change_palette_type_at = 20,
+					  rev_legend=FALSE,
 					  colorNA = "#FF1414", 
 					  numPals = "Blues", 
 					  limitsX = NULL,
@@ -140,7 +141,9 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
                 tableplot(p, select_string=colNames, sortCol=sortCol, 
 								 decreasing=decreasing, scales=scales, max_levels=max_levels, 
 								 pals=pals, nBins=nBins,
-								 from=from, to=to, subset_string=subs_string, 
+								 from=from, to=to, subset_string=subs_string,
+								 change_palette_type_at=change_palette_type_at,
+								 rev_legend = rev_legend,
                 		  		 colorNA = colorNA, numPals = numPals, limitsX=limitsX,
 								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
 			})
@@ -167,6 +170,10 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 														   max(sapply(pals[!isNumber], function(pal)length(pal$palette))))
 	if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") 
 		stop("<colorNA> is not correct")
+	
+	rev_legend <- tableplot_checkRevLeg(rev_legend, colNames)
+	
+	
 	numPals <- tableplot_checkNumPals(numPals, colNames, isNumber)
 	limitsX <- if (missing(limitsX)) list() else tableplot_checkLimitsX(limitsX, colNames, isNumber)
 	tableplot_checkFromTo(from, to)
@@ -188,7 +195,9 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	tab <- columnTable( bd, datName, colNames=colNames, subset_string=subset_string, 
 						sortCol=sortCol, decreasing=decreasing, scales=scales, 
-						pals=pals, change_palette_type_at=change_palette_type_at,
+						pals=pals, 
+						change_palette_type_at=change_palette_type_at,
+						rev_legend=rev_legend,
 						colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, 
 						to=to, N=N, n=n)
 	

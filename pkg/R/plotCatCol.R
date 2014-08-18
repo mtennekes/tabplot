@@ -78,6 +78,9 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 		grid.rect(gp=gpar(col=NA, fill="white"))
 		
 		if (spread) {
+			if (tCol$rev_legend) {
+				palet <- rev(palet)
+			}
 			cellplot(1:nLegendSpreadRows,1, NULL, {
 				grid.rect( x = 0, y = seq(1, 0, length.out=nCategories+1)[-(nCategories+1)]
 						   , width = 0.8, height = 1/nCategories
@@ -89,8 +92,9 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 			labels[seq(1, nLegendSpreadRows, by=2)] <- tCol$categories[seq(1, nCategories - anyNA, length.out=nLegendSpread)]
 				
 			for (j in 1:nLegendSpreadRows) {
+				k <- ifelse(tCol$rev_legend, (nLegendSpreadRows+1)-j, j)
 				cellplot(j,2, NULL, {
-					grid.text( labels[j]
+					grid.text( labels[k]
 							   , x = 0
 							   , just="left")
 				})
@@ -112,12 +116,13 @@ plotCatCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, max_print_levels, 
 			
 		} else {
 			for (j in 1:nCategories) {
+				k <- ifelse(tCol$rev_legend, (nCategories + 1) - j, j)
 				cellplot(j,1, NULL, {
 					grid.rect( x = 0, y = 0.5, width = 0.2, height = 1
 							   , just=c("left")
-							   , gp = gpar(col=palet[j], fill = palet[j])
+							   , gp = gpar(col=palet[k], fill = palet[k])
 					)
-					grid.text( categories[j]
+					grid.text( categories[k]
 							   , x = 0.25
 							   , just="left")
 				})

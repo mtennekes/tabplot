@@ -1,5 +1,5 @@
 columnTable <-
-function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pals, change_palette_type_at, colorNA, numPals, nBins, from, to, N, n) {
+function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pals, change_palette_type_at, rev_legend, colorNA, numPals, nBins, from, to, N, n) {
 	
 	m <- length(bd)
 	nr <- nBins
@@ -50,7 +50,7 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	                )
 
 	# create column list
-	tab$columns <- mapply(function(agg, name, isnum, pal, numscale, numpal) {
+	tab$columns <- mapply(function(agg, name, isnum, pal, numscale, numpal, revl) {
 		col <- list(name=name, isnumeric=isnum)
 		categories <- colnames(agg)
 		dimnames(agg) <- NULL
@@ -66,9 +66,10 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 			col$paletname <- pal$name
 			col$palet_recycled <- (ncol(agg)-1 <= change_palette_type_at)
 			col$palet <- pal$palette
+			col$rev_legend <- revl
 			col$colorNA <- colorNA
 		}
 		col
-	}, bd, colNames, isNumber, pals, scales, numPals, SIMPLIFY=FALSE)
+	}, bd, colNames, isNumber, pals, scales, numPals, rev_legend, SIMPLIFY=FALSE)
 	tab
 }

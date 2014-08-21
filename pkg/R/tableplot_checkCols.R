@@ -1,8 +1,13 @@
-tableplot_checkCols <- function(sortCol, colNames) {	
+tableplot_checkCols <- function(sortCol, sortCol2, colNames) {	
+	#browser()
 	if (!missing(sortCol)) {
 		nl <- as.list(seq_along(colNames))
 		names(nl) <- colNames
-		sortCol <- eval(sortCol, nl, parent.frame())
+		
+		sortCol <- tryCatch({
+			sortCol2
+		}, error=function(e) eval(sortCol, nl, parent.frame()))
+		
 		if (is.character(sortCol)) sortCol <- which(sortCol==colNames)
 		if (!length(sortCol)) stop("Incorrect sortCol argument")
 	}

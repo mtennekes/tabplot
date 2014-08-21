@@ -114,8 +114,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	}
 	
 	## argument sortCol
-	sortCol <- tableplot_checkCols(substitute(sortCol), colNames)
-	
+	sortCol <- tableplot_checkCols(substitute(sortCol), sortCol, colNames)
+
 	
 	##################################
 	## subset data

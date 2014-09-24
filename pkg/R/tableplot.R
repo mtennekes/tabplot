@@ -14,7 +14,7 @@
 #' @param nCols the maximum number of columns per tableplot. If this number is smaller than the number of columns selected in \code{datNames}, multiple tableplots are generated, where each of them contains the sorted column(s).
 #' @param sample boolean that determines whether to sample or use the whole data. Only useful when \code{\link{tablePrepare}} is used.
 #' @param sampleBinSize the number of sampled objects per bin, if \code{sample} is \code{TRUE}.
-#' @param scales determines the horizontal axes of the numeric variables in \code{colNames}. Options: "lin", "log", and "auto" for automatic detection. Either \code{scale} is a named vector, where the names correspond to numerical variable names, or \code{scale} is unnamed, where the values are applied to all numeric variables (recycled if necessary).
+#' @param scales determines the horizontal axes of the numeric variables in \code{select}. Options: "lin", "log", and "auto" for automatic detection. Either \code{scale} is a named vector, where the names correspond to numerical variable names, or \code{scale} is unnamed, where the values are applied to all numeric variables (recycled if necessary).
 #' @param max_levels maximum number of levels for categorical variables. Categorical variables with more levels will be rebinned into \code{max_levels} levels. Either a positive number or -1, which means that categorical variables are never rebinned.
 #' @param pals list of color palettes. Each list item is on of the following:
 #' \itemize{
@@ -105,17 +105,33 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		names(nl) <- names(dat)
 		colNames <- eval(substitute(select), nl, parent.frame())
 		colNames <- names(dat)[colNames]
+		
+		colNames1 <- colNames
+		colNames2 <- rep(NA, length(colNames))
 	} else if (!is.null(select_string)) {
-		if (!all(select_string %in% names(dat))) 
+		#colNames <- select_string
+		
+		allColNames <- strsplit(select_string, "[ ]?-[ ]?")
+		colNames1 <- sapply(allColNames, function(x)x[1])
+		colNames2 <- sapply(allColNames, function(x)x[2])
+		colNames <- unique(c(colNames1, na.omit(colNames2)))
+		
+		if (!all(colNames %in% names(dat))) 
 			stop("select_string contains wrong column names")
-		colNames <- select_string
 	} else {
 		colNames <- names(dat)
+
+		colNames1 <- colNames
+		colNames2 <- rep(NA, length(colNames))
 	}
+	
+	colNames_string <- mapply(function(x,y) ifelse(is.na(y), x, paste(x,y,sep="-")), colNames1, colNames2, SIMPLIFY = TRUE)
 	
 	## argument sortCol
 	sortCol <- tableplot_checkCols(substitute(sortCol), sortCol, colNames)
-
+	sortColName <- colNames[sortCol]
+	sortCol2 <- if (sortColName %in% colNames1) which(colNames1==sortColName)[1] else which(colNames2==sortColName)[1]
+	
 	
 	##################################
 	## subset data
@@ -138,7 +154,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 									ifelse(isLogical, "", "\""), lvls,
 									ifelse(isLogical, "", "\""), sep="")
 			tabs <- lapply(subsets_string, FUN=function(subs_string){
-                tableplot(p, select_string=colNames, sortCol=sortCol, 
+                tableplot(p, select_string=colNames_string, sortCol=sortCol, 
 								 decreasing=decreasing, scales=scales, max_levels=max_levels, 
 								 pals=pals, nBins=nBins,
 								 from=from, to=to, subset_string=subs_string,
@@ -156,7 +172,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##################################
 	## other checks
 	##################################
-
 	isNumber <- sapply(physical(dat)[colNames], function(col)!is.factor.ff(col) && !vmode(col)=="logical")
 	
 	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
@@ -202,17 +217,104 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 						to=to, N=N, n=n)
 	
 	
-														   
+	
 	##################################
 	## Grammar of Graphics
+	##
+	## create difference columns
 	##################################
+	
+	
+	cols <- tab$columns
+	
+	midspace <- .05
+	
+	tab$columns <- mapply(function(c1, c2) {
+		if (is.na(c2)) {
+			col <- cols[[c1]]
+			
+			if (col$isnumeric) {
+				col <- scaleNumCol(col, IQR_bias)
+				col <- coorNumCol(col, limitsX = limitsX[col$name], bias_brokenX=bias_brokenX)
+			} else {
+				col <- coorCatCol(col, nBins)
+			}
+			col$type <- "normal"
+			
+			col
+		} else {
+			col1 <- cols[[c1]]
+			col2 <- cols[[c2]]
 
+			col <- col1
+			if (col1$isnumeric) {
+				col$mean1 <- col1$mean
+				col$mean2 <- col2$mean
+				col$mean.diff <- col$mean <- col1$mean - col2$mean
+				col$mean.diff.rel <- col$mean <- ((col1$mean - col2$mean) / col1$mean)*100
+				col$scale_init <- "lin"
+				col$compl <- pmin(col1$compl, col2$compl)
+				col[c("mean", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <- NULL
+				
+				col <- scaleNumCol(col, IQR_bias=5, compare=TRUE)
+				col <- coorNumCol(col, limitsX=list(), bias_brokenX=0.8, compare=TRUE)
+				
+			} else {
+				
+				# 			col <- tp$columns[[4]]
+				# 			col1 <- tp1$columns[[4]]
+				# 			col2 <- tp2$columns[[4]]
+				
+				col$freq1 <- col1$freq
+				col$freq2 <- col2$freq
+				
+				freq <- col$freq.diff <- col1$freq - col2$freq
+				xinit <- apply(freq, MARGIN=1, function(x)sum(x[x<0]))
+				
+				ids <- t(apply(freq, MARGIN=1, orderRow))
+				freq.sorted <- sortRows(freq, ids)
+				
+				widths <- abs(freq.sorted)
+				x <- t(apply(widths, 1, cumsum)) + xinit
+				x <- cbind(xinit, x[,1:(ncol(x)-1)])
+				
+				ids2 <- t(apply(ids, 1, order))
+				
+				col$x <- sortRows(x, ids2)
+				
+				col$widths <- sortRows(widths, ids2)
+				
+				col$x <- col$x * (1-midspace) / 2
+				col$widths <- col$widths * (1-midspace) / 2
+				
+				
+				col$x[col$x<0] <- col$x[col$x<0] - (midspace/2)
+				col$x[col$x>=0] <- col$x[col$x>=0] + (midspace/2)
+				
+				col$x[col$widths==0] <- NA
+				col$widths[col$widths==0] <- NA
+				
+				col$x <- (col$x) + 0.5
+				
+				col$freq <- NULL
+			}
+			col$type <- "compare"
+			col
+		}
+	}, colNames1, colNames2, SIMPLIFY=FALSE)
+	
+	tab$m <- length(colNames1)
+	tab$select <- colNames_string
+	tab$sortCol <- sortCol2
+	names(tab$columns) <- colNames_string
+	
+	
 	## scales
-	tab$columns[isNumber] <- lapply(tab$columns[isNumber], scaleNumCol, IQR_bias)
+	#tab$columns[isNumber] <- lapply(tab$columns[isNumber], scaleNumCol, IQR_bias)
 	
 	## coordinates
-	tab$columns[!isNumber] <- lapply(tab$columns[!isNumber], coorCatCol, nBins)
-	tab$columns[isNumber] <- mapply(coorNumCol, tab$columns[isNumber], limitsX[isNumber], MoreArgs=list(bias_brokenX=bias_brokenX), SIMPLIFY=FALSE)
+	#tab$columns[!isNumber] <- lapply(tab$columns[!isNumber], coorCatCol, nBins)
+	#tab$columns[isNumber] <- mapply(coorNumCol, tab$columns[isNumber], limitsX[isNumber], MoreArgs=list(bias_brokenX=bias_brokenX), SIMPLIFY=FALSE)
 	
 	
 	##################################

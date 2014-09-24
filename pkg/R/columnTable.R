@@ -49,6 +49,8 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 	                , marks = pretty(c(from, to), 10)
 	                )
 
+	
+	
 	# create column list
 	tab$columns <- mapply(function(agg, name, isnum, pal, numscale, numpal, revl) {
 		col <- list(name=name, isnumeric=isnum)

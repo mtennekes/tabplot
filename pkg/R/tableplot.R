@@ -101,16 +101,19 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	## argument select(_string) argument
 	if (!missing(select)) {
-# 		nl <- as.list(seq_along(dat))
-# 		names(nl) <- names(dat)
-# 		colNames <- eval(substitute(select), nl, parent.frame())
-# 		colNames <- names(dat)[colNames]
-# 		
-# 		colNames1 <- colNames
-# 		colNames2 <- rep(NA, length(colNames))
 		select_call <- deparse(substitute(select))
 		select_string <- as.character(substitute(select))
-		if ((substr(select_call, 1, 2))=="c(") select_string <- select_string[-1]
+		if (any(sapply(select_string, function(x)substr(x,1,1) %in% as.character(0:9)))) {
+			# evaluate indices directly (not working for subtractions)
+			nl <- as.list(seq_along(dat))
+			names(nl) <- names(dat)
+			select_string <- eval(substitute(select), nl, parent.frame())
+			select_string <- names(dat)[select_string]
+			
+		} else {
+			if ((substr(select_call, 1, 2))=="c(") select_string <- select_string[-1]
+		}
+		
 	} 
 
 	if (!is.null(select_string)) {

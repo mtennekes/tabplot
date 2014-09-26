@@ -25,7 +25,7 @@
 #' by naming them accordingly.
 #' @param change_palette_type_at number at which the type of categorical palettes is changed. For categorical variables with less than \code{change_palette_type_at} levels, the palette is recycled if necessary. For categorical variables with \code{change_palette_type_at} levels or more, a new palette of interpolated colors is derived (like a rainbow palette).
 #' @param colorNA color for missing values
-#' @param numPals vector of palette names that are used for numeric variables. These names are chosen from the sequential palette names in \code{\link{tablePalettes}}. Either \code{numPals} is a named vector, where the names correspond to the numerical variable names, or an unnamed vector (recycled if necessary).
+#' @param numPals vector of palette names that are used for numeric variables. These names are chosen from the diverging palette names in \code{\link{tablePalettes}}. Either \code{numPals} is a named vector, where the names correspond to the numerical variable names, or an unnamed vector (recycled if necessary).
 #' @param limitsX a list of vectors of length two, where each vector contains a lower and an upper limit value. Either the names of \code{limitsX} correspond to numerical variable names, or \code{limitsX} is an unnamed list (recycled if necessary).
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
@@ -51,7 +51,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 					  change_palette_type_at = 20,
 					  rev_legend=FALSE,
 					  colorNA = "#FF1414", 
-					  numPals = "Blues", 
+					  numPals = "RdYlBu", 
 					  limitsX = NULL,
 					  bias_brokenX=0.8, IQR_bias=5, 
 					  select_string = NULL,
@@ -101,14 +101,19 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	## argument select(_string) argument
 	if (!missing(select)) {
-		nl <- as.list(seq_along(dat))
-		names(nl) <- names(dat)
-		colNames <- eval(substitute(select), nl, parent.frame())
-		colNames <- names(dat)[colNames]
-		
-		colNames1 <- colNames
-		colNames2 <- rep(NA, length(colNames))
-	} else if (!is.null(select_string)) {
+# 		nl <- as.list(seq_along(dat))
+# 		names(nl) <- names(dat)
+# 		colNames <- eval(substitute(select), nl, parent.frame())
+# 		colNames <- names(dat)[colNames]
+# 		
+# 		colNames1 <- colNames
+# 		colNames2 <- rep(NA, length(colNames))
+		select_call <- deparse(substitute(select))
+		select_string <- as.character(substitute(select))
+		if ((substr(select_call, 1, 2))=="c(") select_string <- select_string[-1]
+	} 
+
+	if (!is.null(select_string)) {
 		#colNames <- select_string
 		
 		allColNames <- strsplit(select_string, "[ ]?-[ ]?")
@@ -117,7 +122,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		colNames <- unique(c(colNames1, na.omit(colNames2)))
 		
 		if (!all(colNames %in% names(dat))) 
-			stop("select_string contains wrong column names")
+			stop("select(_string) contains wrong column names")
 	} else {
 		colNames <- names(dat)
 
@@ -130,7 +135,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	## argument sortCol
 	sortCol <- tableplot_checkCols(substitute(sortCol), sortCol, colNames)
 	sortColName <- colNames[sortCol]
-	sortCol2 <- if (sortColName %in% colNames1) which(colNames1==sortColName)[1] else which(colNames2==sortColName)[1]
+	if (!(sortColName %in% colNames_string)) stop("sortCol should be plotted")
+	
 	
 	
 	##################################
@@ -219,102 +225,11 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	
 	##################################
-	## Grammar of Graphics
-	##
-	## create difference columns
+	## Grammar of Graphics, and create difference columns
 	##################################
+	tab <- tableplot_processCols(tab, colNames1, colNames2, IQR_bias, bias_brokenX, limitsX, nBins, sortColName)
 	
 	
-	cols <- tab$columns
-	
-	midspace <- .05
-	
-	tab$columns <- mapply(function(c1, c2) {
-		if (is.na(c2)) {
-			col <- cols[[c1]]
-			
-			if (col$isnumeric) {
-				col <- scaleNumCol(col, IQR_bias)
-				col <- coorNumCol(col, limitsX = limitsX[col$name], bias_brokenX=bias_brokenX)
-			} else {
-				col <- coorCatCol(col, nBins)
-			}
-			col$type <- "normal"
-			
-			col
-		} else {
-			col1 <- cols[[c1]]
-			col2 <- cols[[c2]]
-
-			col <- col1
-			if (col1$isnumeric) {
-				col$mean1 <- col1$mean
-				col$mean2 <- col2$mean
-				col$mean.diff <- col$mean <- col1$mean - col2$mean
-				col$mean.diff.rel <- col$mean <- ((col1$mean - col2$mean) / col1$mean)*100
-				col$scale_init <- "lin"
-				col$compl <- pmin(col1$compl, col2$compl)
-				col[c("mean", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <- NULL
-				
-				col <- scaleNumCol(col, IQR_bias=5, compare=TRUE)
-				col <- coorNumCol(col, limitsX=list(), bias_brokenX=0.8, compare=TRUE)
-				
-			} else {
-				
-				# 			col <- tp$columns[[4]]
-				# 			col1 <- tp1$columns[[4]]
-				# 			col2 <- tp2$columns[[4]]
-				
-				col$freq1 <- col1$freq
-				col$freq2 <- col2$freq
-				
-				freq <- col$freq.diff <- col1$freq - col2$freq
-				xinit <- apply(freq, MARGIN=1, function(x)sum(x[x<0]))
-				
-				ids <- t(apply(freq, MARGIN=1, orderRow))
-				freq.sorted <- sortRows(freq, ids)
-				
-				widths <- abs(freq.sorted)
-				x <- t(apply(widths, 1, cumsum)) + xinit
-				x <- cbind(xinit, x[,1:(ncol(x)-1)])
-				
-				ids2 <- t(apply(ids, 1, order))
-				
-				col$x <- sortRows(x, ids2)
-				
-				col$widths <- sortRows(widths, ids2)
-				
-				col$x <- col$x * (1-midspace) / 2
-				col$widths <- col$widths * (1-midspace) / 2
-				
-				
-				col$x[col$x<0] <- col$x[col$x<0] - (midspace/2)
-				col$x[col$x>=0] <- col$x[col$x>=0] + (midspace/2)
-				
-				col$x[col$widths==0] <- NA
-				col$widths[col$widths==0] <- NA
-				
-				col$x <- (col$x) + 0.5
-				
-				col$freq <- NULL
-			}
-			col$type <- "compare"
-			col
-		}
-	}, colNames1, colNames2, SIMPLIFY=FALSE)
-	
-	tab$m <- length(colNames1)
-	tab$select <- colNames_string
-	tab$sortCol <- sortCol2
-	names(tab$columns) <- colNames_string
-	
-	
-	## scales
-	#tab$columns[isNumber] <- lapply(tab$columns[isNumber], scaleNumCol, IQR_bias)
-	
-	## coordinates
-	#tab$columns[!isNumber] <- lapply(tab$columns[!isNumber], coorCatCol, nBins)
-	#tab$columns[isNumber] <- mapply(coorNumCol, tab$columns[isNumber], limitsX[isNumber], MoreArgs=list(bias_brokenX=bias_brokenX), SIMPLIFY=FALSE)
 	
 	
 	##################################

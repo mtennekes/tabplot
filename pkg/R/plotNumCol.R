@@ -1,8 +1,7 @@
 plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relative=FALSE){
 	## checks if device is Cario {cairoDevice}
 	drawContours <- TRUE
-
-	if (relative) {
+	if (relative && "marks.x.rel" %in% names(tCol)) {
 		tCol[c("brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <-
 			tCol[c("brokenX.rel", "mean.diff.coor.rel", "marks.labels.rel", "marks.x.rel", "xline.rel", "widths.rel")]
 	}
@@ -11,23 +10,27 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 	#mgrey <- "#D0D0D0"
 	lred <- "#FEE0D2"	#brewer.pal(9,"Reds")[2]
 
-	colors <- c(NA, colorRampPalette(tabplotPalettes$seq[[tCol$paletname]],space="rgb")(100))
-
+	numpal <- tabplotPalettes$div[[tCol$paletname]]
+	colors <- c(colorRampPalette(numpal[1:5],space="rgb")(100),
+				NA, colorRampPalette(numpal[7:11],space="rgb")(100))
 	
 	cellplot(2,1,vpGraph, {		
 		grid.rect(gp = gpar(col=lgrey,fill = lgrey))
 		
 		## bins with all missings
 		missings <- which(tCol$compl==0)
-
+		isNeg <- tCol$widths<0
+		isNeg[is.na(isNeg)] <- FALSE
+		ids <- tCol$compl * ifelse(isNeg, -1, 1) + 101
+		
+		
 		## when cairoDevice is enabled, not only fill the bins with colors, but also color the contours
 		if (drawContours) {
-			cols <- colors[tCol$compl + 1]
+			cols <- colors[ids]
 		} else {
 			cols <- NA
 		}
 		
-				
 		
 		## plot bins
 		grid.rect( x = rep(tCol$xline,tab$nBins)
@@ -35,7 +38,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 				 , width = tCol$widths
 				 , height = tab$rows$heights
 				 , just=c("left","bottom")
-				 , gp = gpar(col=cols, fill = colors[tCol$compl + 1], linejoin="mitre", lwd=0.01)
+				 , gp = gpar(col=cols, fill = colors[ids], linejoin="mitre", lwd=0.01)
 				 )
 		
 		## plot small lines at the righthand side of the bins
@@ -44,7 +47,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 				 , width = 0
 				 , height = tab$rows$heights
 				 , just=c("left","bottom")
-				 , gp = gpar(col=colors[length(colors)], fill = NA)
+				 , gp = gpar(col=colors[ifelse(isNeg, 1, 201)], fill = NA)
 				 )
 
 		

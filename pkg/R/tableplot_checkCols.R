@@ -1,11 +1,12 @@
 tableplot_checkCols <- function(sortCol, sortCol2, colNames) {	
-	#browser()
 	if (!missing(sortCol)) {
 		nl <- as.list(seq_along(colNames))
 		names(nl) <- colNames
 		
 		sortCol <- tryCatch({
-			sortCol2
+			if (is.function(sortCol2)) {
+				eval(sortCol, nl, parent.frame())
+			} else sortCol2
 		}, error=function(e) eval(sortCol, nl, parent.frame()))
 		
 		if (is.character(sortCol)) sortCol <- which(sortCol==colNames)

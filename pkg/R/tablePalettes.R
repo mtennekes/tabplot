@@ -2,7 +2,7 @@
 #'
 #' All color palettes are shown and/or returned that can be used for tableplots.
 #'
-#' Sequential palettes (for numeric variables): \code{"Blues"}, \code{"Greens"}, \code{"Greys"}, \code{"Oranges"}, and \code{"Purples"}
+#' Diverging palettes (for numeric variables): \code{"RdYlBu"}, \code{"RdYlGn"}, \code{"PRGn"}, and \code{"BrBG"}
 #' These palettes are taken from ColorBrewer (Brewer et al., 2003).
 #' 
 #' Qualitative palattes (for categorical variables): \code{"Set1"}, \code{"Set2"}, \code{"Set3"},
@@ -30,7 +30,7 @@
 tablePalettes <- function(plot = TRUE) {
 	#require(grid)
 	if (plot) {
-		tpal <- c(list(sequential=NA), tabplotPalettes$seq, list(qualitative=NA), tabplotPalettes$qual)
+		tpal <- c(list(diverging=NA), tabplotPalettes$div, list(qualitative=NA), tabplotPalettes$qual)
 		
 		k <- length(tpal)
 		ncols <- max(sapply(tpal,FUN=length))

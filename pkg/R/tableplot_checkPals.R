@@ -12,7 +12,7 @@ tableplot_checkPals <- function(pals, colNames, isCat) {
 		pals2[names(pals)] <- pals
 	}
 	
-	allpals <- c(tabplotPalettes$qual, tabplotPalettes$seq)
+	allpals <- c(tabplotPalettes$qual, tabplotPalettes$div)
 	
 	getPal <- function(name, s) {
 		pal <- allpals[[name]]

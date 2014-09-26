@@ -19,6 +19,7 @@
 	tp <- tp1
 	midspace <- .05
 	tp$columns <- mapply(function(col1, col2) {
+		if (col1$type=="compare" || col2$type=="compare") stop("Cannot create comparison tableplot of tableplots with comparison columns")
 		col <- col1
 		if (col1$isnumeric) {
 			col$mean1 <- col1$mean

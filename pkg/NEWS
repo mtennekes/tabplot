@@ -1,3 +1,7 @@
+version 1.2
+- comparison columns added
+- diverging palettes used for numeric variables
+
 version 1.1-1
 - fixed bug in comparison tableplot
 - fixed bug with sortCol. sortCol can now be a character, index number, or an expression

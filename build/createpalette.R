@@ -26,10 +26,13 @@ getHcl <- function(n, start) {
 
 tabplotPalettes <- list(
 	div = list(
-		RdYlBu = brewer$RdYlBu,
-		RdYlGn = brewer$RdYlGn,
+		OrBu = c(brewer$PuOr[1:6], brewer$RdBu[7:11]),
+		OrPu = brewer$PuOr,
 		PRGn = brewer$PRGn,
-		BrBG = brewer$BrBG),
+		BrBG = brewer$BrBG,
+		RdBu = brewer$RdBu,
+		RdYlBu = brewer$RdYlBu,
+		RdYlGn = brewer$RdYlGn),
 	qual = list(
 		Set1 = c("#D55E00", "#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2","#CC79A7"),
 		Set2=brewer$Set1[-1], 

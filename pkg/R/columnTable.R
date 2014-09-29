@@ -1,5 +1,5 @@
 columnTable <-
-function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pals, change_palette_type_at, rev_legend, colorNA, numPals, nBins, from, to, N, n) {
+function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pals, change_palette_type_at, rev_legend, colorNA, colorNA_num, numPals, nBins, from, to, N, n) {
 	
 	m <- length(bd)
 	nr <- nBins
@@ -61,6 +61,7 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 			col$compl <- 100*agg[,3]
 			col$scale_init <- numscale
 			col$paletname <- numpal
+			col$colorNA <- colorNA_num
 		} else {
 			col$freq <- agg
 			col$categories <- categories

@@ -7,10 +7,16 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 	}
 	
 	lgrey <- "#F0F0F0"	#brewer.pal(9,"Greys")[2]
-	#mgrey <- "#D0D0D0"
 	lred <- "#FEE0D2"	#brewer.pal(9,"Reds")[2]
+	
+	colorNA_num <- tCol$colorNA
+	
 
-	numpal <- tabplotPalettes$div[[tCol$paletname]]
+	sign <- substr(tCol$paletname, 1, 1)=="-"
+	palName <- ifelse(sign, substr(tCol$paletname, 2, nchar(tCol$paletname)), tCol$paletname)
+	numpal <- tabplotPalettes$div[[palName]]
+	if (sign) numpal <- rev(numpal)
+	
 	colors <- c(colorRampPalette(numpal[1:5],space="rgb")(100),
 				NA, colorRampPalette(numpal[7:11],space="rgb")(100))
 	
@@ -52,7 +58,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 
 		
 		if (drawContours) {
-			cols <- lred
+			cols <- colorNA_num
 		} else {
 			cols <- NA
 		}
@@ -64,7 +70,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 					 , width =  rep(1, length(missings))
 					 , height = tab$rows$heights[missings]
 					 , just=c("left","bottom")
-					 , gp = gpar(fill = lred, col=cols, linejoin="mitre", lwd=0.01)
+					 , gp = gpar(fill = colorNA_num, col=cols, linejoin="mitre", lwd=0.01)
 					 )
 		}
 

@@ -1,8 +1,8 @@
 library(ggplot2)
-data(diamonds)
 
+data(diamonds)
 tableplot(diamonds)
 
-diamonds$x[sample(nrow(diamonds), 20000,  prob=diamonds$price/max(diamonds$price))] <- NA
+diamonds$x[sample(nrow(diamonds), 40000,  prob=diamonds$price/max(diamonds$price))] <- NA
 
-tableplot(diamonds, select=c(carat,cut, x, y, x-y))
+tableplot(diamonds, select=c(carat,cut, price, x, y, x-y), sortCol=price)

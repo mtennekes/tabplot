@@ -6,7 +6,7 @@
 #' @param dat a \code{\link{data.frame}}, an \code{\link[ff:ffdf]{ffdf}} object, or an object created by \code{\link{tablePrepare}} (see details below). Required.
 #' @param select expression indicating the columns of \code{dat} that are visualized in the tablelplot Also column indices are supported. By default, all columns are visualized. Use \code{select_string} for character strings instead of expressions. 
 #' @param subset logical expression indicing which rows to select in \code{dat} (as in \code{\link{subset}}). It is also possible to provide the name of a categorical variable: then, a tableplot for each category is generated. Use \code{subset_string} for character strings instead of an expressions.
-#' @param sortCol column name on which the dataset is sorted. It can be eiter an index or an expression name. Also a character string can be used, but this is discouraged for programming purposes (use an index instead).
+#' @param sortCol column name on which the dataset is sorted. It can be an index, expression name, or a character string. PS: in case of ambiguity, the character string is used like in this example:  \code{Sepal.Width <- "Petal.Width"; tableplot(iris, sortCol=Sepal.Width)}.
 #' @param decreasing boolean that determines whether the dataset is sorted decreasingly (\code{TRUE}) of increasingly (\code{FALSE}).
 #' @param nBins number of row bins
 #' @param from percentage from which the sorted data is shown
@@ -24,8 +24,9 @@
 #' If the list items are unnamed, they are applied to all selected categorical variables (recycled if necessary). The list items can be assigned to specific categorical variables,
 #' by naming them accordingly.
 #' @param change_palette_type_at number at which the type of categorical palettes is changed. For categorical variables with less than \code{change_palette_type_at} levels, the palette is recycled if necessary. For categorical variables with \code{change_palette_type_at} levels or more, a new palette of interpolated colors is derived (like a rainbow palette).
-#' @param colorNA color for missing values
-#' @param numPals vector of palette names that are used for numeric variables. These names are chosen from the diverging palette names in \code{\link{tablePalettes}}. Either \code{numPals} is a named vector, where the names correspond to the numerical variable names, or an unnamed vector (recycled if necessary).
+#' @param colorNA color for missing values for categorical variables.
+#' @param colorNA_num color for missing values for numeric variables. It is used when all values in a bin are missing. If a part of the values are missing, a brighter color is used (see argument \code{numPals}).
+#' @param numPals vector of palette names that are used for numeric variables. These names are chosen from the diverging palette names in \code{\link{tablePalettes}}. Either \code{numPals} is a named vector, where the names correspond to the numerical variable names, or an unnamed vector (recycled if necessary). A "-" prefix in the name reverses the palette. The righthand-side of the palette is used for positive mean values, and the lefthand-side for negative mean values. The brightness of the color is determined by the fraction of missing values.
 #' @param limitsX a list of vectors of length two, where each vector contains a lower and an upper limit value. Either the names of \code{limitsX} correspond to numerical variable names, or \code{limitsX} is an unnamed list (recycled if necessary).
 #' @param bias_brokenX parameter between 0 en 1 that determines when the x-axis of a numeric variable is broken. If minimum value is at least \code{bias_brokenX} times the maximum value, then X axis is broken. To turn off broken x-axes, set \code{bias_brokenX=1}.
 #' @param IQR_bias parameter that determines when a logarithmic scale is used when \code{scales} is set to "auto". The argument \code{IQR_bias} is multiplied by the interquartile range as a test.
@@ -51,7 +52,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 					  change_palette_type_at = 20,
 					  rev_legend=FALSE,
 					  colorNA = "#FF1414", 
-					  numPals = "RdYlBu", 
+					  colorNA_num = "gray75",
+					  numPals = "OrBu", 
 					  limitsX = NULL,
 					  bias_brokenX=0.8, IQR_bias=5, 
 					  select_string = NULL,
@@ -169,7 +171,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 								 from=from, to=to, subset_string=subs_string,
 								 change_palette_type_at=change_palette_type_at,
 								 rev_legend = rev_legend,
-                		  		 colorNA = colorNA, numPals = numPals, limitsX=limitsX,
+                		  		 colorNA = colorNA, colorNA_num = colorNA_num, numPals = numPals, limitsX=limitsX,
 								 bias_brokenX=bias_brokenX, IQR_bias=IQR_bias, plot=plot, ...)
 			})
 			return(invisible(tabs))
@@ -194,6 +196,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 														   max(sapply(pals[!isNumber], function(pal)length(pal$palette))))
 	if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") 
 		stop("<colorNA> is not correct")
+	if (class(try(col2rgb(colorNA_num), silent=TRUE))=="try-error") 
+		stop("<colorNA_num> is not correct")
 	
 	rev_legend <- tableplot_checkRevLeg(rev_legend, colNames)
 	
@@ -222,7 +226,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 						pals=pals, 
 						change_palette_type_at=change_palette_type_at,
 						rev_legend=rev_legend,
-						colorNA=colorNA, numPals=numPals, nBins=nBins, from=from, 
+						colorNA=colorNA, colorNA_num=colorNA_num, numPals=numPals, nBins=nBins, from=from, 
 						to=to, N=N, n=n)
 	
 	

@@ -220,7 +220,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
     			  , nbins=nBins, decreasing=decreasing, sample, sampleBinSize=sampleBinSize)
 		
 	bd <- bin_hcc_data(bd, max_levels)
-	
+	print(list(bd=bd))
 	tab <- columnTable( bd, datName, colNames=colNames, subset_string=subset_string, 
 						sortCol=sortCol, decreasing=decreasing, scales=scales, 
 						pals=pals, 

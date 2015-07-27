@@ -103,11 +103,10 @@ bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 			bs <-binned_sum.ff(v, bin, nbins, INDEX=o)
 			
 			count <- bs[,1]
-			mean <- ifelse(count==0, NA, bs[,2] / count)
+			mean <- ifelse( count == 0, NA, bs[,2] / count)
 			na <- bs[,3] / (count + bs[,3])
 
 			b_sumsq <- binned_sumsq.ff(v, mean = mean, bin = bin, nbins = nbins, INDEX=o)
-			#browser()
 			sd <- sqrt(b_sumsq[,2]/(count))
 			
 			if (is.logical(v)){ ##????? will this be true considering previous if statement?

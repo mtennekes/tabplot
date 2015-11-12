@@ -26,3 +26,4 @@ Suggests:
     knitr,
     classInt,
     ggplot2
+RoxygenNote: 5.0.0

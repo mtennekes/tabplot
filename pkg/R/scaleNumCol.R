@@ -28,12 +28,14 @@ scaleNumCol <- function(tabCol, IQR_bias, compare=FALSE) {
 			tabCol$mean.diff.scaled <- getLog(tabCol$mean.diff)
 		} else {
 			tabCol$mean.scaled <- getLog(tabCol$mean)
+			tabCol$sd.scaled <- getLog(tabCol$sd)
 		}
 	} else {
 		if (compare) {
 			tabCol$mean.diff.scaled <- tabCol$mean.diff
 		} else {
 			tabCol$mean.scaled <- tabCol$mean
+			tabCol$sd.scaled <- tabCol$sd
 		}
 	}
 	if (compare) tabCol$mean.diff.rel.scaled <- tabCol$mean.diff.rel

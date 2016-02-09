@@ -58,6 +58,7 @@ function(bd, datName, colNames, subset_string, sortCol,  decreasing, scales, pal
 		dimnames(agg) <- NULL
 		if (isnum) {
 			col$mean <- agg[,2]
+			col$sd <- agg[,4]
 			col$compl <- 100*agg[,3]
 			col$scale_init <- numscale
 			col$paletname <- numpal

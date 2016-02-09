@@ -1,6 +1,6 @@
-plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relative=FALSE){
+plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relative=FALSE, numMode=TRUE){
 	## checks if device is Cario {cairoDevice}
-	drawContours <- TRUE
+	# drawContours <- TRUE
 	if (relative && "marks.x.rel" %in% names(tCol)) {
 		tCol[c("brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <-
 			tCol[c("brokenX.rel", "mean.diff.coor.rel", "marks.labels.rel", "marks.x.rel", "xline.rel", "widths.rel")]
@@ -29,39 +29,94 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 		isNeg[is.na(isNeg)] <- FALSE
 		ids <- tCol$compl * ifelse(isNeg, -1, 1) + 101
 		
-		
-		## when cairoDevice is enabled, not only fill the bins with colors, but also color the contours
-		if (drawContours) {
-			cols <- colors[ids]
-		} else {
-			cols <- NA
+# 		
+# 		## when cairoDevice is enabled, not only fill the bins with colors, but also color the contours
+# 		if (drawContours) {
+# 			cols <- colors[ids]
+# 		} else {
+# 			cols <- NA
+# 		}
+# 		
+# 		if (drawContours) {
+# 			cols <- colorNA_num
+# 		} else {
+# 			cols <- NA
+# 		}
+# 		
+		sdb <- function() {
+			if (tCol$type=="compare") return(NULL)
+			grid.rect( x = tCol$x1
+					   , y = tab$rows$y
+					   , width = tCol$x2 - tCol$x1
+					   , height = tab$rows$heights
+					   , just=c("left","bottom")
+					   , gp = gpar(col=colors[151], fill = colors[151], linejoin="mitre", lwd=0.01)
+			)
+		}
+		sdl <- function() {
+			if (tCol$type=="compare") return(NULL)
+			grid.rect( x = tCol$x1
+					   , y = tab$rows$y
+					   , width = 0
+					   , height = tab$rows$heights
+					   , just=c("left","bottom")
+					   , gp = gpar(col=colors[201], fill = NA))			
+			grid.rect( x = tCol$x2
+					   , y = tab$rows$y
+					   , width = 0
+					   , height = tab$rows$heights
+					   , just=c("left","bottom")
+					   , gp = gpar(col=colors[201], fill = NA))			
+		}
+		ml <- function() {
+			grid.rect( x = rep(tCol$xline,tab$nBins)+tCol$widths
+					   , y = tab$rows$y
+					   , width = 0
+					   , height = tab$rows$heights
+					   , just=c("left","bottom")
+					   , gp = gpar(col=colors[201], fill = NA)
+			)
 		}
 		
-		
-		## plot bins
-		grid.rect( x = rep(tCol$xline,tab$nBins)
-				 , y = tab$rows$y
-				 , width = tCol$widths
-				 , height = tab$rows$heights
-				 , just=c("left","bottom")
-				 , gp = gpar(col=cols, fill = colors[ids], linejoin="mitre", lwd=0.01)
-				 )
-		
-		## plot small lines at the righthand side of the bins
-		grid.rect( x = rep(tCol$xline,tab$nBins)+tCol$widths
-				 , y = tab$rows$y
-				 , width = 0
-				 , height = tab$rows$heights
-				 , just=c("left","bottom")
-				 , gp = gpar(col=colors[ifelse(isNeg, 1, 201)], fill = NA)
-				 )
-
-		
-		if (drawContours) {
-			cols <- colorNA_num
-		} else {
-			cols <- NA
+		MB <- function() {
+			grid.rect( x = rep(tCol$xline,tab$nBins)
+					   , y = tab$rows$y
+					   , width = tCol$widths
+					   , height = tab$rows$heights
+					   , just=c("left","bottom")
+					   , gp = gpar(col=colors[ids], fill = colors[ids], linejoin="mitre", lwd=0.01))
 		}
+		mb <- function() {
+			grid.rect( x = rep(tCol$xline,tab$nBins)
+					   , y = tab$rows$y
+					   , width = tCol$widths
+					   , height = tab$rows$heights
+					   , just=c("left","bottom")
+					   , gp = gpar(col=colors[110], fill = colors[110], linejoin="mitre", lwd=0.01)
+			)		
+		}
+		ML <- function() {
+			grid.rect( x = rep(tCol$xline,tab$nBins)+tCol$widths
+					   , y = tab$rows$y
+					   , width = 0
+					   , height = tab$rows$heights
+					   , just=c("left","bottom")
+					   , gp = gpar(col=colors[ifelse(isNeg, 1, 201)], fill = NA)
+			)
+		}
+		ml <- function() {
+			grid.rect( x = rep(tCol$xline,tab$nBins)+tCol$widths
+					   , y = tab$rows$y
+					   , width = 0
+					   , height = tab$rows$heights
+					   , just=c("left","bottom")
+					   , gp = gpar(col=colors[201], fill = NA))
+		}
+		numMode <- strsplit(numMode, "-", fixed=TRUE)[[1]]
+		
+		lapply(numMode, do.call, args=list(), envir=environment())
+		
+		
 		 
 		## plot bins with all missings as light red
 		if (length(missings>0)) {
@@ -70,7 +125,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 					 , width =  rep(1, length(missings))
 					 , height = tab$rows$heights[missings]
 					 , just=c("left","bottom")
-					 , gp = gpar(fill = colorNA_num, col=cols, linejoin="mitre", lwd=0.01)
+					 , gp = gpar(fill = colorNA_num, col=colorNA_num, linejoin="mitre", lwd=0.01)
 					 )
 		}
 
@@ -78,7 +133,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 		if (showNumAxes && length(tCol$marks.x)) 
 			grid.rect(x=tCol$marks.x,
 					  width=0,
-					  gp=gpar(col="black", alpha=0.3))
+					  gp=gpar(col="black", alpha=0.1))
 			
 		
 		## plot broken x-axis

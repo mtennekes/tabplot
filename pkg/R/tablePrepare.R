@@ -23,11 +23,10 @@ tablePrepare <- function(x, name=NULL, dir=NULL, ...){
 	if (missing(name)) name <- deparse(substitute(x))
 	
 	if (is.data.frame(x)){
-		#x <- as.data.frame(lapply(x, as.vector)) # workaround for otherwise data.frames with dimnamed columns will crash in the next line
+		isChar <- sapply(x, FUN = is.character)
+		if (any(isChar)) x[, isChar] <- lapply(x[, isChar, drop=FALSE], factor)
 		x <- as.ffdf(x)
 	}
-
-	
 	
 	row.names(x) <- NULL
 	N <- nrow(x)

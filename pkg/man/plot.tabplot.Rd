@@ -8,7 +8,8 @@
 \method{plot}{tabplot}(x, fontsize = 10, legend.lines = 8,
   max_print_levels = 15, text_NA = "missing", title = NULL,
   showTitle = NULL, fontsize.title = 14, showNumAxes = TRUE,
-  relative = FALSE, numMode = "mb-sdb-ml", vp = NULL, ...)
+  rotateNames = NA, relative = FALSE, numMode = "mb-sdb-ml", vp = NULL,
+  ...)
 
 \method{plot}{tabplot_compare}(x, ...)
 }
@@ -30,6 +31,8 @@
 \item{fontsize.title}{the fontsize of the title}
 
 \item{showNumAxes}{plots an x-axis for each numerical variable, along with grid lines (\code{TRUE} by default).}
+
+\item{rotateNames}{logical or numeric value that determines the rotation angle of the column names. If \code{TRUE}, they are rotated 90 degrees. By default, column names are rotated when the number of columns is greater than 15.}
 
 \item{relative}{boolean that determines whether relative scales are used for relative tableplots. If \code{TRUE}, then \code{mean.diff.rel<-(mean2-mean1)/mean1*100} are used. If \code{FALSE}, then the absolute diference is taken: \code{mean <- mean2-mean}.}
 

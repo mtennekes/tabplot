@@ -12,6 +12,7 @@
 #' @param showTitle show the title. By default \code{FALSE}, unless a \code{title} is given.
 #' @param fontsize.title the fontsize of the title
 #' @param showNumAxes plots an x-axis for each numerical variable, along with grid lines (\code{TRUE} by default).
+#' @param rotateNames logical or numeric value that determines the rotation angle of the column names. If \code{TRUE}, they are rotated 90 degrees. By default, column names are rotated when the number of columns is greater than 15.
 #' @param relative boolean that determines whether relative scales are used for relative tableplots. If \code{TRUE}, then \code{mean.diff.rel<-(mean2-mean1)/mean1*100} are used. If \code{FALSE}, then the absolute diference is taken: \code{mean <- mean2-mean}.
 #' @param numMode character value that determines how numeric values are plotted. The value consists of the following building block, which are concatenated with the "-" symbol. The default value is "mb-sdb-sdl". In version 1.2 and prior, "MB-ML" was the default value.
 #' \describe{
@@ -30,7 +31,7 @@
 #' @import grid
 #' @method plot tabplot
 plot.tabplot <-
-function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, showNumAxes=TRUE, relative=FALSE, numMode="mb-sdb-ml", vp=NULL, ...) {
+function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, showNumAxes=TRUE, rotateNames = NA, relative=FALSE, numMode="mb-sdb-ml", vp=NULL, ...) {
 
 	
 	if (!(class(x)[1] %in% c("tabplot", "tabplot_compare"))) stop(paste(deparse(substitute(x)), "is not a tabplot-object"))
@@ -55,6 +56,11 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 		title <- ifelse(length(x$subset)==0, dataset, paste(dataset, " (", x$subset, ")", sep=""))
 	}
 	
+	if (is.na(rotateNames)) {
+		if (x$m	> 15) rotateNames <- 90 else rotateNames <- 0
+	} else if (is.logical(rotateNames)) {
+		rotateNames <- ifelse(rotateNames, 90, 0)	
+	}
 	#############################
 	## Determine colors and color scales
 	#############################
@@ -69,17 +75,27 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 	## Set layout
 	#############################
 	
+	## set grid layout
+	if (is.null(vp)) {
+		grid.newpage()
+	} else {
+		if (is.character(vp)) 
+			seekViewport(vp)
+		else pushViewport(vp)
+	}
+	
 	## configure viewports
 	marginT <- 0.01;	marginB <- 0.02
 	marginL <- 0.05;	marginR <- 0.05
 	marginLT <- 0.0;	marginLB <- 0.02
 	
+	colNameHeight <- if (rotateNames==0) 1 else max(convertWidth(stringWidth(x$select), "lines", valueOnly = TRUE)) + .5
 	vpColumn <- viewport( name="Column"
 	                   ,  x = unit(marginL, "npc")
  					    , width = unit(1 - marginL - marginR, "npc")
 	                    , layout = grid.layout( nrow=3
 						                      , ncol=1
-						                      , heights = unit(c(1, 1, legend.lines), c("lines", "null", "lines"))
+						                      , heights = unit(c(colNameHeight, 1, legend.lines), c("lines", "null", "lines"))
 						    				  )
 					   )
 						
@@ -116,15 +132,6 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 	)
 	
 	  
-	## set grid layout
-	if (is.null(vp)) {
-	  grid.newpage()
-	} else {
-	  if (is.character(vp)) 
-	    seekViewport(vp)
-	  else pushViewport(vp)
-	}
-	
 	pushViewport(vpBody)
 	
 	if (showTitle) cellplot(1, 1, e={
@@ -225,15 +232,16 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 						nameWidth <- convertWidth(stringWidth(columnName), "npc",valueOnly=TRUE)
 					}
 					
-					grid.text(columnName, gp=gpar(cex=cex))
+					grid.text(columnName, gp=gpar(cex=cex), rot=rotateNames)
 					
 					## Place sorting arrow before name
 					if (!is.na(decreasing)) {
-						grid.polygon( x = c(0.1, 0.4, 0.7)
+						#grid.rect(gp=gpar(fill="red"))
+						grid.polygon( x = c(0.1, 0.4, 0.7) / colNameHeight
 						            , y = if (decreasing) 
-										     c(0.6, 0.2, 0.6)
+										     c(0.6, 0.2, 0.6) / colNameHeight
 									      else
-							                 c(0.2, 0.6, 0.2)
+							                 c(0.2, 0.6, 0.2) / colNameHeight
 								    , gp = gpar(fill="black")
 								    , default.units = "snpc"
 								    )

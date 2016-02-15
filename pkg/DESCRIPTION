@@ -17,6 +17,8 @@ Version: 1.2
 URL: https://github.com/mtennekes/tabplot
 Date: 2014-04-27
 Depends:
+	bit,
+	ff,
     ffbase (>= 0.12.2)
 Imports:
     grid
@@ -26,4 +28,4 @@ Suggests:
     knitr,
     classInt,
     ggplot2
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1

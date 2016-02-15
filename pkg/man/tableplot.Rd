@@ -50,6 +50,8 @@ by naming them accordingly.}
 
 \item{change_palette_type_at}{number at which the type of categorical palettes is changed. For categorical variables with less than \code{change_palette_type_at} levels, the palette is recycled if necessary. For categorical variables with \code{change_palette_type_at} levels or more, a new palette of interpolated colors is derived (like a rainbow palette).}
 
+\item{rev_legend}{logical value or vector that determines which legends are reversed. If a vector is provided, the names of the items should the names of (a selection of) the categorical variables.}
+
 \item{colorNA}{color for missing values for categorical variables.}
 
 \item{colorNA_num}{color for missing values for numeric variables. It is used when all values in a bin are missing. If a part of the values are missing, a brighter color is used (see argument \code{numPals}).}

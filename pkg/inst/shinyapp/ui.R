@@ -13,7 +13,7 @@ shinyUI(pageWithSidebar(
 			uiOutput("selected"),
 			uiOutput("sortOn"),
 			checkboxInput("decreasing", label="Decreasing", value=TRUE),
-			sliderInput("fromto", label="Range:", min=0, max=1, value=c(0,1), format="#0.0%"),
+			sliderInput("fromto", label="Range:", min=0, max=1, value=c(0,1), round=-1),
 			numericInput("nBins", label="Number of bins:", value=100, min=2, max=500, step=1)),
 		tabPanel("Numeric",
 			uiOutput("logscale")),

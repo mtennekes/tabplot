@@ -17,7 +17,7 @@
 #' }
 #' @export
 itableplot <- function() {
-	if (require(shiny)) 
+	if (requireNamespace("shiny")) 
 		shiny::runApp(system.file("shinyapp", package="tabplot"))
 	invisible()
 }

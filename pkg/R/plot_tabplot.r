@@ -33,7 +33,7 @@ plot.tabplot <-
 function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, showNumAxes=TRUE, relative=FALSE, numMode="mb-sdb-ml", vp=NULL, ...) {
 
 	
-	if (!(class(x)[1] %in% c("tabplot", "tabplot_compare"))) p(paste(deparse(substitute(x)), "is not a tabplot-object"))
+	if (!(class(x)[1] %in% c("tabplot", "tabplot_compare"))) stop(paste(deparse(substitute(x)), "is not a tabplot-object"))
 	
 	compare <- (class(x)=="tabplot_compare")
 	#relative <- relative && compare

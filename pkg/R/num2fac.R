@@ -24,7 +24,7 @@
 #' @note This function is still in development stage, and can be improved and optimized. \code{ff} vectors are not implemented yet
 num2fac <-
 function(num, method="pretty", num_scale="auto", n=0, brks=NA) {
-    if (!require(classInt)){
+    if (!requireNamespace("classInt")){
 	   stop("This function needs package classInt")
 	}
 	
@@ -74,7 +74,7 @@ function(num, method="pretty", num_scale="auto", n=0, brks=NA) {
 		lognum[posnum] <- log10(1+lognum[posnum])
 		lognum[!posnum] <- -log10(1-lognum[!posnum])
 		
-		logbrks <- classIntervals(lognum, n=n, style=method)$brks
+		logbrks <- classInt::classIntervals(lognum, n=n, style=method)$brks
 		
 		brks <- numeric(length(logbrks))
 		brks[logbrks >= 0] <- 10^logbrks[logbrks >= 0] - ifelse(method=="kmeans", 1, 0)
@@ -105,7 +105,7 @@ function(num, method="pretty", num_scale="auto", n=0, brks=NA) {
 			if (n==0) n <- 5
 		}
 	
-		brks <- classIntervals(num, n=n, style=method)$brks
+		brks <- classInt::classIntervals(num, n=n, style=method)$brks
 		digits <- 0
 		brksr <- round(brks, digits=digits)
 		while (any(duplicated(brksr))) {

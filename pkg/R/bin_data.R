@@ -13,6 +13,8 @@
 #' @param sampleBinSize sample size per bin
 #' @export
 #' @import ffbase
+#' @importFrom ff vw "vw<-" ff vmode is.factor.ff
+#' @importFrom bit chunk physical
 bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 					, nbins=100L
 					, decreasing = FALSE

@@ -24,6 +24,7 @@
 #' If the list items are unnamed, they are applied to all selected categorical variables (recycled if necessary). The list items can be assigned to specific categorical variables,
 #' by naming them accordingly.
 #' @param change_palette_type_at number at which the type of categorical palettes is changed. For categorical variables with less than \code{change_palette_type_at} levels, the palette is recycled if necessary. For categorical variables with \code{change_palette_type_at} levels or more, a new palette of interpolated colors is derived (like a rainbow palette).
+#' @param rev_legend logical value or vector that determines which legends are reversed. If a vector is provided, the names of the items should the names of (a selection of) the categorical variables.
 #' @param colorNA color for missing values for categorical variables.
 #' @param colorNA_num color for missing values for numeric variables. It is used when all values in a bin are missing. If a part of the values are missing, a brighter color is used (see argument \code{numPals}).
 #' @param numPals vector of palette names that are used for numeric variables. These names are chosen from the diverging palette names in \code{\link{tablePalettes}}. Either \code{numPals} is a named vector, where the names correspond to the numerical variable names, or an unnamed vector (recycled if necessary). A "-" prefix in the name reverses the palette. The righthand-side of the palette is used for positive mean values, and the lefthand-side for negative mean values. The brightness of the color is determined by the fraction of missing values.
@@ -39,6 +40,12 @@
 #' @return \code{\link{tabplot-object}} (silent output). If multiple tableplots are generated (which can be done by either setting \code{subset} to a categorical column name, or by restricting the number of columns with \code{nCols}), then a list of \code{\link{tabplot-object}s} is silently returned.
 #' @export
 #' @import grid
+#' @importFrom grDevices col2rgb colorRampPalette dev.off
+#' @importFrom graphics par plot
+#' @importFrom stats na.omit quantile runif
+#' @importFrom utils capture.output head str tail
+#' @importFrom ff clone "nrow<-" fforder ffdf as.ffdf
+#' @importFrom bit physical ri
 #' @keywords visualization
 #' @example ../examples/tableplot.R
 #' @seealso \code{\link{itableplot}}

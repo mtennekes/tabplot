@@ -2,8 +2,8 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 	## checks if device is Cario {cairoDevice}
 	# drawContours <- TRUE
 	if (relative && "marks.x.rel" %in% names(tCol)) {
-		tCol[c("brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <-
-			tCol[c("brokenX.rel", "mean.diff.coor.rel", "marks.labels.rel", "marks.x.rel", "xline.rel", "widths.rel")]
+		tCol[c("brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths", "x1", "x2")] <-
+			tCol[c("brokenX.rel", "mean.diff.coor.rel", "marks.labels.rel", "marks.x.rel", "xline.rel", "widths.rel", "x1.rel", "x2.rel")]
 	}
 	
 	lgrey <- "#F0F0F0"	#brewer.pal(9,"Greys")[2]
@@ -44,7 +44,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 # 		}
 # 		
 		sdb <- function() {
-			if (tCol$type=="compare") return(NULL)
+			#if (tCol$type=="compare") return(NULL)
 			grid.rect( x = tCol$x1
 					   , y = tab$rows$y
 					   , width = tCol$x2 - tCol$x1
@@ -54,7 +54,7 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 			)
 		}
 		sdl <- function() {
-			if (tCol$type=="compare") return(NULL)
+			#if (tCol$type=="compare") return(NULL)
 			grid.rect( x = tCol$x1
 					   , y = tab$rows$y
 					   , width = 0

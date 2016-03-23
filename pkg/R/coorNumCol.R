@@ -1,9 +1,9 @@
 coorNumCol <- function(tabCol, limitsX, bias_brokenX, compare=FALSE) {
 	if (compare) {
-		results <- coorNumVector(tabCol$mean.diff.scaled, limitsX, bias_brokenX, tabCol$name)
-		names(results) <- c("brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")
-		results.rel <- coorNumVector(tabCol$mean.diff.rel.scaled, limitsX, bias_brokenX, tabCol$name)
-		names(results.rel) <- c("brokenX.rel", "mean.diff.coor.rel", "marks.labels.rel", "marks.x.rel", "xline.rel", "widths.rel")
+		results <- coorNumVector(tabCol$mean.diff.scaled, limitsX, bias_brokenX, tabCol$name, tabCol$sd.diff.scaled)
+		names(results) <- c("brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths", "x1", "x2")
+		results.rel <- coorNumVector(tabCol$mean.diff.rel.scaled, limitsX, bias_brokenX, tabCol$name, tabCol$sd.diff.rel.scaled)
+		names(results.rel) <- c("brokenX.rel", "mean.diff.coor.rel", "marks.labels.rel", "marks.x.rel", "xline.rel", "widths.rel", "x1.rel", "x2.rel")
 		tabCol <- c(tabCol, results, results.rel)
 	} else {
 		results <- coorNumVector(tabCol$mean.scaled, limitsX, bias_brokenX, tabCol$name, tabCol$sd.scaled)
@@ -124,6 +124,6 @@ coorNumVector <- function(num, limitsX, bias_brokenX, name, sd=NULL) {
 		marks.labels <- marks[marksVis]
 		marks.x <- marks_x[marksVis]
 	}
-	
+
 	list(brokenX, values, marks.labels, marks.x, xline,	widths, x1, x2)
 }

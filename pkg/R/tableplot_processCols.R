@@ -25,11 +25,18 @@ tableplot_processCols <- function(tab, colNames1, colNames2, IQR_bias, bias_brok
 			if (col1$isnumeric) {
 				col$mean1 <- col1$mean
 				col$mean2 <- col2$mean
-				col$mean.diff <- col$mean <- col1$mean - col2$mean
-				col$mean.diff.rel <- col$mean <- ((col1$mean - col2$mean) / col1$mean)*100
+				col$mean.diff <- col1$mean - col2$mean
+				col$mean.diff.rel <- ((col1$mean - col2$mean) / col1$mean)*100
+				
+				col$sd1 <- col1$sd
+				col$sd2 <- col2$sd
+				col$sd.diff <- sqrt(col1$sd^2 + col2$sd^2)
+				col$sd.diff.rel <- col$sd.diff / col1$mean * 100
+				
+				
 				col$scale_init <- "lin"
 				col$compl <- pmin(col1$compl, col2$compl)
-				col[c("mean", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <- NULL
+				col[c("mean", "sd", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <- NULL
 				
 				col <- scaleNumCol(col, IQR_bias=5, compare=TRUE)
 				col <- coorNumCol(col, limitsX=list(), bias_brokenX=0.8, compare=TRUE)

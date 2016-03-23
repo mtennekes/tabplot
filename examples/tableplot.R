@@ -5,6 +5,10 @@ data(diamonds)
 # default tableplot
 tableplot(diamonds)
 
+# prior to verison 1.2, the mean values of numeric variables are displayed 
+# without standard deviation (see ?plot.tabplot):
+tableplot(diamonds, numMode = "MB-ML")
+
 # most expensive diamonds
 tableplot(diamonds, 
 		  select=c(carat, cut, color, clarity, price), 

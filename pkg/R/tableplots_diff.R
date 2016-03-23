@@ -24,11 +24,23 @@
 		if (col1$isnumeric) {
 			col$mean1 <- col1$mean
 			col$mean2 <- col2$mean
-			col$mean.diff <- col$mean <- col1$mean - col2$mean
-			col$mean.diff.rel <- col$mean <- ((col1$mean - col2$mean) / col1$mean)*100
+			col$mean.diff <- col1$mean - col2$mean
+			col$mean.diff.rel <- ((col1$mean - col2$mean) / col1$mean)*100
+			
+			col$sd1 <- col1$sd
+			col$sd2 <- col2$sd
+			col$sd.diff <- sqrt(col1$sd^2 + col2$sd^2)
+			col$sd.diff.rel <- col$sd.diff / col1$mean * 100
+			
+			col$x1.diff <- col$mean.diff - col$sd.diff
+			col$x2.diff <- col$mean.diff + col$sd.diff
+
+			col$x1.diff.rel <- col$mean.diff.rel - col$sd.diff.rel
+			col$x2.diff.rel <- col$mean.diff.rel + col$sd.diff.rel
+			
 			col$scale_init <- "lin"
 			col$compl <- pmin(col1$compl, col2$compl)
-			col[c("mean", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <- NULL
+			col[c("mean", "sd", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths", "x1", "x2")] <- NULL
 		} else {
 			
 # 			col <- tp$columns[[4]]
@@ -68,9 +80,10 @@
 			
 			col$freq <- NULL
 		}
+		col$type <- "compare"
 		col
 	}, tp1$columns, tp2$columns, SIMPLIFY=FALSE)
-	
+	#browser()
 	isNumber <- sapply(tp$columns, function(col) col$isnumeric)
 	
 

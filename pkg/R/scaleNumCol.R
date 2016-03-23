@@ -26,6 +26,7 @@ scaleNumCol <- function(tabCol, IQR_bias, compare=FALSE) {
 	if (tabCol$scale_final=="log") {
 		if (compare) {
 			tabCol$mean.diff.scaled <- getLog(tabCol$mean.diff)
+			tabCol$sd.diff.scaled <- getLog(tabCol$sd.diff)
 		} else {
 			tabCol$mean.scaled <- getLog(tabCol$mean)
 			tabCol$sd.scaled <- getLog(tabCol$sd)
@@ -33,12 +34,16 @@ scaleNumCol <- function(tabCol, IQR_bias, compare=FALSE) {
 	} else {
 		if (compare) {
 			tabCol$mean.diff.scaled <- tabCol$mean.diff
+			tabCol$sd.diff.scaled <- tabCol$sd.diff
 		} else {
 			tabCol$mean.scaled <- tabCol$mean
 			tabCol$sd.scaled <- tabCol$sd
 		}
 	}
-	if (compare) tabCol$mean.diff.rel.scaled <- tabCol$mean.diff.rel
+	if (compare) {
+		tabCol$mean.diff.rel.scaled <- tabCol$mean.diff.rel
+		tabCol$sd.diff.rel.scaled <- tabCol$sd.diff.rel
+	}
 	tabCol
 }
 

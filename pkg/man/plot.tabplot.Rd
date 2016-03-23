@@ -14,7 +14,7 @@
 \method{plot}{tabplot_compare}(x, ...)
 }
 \arguments{
-\item{x}{\link{tabplot-object} or \link{tabplot_compare-object}}
+\item{x}{\code{\link{tabplot-object}} or \code{\link{tabplot_compare-object}}}
 
 \item{fontsize}{the (maximum) fontsize}
 
@@ -36,7 +36,7 @@
 
 \item{relative}{boolean that determines whether relative scales are used for relative tableplots. If \code{TRUE}, then \code{mean.diff.rel<-(mean2-mean1)/mean1*100} are used. If \code{FALSE}, then the absolute diference is taken: \code{mean <- mean2-mean}.}
 
-\item{numMode}{character value that determines how numeric values are plotted. The value consists of the following building block, which are concatenated with the "-" symbol. The default value is "mb-sdb-sdl". In version 1.2 and prior, "MB-ML" was the default value.
+\item{numMode}{character value that determines how numeric values are plotted. The value consists of the following building block, which are concatenated with the "-" symbol. The default value is "mb-sdb-sdl". Before version 1.2, "MB-ML" was the default value.
 \describe{
 \item{\code{sdb}}{sd bars between mean-sd to mean+sd are shown}
 \item{\code{sdl}}{sd lines at mean-sd and mean+sd are shown}
@@ -52,7 +52,7 @@
 \item{...}{other arguments are not used}
 }
 \description{
-Plot a \link{tabplot-object}
+Plot a \link{tabplot-object}. The arguments of this function, which specify the layout, can also be passed on to \code{\link{tableplot}} directly. New in version 1.2 is the argument \code{numMode}, which determines how numeric variables are plot.
 }
 \examples{
 # load diamonds dataset from ggplot2

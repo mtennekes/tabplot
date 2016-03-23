@@ -56,7 +56,7 @@ by naming them accordingly.}
 
 \item{colorNA_num}{color for missing values for numeric variables. It is used when all values in a bin are missing. If a part of the values are missing, a brighter color is used (see argument \code{numPals}).}
 
-\item{numPals}{vector of palette names that are used for numeric variables. These names are chosen from the diverging palette names in \code{\link{tablePalettes}}. Either \code{numPals} is a named vector, where the names correspond to the numerical variable names, or an unnamed vector (recycled if necessary). A "-" prefix in the name reverses the palette. The righthand-side of the palette is used for positive mean values, and the lefthand-side for negative mean values. The brightness of the color is determined by the fraction of missing values.}
+\item{numPals}{vector of palette names that are used for numeric variables. These names are chosen from the diverging palette names in \code{\link{tablePalettes}}. Either \code{numPals} is a named vector, where the names correspond to the numerical variable names, or an unnamed vector (recycled if necessary). A "-" prefix in the name reverses the palette. When sd bars are shown (see the argument \code{numMode} of \code{\link[=plot.tabplot]{plot}}), only the righthand-side of the palette is used, where brightness is used to differentiate between mean bar and sd bar. When sd bars are not shown (the default in versions before 1.2), the righthand-side of the palette is used for positive mean values, and the lefthand-side for negative mean values. The brightness of the color is determined by the fraction of missing values.}
 
 \item{limitsX}{a list of vectors of length two, where each vector contains a lower and an upper limit value. Either the names of \code{limitsX} correspond to numerical variable names, or \code{limitsX} is an unnamed list (recycled if necessary).}
 
@@ -95,6 +95,10 @@ data(diamonds)
 
 # default tableplot
 tableplot(diamonds)
+
+# prior to verison 1.2, the mean values of numeric variables are displayed 
+# without standard deviation (see ?plot.tabplot):
+tableplot(diamonds, numMode = "MB-ML")
 
 # most expensive diamonds
 tableplot(diamonds, 

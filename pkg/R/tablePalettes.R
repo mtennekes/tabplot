@@ -22,7 +22,7 @@
 #'
 #' \href{alexandria.tue.nl/extra2/afstversl/wsk-i/wijffelaars2008.pdf}{Wijffelaars, M. Synthesis of Color Palettes. Master's thesis. Supervisors Wijk, J. van, and Vliegen, R. 2008}
 #'
-#' \href{http://http://CRAN.R-project.org/package=dichromat/}{Thomas Lumley (2012). dichromat: Color schemes for dichromats. R package version 1.2-4. http://CRAN.R-project.org/package=dichromat}
+#' \href{http://CRAN.R-project.org/package=dichromat/}{Thomas Lumley (2012). dichromat: Color schemes for dichromats. R package version 1.2-4. http://CRAN.R-project.org/package=dichromat}
 #' 
 #' \href{http://statmath.wu.ac.at/~zeileis/papers/Zeileis+Hornik+Murrell-2009.pdf}{Zeileis, A., Hornik, K.,  and Murrell, P.  Escaping RGBland: Selecting colors for statistical graphics.  In Proceedings of Computational Statistics & Data Analysis. 2009, 3259-3270.}
 #' @export

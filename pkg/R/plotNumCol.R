@@ -112,8 +112,6 @@ plotNumCol <- function(tCol, tab, vpTitle, vpGraph, vpLegend, showNumAxes, relat
 					   , just=c("left","bottom")
 					   , gp = gpar(col=colors[201], fill = NA))
 		}
-		numMode <- strsplit(numMode, "-", fixed=TRUE)[[1]]
-		
 		lapply(numMode, do.call, args=list(), envir=environment())
 		
 		

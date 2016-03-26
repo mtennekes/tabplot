@@ -74,11 +74,15 @@ It is also possible to create a tableplot for each category of a categorical var
 ## Continuous variables
 
 ### Scaling
-For each bin of a continuous variable, the mean value is calculated.
+For each bin of a continuous variable, the mean value and the standard deviation are calculated.
 When the distribution of these mean values is exponential, it is useful to apply a logarithmic transformation. The argument `scales` can be set to linear mode `"lin"`, logarithmic mode `"log"`, or the default value `"auto"`, which automatically determines which of the former two modes is used.
 
-### Used colors
-The colors of the bins indicate the fraction of missing values. By default, a sequential color palette of blues is used. If a bin does not contain any missing values, the corresponding bar is depicted in dark blue. The more missing values, the brighter the color. (Alternatively, other quantitative palettes can be used by setting the argument `numPals`) Bars of which all values are missing are depicted in light red.
+### Plotting mode and used colors
+The argument `numMode` can be passed on `tableplot`. It determines how the numeric variables are plot:
+
+1. `"MB-ML"` (default of versions prior to 1.2). The colors of the bins indicate the fraction of missing values. A diverging color palette is used, which is specified by `numPals`. By default, if a bin does not contain any missing values, the corresponding bar is depicted in dark. The more missing values, the brighter the color. For positive mean values, the right-hand side of the palette is used, and for negative, the left-hand side. The more missing values, the brighter the color. Bars of which all values are missing are depicted in light red.
+2. `mb-sdb-ml` (default). Numeric variables are plot in colors of the right-hand side of the palette specified by `numPals`, by default blues. Mean bars are plot in light blue, standard deviation bars in medium blue, and mean vertical lines in dark blue.
+
 
 ```{r fig.height=3.5, fig.width=10, warning=FALSE}
 tablePalettes()

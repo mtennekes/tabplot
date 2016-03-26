@@ -16,7 +16,7 @@
 #' @param showNumAxes plots an x-axis for each numerical variable, along with grid lines (\code{TRUE} by default).
 #' @param rotateNames logical or numeric value that determines the rotation angle of the column names. If \code{TRUE}, they are rotated 90 degrees. By default, column names are rotated when the number of columns is greater than 15.
 #' @param relative boolean that determines whether relative scales are used for relative tableplots. If \code{TRUE}, then \code{mean.diff.rel<-(mean2-mean1)/mean1*100} are used. If \code{FALSE}, then the absolute diference is taken: \code{mean <- mean2-mean}.
-#' @param numMode character value that determines how numeric values are plotted. The value consists of the following building block, which are concatenated with the "-" symbol. The default value is "mb-sdb-sdl". Before version 1.2, "MB-ML" was the default value.
+#' @param numMode character value that determines how numeric values are plotted. The value consists of the following building blocks, which are concatenated with the "-" symbol. The default value is "mb-sdb-sdl". Prior to version 1.2, "MB-ML" was the default value.
 #' \describe{
 #' \item{\code{sdb}}{sd bars between mean-sd to mean+sd are shown}
 #' \item{\code{sdl}}{sd lines at mean-sd and mean+sd are shown}
@@ -41,6 +41,9 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 	compare <- (class(x)=="tabplot_compare")
 	#relative <- relative && compare
 	
+	numMode <- strsplit(numMode, "-", fixed=TRUE)[[1]]
+	
+	if (compare && any(c("sdb", "sdl") %in% numMode)) message("Independence of the compared tableplots assumed for the calculation of the standard deviations.")
 	
 	if (length(fontsize)!=1 || !is.numeric(fontsize)) stop("invalid fontsize")
 

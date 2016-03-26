@@ -6,18 +6,9 @@
 \alias{tabplot-package}
 \title{Tableplot, a visualization of large datasets}
 \description{
-\tabular{ll}{
-Package: \tab tabplot\cr
-Type: \tab Package\cr
-Version: \tab 1.1-1\cr
-Date: \tab 2013-04-17\cr
-License: \tab GPL-3\cr
-LazyLoad: \tab yes\cr
-}
+A tableplot is a visualisation of a (large) dataset. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff:ff]{ff}} package.
 }
 \details{
-A tableplot is a visualisation of a (large) dataset. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff:ff]{ff}} package.
-
 The main function of the package is \code{\link{tableplot}}, which is used to create a tableplot.
 Other useful functions are:
 \itemize{

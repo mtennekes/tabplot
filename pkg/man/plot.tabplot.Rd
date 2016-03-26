@@ -36,7 +36,7 @@
 
 \item{relative}{boolean that determines whether relative scales are used for relative tableplots. If \code{TRUE}, then \code{mean.diff.rel<-(mean2-mean1)/mean1*100} are used. If \code{FALSE}, then the absolute diference is taken: \code{mean <- mean2-mean}.}
 
-\item{numMode}{character value that determines how numeric values are plotted. The value consists of the following building block, which are concatenated with the "-" symbol. The default value is "mb-sdb-sdl". Before version 1.2, "MB-ML" was the default value.
+\item{numMode}{character value that determines how numeric values are plotted. The value consists of the following building blocks, which are concatenated with the "-" symbol. The default value is "mb-sdb-sdl". Prior to version 1.2, "MB-ML" was the default value.
 \describe{
 \item{\code{sdb}}{sd bars between mean-sd to mean+sd are shown}
 \item{\code{sdl}}{sd lines at mean-sd and mean+sd are shown}

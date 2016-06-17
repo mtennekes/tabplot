@@ -110,7 +110,6 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	## argument select(_string) argument
 	if (!missing(select)) {
-		select_call <- deparse(substitute(select))
 		select_string <- as.character(substitute(select))
 		if (any(sapply(select_string, function(x)substr(x,1,1) %in% as.character(0:9)))) {
 			# evaluate indices directly (not working for subtractions)
@@ -120,7 +119,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 			select_string <- names(dat)[select_string]
 			
 		} else {
-			if ((substr(select_call, 1, 2))=="c(") select_string <- select_string[-1]
+			select_call <- deparse(substitute(select))
+			if ((substr(select_call[1], 1, 2))=="c(") select_string <- select_string[-1]
 		}
 		
 	} 

@@ -193,7 +193,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 				formats <- format(numbers, big.mark=",")
 				widths <- convertWidth(stringWidth(formats), "npc", valueOnly=TRUE)
 				width <- max(widths)
-				spacer <- 0.1 + convertWidth(stringWidth("\t"), "npc", valueOnly=TRUE)
+				spacer <- 0.1 + convertWidth(stringWidth("   "), "npc", valueOnly=TRUE)
 				xpos <- spacer + width
 				space.row_bins <- convertWidth(stringWidth("row bins:  "), "npc", valueOnly=TRUE)
 				grid.text("row bins:", x=0.1, y=unit(5.5, units="lines"), just="left")

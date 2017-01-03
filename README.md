@@ -18,7 +18,7 @@ tabplot is available from CRAN. The current development version can be installed
 
 ```r
 library(devtools)
-install_github("tabplot", username="mtennekes", subdir="pkg")
+install_github("mtennekes/tabplot")
 ```
 
 Usage

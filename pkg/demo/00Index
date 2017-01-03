@@ -1,4 +1,0 @@
-tableplot               Make a tableplot of the iris data set, which
-                        has been polluted with missing data
-ffdf                    Make a tableplot of a large ffdf iris data set,
-                        which has been polluted with missing data

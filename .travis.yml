@@ -1,0 +1,14 @@
+language: r
+cache: packages
+
+before_install:
+  - cd $TRAVIS_BUILD_DIR
+
+sudo: required
+
+warnings_are_errors: true
+
+r_packages:
+  - bit
+  - ff
+  - ffbase

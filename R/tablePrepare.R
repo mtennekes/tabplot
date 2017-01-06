@@ -12,7 +12,7 @@
 #' @param dir directory to store the prepared object. If unspecified, the prepared object will not be saved, and the underlying data will be stored temporarily in \code{options("fftempdir")}.
 #' @param ... arguments passed to other methods (at the moment only \code{overwrite} from \code{\link{savePrepare}}) 
 #' @return a prepared object, including the data and order of each of the columns
-#' @example ../examples/tablePrepare.R
+#' @example ./examples/tablePrepare.R
 #' @export
 #' @import ffbase
 tablePrepare <- function(x, name=NULL, dir=NULL, ...){

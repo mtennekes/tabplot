@@ -47,7 +47,7 @@
 #' @importFrom ff clone "nrow<-" fforder ffdf as.ffdf
 #' @importFrom bit physical ri
 #' @keywords visualization
-#' @example ../examples/tableplot.R
+#' @example ./examples/tableplot.R
 #' @seealso \code{\link{itableplot}}
 #' @note In early development versions of \code{tabplot} (prior to version 1.0) it was possible to sort datasets on multiple columns. To increase to tableplot creation speed, this feature is dropped. For multiple sorting purposes, we recommend to use the \code{subset} parameter instead.
 tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE, 

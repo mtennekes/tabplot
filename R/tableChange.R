@@ -18,7 +18,7 @@
 #' @param numPals name(s) of the palette(s) that is(are) used for numeric variables ("Blues", "Greys", or "Greens"). Recycled if necessary.
 #' @return \link{tabplot-object}
 #' @export
-#' @example ../examples/tableChange.R
+#' @example ./examples/tableChange.R
 
 tableChange <- function(tab, select=NULL, select_string=tab$select, decreasing=NULL, pals=list(), colorNA = NULL, numPals = NULL) {
 

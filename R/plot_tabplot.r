@@ -28,7 +28,7 @@
 #' }
 #' @param vp \code{\link[grid:viewport]{viewport}} to draw plot in (for instance useful to stack multiple tableplots)
 #' @param ... other arguments are not used
-#' @example ../examples/plot_tabplot.R
+#' @example ./examples/plot_tabplot.R
 #' @export
 #' @import grid
 #' @method plot tabplot

@@ -1,4 +1,4 @@
-scaleNumCol <- function(tabCol, IQR_bias, compare=FALSE) {
+scaleNumCol <- function(tabCol, IQR_bias, compare=FALSE, calculate.sd=TRUE) {
 	## for "auto" scales, choose between "lin" and "log" based on IQR_bias
 	if (tabCol$scale_init=="auto") {
 		if (compare) {
@@ -26,23 +26,23 @@ scaleNumCol <- function(tabCol, IQR_bias, compare=FALSE) {
 	if (tabCol$scale_final=="log") {
 		if (compare) {
 			tabCol$mean.diff.scaled <- getLog(tabCol$mean.diff)
-			tabCol$sd.diff.scaled <- getLog(tabCol$sd.diff)
+			tabCol$sd.diff.scaled <- if (calculate.sd) getLog(tabCol$sd.diff) else NULL
 		} else {
 			tabCol$mean.scaled <- getLog(tabCol$mean)
-			tabCol$sd.scaled <- getLog(tabCol$sd)
+			tabCol$sd.scaled <- if (calculate.sd) getLog(tabCol$sd) else NULL
 		}
 	} else {
 		if (compare) {
 			tabCol$mean.diff.scaled <- tabCol$mean.diff
-			tabCol$sd.diff.scaled <- tabCol$sd.diff
+			tabCol$sd.diff.scaled <- if (calculate.sd) tabCol$sd.diff else NULL
 		} else {
 			tabCol$mean.scaled <- tabCol$mean
-			tabCol$sd.scaled <- tabCol$sd
+			tabCol$sd.scaled <- if (calculate.sd) tabCol$sd else NULL
 		}
 	}
 	if (compare) {
 		tabCol$mean.diff.rel.scaled <- tabCol$mean.diff.rel
-		tabCol$sd.diff.rel.scaled <- tabCol$sd.diff.rel
+		tabCol$sd.diff.rel.scaled <- if (calculate.sd) tabCol$sd.diff.rel else NULL
 	}
 	tabCol
 }

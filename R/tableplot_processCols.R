@@ -1,5 +1,6 @@
-tableplot_processCols <- function(tab, colNames1, colNames2, IQR_bias, bias_brokenX, limitsX, nBins, sortColName) {
+tableplot_processCols <- function(tab, colNames1, colNames2, IQR_bias, bias_brokenX, limitsX, nBins, sortColName, numMode) {
 	
+	calculate.sd <- any(c("sdb", "sdl") %in% numMode)
 
 	midspace <- .05
 	colNames_string <- ifelse(is.na(colNames2), colNames1, paste(colNames1, colNames2, sep="-"))
@@ -9,7 +10,7 @@ tableplot_processCols <- function(tab, colNames1, colNames2, IQR_bias, bias_brok
 			col <- cols[[c1]]
 			
 			if (col$isnumeric) {
-				col <- scaleNumCol(col, IQR_bias)
+				col <- scaleNumCol(col, IQR_bias, calculate.sd=calculate.sd)
 				col <- coorNumCol(col, limitsX = limitsX[col$name], bias_brokenX=bias_brokenX)
 			} else {
 				col <- coorCatCol(col, nBins)
@@ -38,7 +39,7 @@ tableplot_processCols <- function(tab, colNames1, colNames2, IQR_bias, bias_brok
 				col$compl <- pmin(col1$compl, col2$compl)
 				col[c("mean", "sd", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <- NULL
 				
-				col <- scaleNumCol(col, IQR_bias=5, compare=TRUE)
+				col <- scaleNumCol(col, IQR_bias=5, compare=TRUE, calculate.sd=calcualte.sd)
 				col <- coorNumCol(col, limitsX=list(), bias_brokenX=0.8, compare=TRUE)
 				
 			} else {
@@ -88,6 +89,7 @@ tableplot_processCols <- function(tab, colNames1, colNames2, IQR_bias, bias_brok
 	tab$m <- length(colNames1)
 	tab$select <- colNames_string
 	tab$sortCol <- which(sortColName==colNames_string)[1]
+	tab$numMode <- numMode
 	names(tab$columns) <- colNames_string
 	tab
 }

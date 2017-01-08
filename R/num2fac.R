@@ -18,7 +18,7 @@
 #' @param n the (desired) number of levels. \code{n=0} means automatic
 #' @param brks breaks that determine the levels (only required when \code{method="fixed"})
 #' @return A factor vector
-#' @example ../examples/num2fac.R
+#' @example ./examples/num2fac.R
 #' @export
 #' @seealso \code{\link{datetime2fac}}
 #' @note This function is still in development stage, and can be improved and optimized. \code{ff} vectors are not implemented yet

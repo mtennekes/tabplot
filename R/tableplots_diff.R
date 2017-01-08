@@ -8,7 +8,7 @@
 #' @param tp1 the first \link{tabplot-object}
 #' @param tp2 the second \link{tabplot-object}
 #' @return a \link{tabplot_compare-object} that contains information about the comparison \code{tp1-tp2}
-#' @example ../examples/tableplots_diff.R
+#' @example ./examples/tableplots_diff.R
 #' @export
 "-.tabplot" <- function(tp1, tp2) {
 	stopifnot(tp1$nBins==tp2$nBins,

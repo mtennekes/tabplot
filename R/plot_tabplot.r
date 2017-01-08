@@ -18,7 +18,7 @@
 #' @param relative boolean that determines whether relative scales are used for relative tableplots. If \code{TRUE}, then \code{mean.diff.rel<-(mean2-mean1)/mean1*100} are used. If \code{FALSE}, then the absolute diference is taken: \code{mean <- mean2-mean}.
 #' @param vp \code{\link[grid:viewport]{viewport}} to draw plot in (for instance useful to stack multiple tableplots)
 #' @param ... other arguments are not used
-#' @example ../examples/plot_tabplot.R
+#' @example ./examples/plot_tabplot.R
 #' @export
 #' @import grid
 #' @method plot tabplot

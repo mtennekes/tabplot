@@ -6,7 +6,7 @@
 #' @param p date-time vector
 #' @param rng range of the factor. 
 #' @return A factor vector. 
-#' @example ../examples/datetime2fac.R
+#' @example ./examples/datetime2fac.R
 #' @export
 #' @seealso \code{\link{num2fac}}
 #' @note This function is still in development stage, and can be improved and optimized. \code{ff} vectors are not implemented yet

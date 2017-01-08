@@ -13,4 +13,8 @@ RnwWeave: knitr
 LaTeX: pdfLaTeX
 
 BuildType: Package
+<<<<<<< HEAD
+=======
+PackagePath: .
+>>>>>>> 8ee98dd9d2a0889262f76fc089e58c0b916c46b9
 PackageInstallArgs: --no-multiarch --with-keep.source

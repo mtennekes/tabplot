@@ -1,6 +1,6 @@
 #' Plot a \link{tabplot-object}
 #' 
-#' Plot a \link{tabplot-object}. The arguments of this function, which specify the layout, can also be passed on to \code{\link{tableplot}} directly. New in version 1.2 is the argument \code{numMode}, which determines how numeric variables are plot.
+#' Plot a \link{tabplot-object}. The arguments of this function, which specify the layout, can also be passed on to \code{\link{tableplot}} directly.
 #'
 #' @aliases plot.tabplot
 #' @name plot.tabplot

@@ -8,8 +8,7 @@
 \method{plot}{tabplot}(x, fontsize = 10, legend.lines = 8,
   max_print_levels = 15, text_NA = "missing", title = NULL,
   showTitle = NULL, fontsize.title = 14, showNumAxes = TRUE,
-  rotateNames = NA, relative = FALSE, numMode = "mb-sdb-ml", vp = NULL,
-  ...)
+  rotateNames = NA, relative = FALSE, vp = NULL, ...)
 
 \method{plot}{tabplot_compare}(x, ...)
 }
@@ -36,23 +35,12 @@
 
 \item{relative}{boolean that determines whether relative scales are used for relative tableplots. If \code{TRUE}, then \code{mean.diff.rel<-(mean2-mean1)/mean1*100} are used. If \code{FALSE}, then the absolute diference is taken: \code{mean <- mean2-mean}.}
 
-\item{numMode}{character value that determines how numeric values are plotted. The value consists of the following building blocks, which are concatenated with the "-" symbol. The default value is "mb-sdb-sdl". Prior to version 1.2, "MB-ML" was the default value.
-\describe{
-\item{\code{sdb}}{sd bars between mean-sd to mean+sd are shown}
-\item{\code{sdl}}{sd lines at mean-sd and mean+sd are shown}
-\item{\code{mb}}{mean bars are shown}
-\item{\code{MB}}{mean bars are shown, where the color of the bar indicate completeness where positive mean values are blue and negative orange}
-\item{\code{ml}}{mean lines are shown}
-\item{\code{ML}}{mean lines are shown, where positive mean values are blue and negative orange}
-\item{\code{mean2}}{mean values are shown}
-}}
-
 \item{vp}{\code{\link[grid:viewport]{viewport}} to draw plot in (for instance useful to stack multiple tableplots)}
 
 \item{...}{other arguments are not used}
 }
 \description{
-Plot a \link{tabplot-object}. The arguments of this function, which specify the layout, can also be passed on to \code{\link{tableplot}} directly. New in version 1.2 is the argument \code{numMode}, which determines how numeric variables are plot.
+Plot a \link{tabplot-object}. The arguments of this function, which specify the layout, can also be passed on to \code{\link{tableplot}} directly.
 }
 \examples{
 # load diamonds dataset from ggplot2

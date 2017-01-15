@@ -20,8 +20,3 @@
 #' @keywords visualization large datasets
 #' @example ./examples/pkg.R
 {}
-
-.onAttach <- function(...) {
-	packageStartupMessage("Standard deviations are plot by default. See argument numMode of plot.tabplot.")
-}
-

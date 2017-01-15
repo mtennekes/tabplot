@@ -6,12 +6,13 @@
 \usage{
 tableplot(dat, select, subset = NULL, sortCol = 1, decreasing = TRUE,
   nBins = 100, from = 0, to = 100, nCols = ncol(dat), sample = FALSE,
-  sampleBinSize = 1000, scales = "auto", max_levels = 50,
-  pals = list("Set1", "Set2", "Set3", "Set4"), change_palette_type_at = 20,
-  rev_legend = FALSE, colorNA = "#FF1414", colorNA_num = "gray75",
-  numPals = "OrBu", limitsX = NULL, bias_brokenX = 0.8, IQR_bias = 5,
-  select_string = NULL, subset_string = NULL, colNames = NULL,
-  filter = NULL, plot = TRUE, ...)
+  sampleBinSize = 1000, scales = "auto", numMode = "mb-sdb-ml",
+  max_levels = 50, pals = list("Set1", "Set2", "Set3", "Set4"),
+  change_palette_type_at = 20, rev_legend = FALSE, colorNA = "#FF1414",
+  colorNA_num = "gray75", numPals = "OrBu", limitsX = NULL,
+  bias_brokenX = 0.8, IQR_bias = 5, select_string = NULL,
+  subset_string = NULL, colNames = NULL, filter = NULL, plot = TRUE,
+  ...)
 }
 \arguments{
 \item{dat}{a \code{\link{data.frame}}, an \code{\link[ff:ffdf]{ffdf}} object, or an object created by \code{\link{tablePrepare}} (see details below). Required.}
@@ -37,6 +38,17 @@ tableplot(dat, select, subset = NULL, sortCol = 1, decreasing = TRUE,
 \item{sampleBinSize}{the number of sampled objects per bin, if \code{sample} is \code{TRUE}.}
 
 \item{scales}{determines the horizontal axes of the numeric variables in \code{select}. Options: "lin", "log", and "auto" for automatic detection. Either \code{scale} is a named vector, where the names correspond to numerical variable names, or \code{scale} is unnamed, where the values are applied to all numeric variables (recycled if necessary).}
+
+\item{numMode}{character value that determines how numeric values are plotted. The value consists of the following building blocks, which are concatenated with the "-" symbol. The default value is "mb-sdb-sdl". Prior to version 1.2, "MB-ML" was the default value.
+\describe{
+\item{\code{sdb}}{sd bars between mean-sd to mean+sd are shown}
+\item{\code{sdl}}{sd lines at mean-sd and mean+sd are shown}
+\item{\code{mb}}{mean bars are shown}
+\item{\code{MB}}{mean bars are shown, where the color of the bar indicate completeness where positive mean values are blue and negative orange}
+\item{\code{ml}}{mean lines are shown}
+\item{\code{ML}}{mean lines are shown, where positive mean values are blue and negative orange}
+\item{\code{mean2}}{mean values are shown}
+}}
 
 \item{max_levels}{maximum number of levels for categorical variables. Categorical variables with more levels will be rebinned into \code{max_levels} levels. Either a positive number or -1, which means that categorical variables are never rebinned.}
 

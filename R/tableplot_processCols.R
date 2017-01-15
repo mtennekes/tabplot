@@ -39,7 +39,7 @@ tableplot_processCols <- function(tab, colNames1, colNames2, IQR_bias, bias_brok
 				col$compl <- pmin(col1$compl, col2$compl)
 				col[c("mean", "sd", "scale_final", "mean.scaled", "brokenX", "mean.diff.coor", "marks.labels", "marks.x", "xline", "widths")] <- NULL
 				
-				col <- scaleNumCol(col, IQR_bias=5, compare=TRUE, calculate.sd=calcualte.sd)
+				col <- scaleNumCol(col, IQR_bias=5, compare=TRUE, calculate.sd=calculate.sd)
 				col <- coorNumCol(col, limitsX=list(), bias_brokenX=0.8, compare=TRUE)
 				
 			} else {

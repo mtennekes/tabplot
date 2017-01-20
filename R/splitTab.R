@@ -1,6 +1,6 @@
 splitTab <- function(tab, nCols) {
-	sortCols <- which(!is.na(tab$sort_decreasing))
-	otherCols <- which(is.na(tab$sort_decreasing))
+	sortCols <- tab$sortCol
+	otherCols <- setdiff(1L:tab$m, sortCols)
 	
 	nsort <- length(sortCols)
 	nother <- length(otherCols)

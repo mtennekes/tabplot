@@ -1,3 +1,6 @@
+version 1.3-2 (devel)
+- fixed bug nCols
+
 version 1.3-1
 - fixed x-axis for non-sd numMode
 - fixed vignette bug

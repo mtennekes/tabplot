@@ -11,7 +11,10 @@ tableplot_processCols <- function(tab, colNames1, colNames2, IQR_bias, bias_brok
 			
 			if (col$isnumeric) {
 				col <- scaleNumCol(col, IQR_bias, calculate.sd=calculate.sd)
-				col <- coorNumCol(col, limitsX = limitsX[col$name], bias_brokenX=bias_brokenX)
+				limX <- limitsX[[col$name]]
+				if (!is.null(limX) && col$scale_final == "log") limX <- getLog(limX)
+
+				col <- coorNumCol(col, limitsX = limX, bias_brokenX=bias_brokenX)
 			} else {
 				col <- coorCatCol(col, nBins)
 			}

@@ -1,5 +1,7 @@
 version 1.3-2 (devel)
 - fixed bug nCols
+- fixed itableplot
+- fixed bug in limitsX
 
 version 1.3-1
 - fixed x-axis for non-sd numMode

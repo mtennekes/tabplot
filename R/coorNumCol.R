@@ -31,13 +31,21 @@ coorNumVector <- function(num, limitsX, bias_brokenX, name, sd=NULL) {
 	if (is.numeric(limitsX)) {
 		minmax <- limitsX
 		if (!ignoreMarks && min(numL, na.rm=TRUE)<limitsX[1]) {
-			warning(paste("some mean values in", name, "fall outside the given limits and are therefore truncated"))
+			if (!is.null(sd)) {
+				warning(paste("some mean values minus standard deviation of", name, "are less than the lower limit", limitsX[1], ", and are therefore truncated"), call. = FALSE)	
+			} else {
+				warning(paste("some mean values of", name, "are less than the lower limit", limitsX[1], ", and are therefore truncated"), call. = FALSE)
+			}
 			num[num<limitsX[1]] <- limitsX[1]
 			numL[numL<limitsX[1]] <- limitsX[1]
 			numR[numR<limitsX[1]] <- limitsX[1]
 		}
 		if (!ignoreMarks && max(numR, na.rm=TRUE)>limitsX[2]) {
-			warning(paste("some mean values in", name, "fall outside the given limits and are therefore truncated"))
+			if (!is.null(sd)) {
+				warning(paste("some mean values plus standard deviation of", name, "are greather than the upper limit", limitsX[2], ", and are therefore truncated"), call. = FALSE)
+			} else {
+				warning(paste("some mean values of", name, "are greather than the upper limit", limitsX[2], ", and are therefore truncated"), call. = FALSE)
+			}
 			num[num>limitsX[2]] <- limitsX[2]
 			numL[numL>limitsX[2]] <- limitsX[2]
 			numR[numR>limitsX[2]] <- limitsX[2]

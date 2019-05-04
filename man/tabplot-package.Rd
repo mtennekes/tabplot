@@ -2,8 +2,8 @@
 % Please edit documentation in R/pkg.R
 \docType{package}
 \name{tabplot-package}
-\alias{tabplot}
 \alias{tabplot-package}
+\alias{tabplot}
 \title{Tableplot, a visualization of large datasets}
 \description{
 A tableplot is a visualisation of a (large) dataset. Each column represents a variable and each row bin is an aggregate of a certain number of records. For numeric variables, a bar chart of the mean values is depicted. For categorical variables, a stacked bar chart is depicted of the proportions of categories. Missing values are taken into account. Also supports large \code{\link[ff:ffdf]{ffdf}} datasets from the \code{\link[ff:ff]{ff}} package.
@@ -34,4 +34,3 @@ Martijn Tennekes \email{mtennekes@gmail.com} and Edwin de Jonge
 \keyword{datasets}
 \keyword{large}
 \keyword{visualization}
-

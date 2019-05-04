@@ -1,5 +1,5 @@
 tableplot_checkLimitsX <- function(limitsX, colNames, isNumber) {
-	if (any(sapply(limitsX, function(l) !is.na(l) && (!is.numeric(l) || length(l)!=2 || l[2]<=l[1])))) stop("<limitsX> is not correct")
+	if (any(sapply(limitsX, function(l) !any(is.na(l)) && (!is.numeric(l) || length(l)!=2 || l[2]<=l[1])))) stop("<limitsX> is not correct")
 
 	if (is.null(names(limitsX))) {
 		if (length(limitsX) != length(colNames)) {

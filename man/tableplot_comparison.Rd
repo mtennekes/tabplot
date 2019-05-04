@@ -34,4 +34,3 @@ tp2 <- tableplot(chp.diamonds)
 
 plot(tp2 - tp1)
 }
-

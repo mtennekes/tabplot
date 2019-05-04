@@ -37,4 +37,3 @@ The default palette, \code{"Set1"}, is a colorblind-friendly palette (see Okabe 
 }
 \keyword{color}
 \keyword{palettes}
-

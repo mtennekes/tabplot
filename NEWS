@@ -1,4 +1,4 @@
-version 1.3-2 (devel)
+version 1.3-2
 - fixed bug nCols
 - fixed itableplot
 - fixed bug in limitsX

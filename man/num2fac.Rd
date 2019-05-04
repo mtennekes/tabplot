@@ -4,7 +4,8 @@
 \alias{num2fac}
 \title{Transform a numerical vector to a factor}
 \usage{
-num2fac(num, method = "pretty", num_scale = "auto", n = 0, brks = NA)
+num2fac(num, method = "pretty", num_scale = "auto", n = 0,
+  brks = NA)
 }
 \arguments{
 \item{num}{numeric vector}
@@ -46,4 +47,3 @@ tableplot(diamonds)
 \seealso{
 \code{\link{datetime2fac}}
 }
-

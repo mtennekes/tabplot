@@ -81,78 +81,78 @@ itableplot <- function() {
 		}
 		
 		
-		runApp(list(
-			ui = pageWithSidebar(
+		shiny::runApp(list(
+			ui = shiny::pageWithSidebar(
 				
 				# Application title
-				headerPanel("Shiny Tableplot"),
+				shiny::headerPanel("Shiny Tableplot"),
 				
-				sidebarPanel(
-					tabsetPanel(
-						tabPanel("Data",
-								 uiOutput("df"),
-								 checkboxInput("sampling", label="Sampling", value=TRUE),
-								 uiOutput("selected"),
-								 uiOutput("sortOn"),
-								 checkboxInput("decreasing", label="Decreasing", value=TRUE),
-								 sliderInput("fromto", label="Range:", min=0, max=1, value=c(0,1), round=-1),
-								 numericInput("nBins", label="Number of bins:", value=100, min=2, max=500, step=1)),
-						tabPanel("Numeric",
-								 uiOutput("logscale")),
+				shiny::sidebarPanel(
+					shiny::tabsetPanel(
+						shiny::tabPanel("Data",
+										shiny::uiOutput("df"),
+										shiny::checkboxInput("sampling", label="Sampling", value=TRUE),
+										shiny::uiOutput("selected"),
+										shiny::uiOutput("sortOn"),
+										shiny::checkboxInput("decreasing", label="Decreasing", value=TRUE),
+										shiny::sliderInput("fromto", label="Range:", min=0, max=1, value=c(0,1), round=-1),
+										shiny::numericInput("nBins", label="Number of bins:", value=100, min=2, max=500, step=1)),
+						shiny::tabPanel("Numeric",
+										shiny::uiOutput("logscale")),
 						#tabPanel("Categorical"),
 						#	uiOutput("palettes")),
-						tabPanel("Output",
-								 p(textOutput("rcode"))))),
+						shiny::tabPanel("Output",
+										shiny::p(shiny::textOutput("rcode"))))),
 				
-				mainPanel(
-					plotOutput("plot", height="600px")
+				shiny::mainPanel(
+					shiny::plotOutput("plot", height="600px")
 				)
 			),
 			server = function(input, output){
-				dataset <- reactive({
+				dataset <- shiny::reactive({
 					dfname <- ifelse(is.null(input$dataset), dfs[1], input$dataset)
 					ps[[dfname]]
 				})
 				
-				numvars <- reactive({
+				numvars <- shiny::reactive({
 					if (length(input$select) && length(input$dataset)) {
 						input$select[isNumber[[input$dataset]][input$select]]
 					} else character(0)
 				})
 				
 				
-				output$df <- renderUI({
+				output$df <- shiny::renderUI({
 					# p <- dataset()
 					# vars <- colnames(p$data)
-					selectInput("dataset", label="Dataset:", choices=dfs)
+					shiny::selectInput("dataset", label="Dataset:", choices=dfs)
 				})
 				
-				output$selected <- renderUI({
+				output$selected <- shiny::renderUI({
 					p <- dataset()
 					vars <- colnames(p$data)
-					checkboxGroupInput("select", label="Columns:", choices=vars, selected=vars)
+					shiny::checkboxGroupInput("select", label="Columns:", choices=vars, selected=vars)
 				})
 				
-				output$sortOn <- renderUI({
+				output$sortOn <- shiny::renderUI({
 					p <- dataset()
 					vars <- colnames(p$data)
 					choices <- if (length(input$select)) input$select else vars
-					selectInput("sortCol", label="Sort on:", choices=choices)
+					shiny::selectInput("sortCol", label="Sort on:", choices=choices)
 				})
 				
-				output$logscale <-  renderUI({
+				output$logscale <-  shiny::renderUI({
 					if (length(numvars)) {
-						checkboxGroupInput("logscale", label="Log scale:", choices=numvars())
+						shiny::checkboxGroupInput("logscale", label="Log scale:", choices=numvars())
 					}
 				})
 				
-				output$rcode <- renderText({
+				output$rcode <- shiny::renderText({
 					p <- dataset()
 					numvars <- numvars()
 					tablePlot(p, numvars, input, plot=FALSE)
 				})
 				
-				output$plot <- renderPlot({
+				output$plot <- shiny::renderPlot({
 					p <- dataset()
 					numvars <- numvars()
 					tablePlot(p, numvars, input)

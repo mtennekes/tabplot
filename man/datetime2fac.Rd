@@ -35,4 +35,3 @@ levels(t2)
 \seealso{
 \code{\link{num2fac}}
 }
-

@@ -16,4 +16,3 @@ savePrepare(tp, dir, overwrite = FALSE)
 \description{
 Saves a prepared object that has been created by \code{\link{tablePrepare}}. If \code{\link{tablePrepare}} is called with \code{dir} specified, then it is already saved using this function.
 }
-

@@ -24,4 +24,3 @@ data(cars)
 itableplot()
 }
 }
-

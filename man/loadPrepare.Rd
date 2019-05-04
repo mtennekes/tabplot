@@ -15,4 +15,3 @@ the prepared object
 \description{
 Loads a prepared object that has been saved with \code{\link{savePrepare}}.
 }
-

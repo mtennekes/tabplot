@@ -49,4 +49,3 @@ tab <- tableChange(tab, select_string=rev(names(diamonds)),
 # plot modified tabplot object
 plot(tab)
 }
-

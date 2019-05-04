@@ -8,3 +8,5 @@ README
 .Rprofile
 .travis.yml
 appveyor.yml
+^CRAN-RELEASE$
+^cran-comments\.md$

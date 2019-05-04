@@ -14,4 +14,3 @@ bin_hcc_data(bd, max_levels)
 \description{
 Bin high cardinality data
 }
-

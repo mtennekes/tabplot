@@ -47,4 +47,3 @@ tableSave(tab, filename="diamonds.png", title="Shine on you Crazy Diamond!!!")
 }
 \keyword{save}
 \keyword{tableplot}
-

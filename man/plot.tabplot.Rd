@@ -54,4 +54,3 @@ plot(tab, title="Shine on you Crazy Diamond!!!",
 	 fontsize.title=16)
 
 }
-

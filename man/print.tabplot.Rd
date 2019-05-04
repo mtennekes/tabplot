@@ -14,4 +14,3 @@
 \description{
 Print a \link{tabplot-object}
 }
-

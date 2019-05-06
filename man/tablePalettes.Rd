@@ -27,7 +27,7 @@ The default palette, \code{"Set1"}, is a colorblind-friendly palette (see Okabe 
 \references{
 \href{http://colorbrewer2.org/}{Brewer, Cynthia A., Geoffrey W. Hatchard and Mark A. Harrower, 2003, ColorBrewer in Print: A Catalog of Color Schemes for Maps, Cartography and Geographic Information Science 30(1): 5-32.}
 
-\href{http://jfly.iam.u-tokyo.ac.jp/color/}{Okabe, M. and Ito, K. Color Universal Design (CUD) - How to make figures and presentations that are friendly to Colorblind people, 2002}
+\href{http://jfly.uni-koeln.de/html/color_blind/}{Okabe, M. and Ito, K. Color Universal Design (CUD) - How to make figures and presentations that are friendly to Colorblind people, 2002}
 
 \href{alexandria.tue.nl/extra2/afstversl/wsk-i/wijffelaars2008.pdf}{Wijffelaars, M. Synthesis of Color Palettes. Master's thesis. Supervisors Wijk, J. van, and Vliegen, R. 2008}
 

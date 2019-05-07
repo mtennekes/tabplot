@@ -26,10 +26,11 @@ function(bd, max_levels) {
 			ffmapping <- ff(rep(seq(from=0, by=nlev, length.out=nRow), times=nCol) + rep(mapping_na, each=nRow), vmode="integer")
 			
 			temp <- binned_sum.ff(ffcol, ffmapping, nRow * nlev)
-			
+			close(ffcol)
+			close(ffmapping)
 			col2 <- t(matrix(temp[,2], nrow=nlev, 
 						   dimnames=list(c(new_lvls, "<NA>"),rownames(col))))
-
+			close(temp)
 			col2
 		} else col
 	})

@@ -93,7 +93,7 @@ bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 	
 	
 	# do the actual binning
-	lapply(physical(x), function(v){
+	res <- lapply(physical(x), function(v){
 		if (vmode(v)=="logical") {
 			bs <- binned_sum.ff(v, bin, nbins, INDEX=o)
 			cbind("TRUE"=bs[,2], "FALSE"=bs[,1]-bs[,2], "<NA>"=bs[,3])
@@ -118,6 +118,15 @@ bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 			}
 		}
 	})
+	
+	close(x)
+	if (sample) {
+		close(o)
+		close(o_s)
+	} else {
+		close(bin)
+	}
+	res
 }
 
 
@@ -129,74 +138,3 @@ binRanges <- function(from, to, nbins){
 	
 	mapply(ri, f, t, SIMPLIFY=FALSE)
 }
-
-# # quick testing
-# require(ggplot2)
-# x <- as.ffdf(diamonds)
-# 
-# # blow the data set 2^10 times up.
-# for (i in 1:8){
-# 	x <- ffdfappend(x, x)
-# 	cat("\rnrow(x): ", nrow(x))
-# }
-# 
-# px <- tablePrepare(x)
-# 
-# system.time(
-# 	agg <- bin_data(px, sortCol=1, nbins=100, sample=TRUE, sampleBinSize=1e2)
-# )
-# 
-# system.time(
-# 	agg2 <- bin_data(px, sortCol=1, nbins=100, sample=FALSE)
-# )
-# 
-# for (v in names(agg)){
-# 	if (colnames(agg[[v]])[2] == "mean"){
-# 		d <- 100*(agg2[[v]][,2] - agg[[v]][,2])/agg2[[v]][,2]
-# 		plot(seq_along(d), d,main=v)
-# 	}
-# }
-# carat_diff_p <- 100*(agg2$carat-agg$carat)/agg2$carat
-# plot(1:nrow(carat_diff_p), carat_diff_p[,"mean"])
-# summary(carat_diff_p)
-
-# 
-# system.time(
-# 	agg2 <- bin_data2(px, sortCol=1, nbins=100)
-# )
-
-# agg3 <- cbind(agg$carat, agg2$carat)
-# # binRanges(2, 100, nbins=3)
-# 
-# 
-# x.big <- NULL
-# for (i in 1:100){
-# 	x.big <- ffdfappend(x.big, x)
-# 	cat("\r", i)
-# }
-# save.ffdf(x.big)
-# 
-#load.ffdf("ffdb/")
-#px.big <- tablePrepare(x.big)
-#py.big <- tablePrepare(y.big)
-# # pz.big <- tablePrepare(z.big)
-# # 
-# system.time(
-# 	agg <- bin_data(px.big, sortCol=1, nbins=100, maxN=1e4)
-# )
-# 
-# 
-# system.time(
-# 	agg2 <- bin_data2(px.big, sortCol=1, from=0, to=1, nbins=100, maxN=1e4)
-# )
-# 
-# x <- ff(1:10)
-# index <- ff(10:1, vmode="integer")
-# nbins <- 3
-# 
-# binned_sum2.ff(x, index, nbins)
-# 
-# y <- ff(as.factor(c("M","M","V")))
-# index <- ff(1:3)
-# nbins <- 3
-# binned_tabulate2.ff(y, index, nbins, 2)

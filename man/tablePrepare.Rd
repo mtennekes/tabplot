@@ -38,4 +38,5 @@ p <- tablePrepare(diamonds)
 tableplot(p, nBins=200, sortCol=depth)
 tableplot(p, nBins=50, sortCol=price)
 
+close(p)
 }

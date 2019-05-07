@@ -51,6 +51,9 @@ tablePrepare <- function(x, name=NULL, dir=NULL, ...){
 	
 	ordered <- do.call(ffdf, ordered)
 	
+	close.ff(rand)
+	close.ff(rand_order)
+	
 	#ranked <- lapply(ordered, fforder)
 	
 	tp <- structure(
@@ -63,4 +66,16 @@ tablePrepare <- function(x, name=NULL, dir=NULL, ...){
 	)
 	if (!missing(dir)) tryCatch(savePrepare(tp, dir, ...), error = function(e) message("Saving to", dir, "failed with the following error:\n", e$message, "\n The returned prepare object can be saved with savePrepare."))
 	tp
+}
+
+#' Closes an object created with tablePrepare
+#' 
+#' Closes an object created with tablePrepare. It frees the Memory Mapping resources and closes the underlying \code{ff} data without deleting the file data.
+#' 
+#' @param con object of class \code{prepared}, i.e. created with \code{\link{tablePrepare}}.
+#' @param ... not used
+#' @return \code{TRUE} if the files could be closed, \code{FALSE} if it was closed already
+#' @export
+close.prepared <- function(con, ...) {
+	all(sapply(con, close.ffdf))
 }

@@ -87,7 +87,9 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##################################
 	
 	p <- dat
-	if (!inherits(dat, "prepared")){
+	is_prepared <- inherits(dat, "prepared")
+	
+	if (!is_prepared) {
 		datName <- deparse(substitute(dat))
 		p <- tablePrepare(dat, name=datName)
 	} else datName <- attr(p, "name")
@@ -251,8 +253,11 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 						colorNA=colorNA, colorNA_num=colorNA_num, numPals=numPals, nBins=nBins, from=from, 
 						to=to, N=N, n=n)
 	
-	
-	
+	##################################
+	## Clean temp ff objects
+	##################################
+	lapply(p, close.ffdf)
+
 	##################################
 	## Grammar of Graphics, and create difference columns
 	##################################

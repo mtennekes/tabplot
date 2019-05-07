@@ -30,7 +30,6 @@ function(bd, max_levels) {
 			close(ffmapping)
 			col2 <- t(matrix(temp[,2], nrow=nlev, 
 						   dimnames=list(c(new_lvls, "<NA>"),rownames(col))))
-			close(temp)
 			col2
 		} else col
 	})

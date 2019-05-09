@@ -256,7 +256,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##################################
 	## Clean temp ff objects
 	##################################
-	lapply(p, close.ffdf)
+	if (!is_prepared) lapply(p, close.ffdf)
 
 	##################################
 	## Grammar of Graphics, and create difference columns

@@ -119,10 +119,9 @@ bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 		}
 	})
 	
-	close(x)
+	# close ff objects
 	if (sample) {
 		close(o)
-		close(o_s)
 	} else {
 		close(bin)
 	}

@@ -51,8 +51,8 @@ tablePrepare <- function(x, name=NULL, dir=NULL, ...){
 	
 	ordered <- do.call(ffdf, ordered)
 	
-	close.ff(rand)
-	close.ff(rand_order)
+	ff::close.ff(rand)
+	ff::close.ff(rand_order)
 	
 	#ranked <- lapply(ordered, fforder)
 	
@@ -77,5 +77,5 @@ tablePrepare <- function(x, name=NULL, dir=NULL, ...){
 #' @return \code{TRUE} if the files could be closed, \code{FALSE} if it was closed already
 #' @export
 close.prepared <- function(con, ...) {
-	all(sapply(con, close.ffdf))
+	all(sapply(con, ff::close.ffdf))
 }

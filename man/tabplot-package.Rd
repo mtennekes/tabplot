@@ -28,6 +28,9 @@ data(diamonds)
 # create tableplot
 tableplot(diamonds)
 }
+\references{
+\href{http://www.jds-online.com/file_download/379/JDS-1108.pdf}{Tennekes, M., Jonge, E. de, Daas, P.J.H. (2013) Visualizing and Inspecting Large Datasets with Tableplots, Journal of Data Science 11 (1), 43-58}
+}
 \author{
 Martijn Tennekes \email{mtennekes@gmail.com} and Edwin de Jonge
 }

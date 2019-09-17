@@ -20,7 +20,7 @@
 #'
 #' \href{http://jfly.uni-koeln.de/html/color_blind/}{Okabe, M. and Ito, K. Color Universal Design (CUD) - How to make figures and presentations that are friendly to Colorblind people, 2002}
 #'
-#' \href{alexandria.tue.nl/extra2/afstversl/wsk-i/wijffelaars2008.pdf}{Wijffelaars, M. Synthesis of Color Palettes. Master's thesis. Supervisors Wijk, J. van, and Vliegen, R. 2008}
+#' \href{http://alexandria.tue.nl/extra2/afstversl/wsk-i/wijffelaars2008.pdf}{Wijffelaars, M. Synthesis of Color Palettes. Master's thesis. Supervisors Wijk, J. van, and Vliegen, R. 2008}
 #'
 #' \href{https://CRAN.R-project.org/package=dichromat}{Thomas Lumley (2013). dichromat: Color Schemes for Dichromats. R package version 2.0-0.}
 #' 

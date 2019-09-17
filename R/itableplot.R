@@ -17,6 +17,9 @@
 #' }
 #' @export
 itableplot <- function() {
+	dfs <- ps <- isNumber <- tablePlot <- NULL
+	
+	
 	if (requireNamespace("shiny")) {
 		
 		shiny::shinyApp(
@@ -166,7 +169,7 @@ itableplot <- function() {
 				}
 				
 				
-				onStop(function() {
+				shiny::onStop(function() {
 					cat("Doing application cleanup\n")
 					lapply(ps, function(p) {
 						if (attr(p, "close_this")) {

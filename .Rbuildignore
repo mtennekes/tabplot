@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 examples
+sandbox
 test
 output
 LICENSE

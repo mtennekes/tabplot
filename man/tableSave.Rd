@@ -4,10 +4,18 @@
 \alias{tableSave}
 \title{Save a tableplot}
 \usage{
-tableSave(tab, filename = paste(tab$dataset, ".pdf", sep = ""),
-  device = default_device(filename), path = NULL, scale = 1,
-  width = par("din")[1], height = par("din")[2], dpi = 300,
-  onePage = TRUE, ...)
+tableSave(
+  tab,
+  filename = paste(tab$dataset, ".pdf", sep = ""),
+  device = default_device(filename),
+  path = NULL,
+  scale = 1,
+  width = par("din")[1],
+  height = par("din")[2],
+  dpi = 300,
+  onePage = TRUE,
+  ...
+)
 }
 \arguments{
 \item{tab}{a \link{tabplot-object}, or a list of \link{tabplot-object}s, which are either stacked horizontally or put on multiple pages (for pdf only)}

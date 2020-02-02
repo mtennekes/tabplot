@@ -6,7 +6,7 @@ Type: Package
 LazyLoad: yes
 Author: Martijn Tennekes and Edwin de Jonge
 Description: A tableplot is a visualisation of a (large) dataset with a dozen of variables, both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. Numeric variables are visualized as bar charts, and categorical variables as stacked bar charts. Missing values are taken into account. Also supports large 'ffdf' datasets from the 'ff' package.
-Version: 1.3-3
+Version: 1.3-4
 URL: https://github.com/mtennekes/tabplot http://www.jds-online.com/file_download/379/JDS-1108.pdf
 Date: 2019-09-17
 Depends:
@@ -21,4 +21,4 @@ Suggests:
     knitr,
     classInt,
     ggplot2
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2

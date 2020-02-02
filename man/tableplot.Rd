@@ -4,15 +4,37 @@
 \alias{tableplot}
 \title{Create a tableplot}
 \usage{
-tableplot(dat, select, subset = NULL, sortCol = 1, decreasing = TRUE,
-  nBins = 100, from = 0, to = 100, nCols = ncol(dat),
-  sample = FALSE, sampleBinSize = 1000, scales = "auto",
-  numMode = "mb-sdb-ml", max_levels = 50, pals = list("Set1", "Set2",
-  "Set3", "Set4"), change_palette_type_at = 20, rev_legend = FALSE,
-  colorNA = "#FF1414", colorNA_num = "gray75", numPals = "OrBu",
-  limitsX = NULL, bias_brokenX = 0.8, IQR_bias = 5,
-  select_string = NULL, subset_string = NULL, colNames = NULL,
-  filter = NULL, plot = TRUE, ...)
+tableplot(
+  dat,
+  select,
+  subset = NULL,
+  sortCol = 1,
+  decreasing = TRUE,
+  nBins = 100,
+  from = 0,
+  to = 100,
+  nCols = ncol(dat),
+  sample = FALSE,
+  sampleBinSize = 1000,
+  scales = "auto",
+  numMode = "mb-sdb-ml",
+  max_levels = 50,
+  pals = list("Set1", "Set2", "Set3", "Set4"),
+  change_palette_type_at = 20,
+  rev_legend = FALSE,
+  colorNA = "#FF1414",
+  colorNA_num = "gray75",
+  numPals = "OrBu",
+  limitsX = NULL,
+  bias_brokenX = 0.8,
+  IQR_bias = 5,
+  select_string = NULL,
+  subset_string = NULL,
+  colNames = NULL,
+  filter = NULL,
+  plot = TRUE,
+  ...
+)
 }
 \arguments{
 \item{dat}{a \code{\link{data.frame}}, an \code{\link[ff:ffdf]{ffdf}} object, or an object created by \code{\link{tablePrepare}} (see details below). Required.}

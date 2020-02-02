@@ -4,9 +4,17 @@
 \alias{bin_data}
 \title{Bin data}
 \usage{
-bin_data(p, sortCol = 1L, cols = seq_along(p$data), from = 0,
-  to = 1, nbins = 100L, decreasing = FALSE, sample = FALSE,
-  sampleBinSize = 100)
+bin_data(
+  p,
+  sortCol = 1L,
+  cols = seq_along(p$data),
+  from = 0,
+  to = 1,
+  nbins = 100L,
+  decreasing = FALSE,
+  sample = FALSE,
+  sampleBinSize = 100
+)
 }
 \arguments{
 \item{p}{prepared dataset (see \code{\link{tablePrepare}})}

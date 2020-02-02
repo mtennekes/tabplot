@@ -5,10 +5,21 @@
 \alias{plot.tabplot_compare}
 \title{Plot a \link{tabplot-object}}
 \usage{
-\method{plot}{tabplot}(x, fontsize = 10, legend.lines = 8,
-  max_print_levels = 15, text_NA = "missing", title = NULL,
-  showTitle = NULL, fontsize.title = 14, showNumAxes = TRUE,
-  rotateNames = NA, relative = FALSE, vp = NULL, ...)
+\method{plot}{tabplot}(
+  x,
+  fontsize = 10,
+  legend.lines = 8,
+  max_print_levels = 15,
+  text_NA = "missing",
+  title = NULL,
+  showTitle = NULL,
+  fontsize.title = 14,
+  showNumAxes = TRUE,
+  rotateNames = NA,
+  relative = FALSE,
+  vp = NULL,
+  ...
+)
 
 \method{plot}{tabplot_compare}(x, ...)
 }

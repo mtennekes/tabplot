@@ -26,9 +26,9 @@ plot.tabplot <-
 function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "missing", title = NULL, showTitle = NULL, fontsize.title = 14, showNumAxes=TRUE, rotateNames = NA, relative=FALSE, vp=NULL, ...) {
 
 	
-	if (!(class(x)[1] %in% c("tabplot", "tabplot_compare"))) stop(paste(deparse(substitute(x)), "is not a tabplot-object"))
+	if (!inherits(x, c("tabplot", "tabplot_compare"))) stop(paste(deparse(substitute(x)), "is not a tabplot-object"))
 	
-	compare <- (class(x)=="tabplot_compare")
+	compare <- (inherits(x, "tabplot_compare"))
 	#relative <- relative && compare
 	
 	
@@ -46,7 +46,7 @@ function(x, fontsize = 10, legend.lines = 8, max_print_levels = 15, text_NA = "m
 	if (missing(showTitle)) showTitle <- !missing(title)
 	
 	if (missing(title)) {
-		dataset <- ifelse(class(x)=="tabplot", x$dataset, paste(x$dataset2, x$dataset1, sep=" - "))
+		dataset <- ifelse(inherits(x, "tabplot"), x$dataset, paste(x$dataset2, x$dataset1, sep=" - "))
 		title <- ifelse(length(x$subset)==0, dataset, paste(dataset, " (", x$subset, ")", sep=""))
 	}
 	

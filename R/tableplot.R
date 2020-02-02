@@ -174,7 +174,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 		if (subset_string %in% names(dat)) {
 			lvls <- levels(dat[[subset_string]])
 			
-			if ((class(dat[[subset_string]])[1]=="logical") || (class(dat)[1]=="ffdf" &&
+			if (inherits(dat[[subset_string]], "logical") || (class(dat)[1]=="ffdf" &&
 				vmode(dat[[subset_string]]) %in% c("boolean", "logical"))) {
 				isLogical <- TRUE
 				lvls <- c("TRUE", "FALSE")
@@ -216,9 +216,9 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	if (any(!isNumber))
 		change_palette_type_at <- tableplot_checkChangePalType(change_palette_type_at, 
 														   max(sapply(pals[!isNumber], function(pal)length(pal$palette))))
-	if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") 
+	if (inherits(try(col2rgb(colorNA), silent=TRUE), "try-error")) 
 		stop("<colorNA> is not correct")
-	if (class(try(col2rgb(colorNA_num), silent=TRUE))=="try-error") 
+	if (inherits(try(col2rgb(colorNA_num), silent=TRUE), "try-error")) 
 		stop("<colorNA_num> is not correct")
 	
 	rev_legend <- tableplot_checkRevLeg(rev_legend, colNames)

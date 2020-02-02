@@ -4,7 +4,7 @@ tableplot_checkNumPals <- function(numPals, colNames, isNumber) {
 	signs <- substr(numPals, 1, 1)=="-"
 	numPalsID <- numPals
 	numPalsID[signs] <- substr(numPalsID[signs], 2, nchar(numPalsID[signs]))
-	if ((class(numPalsID)!="character") || !all(numPalsID %in% names(tabplotPalettes$div))) stop("<numPals> is not correct")
+	if ((!inherits(numPalsID, "character")) || !all(numPalsID %in% names(tabplotPalettes$div))) stop("<numPals> is not correct")
 	
 	## check assignment to column names
 	if (is.null(names(numPals))) {

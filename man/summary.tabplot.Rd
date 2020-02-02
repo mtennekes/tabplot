@@ -4,8 +4,7 @@
 \alias{summary.tabplot}
 \title{Summarize a \link{tabplot-object}}
 \usage{
-\method{summary}{tabplot}(object, digits = max(3, getOption("digits") -
-  3), ...)
+\method{summary}{tabplot}(object, digits = max(3, getOption("digits") - 3), ...)
 }
 \arguments{
 \item{object}{tabplot object}

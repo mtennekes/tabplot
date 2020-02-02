@@ -82,7 +82,7 @@ tableChange <- function(tab, select=NULL, select_string=tab$select, decreasing=N
 	## change colorNA
 	if (!missing(colorNA)) {
 		## Check colorNA
-		if (class(try(col2rgb(colorNA), silent=TRUE))=="try-error") {
+		if (inherits(try(col2rgb(colorNA), silent=TRUE), "try-error")) {
 			stop("<colorNA> is not correct")
 		}
 		whichCategorical <- which(sapply(tab2$columns, FUN=function(col)!col$isnumeric))
@@ -95,7 +95,7 @@ tableChange <- function(tab, select=NULL, select_string=tab$select, decreasing=N
 	## change numeric palettes
 	if (!missing(numPals)) {
 		## Check numPals
-		if ((class(numPals)!="character") || !all(numPals %in% c("Blues", "Greens", "Greys"))) stop("<numPals> is not correct")
+		if ((!inherits(numPals, "character")) || !all(numPals %in% c("Blues", "Greens", "Greys"))) stop("<numPals> is not correct")
 
 		whichNumeric <- which(sapply(tab2$columns, FUN=function(col)col$isnumeric))	
 		numPals <- rep(numPals, length.out=length(whichNumeric))

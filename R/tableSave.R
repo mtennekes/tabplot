@@ -39,7 +39,7 @@ tableSave <- function (tab, filename = paste(tab$dataset, ".pdf", sep = ""),
     items.plot <- items[isPlotItem]
     items.dev <- items[!isPlotItem]
     if (is.list(tab) && !inherits(tab, c("tabplot", "tabplot_compare"))) {
-        if (!all(sapply(tab, class) %in% c("tabplot", "tabplot_compare"))) 
+        if (!all(sapply(tab, inherits, what = c("tabplot", "tabplot_compare")))) 
             stop(paste(deparse(substitute(tab)), "is not a list of tabplot-objects"))
     }
     else {

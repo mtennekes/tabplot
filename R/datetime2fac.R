@@ -24,7 +24,7 @@ datetime2fac <- function(p, rng=range(p, na.rm=TRUE)) {
 		paste(c(15, 5, 1), "min"),
 		paste(c(10, 5, 1), "sec"))
 	
-	if ("Date" %in% class(p)) {
+	if (inherits(p, "Date")) {
 		cutSteps <- cutSteps[1:11]
 	}
 	

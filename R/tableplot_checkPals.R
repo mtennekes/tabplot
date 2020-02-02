@@ -1,5 +1,5 @@
 tableplot_checkPals <- function(pals, colNames, isCat) {
-	if (class(pals)!="list") stop("<pals> is not a list")
+	if (!inherits(pals, "list")) stop("<pals> is not a list")
 
 	catCols <- colNames[isCat]
 	
@@ -21,7 +21,7 @@ tableplot_checkPals <- function(pals, colNames, isCat) {
 	}
 	
 	palList <- lapply(pals2, function(p){
-		if (class(p)=="character" && length(p)==1) {
+		if (inherits(p, "character") && length(p)==1) {
 			s <- ifelse(substr(p, nchar(p),nchar(p))==")", 
 						as.integer(substr(p, nchar(p)-1,nchar(p)-1)), NA)
 			name <- ifelse(is.na(s), p, substr(p, 1, nchar(p)-3))
@@ -29,7 +29,7 @@ tableplot_checkPals <- function(pals, colNames, isCat) {
 			if (!name %in% names(allpals)) stop("<pals> is not correct")
 			getPal(name, s)
 		} else {
-			if (class(try(col2rgb(p), silent=TRUE))=="try-error") {
+			if (inherits(try(col2rgb(p), silent=TRUE), "try-error")) {
 				stop("<pals> color palette(s) are not correct")
 			}
 			list(palette=p, name="custom")

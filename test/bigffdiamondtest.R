@@ -1,5 +1,5 @@
 library(ffbase)
-options(fftempdir = "d:/temp")
+options(fftempdir= tempdir())
 
 library(ggplot2); data(diamonds)
 

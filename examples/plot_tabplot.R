@@ -1,6 +1,5 @@
 # load diamonds dataset from ggplot2
-require(ggplot2)
-data(diamonds)
+data(diamonds, package="ggplot2")
 
 tab <- tableplot(diamonds)
 plot(tab, title="Shine on you Crazy Diamond!!!",

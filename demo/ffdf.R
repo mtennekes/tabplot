@@ -29,3 +29,5 @@ cat("Make a tableplot...")
 #and plot
 tableplot(irisNA)
 cat("\n")
+
+

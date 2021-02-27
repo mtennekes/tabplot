@@ -13,7 +13,7 @@
 #' @param sampleBinSize sample size per bin
 #' @export
 #' @import ffbase
-#' @importFrom ff vw "vw<-" ff vmode is.factor.ff
+#' @importFrom ff vw "vw<-" ff vmode
 #' @importFrom bit chunk physical
 bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 					, nbins=100L
@@ -98,7 +98,7 @@ bin_data <- function( p, sortCol=1L, cols=seq_along(p$data), from=0, to=1
 			bs <- binned_sum.ff(v, bin, nbins, INDEX=o)
 			cbind("TRUE"=bs[,2], "FALSE"=bs[,1]-bs[,2], "<NA>"=bs[,3])
 		}
-		else if (is.factor.ff(v)){
+		else if (is.factor(v)){
 			bt <- binned_tabulate.ff(v, bin, nbins, nlevels(v), INDEX=o)
 			cbind(bt[,-1], "<NA>"=bt[,1]) / rowSums(bt)
 		} else {

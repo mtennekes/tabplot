@@ -1,7 +1,7 @@
 subset_data <- function(p, cols, subset_string, sortCol) {
 	# can be made a lot shorter
 	s_data <- p$data[cols]
-	s_ordered <- clone(p$ordered[cols])
+	s_ordered <- clone.ffdf(p$ordered[cols])
 	if (!missing(subset_string)) {
 		i <- ffwhich(p$data, parse(text=subset_string))
 		s_data <- s_data[i,]

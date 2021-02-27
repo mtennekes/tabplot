@@ -54,7 +54,7 @@
 #' @importFrom graphics par plot
 #' @importFrom stats na.omit quantile runif
 #' @importFrom utils capture.output head str tail
-#' @importFrom ff clone "nrow<-" fforder ffdf as.ffdf
+#' @importFrom ff clone.ffdf "nrow<-" fforder ffdf as.ffdf
 #' @importFrom bit physical ri
 #' @keywords visualization
 #' @example ./examples/tableplot.R
@@ -205,7 +205,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##################################
 	## other checks
 	##################################
-	isNumber <- sapply(physical(dat)[colNames], function(col)!is.factor.ff(col) && !vmode(col)=="logical")
+	isNumber <- sapply(physical(dat)[colNames], function(col)!is.factor(col) && !vmode(col)=="logical")
 	
 	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
 	if (nrow(dat)==1) stop("<dat> has only one row")
@@ -257,15 +257,12 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##################################
 	## Clean temp ff objects
 	##################################
-	if (!is_prepared) lapply(p, ff::close.ffdf)
+	if (!is_prepared) lapply(p, close)
 
 	##################################
 	## Grammar of Graphics, and create difference columns
 	##################################
 	tab <- tableplot_processCols(tab, colNames1, colNames2, IQR_bias, bias_brokenX, limitsX, nBins, sortColName, numMode)
-	
-	
-	
 	
 	##################################
 	## output

@@ -30,7 +30,7 @@ tablePrepare <- function(x, name=NULL, dir=NULL, ...){
 	
 	row.names(x) <- NULL
 	N <- nrow(x)
-	isFactor <- sapply(physical(x), is.factor.ff)
+	isFactor <- sapply(physical(x), is.factor)
 	
 	ordered <- physical(x)
 	
@@ -51,8 +51,8 @@ tablePrepare <- function(x, name=NULL, dir=NULL, ...){
 	
 	ordered <- do.call(ffdf, ordered)
 	
-	ff::close.ff(rand)
-	ff::close.ff(rand_order)
+	close(rand)
+	close(rand_order)
 	
 	#ranked <- lapply(ordered, fforder)
 	
@@ -77,5 +77,5 @@ tablePrepare <- function(x, name=NULL, dir=NULL, ...){
 #' @return \code{TRUE} if the files could be closed, \code{FALSE} if it was closed already
 #' @export
 close.prepared <- function(con, ...) {
-	all(sapply(con, ff::close.ffdf))
+	all(sapply(con, close))
 }

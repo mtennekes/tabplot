@@ -30,7 +30,7 @@ tablePrepare <- function(x, name=NULL, dir=NULL, ...){
 	
 	row.names(x) <- NULL
 	N <- nrow(x)
-	isFactor <- sapply(physical(x), is.factor)
+	isFactor <- sapply(physical(x), ff::is.factor)
 	
 	ordered <- physical(x)
 	

@@ -205,7 +205,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	##################################
 	## other checks
 	##################################
-	isNumber <- sapply(physical(dat)[colNames], function(col)!is.factor(col) && !vmode(col)=="logical")
+	isNumber <- sapply(physical(dat)[colNames], function(col)!ff::is.factor(col) && !vmode(col)=="logical")
 	
 	if (nrow(dat)==0) stop("<dat> doesn't have any rows")
 	if (nrow(dat)==1) stop("<dat> has only one row")

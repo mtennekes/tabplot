@@ -119,7 +119,7 @@ itableplot <- function() {
 				
 				isNumber <- lapply(ps, function(p){
 					sapply(physical(p$data), function(col){
-						vmode(col)!="logical" && !is.factor(col)
+						vmode(col)!="logical" && !ff::is.factor(col)
 					})
 				})
 				

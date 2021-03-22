@@ -45,11 +45,13 @@
 #' @param subset_string character equivalent of the \code{subset} argument (particularly useful for programming purposes) 
 #' @param colNames deprecated; used in older versions of tabplot (prior to 0.12): use \code{select_string} instead
 #' @param filter deprecated; used in older versions of tabplot (prior to 0.12): use \code{subset_string} instead
+#' @param use_ff use `ff ` under the hood. Otherwise, use `data.table`
 #' @param plot boolean, to plot or not to plot a tableplot
 #' @param ... layout arguments, such as \code{fontsize} and \code{title}, are passed on to \code{\link[=plot.tabplot]{plot}}
 #' @return \code{\link{tabplot-object}} (silent output). If multiple tableplots are generated (which can be done by either setting \code{subset} to a categorical column name, or by restricting the number of columns with \code{nCols}), then a list of \code{\link{tabplot-object}s} is silently returned.
 #' @export
 #' @import grid
+#' @import data.table 
 #' @importFrom grDevices col2rgb colorRampPalette dev.off
 #' @importFrom graphics par plot
 #' @importFrom stats na.omit quantile runif
@@ -77,7 +79,8 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 					  limitsX = NULL,
 					  bias_brokenX=0.8, IQR_bias=5, 
 					  select_string = NULL,
-					  subset_string=NULL, colNames=NULL, filter=NULL, 
+					  subset_string=NULL, colNames=NULL, filter=NULL,
+					  use_ff = FALSE,
 					  plot=TRUE, ...) {
 
 
@@ -92,7 +95,7 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	
 	if (!is_prepared) {
 		datName <- deparse(substitute(dat))
-		p <- tablePrepare(dat, name=datName)
+		p <- tablePrepare(dat, name=datName, use_ff = use_ff)
 	} else datName <- attr(p, "name")
 	
 	dat <- p$data
@@ -241,8 +244,13 @@ tableplot <- function(dat, select, subset=NULL, sortCol=1,  decreasing=TRUE,
 	## bin data
 	##################################
 	
-	bd <- bin_data( p, sortCol=sortCol, cols=colNames, from=from/100, to=to/100
-    			  , nbins=nBins, decreasing=decreasing, sample, sampleBinSize=sampleBinSize)
+	if (use_ff) {
+		bd <- bin_data( p, sortCol=sortCol, cols=colNames, from=from/100, to=to/100
+						, nbins=nBins, decreasing=decreasing, sample, sampleBinSize=sampleBinSize)
+	} else {
+		bd <- bin_data_dt( p, sortCol=sortCol, cols=colNames, from=from/100, to=to/100
+						, nbins=nBins, decreasing=decreasing, sample, sampleBinSize=sampleBinSize)
+	}
 		
 	bd <- bin_hcc_data(bd, max_levels)
 	#print(list(bd=bd))

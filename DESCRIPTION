@@ -8,15 +8,15 @@ Author: Martijn Tennekes and Edwin de Jonge
 Description: A tableplot is a visualisation of a (large) dataset with a dozen of variables, both numeric and categorical. Each column represents a variable and each row bin is an aggregate of a certain number of records. Numeric variables are visualized as bar charts, and categorical variables as stacked bar charts. Missing values are taken into account. Also supports large 'ffdf' datasets from the 'ff' package.
 Version: 1.4.1
 URL: https://github.com/mtennekes/tabplot http://www.jds-online.com/file_download/379/JDS-1108.pdf
-Date: 2019-09-17
-Depends:
-	bit,
-	ff,
-    ffbase (>= 0.13.2)
+Date: 2021-03-22
 Imports:
+    data.table,
     grid
 VignetteBuilder: knitr
 Suggests:
+	bit,
+	ff,
+    ffbase (>= 0.13.2),
     shiny (>= 1.0.0),
     knitr,
     classInt,

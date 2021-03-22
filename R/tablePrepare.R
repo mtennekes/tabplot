@@ -10,12 +10,13 @@
 #' @param x \code{\link{data.frame}} or \code{\link[ff:ffdf]{ffdf}}, will be transformed into an \code{\link[ff:ffdf]{ffdf}} object.
 #' @param name name of the dataset
 #' @param dir directory to store the prepared object. If unspecified, the prepared object will not be saved, and the underlying data will be stored temporarily in \code{options("fftempdir")}.
+#' @param use_ff use `ff ` under the hood. Otherwise, use `data.table`
 #' @param ... arguments passed to other methods (at the moment only \code{overwrite} from \code{\link{savePrepare}}) 
 #' @return a prepared object, including the data and order of each of the columns
 #' @example ./examples/tablePrepare.R
 #' @export
 #' @import ffbase
-tablePrepare <- function(x, name=NULL, dir=NULL, ...){
+tablePrepare <- function(x, name=NULL, dir=NULL, use_ff = FALSE,...){
 	# TODO set path where prepared data set should be stored
 	# TODO make it possible to sort on multiple columns
 	# cat("Preparing data for tableplotting, storing this result increases tableplotting speed (see `prepare`)...")

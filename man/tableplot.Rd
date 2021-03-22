@@ -32,6 +32,7 @@ tableplot(
   subset_string = NULL,
   colNames = NULL,
   filter = NULL,
+  use_ff = FALSE,
   plot = TRUE,
   ...
 )
@@ -105,6 +106,8 @@ by naming them accordingly.}
 \item{colNames}{deprecated; used in older versions of tabplot (prior to 0.12): use \code{select_string} instead}
 
 \item{filter}{deprecated; used in older versions of tabplot (prior to 0.12): use \code{subset_string} instead}
+
+\item{use_ff}{use `ff ` under the hood. Otherwise, use `data.table`}
 
 \item{plot}{boolean, to plot or not to plot a tableplot}
 

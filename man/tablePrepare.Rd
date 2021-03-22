@@ -4,7 +4,7 @@
 \alias{tablePrepare}
 \title{Prepares a dataset for tableplotting}
 \usage{
-tablePrepare(x, name = NULL, dir = NULL, ...)
+tablePrepare(x, name = NULL, dir = NULL, use_ff = FALSE, ...)
 }
 \arguments{
 \item{x}{\code{\link{data.frame}} or \code{\link[ff:ffdf]{ffdf}}, will be transformed into an \code{\link[ff:ffdf]{ffdf}} object.}
@@ -12,6 +12,8 @@ tablePrepare(x, name = NULL, dir = NULL, ...)
 \item{name}{name of the dataset}
 
 \item{dir}{directory to store the prepared object. If unspecified, the prepared object will not be saved, and the underlying data will be stored temporarily in \code{options("fftempdir")}.}
+
+\item{use_ff}{use `ff ` under the hood. Otherwise, use `data.table`}
 
 \item{...}{arguments passed to other methods (at the moment only \code{overwrite} from \code{\link{savePrepare}})}
 }
